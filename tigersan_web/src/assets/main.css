@@ -1,0 +1,36 @@
+@import '../0_tigersan_ui/assets.css';
+* {
+  user-select: none;
+}
+body {
+  /* 位置 */
+  position: relative;
+  /* 字体 */
+  font-size: 16px;
+  font-family: "Microsoft YaHei", sans-serif;
+  /* 颜色 */
+  color: var(--color-basic-white);
+}
+#back {
+  /* 位置 */
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  /* 背景 */
+  filter: brightness(0.8);
+  background: var(--color-page-background);
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+#app {
+  /* 位置 */
+  position: absolute;
+  /* 尺寸 */
+  margin: 0px;
+  width: calc(100vw - 0px * 2);
+  height: calc(100vh - 0px * 2);
+  border-radius: 10px;
+  /* 背景 */
+}
