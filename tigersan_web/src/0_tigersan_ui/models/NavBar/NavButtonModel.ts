@@ -1,14 +1,15 @@
-import { ref } from 'vue'
+import { ref, type Component } from 'vue'
+import { nanoid } from 'nanoid'
 import { Icons } from '@/0_tigersan_ui/base';
 import { NavBarModel } from './NavBarModel'
 import { NavFolderModel } from './NavFolderModel'
-import { nanoid } from 'nanoid'
 
 type NavButtonHandler = (buttonModel: NavButtonModel) => void
 
 class NavButtonModel {
     //#region 【Fields】
     _id = nanoid()
+    _component?: Component
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -29,10 +30,12 @@ class NavButtonModel {
     //#region 【Ctor】
     constructor(
         navBarModel: NavBarModel,
-        navFolderModel: NavFolderModel
+        navFolderModel: NavFolderModel,
+        component?: Component
     ) {
         this.NavBarModel = navBarModel
         this.NavFolderModel = navFolderModel
+        this._component = component
     }
     //#endregion 【Ctor】
 

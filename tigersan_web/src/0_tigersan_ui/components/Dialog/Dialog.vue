@@ -47,6 +47,8 @@ function Close(id: string) {
     /* 颜色 */
     background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
+    /* 置顶 */
+    z-index: 999;
 
     .popPanel {
         /* 显示 */

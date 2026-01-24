@@ -116,13 +116,14 @@ function UpdateWidthString() {
     .temp-menu {
         grid-row: 2 / 3;
         position: absolute;
-        z-index: 1;
+        /* 透明: */
         opacity: 0;
+        /* 禁用鼠标事件: */
+        pointer-events: none;
     }
 
     .menu {
         grid-row: 2 / 3;
-        z-index: 2;
         height: calc(100vh - @loge-size - @loge-panel-padding * 2);
         overflow: auto;
     }

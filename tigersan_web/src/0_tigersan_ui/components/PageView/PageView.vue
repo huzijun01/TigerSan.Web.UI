@@ -1,34 +1,49 @@
 <template>
-    <div class="page-view">
-    </div>
+    <div class="page-view flex-stretch" ref="refRoot"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent, h, type PropType, type Component } from 'vue'
+<script lang="ts" setup>
+import DefaultPage from './DefaultPage.vue'
+import { ref, onMounted, type App } from 'vue'
+import { CreateApp } from '@/0_tigersan_ui/helpers';
+import { NavBarModel } from '@/0_tigersan_ui/models'
 
-export default defineComponent({
-    props: {
-        content: {
-            type: [Object, null] as PropType<Component | null>,
-            default: null
-        }
-    },
-    setup(props) {
-        // 创建 VNode:
-        const vn = props.content ? h(props.content) : null;
+// 字段:
+const refRoot = ref<HTMLElement | undefined>()
+let appMounted: App<Element> | undefined = undefined
 
-        // 返回渲染函数，将 VNode 插入指定位置:
-        return () => h(
-            'div',
-            { class: 'content' },
-            vn ? [vn] : ["No Content"] // 将 VNode 作为子节点插入
-        );
+let { model } = defineProps({
+    model: {
+        type: NavBarModel,
+        default: new NavBarModel()
     }
-});
+})
+
+// 过程:
+onMounted(() => {
+    UpdatePages()
+    model._onSelectedButtonModelChanged = UpdatePages
+})
+
+// 方法:
+function UpdatePages() {
+    if (!refRoot.value) {
+        console.log('The refRoot is undefined!')
+        return
+    }
+
+    // 创建App:
+    const app = CreateApp(model.SelectedButtonModel?._component ?? DefaultPage)
+
+    // 卸载:
+    if (appMounted) {
+        appMounted.unmount()
+    }
+    appMounted = app
+
+    // 挂载:
+    app.mount(refRoot.value)
+}
 </script>
 
-<style lang="less" scoped>
-.page-view {
-    margin: 10px;
-}
-</style>
+<style lang="less" scoped></style>

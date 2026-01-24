@@ -118,10 +118,12 @@ class NavFolderModel {
         var count = this.GetOpenedSubItemCount();
 
         if (!this.NavBarModel._getFolderHeight) {
+            console.log('The _getFolderHeight is undefined!')
             return 0
         }
 
         if (!this.NavBarModel._getButtonHeight) {
+            console.log('The _getButtonHeight is undefined!')
             return 0
         }
 

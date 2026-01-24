@@ -1,0 +1,16 @@
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-center > * {
+  flex-grow: 0;
+}
+.flex-stretch {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.flex-stretch > * {
+  flex-grow: 1;
+}

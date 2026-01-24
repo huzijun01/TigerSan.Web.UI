@@ -1,4 +1,4 @@
-import { ref, shallowReactive, type ShallowReactive } from 'vue'
+import { ref, shallowReactive, type ShallowReactive, type Component } from 'vue'
 import { NavButtonModel } from './NavButtonModel'
 import { NavFolderModel } from './NavFolderModel'
 import type { TryNumberAction } from '@/0_tigersan_ui/base'
@@ -42,6 +42,7 @@ class NavBarModel {
         return this._SelectedButtonModel
     }
     set SelectedButtonModel(value: NavButtonModel | undefined) {
+        if (value === this._SelectedButtonModel) return
         this._SelectedButtonModel = value
         this.UpdateSelectStates()
         this._onSelectedButtonModelChanged?.(value)

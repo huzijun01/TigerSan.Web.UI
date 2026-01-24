@@ -18,7 +18,8 @@
       </div>
 
       <!-- 页面: -->
-      <div class="page-panel">
+      <div class="page-panel flex-stretch">
+        <PageView :model="navBarModel" />
       </div>
     </div>
   </div>
@@ -27,7 +28,7 @@
 
 <script lang="ts" setup>
 import { Icons } from '@/0_tigersan_ui/base'
-import { Dialog, NavBar, PageBar } from '@/0_tigersan_ui/components'
+import { Dialog, NavBar, PageBar, PageView } from '@/0_tigersan_ui/components'
 import navBarModel from '@/navBarModel'
 </script>
 

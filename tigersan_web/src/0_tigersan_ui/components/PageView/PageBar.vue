@@ -48,6 +48,7 @@ function UpdatePagePanelWidth() {
 function UpdateOffset() {
     let refRootWidth = GetWidth()
     if (!refRootWidth) {
+        console.log('The refRootWidth is undefined!')
         return
     }
 
