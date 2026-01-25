@@ -28,8 +28,8 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted } from 'vue'
-import { NavButton, NavFolder } from '@/0_tigersan_ui/components'
-import { NavBarModel } from '@/0_tigersan_ui/models'
+import { NavButton, NavFolder } from '../../components'
+import { NavBarModel } from '../../models'
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()

@@ -8,8 +8,8 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted } from 'vue';
-import { PageButton } from '@/0_tigersan_ui/components';
-import { NavBarModel } from '@/0_tigersan_ui/models';
+import { PageButton } from '../../components';
+import { NavBarModel } from '../../models';
 
 // 字段:
 let offset = 0

@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Icons } from '@/0_tigersan_ui/base'
-import { DeleteItem, GetFirstItem } from '@/0_tigersan_ui/helpers'
-import { NavBarModel, NavButtonModel } from '@/0_tigersan_ui/models'
+import { Icons } from '../../base'
+import { DeleteItem, GetFirstItem } from '../../helpers'
+import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
 let { model } = defineProps({
@@ -34,7 +34,6 @@ function Close() {
     DeleteItem(model.NavBarModel.OpenedButtonModels, model)
 
     if (oldIsSelected) {
-        model.IsSelected.value = false
         model.NavBarModel.SelectedButtonModel = GetFirstItem(model.NavBarModel.OpenedButtonModels)
     }
 }

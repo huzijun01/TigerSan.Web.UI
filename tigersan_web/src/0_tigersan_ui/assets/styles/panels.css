@@ -1,3 +1,6 @@
+.display-none {
+  display: none !important;
+}
 .flex-center {
   display: flex;
   align-items: center;

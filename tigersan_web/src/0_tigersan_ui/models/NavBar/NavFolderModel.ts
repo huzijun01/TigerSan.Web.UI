@@ -1,9 +1,9 @@
 import { ref, shallowReactive, type ShallowReactive } from 'vue'
-import type { Action } from '@/0_tigersan_ui/base/types';
+import { Icons } from '../../base';
+import type { Action } from '../../base/types';
+import { nanoid } from 'nanoid'
 import { NavBarModel } from './NavBarModel'
 import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'
-import { nanoid } from 'nanoid'
-import { Icons } from '@/0_tigersan_ui/base';
 
 type NavFolderHandler = (folderModel: NavFolderModel) => void
 
@@ -27,12 +27,12 @@ class NavFolderModel {
     //#region 【Properties】
     Icon = ref(Icons.Folder_Linear)
     Title = ref("null")
-    IsOpen = ref(true)
     IsShow = ref(true)
+    IsOpen = ref(true)
     SubItemsHeight = ref(50)
     NavBarModel: NavBarModel
-    FolderModels: ShallowReactive<NavFolderModel[]> = shallowReactive([])
     ButtonModels: ShallowReactive<NavButtonModel[]> = shallowReactive([])
+    FolderModels: ShallowReactive<NavFolderModel[]> = shallowReactive([])
     //#endregion 【Properties】
 
     //#region 【Events】
@@ -118,12 +118,10 @@ class NavFolderModel {
         var count = this.GetOpenedSubItemCount();
 
         if (!this.NavBarModel._getFolderHeight) {
-            console.log('The _getFolderHeight is undefined!')
             return 0
         }
 
         if (!this.NavBarModel._getButtonHeight) {
-            console.log('The _getButtonHeight is undefined!')
             return 0
         }
 

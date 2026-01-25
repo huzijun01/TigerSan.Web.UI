@@ -1,4 +1,4 @@
-// NavBar:
+/* NavBar: */
 import {
     type TryNavButtonHandler,
     NavBarModel
@@ -12,14 +12,21 @@ import {
     SubItemCount,
     NavFolderModel
 } from './models/NavBar/NavFolderModel'
+import {
+    NavButtonConfig,
+    NavFolderConfig,
+    SetNavButtonModel,
+    SetNavFolderModel,
+    CreateNavFolderModel
+} from './models/NavBar/NavConfig'
 
-// Dialog:
+/* Dialog: */
 import {
     DialogModel,
 } from './models/DialogModel'
 
 export {
-    // NavBar:
+    /* NavBar: */
     type TryNavButtonHandler,
     NavBarModel,
     type NavButtonHandler,
@@ -27,7 +34,13 @@ export {
     type NavFolderHandler,
     SubItemCount,
     NavFolderModel,
+    // Config:
+    NavButtonConfig,
+    NavFolderConfig,
+    SetNavButtonModel,
+    SetNavFolderModel,
+    CreateNavFolderModel,
 
-    // Dialog:
+    /* Dialog: */
     DialogModel,
 }

@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { Colors } from '@/0_tigersan_ui/base';
+import { Colors } from '../base';
 
 class DialogModel {
     readonly id: string = nanoid()

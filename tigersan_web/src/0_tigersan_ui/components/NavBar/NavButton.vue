@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { NavBarModel, NavButtonModel } from '@/0_tigersan_ui/models';
+import { NavBarModel, NavButtonModel } from '../../models';
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()

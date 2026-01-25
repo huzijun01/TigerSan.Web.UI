@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { Teleport, computed } from 'vue';
-import { useDialogStore } from '@/0_tigersan_ui/stores/dialog';
+import { useDialogStore } from '../../stores/dialog';
 
 // 全局数据：
 let { dialogModels } = useDialogStore()

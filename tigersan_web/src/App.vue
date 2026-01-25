@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts" setup>
+import navBarModel from '@/navBarModel'
 import { Icons } from '@/0_tigersan_ui/base'
 import { Dialog, NavBar, PageBar, PageView } from '@/0_tigersan_ui/components'
-import navBarModel from '@/navBarModel'
 </script>
 
 <style lang="less" scoped>

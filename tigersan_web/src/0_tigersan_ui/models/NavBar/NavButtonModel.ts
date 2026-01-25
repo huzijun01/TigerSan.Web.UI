@@ -1,6 +1,6 @@
-import { ref, type Component } from 'vue'
+import { computed, ref, type Component } from 'vue'
 import { nanoid } from 'nanoid'
-import { Icons } from '@/0_tigersan_ui/base';
+import { Icons } from '../../base';
 import { NavBarModel } from './NavBarModel'
 import { NavFolderModel } from './NavFolderModel'
 
@@ -15,9 +15,11 @@ class NavButtonModel {
     //#region 【Properties】
     Icon = ref(Icons.File_Linear)
     Title = ref("null")
-    IsSelected = ref(false)
-    IsShowCloseButton = ref(true)
     IsShow = ref(true)
+    IsShowCloseButton = ref(true)
+    IsSelected = computed(() => {
+        return this.NavBarModel._SelectedButtonModel.value === this
+    })
     NavBarModel: NavBarModel
     NavFolderModel: NavFolderModel
     //#endregion 【Properties】

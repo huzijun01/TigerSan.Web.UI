@@ -1,7 +1,8 @@
-import { ref, shallowReactive, type ShallowReactive, type Component } from 'vue'
+import { ref, shallowRef, shallowReactive, type ShallowReactive } from 'vue'
 import { NavButtonModel } from './NavButtonModel'
 import { NavFolderModel } from './NavFolderModel'
-import type { TryNumberAction } from '@/0_tigersan_ui/base'
+import type { TryNumberAction } from '../../base'
+import { type NavFolderConfig, CreateNavFolderModel } from './NavConfig'
 
 type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
 
@@ -31,7 +32,7 @@ class NavBarModel {
     IsOpen = ref(true)
 
     /** 文件夹模型 */
-    FolderModel: NavFolderModel
+    FolderModel: NavFolderModel = new NavFolderModel(this)
 
     /** 已打开的“按钮模型”集合 */
     OpenedButtonModels: ShallowReactive<NavButtonModel[]> = shallowReactive([])
@@ -39,15 +40,16 @@ class NavBarModel {
     /** 选中的“按钮模型”
      * （会触发“选中状态”更新） */
     get SelectedButtonModel(): NavButtonModel | undefined {
-        return this._SelectedButtonModel
+        return this._SelectedButtonModel.value
     }
     set SelectedButtonModel(value: NavButtonModel | undefined) {
-        if (value === this._SelectedButtonModel) return
-        this._SelectedButtonModel = value
-        this.UpdateSelectStates()
+        if (value === this._SelectedButtonModel.value) return
+        this._SelectedButtonModel.value = value
         this._onSelectedButtonModelChanged?.(value)
     }
-    private _SelectedButtonModel?: NavButtonModel
+    /** 用于IsSelected计算属性 
+     * （请勿直接修改） */
+    _SelectedButtonModel = shallowRef<NavButtonModel | undefined>()
     //#endregion 【Properties】
 
     //#region 【Events】
@@ -58,24 +60,16 @@ class NavBarModel {
     //#endregion 【Events】
 
     //#region 【Ctor】
-    constructor() {
-        this.FolderModel = new NavFolderModel(this);
+    constructor(folder?: NavFolderConfig) {
+        if (!folder) return
+
+        let folderModel = CreateNavFolderModel(this, folder)
+        this.FolderModel.FolderModels = folderModel.FolderModels
+        this.FolderModel.ButtonModels = folderModel.ButtonModels
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
-    //#region [Private]
-    /** 更新“选中状态” */
-    private UpdateSelectStates() {
-        NavFolderModel.RecursivelyOperateSubItems(
-            this.FolderModel,
-            undefined,
-            buttonModel => {
-                buttonModel.IsSelected.value = buttonModel === this.SelectedButtonModel
-            });
-    }
-    //#endregion [Private]
-
     /** 获取“文件夹” */
     GetFolder() {
         return new NavFolderModel(this)

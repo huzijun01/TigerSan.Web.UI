@@ -11,10 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Icons } from '@/0_tigersan_ui/base'
+import { Icons } from '../../base'
 import { ref } from 'vue'
-import { NavButton, NavFolder } from '@/0_tigersan_ui/components'
-import { NavBarModel, NavFolderModel } from '@/0_tigersan_ui/models'
+import { NavButton, NavFolder } from '../../components'
+import { NavBarModel, NavFolderModel } from '../../models'
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
