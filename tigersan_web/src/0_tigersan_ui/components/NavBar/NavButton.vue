@@ -1,5 +1,5 @@
 <template>
-    <div class="border" ref="refRoot" v-if="model.IsShow" @click="OnClick" :class="{
+    <div class="nav-button" ref="refRoot" v-if="model.IsShow.value" @click="OnClick" :class="{
         selected: model.IsSelected.value
     }">
         <div class="icon iconfont">{{ model.Icon }}</div>
@@ -43,7 +43,7 @@ function OnClick() {
 </script>
 
 <style lang="less" scoped>
-.border {
+.nav-button {
     display: flex;
     align-items: center;
     padding: 10px;

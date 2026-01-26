@@ -25,25 +25,39 @@ class NavFolderModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
+    /** 图标 */
     Icon = ref(Icons.Folder_Linear)
+    /** 标题 */
     Title = ref("null")
+    /** 是否显示 */
     IsShow = ref(true)
+    /** 是否打开 */
     IsOpen = ref(true)
+    /** 子项高度 */
     SubItemsHeight = ref(50)
+    /** 所属“导航栏”模型 */
     NavBarModel: NavBarModel
+    /** 所属“目录”模型 */
+    NavFolderModel?: NavFolderModel
+    /** “按钮”集合 */
     ButtonModels: ShallowReactive<NavButtonModel[]> = shallowReactive([])
+    /** “目录”集合 */
     FolderModels: ShallowReactive<NavFolderModel[]> = shallowReactive([])
     //#endregion 【Properties】
 
     //#region 【Events】
+    /** 点击后 */
     Clicked?: NavFolderHandler
+    /** 打开后 */
     Opened?: NavFolderHandler
+    /** 关闭后 */
     Closed?: NavFolderHandler
     //#endregion 【Events】
 
     //#region 【Ctor】
-    constructor(navBarModel: NavBarModel) {
+    constructor(navBarModel: NavBarModel, navFolderModel?: NavFolderModel) {
         this.NavBarModel = navBarModel
+        this.NavFolderModel = navFolderModel
     }
     //#endregion 【Ctor】
 
@@ -52,14 +66,17 @@ class NavFolderModel {
     static RecursivelyOperateSubItems(
         folderModel: NavFolderModel,
         fnFolder: NavFolderHandler | undefined,
-        fnButton: NavButtonHandler | undefined = undefined) {
-        // 目录：
+        fnButton: NavButtonHandler | undefined = undefined,
+        isIncludeNotShowFolder: boolean = true) {
+        if (!isIncludeNotShowFolder && (!folderModel.IsShow.value || !folderModel.IsOpen.value)) return
+
+        // 子目录：
         for (const subFolderModel of folderModel.FolderModels) {
             fnFolder?.(subFolderModel)
-            NavFolderModel.RecursivelyOperateSubItems(subFolderModel, fnFolder, fnButton)
+            NavFolderModel.RecursivelyOperateSubItems(subFolderModel, fnFolder, fnButton, isIncludeNotShowFolder)
         }
 
-        // 按钮：
+        // 子按钮：
         if (!fnButton) return
 
         for (const buttonModel of folderModel.ButtonModels) {
@@ -99,16 +116,17 @@ class NavFolderModel {
 
         NavFolderModel.RecursivelyOperateSubItems(
             this,
-            folderModel => { ++count.FolderCount },
+            folderModel => {
+                ++count.FolderCount
+            },
             buttonModel => {
-                if (
-                    isExcludeNotDisplayButton
-                    && buttonModel.NavFolderModel != this
+                if (isExcludeNotDisplayButton
                     && !buttonModel.NavFolderModel.IsOpen.value) {
                     return
                 }
                 ++count.ButtonCount
-            })
+            },
+            false)
 
         return count;
     }

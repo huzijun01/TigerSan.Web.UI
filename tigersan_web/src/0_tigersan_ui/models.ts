@@ -1,4 +1,5 @@
 /* NavBar: */
+import testNavBarModel from './models/NavBar/testNavBarModel';
 import {
     type TryNavButtonHandler,
     NavBarModel
@@ -34,6 +35,7 @@ export {
     type NavFolderHandler,
     SubItemCount,
     NavFolderModel,
+    testNavBarModel,
     // Config:
     NavButtonConfig,
     NavFolderConfig,

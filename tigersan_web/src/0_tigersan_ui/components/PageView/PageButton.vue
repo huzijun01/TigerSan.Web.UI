@@ -5,7 +5,7 @@
         <div class="sub-border">
             <div class="icon iconfont">{{ model.Icon }}</div>
             <div class="title ellipsis">{{ model.Title }}</div>
-            <button class="close iconfont circle-button" @click.stop="Close">{{ Icons.Close }}</button>
+            <button v-if="model.IsShowCloseButton.value" class="close iconfont circle-button" @click.stop="Close">{{ Icons.Close }}</button>
         </div>
         <div class="line"></div>
     </div>

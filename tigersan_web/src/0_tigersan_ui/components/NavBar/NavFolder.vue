@@ -1,12 +1,14 @@
 <template>
-    <div class="border" ref="refRoot" @click="OnClick">
-        <div class="icon iconfont">{{ model.Icon }}</div>
-        <div class="title ellipsis">{{ model.Title }}</div>
-        <div class="arrow iconfont" :class="{ open: model.IsOpen.value }">{{ Icons.Arrow_Right }}</div>
-    </div>
-    <div class="content" :style="{ 'height': `${model.SubItemsHeight.value}px` }">
-        <NavFolder v-for="f in model.FolderModels" :key="f._id" :model="f" />
-        <NavButton v-for="b in model.ButtonModels" :key="b._id" :model="b" />
+    <div class="nav-folder" v-if="model.IsShow.value">
+        <div class="border" ref="refRoot" @click="OnClick">
+            <div class="icon iconfont">{{ model.Icon }}</div>
+            <div class="title ellipsis">{{ model.Title }}</div>
+            <div class="arrow iconfont" :class="{ open: model.IsOpen.value }">{{ Icons.Arrow_Right }}</div>
+        </div>
+        <div class="content" :style="{ 'height': `${model.SubItemsHeight.value}px` }">
+            <NavFolder v-for="f in model.FolderModels" :key="f._id" :model="f" />
+            <NavButton v-for="b in model.ButtonModels" :key="b._id" :model="b" />
+        </div>
     </div>
 </template>
 
@@ -51,45 +53,47 @@ function OnClick() {
 </script>
 
 <style lang="less" scoped>
-.border {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: var(--color-primary-text);
-    transition: var(--Global-Duration);
-
-    &:hover {
-        color: var(--color-brand);
-    }
-
-    .icon {
-        flex-shrink: 0;
-        font-size: var(--NavIcon-FontSize);
-    }
-
-    .title {
-        flex-grow: 1;
-        margin: 0px 8px;
-        font-size: var(--NavText-FontSize);
-    }
-
-    .arrow {
-        flex-shrink: 0;
-        margin: 0px 8px;
-        font-size: var(--NavText-FontSize);
+.nav-folder {
+    .border {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--color-primary-text);
         transition: var(--Global-Duration);
 
-        &.open {
-            transform: rotate(90deg);
+        &:hover {
+            color: var(--color-brand);
+        }
+
+        .icon {
+            flex-shrink: 0;
+            font-size: var(--NavIcon-FontSize);
+        }
+
+        .title {
+            flex-grow: 1;
+            margin: 0px 8px;
+            font-size: var(--NavText-FontSize);
+        }
+
+        .arrow {
+            flex-shrink: 0;
+            margin: 0px 8px;
+            font-size: var(--NavText-FontSize);
+            transition: var(--Global-Duration);
+
+            &.open {
+                transform: rotate(90deg);
+            }
         }
     }
-}
 
-.content {
-    margin-left: 15px;
-    overflow: hidden;
-    transition: var(--Global-Duration);
+    .content {
+        margin-left: 15px;
+        overflow: hidden;
+        transition: var(--Global-Duration);
+    }
 }
 </style>

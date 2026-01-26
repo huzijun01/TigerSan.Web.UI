@@ -1,5 +1,5 @@
-import { Icons } from '@/0_tigersan_ui/base'
-import { NavBarModel } from '@/0_tigersan_ui/models'
+import { Icons } from '../../base'
+import { NavBarModel } from './NavBarModel'
 
 let testNavBarModel = new NavBarModel({
     Folders: [
@@ -8,17 +8,19 @@ let testNavBarModel = new NavBarModel({
             Folders: [
                 {
                     Title: "二级目录 1",
-                    Buttons: [
+                    Folders: [
                         {
-                            Title: "按钮 1",
+                            Title: "三级目录 2",
+                            Buttons: [
+                                {
+                                    Title: "按钮 1",
+                                },
+                                {
+                                    Title: "按钮 2",
+                                }
+                            ]
                         },
-                        {
-                            Title: "按钮 2",
-                        }
                     ],
-                },
-                {
-                    Title: "二级目录 2",
                     Buttons: [
                         {
                             Title: "按钮 3",
