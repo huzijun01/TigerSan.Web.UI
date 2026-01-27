@@ -1,17 +1,17 @@
 <template>
     <div class="table-item" ref="refRoot">
         <div class="size-panel">
-            <div class="size" v-html="formattedText"></div>
-            <div class="placeholder">*</div>
+            <span class="size" :class="classObj" v-html="formattedText"></span>
+            <span class="placeholder">*</span>
         </div>
-        <textarea :readonly="model.IsReadonly.value" v-model="model.Text.value" :style="styleObj" @input="OnInput"
-            @change="OnChange"></textarea>
+        <textarea class="input" :class="classObj" :style="styleObj" :readonly="model.IsReadonly.value"
+            v-model="model.Text.value" @input="OnInput" @change="OnChange"></textarea>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { StringXSS, StringToHtml } from '../../helpers';
-import { TableHeaderModel, TableItemModel, TableRowModel } from '../../models';
+import { TableHeaderModel, TableItemModel, TableModel, TableRowModel, TextAlign } from '../../models';
 import { ref, onMounted, computed } from 'vue'
 
 // 字段:
@@ -22,7 +22,7 @@ const actualHeight = ref(18)
 let { model } = defineProps({
     model: {
         type: TableItemModel,
-        default: () => new TableItemModel(new TableHeaderModel(''), new TableRowModel({}))
+        default: () => new TableItemModel(new TableHeaderModel(new TableModel([]), ''), new TableRowModel({}))
     }
 })
 
@@ -30,11 +30,22 @@ let styleObj = computed(() => {
     return {
         width: `${actualWidth.value}px`,
         height: `${actualHeight.value}px`,
+        textAlign: model._headerModel.TextAlign.value,
+        color: model.Color.value,
+        background: model.Background.value,
+    }
+})
+
+let classObj = computed(() => {
+    return {
+        ellipsis: !model._headerModel.IsAllowWrap.value,
     }
 })
 
 const formattedText = computed(() => {
-    return StringToHtml(model.Text.value)
+    return model._headerModel.IsAllowWrap.value
+        ? StringToHtml(model.Text.value) :
+        StringToHtml(model.Text.value, '')
 })
 
 // 过程:
@@ -47,10 +58,12 @@ onMounted(() => {
 // 方法:
 function OnInput() {
     TextXSS()
-    model._onItemTextChange()
+    model.SetRowData()
+    model._onItemTextInput()
 }
 
 function OnChange() {
+    model._onItemTextChange()
 }
 
 function TextXSS() {
@@ -80,6 +93,9 @@ function GetHeight(): number {
 </script>
 
 <style lang="less" scoped>
+@line-height: 1.5;
+@input-padding: 0 16px;
+
 .table-item {
     position: relative;
 
@@ -87,38 +103,41 @@ function GetHeight(): number {
         display: flex;
 
         .size {
-            padding: 0 16px;
+            margin: 0;
+            padding: @input-padding;
             color: transparent; // 透明
+            line-height: @line-height;
         }
 
         .placeholder {
             width: 0;
             overflow: hidden;
+            line-height: @line-height;
         }
     }
 
-    textarea {
+    .input {
+        /* 位置: */
         position: absolute;
         top: 0;
         left: 0;
+        /* 尺寸: */
+        width: auto;
+        min-width: 50px;
+        box-sizing: border-box;
+        border: 0;
+        padding: @input-padding;
+        /* 颜色: */
+        outline: none;
+        box-shadow: none;
+        color: var(--color-primary-text);
+        background: transparent;
+        /* 文本: */
         resize: none;
-        /* 保留手动换行符 */
-        white-space: pre-wrap;
-        /* 禁用自动换行 */
-        overflow-wrap: normal;
         overflow: hidden;
+        white-space: pre-wrap; // 保留手动换行符
+        overflow-wrap: normal; // 禁用自动换行
+        line-height: @line-height;
     }
-}
-
-textarea {
-    width: auto;
-    min-width: 50px;
-    box-sizing: border-box;
-    border: 0;
-    padding: 0 16px;
-    color: white;
-    background: transparent;
-    outline: none;
-    box-shadow: none;
 }
 </style>

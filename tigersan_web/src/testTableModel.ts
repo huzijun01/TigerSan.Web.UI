@@ -1,5 +1,7 @@
-import { TableModel } from "@/0_tigersan_ui/models"
+import { TableModel, TextAlign } from "@/0_tigersan_ui/models"
+import { Colors } from "./0_tigersan_ui/base"
 
+/** 网关模型 */
 class GatewayModel {
     Index = 0
     MacAddr = ''
@@ -10,44 +12,55 @@ class GatewayModel {
     Version = ''
 }
 
+// 列头:
 let testTableModel = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
+        TextAlign: TextAlign.Center,
         IsReadonly: true,
+        IsAllowWrap: true,
     },
     {
         _propName: 'MacAddr',
         Text: 'MAC地址',
+        TextAlign: TextAlign.Center,
         IsReadonly: true,
+        IsAllowWrap: false,
     },
     {
         _propName: 'Name',
         Text: '网关名称',
         IsReadonly: true,
+        IsAllowWrap: false,
     },
     {
         _propName: 'State',
         Text: '状态',
         IsReadonly: true,
+        IsAllowWrap: false,
     },
     {
         _propName: 'Type',
         Text: '型号',
         IsReadonly: true,
+        IsAllowWrap: false,
     },
     {
         _propName: 'UpdateTime',
         Text: '更新时间',
         IsReadonly: true,
+        IsAllowWrap: false,
     },
     {
         _propName: 'Version',
         Text: '蓝牙固件版本',
         IsReadonly: true,
+        IsAllowWrap: false,
     },
 ])
 
+// 数据:
 let g1 = new GatewayModel()
 g1.Index = 1
 g1.MacAddr = 'AC233FC21C39'
@@ -77,6 +90,19 @@ g3.UpdateTime = '2026-01-14 11:39:58'
 g3.Type = 'g3-e-grapes'
 g3.Version = '3.7.0'
 testTableModel.RowDatas.push(g3)
+
+// 初始化:
+testTableModel._initItem = itemModel => {
+    if (itemModel._headerModel._propName === 'State') {
+        if (itemModel.Text.value === '在线') {
+            itemModel.Color.value = Colors.Success
+            itemModel.Background.value = Colors.Success10
+        } else if (itemModel.Text.value === '离线') {
+            itemModel.Color.value = Colors.Danger
+            itemModel.Background.value = Colors.Danger10
+        }
+    }
+}
 
 export {
     GatewayModel,

@@ -12,8 +12,9 @@ function StringXSS(str: string) {
     });
 }
 
-function StringToHtml(str: string) {
-    return str.replace(/\r\n|\r|\n/g, '<br>')
+/** 将“普通文本”转为“HTML文本” */
+function StringToHtml(str: string, strEnter: string = '<br>') {
+    return str.replace(/\r\n|\r|\n/g, strEnter)
         .replace(/ {2}/g, '&nbsp;&nbsp;')
 }
 

@@ -84,7 +84,7 @@ table {
 
     td,
     th {
-        color: white;
+        color: var(--color-primary-text);
         padding: 12px 0px;
 
         &:hover {

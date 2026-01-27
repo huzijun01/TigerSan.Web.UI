@@ -1,9 +1,36 @@
-import type { StringGetter, ObjectSetter, Action } from '@/0_tigersan_ui/base'
+import { type StringGetter, type ObjectSetter, type TryAction, Colors } from '@/0_tigersan_ui/base'
 import { DefaultStringGetter, DefaultObjectSetter } from '@/0_tigersan_ui/helpers'
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive } from "vue"
 
+type TableItemFunc = (itemModel: TableItemModel) => void
+type TryTableItemFunc = TableItemFunc | undefined
+type TableHeaderFunc = (itemModel: TableHeaderModel) => void
+type TryTableHeaderFunc = TableHeaderFunc | undefined
+
+/** 文本对齐 */
+enum TextAlign {
+    Left = 'left',
+    Right = 'right',
+    Center = 'center',
+    Justify = 'justify'
+}
+
+/** “表格”配置 */
 class TableModel {
+    //#region 【Fields】
+    /** “列头配置”集合 */
+    _headerConfigs: TableHeaderConfig[]
+    /** 初始化“项目” */
+    _initItem: TryTableItemFunc
+    /** 初始化“列头” */
+    _initHeader: TryTableHeaderFunc
+    /** “项目文本”输入 */
+    _onItemTextInput: TryTableItemFunc
+    /** “项目文本”改变 */
+    _onItemTextChange: TryTableItemFunc
+    //#endregion 【Fields】
+
     /** “行数据”集合 */
     RowDatas: ShallowReactive<object[]> = shallowReactive([])
 
@@ -15,18 +42,20 @@ class TableModel {
 
     //#region 【Ctor】
     constructor(headerConfigs: TableHeaderConfig[]) {
-        this.InitHeaderModels(headerConfigs)
+        this._headerConfigs = headerConfigs
+        this.InitHeaderModels()
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
     /** 初始化“列头模型”集合 */
-    InitHeaderModels(headerConfigs: TableHeaderConfig[]) {
+    InitHeaderModels() {
         this.HeaderModels.splice(0)
 
-        headerConfigs.forEach(headerConfig => {
-            let headerModel = new TableHeaderModel(headerConfig._propName)
+        this._headerConfigs.forEach(headerConfig => {
+            let headerModel = new TableHeaderModel(this, headerConfig._propName)
             SetTableHeaderModel(headerModel, headerConfig)
+            if (this._initHeader) this._initHeader(headerModel) // 初始化
             this.HeaderModels.push(headerModel)
         })
     }
@@ -41,13 +70,23 @@ class TableModel {
 
             this.HeaderModels.forEach(headerModel => {
                 let itemModel = new TableItemModel(headerModel, rowModel)
+                if (this._initItem) this._initItem(itemModel) // 初始化
                 rowModel.ItemModels.push(itemModel)
             })
         })
     }
+
+    /** 刷新 */
+    Refresh(isInitHeaderModels: boolean = false) {
+        if (isInitHeaderModels) {
+            this.InitHeaderModels()
+        }
+        this.InitRowModel()
+    }
     //#endregion 【Functions】
 }
 
+/** “行”配置 */
 class TableRowModel {
     //#region 【Fields】
     _id = nanoid()
@@ -64,33 +103,53 @@ class TableRowModel {
     //#endregion 【Ctor】
 }
 
+/** “项目”配置 */
 class TableItemModel {
     //#region 【Fields】
     _id = nanoid()
     _headerModel: TableHeaderModel
     _rowModel: TableRowModel
-    /** 项目文本改变
-     * （由“TableItemModel”内部自动传入，
-     * 并由“TableItem”内部调用） */
-    _onItemTextChange: Action
+    get _tableModel(): TableModel {
+        return this._headerModel._tableModel
+    }
     //#endregion 【Fields】
 
     /** 文本 */
     Text = ref('')
     /** 是否只读 */
     IsReadonly = computed(() => this._headerModel.IsReadonly.value)
+    /** 颜色 */
+    Color = ref(Colors.PrimaryText)
+    /** 背景 */
+    Background = ref(Colors.Transparent)
 
     //#region 【Ctor】
     constructor(headerModel: TableHeaderModel, rowModel: TableRowModel) {
         this._headerModel = headerModel
         this._rowModel = rowModel
         this.UpdateText()
-        this._onItemTextChange = this.SetRowData
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
-    /** 更新“文本” */
+    /** 项目文本输入
+     * （由“TableItem”内部调用） */
+    _onItemTextInput() {
+        if (this._tableModel._onItemTextInput) {
+            this._tableModel._onItemTextInput(this)
+        }
+    }
+
+    /** 项目文本改变
+     * （由“TableItem”内部调用） */
+    _onItemTextChange() {
+        if (this._tableModel._onItemTextChange) {
+            this._tableModel._onItemTextChange(this)
+        }
+    }
+
+    /** 更新“文本” 
+     * “TableItem”内部会自动调用 */
     UpdateText() {
         this.Text.value = this._headerModel
             ._strGetter(this._rowModel._rowData, this._headerModel._propName)
@@ -104,11 +163,14 @@ class TableItemModel {
     //#endregion 【Functions】
 }
 
+/** “列头”模型 */
 class TableHeaderModel {
     //#region 【Fields】
     _id = nanoid()
     /** 属性名 */
     _propName = ''
+    /** 所属“表格”配置 */
+    _tableModel: TableModel
     /** 文本获取方法 */
     _strGetter: StringGetter = DefaultStringGetter
     /** 对象修改方法 */
@@ -117,16 +179,22 @@ class TableHeaderModel {
 
     /** 文本 */
     Text = ref('null')
+    /** 文本对齐 */
+    TextAlign = ref(TextAlign.Left)
     /** 是否只读 */
     IsReadonly = ref(false)
+    /** 是否允许换行 */
+    IsAllowWrap = ref(true)
 
     //#region 【Ctor】
-    constructor(propName: string) {
+    constructor(tableModel: TableModel, propName: string) {
         this._propName = propName
+        this._tableModel = tableModel
     }
     //#endregion 【Ctor】
 }
 
+/** “列头”配置 */
 class TableHeaderConfig {
     /** 属性名 */
     _propName: string
@@ -136,8 +204,12 @@ class TableHeaderConfig {
     _objSetter?: ObjectSetter
     /** 文本 */
     Text?: string
+    /** 文本对齐 */
+    TextAlign?: TextAlign
     /** 是否只读 */
     IsReadonly?: boolean
+    /** 是否允许换行 */
+    IsAllowWrap?: boolean
 
     //#region 【Ctor】
     constructor(propName: string) {
@@ -146,15 +218,23 @@ class TableHeaderConfig {
     //#endregion 【Ctor】
 }
 
+/** 将“配置”设置到“模型” */
 function SetTableHeaderModel(model: TableHeaderModel, config: TableHeaderConfig) {
     model._propName = config._propName
-    if (config._strGetter != undefined) model._strGetter = config._strGetter
-    if (config._objSetter != undefined) model._objSetter = config._objSetter
+    if (config._strGetter) model._strGetter = config._strGetter
+    if (config._objSetter) model._objSetter = config._objSetter
     if (config.Text != undefined) model.Text.value = config.Text
+    if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
+    if (config.IsAllowWrap != undefined) model.IsAllowWrap.value = config.IsAllowWrap
 }
 
 export {
+    type TableItemFunc,
+    type TryTableItemFunc,
+    type TableHeaderFunc,
+    type TryTableHeaderFunc,
+    TextAlign,
     TableModel,
     TableRowModel,
     TableItemModel,

@@ -23,6 +23,11 @@ import {
 
 /* Table: */
 import {
+    type TableItemFunc,
+    type TryTableItemFunc,
+    type TableHeaderFunc,
+    type TryTableHeaderFunc,
+    TextAlign,
     TableModel,
     TableRowModel,
     TableHeaderModel,
@@ -54,6 +59,11 @@ export {
     CreateNavFolderModel,
 
     /* Table: */
+    type TableItemFunc,
+    type TryTableItemFunc,
+    type TableHeaderFunc,
+    type TryTableHeaderFunc,
+    TextAlign,
     TableModel,
     TableRowModel,
     TableHeaderModel,
