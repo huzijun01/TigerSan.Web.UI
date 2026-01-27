@@ -1,5 +1,5 @@
 import Counter from '@/components/Counter.vue'
-import TablePage from '@/components/TablePage.vue'
+import TablePage from '@/pages/TablePage.vue'
 import { Icons } from '@/0_tigersan_ui/base'
 import { NavBarModel } from '@/0_tigersan_ui/models'
 
@@ -10,6 +10,7 @@ let navBarModel = new NavBarModel({
             Title: "图表",
             Buttons: [
                 {
+                    IsSelected: true,
                     Icon: Icons.Grid,
                     Title: "表格",
                     _component: TablePage
@@ -28,5 +29,7 @@ let navBarModel = new NavBarModel({
         }
     ]
 })
+
+navBarModel.IsOpen.value = false
 
 export default navBarModel

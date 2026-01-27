@@ -21,6 +21,16 @@ import {
     CreateNavFolderModel
 } from './models/NavBar/NavConfig'
 
+/* Table: */
+import {
+    TableModel,
+    TableRowModel,
+    TableHeaderModel,
+    TableItemModel,
+    TableHeaderConfig,
+    SetTableHeaderModel,
+} from './models/TableModels/TableModel'
+
 /* Dialog: */
 import {
     DialogModel,
@@ -42,6 +52,14 @@ export {
     SetNavButtonModel,
     SetNavFolderModel,
     CreateNavFolderModel,
+
+    /* Table: */
+    TableModel,
+    TableRowModel,
+    TableHeaderModel,
+    TableItemModel,
+    TableHeaderConfig,
+    SetTableHeaderModel,
 
     /* Dialog: */
     DialogModel,

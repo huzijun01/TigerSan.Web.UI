@@ -10,6 +10,9 @@ import PageBar from "./components/PageView/PageBar.vue"
 import PageButton from "./components/PageView/PageButton.vue"
 import PageContent from "./components/PageView/PageContent.vue"
 import PageView from "./components/PageView/PageView.vue"
+// Table:
+import Table from "./components/Table/Table.vue"
+import TableItem from "./components/Table/TableItem.vue"
 
 export {
     // Dialog:
@@ -24,4 +27,7 @@ export {
     PageButton,
     PageContent,
     PageView,
+    // Table:
+    Table,
+    TableItem,
 }

@@ -27,7 +27,7 @@ const strWidth = computed(() => width.value < 0 ? "auto" : `${width.value}px`)
 
 // 过程:
 onMounted(() => {
-    UpdateOffset()
+    InitOffset()
     InitResizeObserver()
     UpdatePagePanelWidth()
 })
@@ -45,14 +45,19 @@ function UpdatePagePanelWidth() {
         - offset
 }
 
-function UpdateOffset() {
+function InitOffset() {
     let refRootWidth = GetWidth()
     if (!refRootWidth) {
         console.log('The refRootWidth is undefined!')
         return
     }
 
-    offset = window.innerWidth - refRootWidth
+    if (!model._getNavWidth) {
+        console.log('The _getNavWidth is undefined!')
+        return
+    }
+
+    offset = window.innerWidth - refRootWidth - model._getNavWidth()
 
     if (model.IsOpen.value) {
         offset -= model.Width.value

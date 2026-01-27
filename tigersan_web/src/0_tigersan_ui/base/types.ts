@@ -1,14 +1,20 @@
 // Action:
 type Action = () => void
-type TryAction = (() => void) | undefined
+type TryAction = Action | undefined
 type NumberAction = () => number
-type TryNumberAction = (() => number) | undefined
+type TryNumberAction = NumberAction | undefined
 type BooleanAction = () => boolean
-type TryBooleanAction = (() => boolean) | undefined
+type TryBooleanAction = BooleanAction | undefined
 type StringAction = () => string
-type TryStringAction = (() => string) | undefined
+type TryStringAction = StringAction | undefined
 
 // Func:
+type StringFunc = (str: string) => void
+type TryStringFunc = StringAction | undefined
+type StringGetter = (obj: object, propName: string) => string
+type TryStringGetter = StringGetter | undefined
+type ObjectSetter = (obj: object, propName: string, value: any) => void
+type TryObjectSetter = ObjectSetter | undefined
 
 export {
     // Action:
@@ -22,4 +28,10 @@ export {
     type TryStringAction,
 
     // Func:
+    type StringFunc,
+    type TryStringFunc,
+    type StringGetter,
+    type TryStringGetter,
+    type ObjectSetter,
+    type TryObjectSetter,
 }

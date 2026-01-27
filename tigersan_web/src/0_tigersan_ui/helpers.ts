@@ -1,7 +1,11 @@
-import { CreateApp } from "./helpers/ComponentHelper"
 import { DeleteItem, GetFirstItem } from "./helpers/ArrayHelper"
+import { CreateApp } from "./helpers/ComponentHelper"
+import { DefaultObjectSetter, DefaultStringGetter } from "./helpers/ObjectHelper"
+import { StringXSS, StringToHtml } from "./helpers/StringHelper"
 
 export {
-    CreateApp,
     DeleteItem, GetFirstItem,
+    CreateApp,
+    DefaultStringGetter, DefaultObjectSetter,
+    StringXSS, StringToHtml,
 }

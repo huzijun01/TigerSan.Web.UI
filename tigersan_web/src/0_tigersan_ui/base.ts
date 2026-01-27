@@ -13,6 +13,12 @@ import {
     type TryStringAction,
 
     // Func:
+    type StringFunc,
+    type TryStringFunc,
+    type StringGetter,
+    type TryStringGetter,
+    type ObjectSetter,
+    type TryObjectSetter,
 } from "./base/types"
 
 /* 导出: */
@@ -32,4 +38,10 @@ export {
     type TryStringAction,
 
     // Func:
+    type StringFunc,
+    type TryStringFunc,
+    type StringGetter,
+    type TryStringGetter,
+    type ObjectSetter,
+    type TryObjectSetter,
 }

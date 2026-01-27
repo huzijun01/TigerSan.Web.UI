@@ -11,6 +11,10 @@ class NavBarModel {
     static readonly _defaultFolderModel = new NavFolderModel(new NavBarModel())
     static readonly _defaultButtonModel = new NavButtonModel(new NavBarModel(), new NavFolderModel(new NavBarModel()))
 
+    /** 获取“导航栏”宽度
+     * （NavBar内部会自动添加回调） */
+    _getNavWidth: TryNumberAction = undefined
+
     /** 获取“文件夹”高度
      * （NavBar内部会自动添加回调） */
     _getFolderHeight: TryNumberAction = undefined

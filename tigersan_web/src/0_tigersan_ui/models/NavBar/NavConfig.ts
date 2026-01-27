@@ -35,6 +35,10 @@ class NavButtonConfig {
     Title?: string
     /** 是否显示 */
     IsShow?: boolean
+    /** 是否打开 */
+    IsOpen?: boolean
+    /** 是否被选中 */
+    IsSelected?: boolean
     /** 是否显示关闭按钮 */
     IsShowCloseButton?: boolean
     /** 点击后 */
@@ -84,7 +88,22 @@ function CreateNavFolderModel(
             let buttonModel = new NavButtonModel(barModel, newFolderModel)
             SetNavButtonModel(buttonModel, b)
             newFolderModel.ButtonModels.push(buttonModel)
+
+            // 打开:
+            if (b.IsOpen == true || b.IsSelected == true) {
+                barModel.OpenedButtonModels.push(buttonModel)
+            }
+
+            // 选中:
+            if (b.IsSelected == true) {
+                barModel.SelectedButtonModel = buttonModel
+            }
         })
+    }
+
+    // 默认选中:
+    if (barModel.OpenedButtonModels.length > 0 && !barModel.SelectedButtonModel) {
+        barModel.SelectedButtonModel = barModel.OpenedButtonModels[0]
     }
 
     return newFolderModel

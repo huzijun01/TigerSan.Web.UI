@@ -59,6 +59,8 @@ watch(model.IsOpen, () => {
 })
 
 // 过程:
+model._getNavWidth = GetWidth
+
 onMounted(() => {
     AddHeightGetter()
     model.UpdateHeight()
@@ -73,6 +75,10 @@ function AddHeightGetter() {
 
 function UpdateWidthString() {
     strWidth.value = model.IsOpen.value ? `${model.Width.value}px` : `0px`
+}
+
+function GetWidth(): number {
+    return refRoot.value?.offsetWidth ?? 0
 }
 </script>
 

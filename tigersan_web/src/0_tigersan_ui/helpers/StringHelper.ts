@@ -1,0 +1,23 @@
+import DOMPurify from 'dompurify';
+
+/** 过滤所有DOM标签 */
+function StringXSS(str: string) {
+    return DOMPurify.sanitize(str, {
+        ALLOWED_TAGS: [],       // 禁止所有HTML标签
+        ALLOWED_ATTR: [],       // 禁止所有属性
+        RETURN_DOM: false,      // 返回纯文本而非DOM节点
+        RETURN_DOM_FRAGMENT: false,
+        SANITIZE_DOM: true,     // 启用DOM净化
+        KEEP_CONTENT: true      // 保留标签内的文本内容
+    });
+}
+
+function StringToHtml(str: string) {
+    return str.replace(/\r\n|\r|\n/g, '<br>')
+        .replace(/ {2}/g, '&nbsp;&nbsp;')
+}
+
+export {
+    StringXSS,
+    StringToHtml
+}
