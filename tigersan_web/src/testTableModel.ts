@@ -19,7 +19,7 @@ let testTableModel = new TableModel([
         Text: '序号',
         TextAlign: TextAlign.Center,
         IsReadonly: true,
-        IsAllowWrap: true,
+        IsAllowWrap: false,
     },
     {
         _propName: 'MacAddr',

@@ -1,14 +1,20 @@
 <template>
-    <div class="table-page">
-        <div class="button-panel" :style="styleObject">
-            <button class="refresh" @click="Save">Refresh</button>
-            <button class="add" @click="Save">Add</button>
-            <button class="delete" @click="Save">Delete</button>
-            <button class="edit" @click="Save">Edit</button>
-            <button class="save" @click="Save">Save</button>
-        </div>
-        <div class="table-panel" :style="styleObject">
-            <Table :model="testTableModel"></Table>
+    <div class="table-page flex-stretch">
+        <div class="card">
+            <div class="top-panel" :style="styleObject">
+                <div class="filter-panel">
+                    <input type="text">
+                </div>
+                <div class="button-panel">
+                    <button @click="WifiUpdate">wifi固件升级</button>
+                    <button @click="BluetoothUpdate">蓝牙固件升级</button>
+                    <button @click="BatchOperation">批量操作</button>
+                    <button @click="Add">+ 新增</button>
+                </div>
+            </div>
+            <div class="table-panel" :style="styleObject">
+                <Table :model="testTableModel"></Table>
+            </div>
         </div>
     </div>
 </template>
@@ -25,47 +31,78 @@ let styleObject = computed(() => {
     }
 })
 
-function Save() {
+function WifiUpdate() {
+    console.log(testTableModel.RowDatas[0])
+}
+
+function BluetoothUpdate() {
+    console.log(testTableModel.RowDatas[0])
+}
+
+function BatchOperation() {
+    console.log(testTableModel.RowDatas[0])
+}
+
+function Add() {
     console.log(testTableModel.RowDatas[0])
 }
 </script>
 
 <style lang="less" scoped>
-.table-page {
-    padding: 5px;
+@nav-width: 200px;
+@card-margin: 15px;
+@card-padding: 15px;
+@card-width: 100vw - @card-margin * 2 - @card-padding * 2;
+@panel-padding: 10px;
 
-    .button-panel {
-        display: flex;
-        padding: 5px;
-        overflow: auto;
+.card {
+    width: calc(@card-width);
+    border-radius: 10px;
 
-        * {
-            margin-right: 5px;
-        }
-
-        .refresh {
-            background: var(--color-success);
-        }
-
-        .add {
-            background: var(--color-warning);
-        }
-
-        .delete {
-            background: var(--color-danger);
-        }
-
-        .edit {
-            background: var(--color-info);
-        }
-
-        .save {
-            background: var(--color-brand);
-        }
+    &>* {
+        width: 100% !important;
     }
+}
 
-    .table-panel {
+.nav-open {
+    .card {
+        width: calc(@card-width - @nav-width);
+    }
+}
+
+.table-page {
+    .card {
+        // 显示:
         overflow: auto;
+        // 尺寸:
+        margin: @card-margin;
+        padding: @card-padding;
+        // 颜色:
+        background: var(--color-black-25);
+
+        .top-panel {
+            // 显示:
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: space-between; // 两端对齐
+            overflow: auto;
+
+            .button-panel {
+                // 显示:
+                flex-shrink: 0;
+                // 尺寸:
+                padding-left: 10px;
+
+                * {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .table-panel {
+            overflow: auto;
+        }
     }
 }
 </style>

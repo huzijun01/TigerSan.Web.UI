@@ -1,0 +1,106 @@
+.display-none {
+  display: none !important;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-center > * {
+  flex-grow: 0;
+}
+.flex-stretch {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.flex-stretch > * {
+  flex-grow: 1;
+}
+.ellipsis {
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+textarea {
+  /* 尺寸: */
+  padding: 5px 10px;
+  border: 1px solid;
+  border-radius: 2px;
+  /* 颜色: */
+  color: var(--color-primary-text);
+  background: var(--color-dark-fill);
+  border-color: var(--color-dark-border);
+  /* 过渡: */
+  transition: var(--Global-Duration);
+}
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+input[type="search"]:hover,
+textarea:hover {
+  border-color: var(--color-disabled-text);
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+textarea:focus {
+  border-color: var(--color-brand);
+}
+input[type="text"]:disabled,
+input[type="password"]:disabled,
+input[type="email"]:disabled,
+input[type="number"]:disabled,
+input[type="search"]:disabled,
+textarea:disabled {
+  color: var(--color-disabled-text);
+  border-color: var(--color-dark-border);
+}
+input[type="checkbox"] {
+  /* 显示: */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 尺寸: */
+  width: 18px;
+  height: 18px;
+  border: 2px solid;
+  border-radius: 4px;
+  /* 颜色: */
+  color: var(--color-primary-text);
+  border-color: var(--color-dark-border);
+  /* 过渡: */
+  transition: var(--Global-Duration);
+}
+input[type="checkbox"] > * {
+  flex-grow: 0;
+}
+input[type="checkbox"]::after {
+  /* 文本: */
+  content: "✔";
+  font-size: 14px;
+  /* 透明度: */
+  opacity: 0;
+}
+input[type="checkbox"]:checked {
+  /* 颜色: */
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+}
+input[type="checkbox"]:checked::after {
+  /* 透明度: */
+  opacity: 1;
+}
+input[type="checkbox"]:disabled {
+  color: var(--color-disabled-text);
+  border-color: var(--color-dark-border);
+  background: var(--color-white-10);
+}

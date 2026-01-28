@@ -1,12 +1,12 @@
 <template>
-    <div class="page-content flex-stretch" ref="refRoot"></div>
+    <div class="page-content flex-stretch" ref="refRoot" :class="{ 'nav-open': model.NavBarModel.IsOpen.value }"></div>
 </template>
 
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
 import { ref, onMounted } from 'vue'
 import { CreateApp } from '../../helpers';
-import { NavButtonModel } from '../../models'
+import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
@@ -14,7 +14,7 @@ const refRoot = ref<HTMLElement | undefined>()
 let { model } = defineProps({
     model: {
         type: NavButtonModel,
-        default: undefined
+        default: NavBarModel._defaultButtonModel
     }
 })
 

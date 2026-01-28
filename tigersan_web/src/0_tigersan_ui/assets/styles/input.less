@@ -1,0 +1,80 @@
+@import './panels.less';
+
+.ellipsis {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+textarea {
+    /* 尺寸: */
+    padding: 5px 10px;
+    border: 1px solid;
+    border-radius: 2px;
+    /* 颜色: */
+    color: var(--color-primary-text);
+    background: var(--color-dark-fill);
+    border-color: var(--color-dark-border);
+    /* 过渡: */
+    transition: var(--Global-Duration);
+
+    &:hover {
+        border-color: var(--color-disabled-text);
+    }
+
+    &:focus {
+        border-color: var(--color-brand);
+    }
+
+    &:disabled {
+        color: var(--color-disabled-text);
+        border-color: var(--color-dark-border);
+    }
+}
+
+input[type="checkbox"] {
+    @size: 18px;
+    @font-size: 14px;
+    /* 显示: */
+    .flex-center();
+    /* 尺寸: */
+    width: @size;
+    height: @size;
+    border: 2px solid;
+    border-radius: 4px;
+    /* 颜色: */
+    color: var(--color-primary-text);
+    border-color: var(--color-dark-border);
+    /* 过渡: */
+    transition: var(--Global-Duration);
+
+    &::after {
+        /* 文本: */
+        content: "✔";
+        font-size: @font-size;
+        /* 透明度: */
+        opacity: 0;
+    }
+
+    &:checked {
+        /* 颜色: */
+        border-color: var(--color-brand);
+        background: var(--color-brand);
+
+        &::after {
+            /* 透明度: */
+            opacity: 1;
+        }
+    }
+
+    &:disabled {
+        color: var(--color-disabled-text);
+        border-color: var(--color-dark-border);
+        background: var(--color-white-10);
+    }
+}
