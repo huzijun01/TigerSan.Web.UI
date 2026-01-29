@@ -8,6 +8,7 @@ import NavFolder from "./components/NavBar/NavFolder.vue"
 import DefaultPage from "./components/PageView/DefaultPage.vue"
 import PageBar from "./components/PageView/PageBar.vue"
 import PageButton from "./components/PageView/PageButton.vue"
+import PageCard from "./components/PageView/PageCard.vue"
 import PageContent from "./components/PageView/PageContent.vue"
 import PageView from "./components/PageView/PageView.vue"
 // Table:
@@ -25,6 +26,7 @@ export {
     DefaultPage,
     PageBar,
     PageButton,
+    PageCard,
     PageContent,
     PageView,
     // Table:

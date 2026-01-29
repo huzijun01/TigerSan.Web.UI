@@ -1,7 +1,7 @@
 <template>
-    <div class="table-page flex-stretch">
-        <div class="card">
-            <div class="top-panel" :style="styleObject">
+    <PageCard>
+        <div class="table-page">
+            <div class="top-panel">
                 <div class="filter-panel">
                     <input type="text">
                 </div>
@@ -12,24 +12,14 @@
                     <button @click="Add">+ 新增</button>
                 </div>
             </div>
-            <div class="table-panel" :style="styleObject">
-                <Table :model="testTableModel"></Table>
-            </div>
+            <Table :model="testTableModel"></Table>
         </div>
-    </div>
+    </PageCard>
 </template>
 
 <script lang="ts" setup>
-import { Table } from '@/0_tigersan_ui/components'
-import navBarModel from '@/navBarModel';
+import { Table, PageCard } from '@/0_tigersan_ui/components'
 import { testTableModel } from '@/testTableModel'
-import { computed } from 'vue';
-
-let styleObject = computed(() => {
-    return {
-        width: `calc(100vw - ${navBarModel.IsOpen.value ? navBarModel.Width.value : 0}px)`
-    }
-})
 
 function WifiUpdate() {
     console.log(testTableModel.RowDatas[0])
@@ -49,59 +39,34 @@ function Add() {
 </script>
 
 <style lang="less" scoped>
-@nav-width: 200px;
-@card-margin: 15px;
-@card-padding: 15px;
-@card-width: 100vw - @card-margin * 2 - @card-padding * 2;
-@panel-padding: 10px;
-
-.card {
-    width: calc(@card-width);
-    border-radius: 10px;
-
-    &>* {
-        width: 100% !important;
-    }
-}
-
-.nav-open {
-    .card {
-        width: calc(@card-width - @nav-width);
-    }
-}
-
 .table-page {
-    .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; // 必须设置父容器高度
+
+    .top-panel {
         // 显示:
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between; // 两端对齐
         overflow: auto;
+        flex-shrink: 0;
         // 尺寸:
-        margin: @card-margin;
-        padding: @card-padding;
-        // 颜色:
-        background: var(--color-black-25);
+        margin-bottom: 10px;
 
-        .top-panel {
+        &>* {
             // 显示:
-            display: flex;
-            flex-wrap: nowrap;
-            align-items: center;
-            justify-content: space-between; // 两端对齐
-            overflow: auto;
-
-            .button-panel {
-                // 显示:
-                flex-shrink: 0;
-                // 尺寸:
-                padding-left: 10px;
-
-                * {
-                    margin-right: 5px;
-                }
-            }
+            flex-shrink: 0;
         }
 
-        .table-panel {
-            overflow: auto;
+        .button-panel {
+            // 尺寸:
+            padding-left: 10px;
+
+            * {
+                margin-right: 5px;
+            }
         }
     }
 }

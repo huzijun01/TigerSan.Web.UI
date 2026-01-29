@@ -1,5 +1,5 @@
 <template>
-    <div class="page-content flex-stretch" ref="refRoot" :class="{ 'nav-open': model.NavBarModel.IsOpen.value }"></div>
+    <div class="page-content flex-stretch" ref="refRoot"></div>
 </template>
 
 <script lang="ts" setup>

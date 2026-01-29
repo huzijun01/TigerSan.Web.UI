@@ -30,6 +30,7 @@
 import { ref, watch, onMounted } from 'vue'
 import { NavButton, NavFolder } from '../../components'
 import { NavBarModel } from '../../models'
+import { Constants } from '../../base'
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
@@ -55,6 +56,7 @@ const strWidth = ref(`${model.Width.value}px`)
 
 // 监听:
 watch(model.IsOpen, () => {
+    UpdateBodyClass()
     UpdateWidthString()
 })
 
@@ -63,6 +65,7 @@ model._getNavWidth = GetWidth
 
 onMounted(() => {
     AddHeightGetter()
+    UpdateBodyClass()
     model.UpdateHeight()
     UpdateWidthString()
 })
@@ -71,6 +74,14 @@ onMounted(() => {
 function AddHeightGetter() {
     model._getFolderHeight = () => refFolder.value?.GetHeight()
     model._getButtonHeight = () => refButton.value?.GetHeight()
+}
+
+function UpdateBodyClass() {
+    if (model.IsOpen.value) {
+        document.body.classList.add(Constants.NavOpen)
+    } else {
+        document.body.classList.remove(Constants.NavOpen)
+    }
 }
 
 function UpdateWidthString() {

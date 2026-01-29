@@ -11,6 +11,8 @@ type TryStringAction = StringAction | undefined
 // Func:
 type StringFunc = (str: string) => void
 type TryStringFunc = StringAction | undefined
+type StringArrayFunc = (arr: string[]) => void
+type TryStringArrayFunc = StringArrayFunc | undefined
 type StringGetter = (obj: object, propName: string) => string
 type TryStringGetter = StringGetter | undefined
 type ObjectSetter = (obj: object, propName: string, value: any) => void
@@ -30,6 +32,8 @@ export {
     // Func:
     type StringFunc,
     type TryStringFunc,
+    type StringArrayFunc,
+    type TryStringArrayFunc,
     type StringGetter,
     type TryStringGetter,
     type ObjectSetter,

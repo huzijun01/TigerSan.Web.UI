@@ -1,6 +1,7 @@
 /* 导入: */
 import Icons from "./base/icon"
 import Colors from "./base/colors"
+import Constants from "./base/constants"
 import {
     // Action:
     type Action,
@@ -15,6 +16,8 @@ import {
     // Func:
     type StringFunc,
     type TryStringFunc,
+    type StringArrayFunc,
+    type TryStringArrayFunc,
     type StringGetter,
     type TryStringGetter,
     type ObjectSetter,
@@ -25,6 +28,7 @@ import {
 export {
     Icons,
     Colors,
+    Constants,
 }
 export {
     // Action:
@@ -40,6 +44,8 @@ export {
     // Func:
     type StringFunc,
     type TryStringFunc,
+    type StringArrayFunc,
+    type TryStringArrayFunc,
     type StringGetter,
     type TryStringGetter,
     type ObjectSetter,

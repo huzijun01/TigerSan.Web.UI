@@ -21,6 +21,9 @@ class TableModel {
     //#region 【Fields】
     /** “列头配置”集合 */
     _headerConfigs: TableHeaderConfig[]
+    /** 列头背景
+     * （防止tbody中的内容透过） */
+    _headerBackground: String = Colors.LightFill
     /** 初始化“项目” */
     _initItem: TryTableItemFunc
     /** 初始化“列头” */
