@@ -1,3 +1,6 @@
+/* Inputs: */
+import { type MenuItemModelAction, MenuItemModel, SelectModel } from './models/Inputs/SelectModel';
+
 /* NavBar: */
 import testNavBarModel from './models/NavBar/testNavBarModel';
 import {
@@ -42,6 +45,9 @@ import {
 } from './models/DialogModel'
 
 export {
+    /* Inputs: */
+    type MenuItemModelAction, MenuItemModel, SelectModel,
+
     /* NavBar: */
     type TryNavButtonHandler,
     NavBarModel,

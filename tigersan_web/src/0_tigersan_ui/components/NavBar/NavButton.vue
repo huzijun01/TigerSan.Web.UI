@@ -50,7 +50,7 @@ function OnClick() {
     border-radius: 8px;
     cursor: pointer;
     color: var(--color-primary-text);
-    transition: var(--Global-Duration);
+    transition: var(--Global-Transition);
 
     &:hover {
         color: var(--color-brand);

@@ -61,7 +61,7 @@ function OnClick() {
         border-radius: 8px;
         cursor: pointer;
         color: var(--color-primary-text);
-        transition: var(--Global-Duration);
+        transition: var(--Global-Transition);
 
         &:hover {
             color: var(--color-brand);
@@ -82,7 +82,7 @@ function OnClick() {
             flex-shrink: 0;
             margin: 0px 8px;
             font-size: var(--NavText-FontSize);
-            transition: var(--Global-Duration);
+            transition: var(--Global-Transition);
 
             &.open {
                 transform: rotate(90deg);
@@ -93,7 +93,7 @@ function OnClick() {
     .content {
         margin-left: 15px;
         overflow: hidden;
-        transition: var(--Global-Duration);
+        transition: var(--Global-Transition);
     }
 }
 </style>

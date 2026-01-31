@@ -80,7 +80,10 @@
 /* 【常量】 */
 :root {
     /* 全局 */
-    --Global-Duration: all 0.1s;
+    --Global-Duration: 0.1s;
+    --Global-Transition: all var(--Global-Duration);
+    --Global-Animation: var(--Global-Duration) ease-in-out forwards;
+    --Global-Backwards-Animation: var(--Global-Duration) ease-in-out backwards;
     /* 导航栏 */
     --NavIcon-FontSize: 16px;
     --NavText-FontSize: 14px;

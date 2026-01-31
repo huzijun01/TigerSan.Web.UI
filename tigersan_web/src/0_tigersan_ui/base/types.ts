@@ -17,6 +17,8 @@ type StringGetter = (obj: object, propName: string) => string
 type TryStringGetter = StringGetter | undefined
 type ObjectSetter = (obj: object, propName: string, value: any) => void
 type TryObjectSetter = ObjectSetter | undefined
+type Object2StringFunc = (obj?: object) => string
+type TryObject2StringFunc = Object2StringFunc | undefined
 
 export {
     // Action:
@@ -38,4 +40,6 @@ export {
     type TryStringGetter,
     type ObjectSetter,
     type TryObjectSetter,
+    type Object2StringFunc,
+    type TryObject2StringFunc,
 }

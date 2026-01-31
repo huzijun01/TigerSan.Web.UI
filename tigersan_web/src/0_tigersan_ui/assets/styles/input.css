@@ -22,6 +22,28 @@
   white-space: nowrap !important;
   text-overflow: ellipsis !important;
 }
+.input-border {
+  /* 尺寸: */
+  border: 1px solid;
+  border-radius: 2px;
+  padding: 0px 10px;
+  /* 颜色: */
+  color: var(--color-primary-text);
+  background: var(--color-dark-fill);
+  border-color: var(--color-dark-border);
+  /* 过渡: */
+  transition: var(--Global-Transition);
+}
+.input-border:hover {
+  border-color: var(--color-disabled-text);
+}
+.input-border:focus {
+  border-color: var(--color-brand);
+}
+.input-border:disabled {
+  color: var(--color-disabled-text);
+  border-color: var(--color-dark-border);
+}
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -29,15 +51,16 @@ input[type="number"],
 input[type="search"],
 textarea {
   /* 尺寸: */
-  padding: 5px 10px;
+  /* 尺寸: */
   border: 1px solid;
   border-radius: 2px;
+  padding: 0px 10px;
   /* 颜色: */
   color: var(--color-primary-text);
   background: var(--color-dark-fill);
   border-color: var(--color-dark-border);
   /* 过渡: */
-  transition: var(--Global-Duration);
+  transition: var(--Global-Transition);
 }
 input[type="text"]:hover,
 input[type="password"]:hover,
@@ -78,7 +101,7 @@ input[type="checkbox"] {
   color: var(--color-primary-text);
   border-color: var(--color-dark-border);
   /* 过渡: */
-  transition: var(--Global-Duration);
+  transition: var(--Global-Transition);
 }
 input[type="checkbox"] > * {
   flex-grow: 0;

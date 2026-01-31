@@ -3,7 +3,13 @@
         <div class="table-page">
             <div class="top-panel">
                 <div class="filter-panel">
-                    <input type="text">
+                    <div class="row-panel">
+                        <Select :model="typeSelectModel"></Select>
+                    </div>
+                    <div class="row-panel">
+                        <Select :model="stateSelectModel"></Select>
+                        <input type="text">
+                    </div>
                 </div>
                 <div class="button-panel">
                     <button @click="WifiUpdate">wifi固件升级</button>
@@ -13,14 +19,29 @@
                 </div>
             </div>
             <Table :model="testTableModel"></Table>
+            <div class="bottom-panel">
+                Footer
+            </div>
         </div>
     </PageCard>
 </template>
 
 <script lang="ts" setup>
-import { Table, PageCard } from '@/0_tigersan_ui/components'
+import { SelectModel } from '@/0_tigersan_ui/models';
+import { Table, Select, PageCard } from '@/0_tigersan_ui/components'
 import { testTableModel } from '@/testTableModel'
 
+// 字段:
+const typeSelectModel = new SelectModel()
+typeSelectModel.Width.value = 250
+typeSelectModel.Value.value = 'G1'
+typeSelectModel.Items.push(...['G1', 'MG6', 'MG8 Micro-USB LTE Gateway', 'MG5 Outdoor LTE Gateway'])
+
+const stateSelectModel = new SelectModel()
+stateSelectModel.Value.value = '全部'
+stateSelectModel.Items.push(...['全部', '在线', '离线'])
+
+// 方法:
 function WifiUpdate() {
     console.log(testTableModel.RowDatas[0])
 }
@@ -39,6 +60,14 @@ function Add() {
 </script>
 
 <style lang="less" scoped>
+@Gap: 10px;
+
+.child-margin-right {
+    &>:not(:last-child) {
+        margin-right: @Gap;
+    }
+}
+
 .table-page {
     display: flex;
     flex-direction: column;
@@ -53,20 +82,29 @@ function Add() {
         overflow: auto;
         flex-shrink: 0;
         // 尺寸:
-        margin-bottom: 10px;
+        margin-bottom: @Gap;
 
         &>* {
             // 显示:
             flex-shrink: 0;
         }
 
+        .filter-panel {
+            &>div:not(:last-child) {
+                margin-bottom: @Gap;
+            }
+
+            .row-panel {
+                // 显示:
+                display: flex;
+                .child-margin-right();
+            }
+        }
+
         .button-panel {
             // 尺寸:
-            padding-left: 10px;
-
-            * {
-                margin-right: 5px;
-            }
+            padding-left: 20px;
+            .child-margin-right();
         }
     }
 }

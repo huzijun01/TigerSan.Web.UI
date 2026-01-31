@@ -22,6 +22,8 @@ import {
     type TryStringGetter,
     type ObjectSetter,
     type TryObjectSetter,
+    type Object2StringFunc,
+    type TryObject2StringFunc,
 } from "./base/types"
 
 /* 导出: */
@@ -50,4 +52,6 @@ export {
     type TryStringGetter,
     type ObjectSetter,
     type TryObjectSetter,
+    type Object2StringFunc,
+    type TryObject2StringFunc,
 }

@@ -1,5 +1,7 @@
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
+// Inputs:
+import Select from "./components/Inputs/Select.vue"
 // NavBar:
 import NavBar from "./components/NavBar/NavBar.vue"
 import NavButton from "./components/NavBar/NavButton.vue"
@@ -18,6 +20,8 @@ import TableItem from "./components/Table/TableItem.vue"
 export {
     // Dialog:
     Dialog,
+    // Inputs:
+    Select,
     // NavBar:
     NavBar,
     NavButton,

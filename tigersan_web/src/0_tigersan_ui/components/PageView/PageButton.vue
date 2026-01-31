@@ -5,7 +5,8 @@
         <div class="sub-border">
             <div class="icon iconfont">{{ model.Icon }}</div>
             <div class="title ellipsis">{{ model.Title }}</div>
-            <button v-if="model.IsShowCloseButton.value" class="close iconfont circle-button" @click.stop="Close">{{ Icons.Close }}</button>
+            <button v-if="model.IsShowCloseButton.value" class="close iconfont circle-button" @click.stop="Close">{{
+                Icons.Close }}</button>
         </div>
         <div class="line"></div>
     </div>
@@ -44,7 +45,7 @@ function Close() {
     position: relative;
     border-radius: 10px 10px 0px 0px;
     color: var(--color-primary-text);
-    transition: var(--Global-Duration);
+    transition: var(--Global-Transition);
 
     .sub-border {
         display: flex;
@@ -53,7 +54,7 @@ function Close() {
         padding: 5px;
         border-radius: 10px;
         cursor: pointer;
-        transition: var(--Global-Duration);
+        transition: var(--Global-Transition);
 
         .icon {
             flex-shrink: 0;
@@ -79,7 +80,7 @@ function Close() {
         height: 20px;
         transform: translateY(-50%);
         background: var(--color-white-25);
-        transition: var(--Global-Duration);
+        transition: var(--Global-Transition);
     }
 
     &:hover {

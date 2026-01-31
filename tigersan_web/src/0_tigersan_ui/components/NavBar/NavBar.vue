@@ -103,7 +103,7 @@ function GetWidth(): number {
     grid-template-rows: auto 1fr;
     height: 100%;
     overflow: hidden;
-    transition: var(--Global-Duration);
+    transition: var(--Global-Transition);
 
     .loge-panel {
         display: flex;
