@@ -85,7 +85,7 @@ class SelectModel extends ConverterBase {
     /** 项目集合 */
     Items: ShallowReactive<Object[]> = shallowReactive([])
     /** 宽度 */
-    Width = ref(150)
+    Width = ref(200)
     /** 菜单最大高度 */
     MenuMaxHeight = ref(300)
     /** 项目集合 */

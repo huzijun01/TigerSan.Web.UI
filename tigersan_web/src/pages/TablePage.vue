@@ -4,9 +4,11 @@
             <div class="top-panel">
                 <div class="filter-panel">
                     <div class="row-panel">
+                        <span>网关管理：</span>
                         <Select :model="typeSelectModel"></Select>
                     </div>
                     <div class="row-panel">
+                        <span>状态:</span>
                         <Select :model="stateSelectModel"></Select>
                         <input type="text">
                     </div>
@@ -20,7 +22,6 @@
             </div>
             <Table :model="testTableModel"></Table>
             <div class="bottom-panel">
-                Footer
             </div>
         </div>
     </PageCard>
@@ -33,11 +34,12 @@ import { testTableModel } from '@/testTableModel'
 
 // 字段:
 const typeSelectModel = new SelectModel()
-typeSelectModel.Width.value = 250
+typeSelectModel.Width.value = 300
 typeSelectModel.Value.value = 'G1'
 typeSelectModel.Items.push(...['G1', 'MG6', 'MG8 Micro-USB LTE Gateway', 'MG5 Outdoor LTE Gateway'])
 
 const stateSelectModel = new SelectModel()
+stateSelectModel.Width.value = 100
 stateSelectModel.Value.value = '全部'
 stateSelectModel.Items.push(...['全部', '在线', '离线'])
 
@@ -97,6 +99,7 @@ function Add() {
             .row-panel {
                 // 显示:
                 display: flex;
+                align-items: center;
                 .child-margin-right();
             }
         }

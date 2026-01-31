@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 /* 通用重置 - 针对所有输入类元素 */
 input,
 textarea,

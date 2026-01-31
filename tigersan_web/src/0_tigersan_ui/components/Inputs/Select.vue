@@ -5,7 +5,7 @@
         <div class="arrow iconfont" :style="arrowStyleObj">{{ Icons.Arrow_Right }}</div>
     </div>
     <Teleport to="body">
-        <div class="select-menu" v-if="model.IsOpen.value" :style="menuStyleObj">
+        <div class="select-menu" v-if="model.IsOpen.value" :class="rootClassObj" :style="menuStyleObj" ref="refMenu">
             <div v-for="i in model.ItemModels.value" :key="i._id">
                 <div class="menu-item" v-if="i.IsShow.value" @click="i.OnClick">{{ i.Text.value }}</div>
             </div>
@@ -17,6 +17,7 @@
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import { Icons } from '../../base';
 import { SelectModel } from '../../models';
+import { RectPosition, GetWithinWindowRect } from '../../helpers';
 
 // 字段:
 let { model } = defineProps({
@@ -27,8 +28,11 @@ let { model } = defineProps({
 })
 
 const refRoot = ref<HTMLElement | undefined>()
+const refMenu = ref<HTMLElement | undefined>()
 const left = ref(0)
 const top = ref(0)
+const bottom = ref(0)
+const isTopOpen = ref(false)
 
 /** 是否未定义: */
 let isUndefined = computed(() => model.Value.value === undefined)
@@ -37,7 +41,8 @@ let isUndefined = computed(() => model.Value.value === undefined)
 let rootClassObj = computed(() => {
     return {
         open: model.IsOpen.value,
-        disabled: !model.IsEnabled.value
+        disabled: !model.IsEnabled.value,
+        'top-open': isTopOpen.value
     }
 })
 
@@ -58,60 +63,90 @@ let arrowStyleObj = computed(() => {
 
 /** 菜单样式: */
 let menuStyleObj = computed(() => {
-    return {
+    let obj = {
         width: `${model.Width.value}px`,
         maxHeight: `${model.MenuMaxHeight.value}px`,
-        left: `${left.value}px`,
-        top: `${top.value}px`,
+        left: '',
+        top: '',
+        bottom: '',
     }
+
+    if (isTopOpen.value) {
+        obj.left = `${left.value}px`
+        obj.bottom = `${bottom.value}px`
+    } else {
+        obj.left = `${left.value}px`
+        obj.top = `${top.value}px`
+    }
+
+    return obj
 })
 
 // 监听:
-var stopWatch = watch(model.IsOpen, isOpen => {
-    if (!isOpen) return
-    UpdatePosition()
+const refMenuWatch = watch(refMenu, menu => {
+    if (!menu) return
+    UpdateMenuPosition()
 })
 
 // 过程:
 onMounted(() => {
-    window.addEventListener('resize', UpdatePosition)
 })
 
 onUnmounted(() => {
-    stopWatch.stop()
-    window.removeEventListener('resize', UpdatePosition)
+    refMenuWatch.stop()
+    SetEventListener(false)
 })
 
 // 方法:
+/** 点击后 */
 function OnClick() {
     if (!model.IsEnabled.value) return
+
     model.IsOpen.value = !model.IsOpen.value
 
-    if (model.IsOpen.value) {
-        document.addEventListener('click', handleClickOutside)
+    SetEventListener(model.IsOpen.value)
+}
+
+/** 设置事件监听 */
+function SetEventListener(isAddOrRemove: boolean) {
+    if (isAddOrRemove) {
+        window.addEventListener('resize', UpdateMenuPosition)
+        window.addEventListener('click', window_OnClick)
     } else {
-        document.removeEventListener('click', handleClickOutside)
+        window.removeEventListener('resize', UpdateMenuPosition)
+        window.removeEventListener('click', window_OnClick)
     }
 }
 
-function UpdatePosition() {
+/** 更新菜单位置 */
+function UpdateMenuPosition() {
+    if (!model.IsOpen.value) return
+
     if (!refRoot.value) {
         console.log('The refRoot is undefined!')
         return
     }
 
-    let rect = refRoot.value.getBoundingClientRect()
-    left.value = rect.left
-    top.value = rect.bottom
+    if (!refMenu.value) {
+        console.log('The refRoot is undefined!')
+        return
+    }
+
+    // 基准矩形:
+    let rectRoot = refRoot.value.getBoundingClientRect()
+
+    // 菜单矩形:
+    let rectMenu = GetWithinWindowRect(rectRoot, refMenu.value.offsetWidth, refMenu.value.offsetHeight)
+
+    // 设置位置:
+    isTopOpen.value = rectMenu.Position === RectPosition.Top
+    left.value = rectRoot.left
+    top.value = rectRoot.bottom
+    bottom.value = -rectRoot.top
 }
 
-// 封装判断函数
-function isClickOutside(target: HTMLElement, container: HTMLElement): boolean {
-    return !container.contains(target) && target !== container;
-}
-
-// 事件处理函数
-function handleClickOutside(event: MouseEvent) {
+/** 点击窗口后 */
+function window_OnClick(event: MouseEvent) {
     if (!refRoot.value) {
         console.log('The refRoot is undefined!')
         return
@@ -119,14 +154,19 @@ function handleClickOutside(event: MouseEvent) {
 
     const target = event.target as HTMLElement
 
-    if (isClickOutside(target, refRoot.value)) {
+    if (IsClickOutside(target, refRoot.value)) {
         model.IsOpen.value = false
     }
+}
+
+/** 是否点击外部 */
+function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
+    return !container.contains(target) && target !== container;
 }
 </script>
 
 <style lang="less" scoped>
-@padding: 8px;
+@padding: 0 8px;
 @font-size: 14px;
 @import '../../assets/styles/input.less';
 @import '../../assets/styles/panels.less';
@@ -136,8 +176,6 @@ function handleClickOutside(event: MouseEvent) {
     .input-border();
     /* 文本: */
     cursor: pointer;
-    /* 其它: */
-    font-size: @font-size;
 
     &.disabled {
         cursor: default;
@@ -166,8 +204,6 @@ function handleClickOutside(event: MouseEvent) {
         margin-right: @padding;
         /* 颜色: */
         color: var(--color-placeholder-text);
-        /* 文本: */
-        font-size: @font-size;
         /* 过渡: */
         transition: var(--Global-Transition);
     }
@@ -188,6 +224,11 @@ function handleClickOutside(event: MouseEvent) {
     z-index: 999;
     /* 动画配置 */
     animation: top-scaleY-animation var(--Global-Animation);
+
+    &.top-open {
+        /* 动画配置 */
+        animation: bottom-scaleY-animation var(--Global-Animation);
+    }
 
     .menu-item {
         /* 尺寸: */

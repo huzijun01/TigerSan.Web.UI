@@ -26,13 +26,15 @@
   /* 尺寸: */
   border: 1px solid;
   border-radius: 2px;
-  padding: 0px 10px;
+  padding: 5px 10px;
   /* 颜色: */
   color: var(--color-primary-text);
   background: var(--color-dark-fill);
   border-color: var(--color-dark-border);
   /* 过渡: */
   transition: var(--Global-Transition);
+  /* 文本: */
+  line-height: 1.5;
 }
 .input-border:hover {
   border-color: var(--color-disabled-text);
@@ -54,13 +56,15 @@ textarea {
   /* 尺寸: */
   border: 1px solid;
   border-radius: 2px;
-  padding: 0px 10px;
+  padding: 5px 10px;
   /* 颜色: */
   color: var(--color-primary-text);
   background: var(--color-dark-fill);
   border-color: var(--color-dark-border);
   /* 过渡: */
   transition: var(--Global-Transition);
+  /* 文本: */
+  line-height: 1.5;
 }
 input[type="text"]:hover,
 input[type="password"]:hover,

@@ -42,8 +42,8 @@ let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = de
 })
 
 let styleObj = computed(() => {
-    let offsetX = margin * 2 + padding * 2
-    let offsetY = offsetX + topPanelHeight
+    let offsetX = margin * 2
+    let offsetY = margin * 2 + topPanelHeight
     if (isOpen.value) {
         offsetX += navWidth
     }
