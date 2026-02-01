@@ -1,12 +1,12 @@
 /* Inputs: */
-import { type MenuItemModelAction, MenuItemModel, SelectModel } from './models/Inputs/SelectModel';
+import { type MenuItemModelAction, MenuItemModel, SelectModel } from './models/Inputs/SelectModel'
 
 /* NavBar: */
-import testNavBarModel from './models/NavBar/testNavBarModel';
+import testNavBarModel from './models/NavBar/testNavBarModel'
 import {
     type TryNavButtonHandler,
     NavBarModel
-} from './models/NavBar/NavBarModel';
+} from './models/NavBar/NavBarModel'
 import {
     type NavButtonHandler,
     NavButtonModel
@@ -23,6 +23,10 @@ import {
     SetNavFolderModel,
     CreateNavFolderModel
 } from './models/NavBar/NavConfig'
+
+/* Pagination: */
+import { PaginationModel } from './models/Pagination/PaginationModel'
+import { PaginationButtonModel } from './models/Pagination/PaginationButtonModel'
 
 /* Table: */
 import {
@@ -63,6 +67,10 @@ export {
     SetNavButtonModel,
     SetNavFolderModel,
     CreateNavFolderModel,
+
+    /* Pagination: */
+    PaginationModel,
+    PaginationButtonModel,
 
     /* Table: */
     type TableItemFunc,

@@ -13,6 +13,9 @@ import PageButton from "./components/PageView/PageButton.vue"
 import PageCard from "./components/PageView/PageCard.vue"
 import PageContent from "./components/PageView/PageContent.vue"
 import PageView from "./components/PageView/PageView.vue"
+// Pagination:
+import Pagination from "./components/Pagination/Pagination.vue"
+import PaginationButton from "./components/Pagination/PaginationButton.vue"
 // Table:
 import Table from "./components/Table/Table.vue"
 import TableItem from "./components/Table/TableItem.vue"
@@ -33,6 +36,9 @@ export {
     PageCard,
     PageContent,
     PageView,
+    // Pagination:
+    Pagination,
+    PaginationButton,
     // Table:
     Table,
     TableItem,

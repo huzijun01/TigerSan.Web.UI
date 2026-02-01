@@ -14,23 +14,34 @@
                     </div>
                 </div>
                 <div class="button-panel">
-                    <button @click="WifiUpdate">wifi固件升级</button>
-                    <button @click="BluetoothUpdate">蓝牙固件升级</button>
-                    <button @click="BatchOperation">批量操作</button>
-                    <button @click="Add">+ 新增</button>
+                    <div class="row-panel">
+                        <button @click="WifiUpdate">wifi固件升级</button>
+                        <button @click="BluetoothUpdate">蓝牙固件升级</button>
+                        <button @click="BatchOperation">批量操作</button>
+                    </div>
+                    <div class="row-panel">
+                        <button @click="Refresh">刷新</button>
+                        <button @click="Refresh">重启</button>
+                        <button @click="Add">+ 新增</button>
+                        <button @click="Edit">修改</button>
+                        <button @click="Delete">- 删除</button>
+                    </div>
                 </div>
             </div>
             <Table :model="testTableModel"></Table>
             <div class="bottom-panel">
+                <Pagination :model="paginationModel"></Pagination>
             </div>
         </div>
     </PageCard>
 </template>
 
 <script lang="ts" setup>
-import { SelectModel } from '@/0_tigersan_ui/models';
-import { Table, Select, PageCard } from '@/0_tigersan_ui/components'
+import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models';
+import { Table, Select, PageCard, Pagination } from '@/0_tigersan_ui/components'
 import { testTableModel } from '@/testTableModel'
+import { dialog } from '@/0_tigersan_ui/stores';
+import { Int } from '@/0_tigersan_ui/base/types';
 
 // 字段:
 const typeSelectModel = new SelectModel()
@@ -43,26 +54,48 @@ stateSelectModel.Width.value = 100
 stateSelectModel.Value.value = '全部'
 stateSelectModel.Items.push(...['全部', '在线', '离线'])
 
+let paginationModel = new PaginationModel()
+paginationModel.Count.value = 81
+paginationModel.Checked = num => {
+    // dialog.ShowInformation(`Num = ${num}`)
+}
+
+paginationModel.PageSizes.push(new Int(100))
+
 // 方法:
 function WifiUpdate() {
-    console.log(testTableModel.RowDatas[0])
 }
 
 function BluetoothUpdate() {
-    console.log(testTableModel.RowDatas[0])
 }
 
 function BatchOperation() {
-    console.log(testTableModel.RowDatas[0])
+}
+
+function Refresh() {
 }
 
 function Add() {
-    console.log(testTableModel.RowDatas[0])
+    ++paginationModel.Count.value
+}
+
+function Edit() {
+}
+
+function Delete() {
+    --paginationModel.Count.value
 }
 </script>
 
 <style lang="less" scoped>
 @Gap: 10px;
+
+.child-margin-bottom {
+    &>div:not(:last-child) {
+        margin-bottom: @Gap;
+    }
+
+}
 
 .child-margin-right {
     &>:not(:last-child) {
@@ -92,9 +125,7 @@ function Add() {
         }
 
         .filter-panel {
-            &>div:not(:last-child) {
-                margin-bottom: @Gap;
-            }
+            .child-margin-bottom();
 
             .row-panel {
                 // 显示:
@@ -107,7 +138,17 @@ function Add() {
         .button-panel {
             // 尺寸:
             padding-left: 20px;
-            .child-margin-right();
+            .child-margin-bottom();
+
+            .row-panel {
+                .child-margin-right();
+            }
+        }
+
+        .bottom-panel {
+            // 显示:
+            flex-shrink: 0;
+            overflow: auto;
         }
     }
 }
