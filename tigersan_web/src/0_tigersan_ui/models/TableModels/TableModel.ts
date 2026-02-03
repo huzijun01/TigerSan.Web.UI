@@ -1,7 +1,8 @@
-import { type StringGetter, type ObjectSetter, type TryAction, Colors } from '@/0_tigersan_ui/base'
-import { DefaultStringGetter, DefaultObjectSetter } from '@/0_tigersan_ui/helpers'
+import { Colors } from '@/0_tigersan_ui/base'
+import type { StringGetter, ObjectSetter, ObjectArrayFunc, Action } from '@/0_tigersan_ui/base'
+import { DefaultStringGetter, DefaultObjectSetter, CheckboxModel, CheckboxBehavior } from '@/0_tigersan_ui/helpers'
 import { nanoid } from 'nanoid'
-import { ref, computed, shallowReactive, type ShallowReactive } from "vue"
+import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 
 type TableItemFunc = (itemModel: TableItemModel) => void
 type TryTableItemFunc = TableItemFunc | undefined
@@ -24,16 +25,24 @@ class TableModel {
     /** 列头背景
      * （防止tbody中的内容透过） */
     _headerBackground: String = Colors.LightFill
+    /** 复选框行为
+     * （由“TableModel”维护） */
+    _checkboxBehavior: CheckboxBehavior
     /** 初始化“项目” */
     _initItem: TryTableItemFunc
     /** 初始化“列头” */
     _initHeader: TryTableHeaderFunc
+    /** 初始化“行模型”后 */
+    _onInitRowModel?: Action
     /** “项目文本”输入 */
     _onItemTextInput: TryTableItemFunc
     /** “项目文本”改变 */
     _onItemTextChange: TryTableItemFunc
+    /** “选中状态”改变 */
+    _onSelectStateChange?: ObjectArrayFunc
     //#endregion 【Fields】
 
+    //#region 【Properties】
     /** “行数据”集合 */
     RowDatas: ShallowReactive<object[]> = shallowReactive([])
 
@@ -43,14 +52,100 @@ class TableModel {
     /** “行模型”集合 */
     RowModels: ShallowReactive<TableRowModel[]> = shallowReactive([])
 
+    /** 是否“全选” */
+    IsSelectAll = ref(false)
+
+    /** 是否“显示复选框” */
+    IsShowCheckBox = ref(true)
+
+    /** 是否“允许多选” */
+    IsAllowMultiSelect = ref(true)
+
+    //#region [computed]
+    /** 是否“已选中” */
+    IsSelected = computed(() => {
+        return this.SelectedRowDatas.value.length > 0
+    })
+
+    /** 是否“已单选” */
+    IsOnlySelected = computed(() => {
+        return this.SelectedRowDatas.value.length === 1
+    })
+
+    /** 是否“显示全选复选框” */
+    IsShowSelectAllCheckBox = computed(() => {
+        return this.IsShowCheckBox && this.IsAllowMultiSelect.value
+    })
+
+    /** 行数 */
+    Count = computed(() => {
+        return this.RowDatas.length
+    })
+
+    /** “被选行”个数 */
+    SelectedRowCount = computed(() => {
+        return this.SelectedRowDatas.value.length
+    })
+
+    /** “被选中”的“行数据”集合 */
+    SelectedRowDatas = computed(() => {
+        let list = new Array<object>()
+
+        this.RowModels.forEach(rowModel => {
+            if (rowModel.IsChecked.value) {
+                list.push(rowModel._rowData)
+            }
+        })
+
+        return list
+    })
+    //#endregion [computed]
+    //#endregion 【Properties】
+
     //#region 【Ctor】
     constructor(headerConfigs: TableHeaderConfig[]) {
         this._headerConfigs = headerConfigs
         this.InitHeaderModels()
+        this.InitCheckboxBehavior()
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    //#region [private]
+    /** 初始化“复选框行为” */
+    private InitCheckboxBehavior() {
+        this._checkboxBehavior = new CheckboxBehavior(
+            () => this.IsSelectAll.value,
+            bool => this.IsSelectAll.value = bool,
+            () => {
+                let CheckboxModels = new Array<CheckboxModel>()
+                this.RowModels.forEach(rowModel => {
+                    let checkboxModel = new CheckboxModel(
+                        rowModel,
+                        rowModel => (rowModel as TableRowModel).IsChecked.value,
+                        (rowModel, bool) => { (rowModel as TableRowModel).IsChecked.value = bool }
+                    )
+                    CheckboxModels.push(checkboxModel)
+                })
+                return CheckboxModels
+            }
+        )
+
+        this._checkboxBehavior.IsAllowMultiSelect = this.IsAllowMultiSelect.value
+        watch(this.IsAllowMultiSelect, () => {
+            this._checkboxBehavior.IsAllowMultiSelect = this.IsAllowMultiSelect.value
+        })
+    }
+    //#endregion [private]
+
+    /** 刷新 */
+    Refresh(isInitHeaderModels: boolean = false) {
+        if (isInitHeaderModels) {
+            this.InitHeaderModels()
+        }
+        this.InitRowModel()
+    }
+
     /** 初始化“列头模型”集合 */
     InitHeaderModels() {
         this.HeaderModels.splice(0)
@@ -68,7 +163,7 @@ class TableModel {
         this.RowModels.splice(0)
 
         this.RowDatas.forEach(rowData => {
-            let rowModel = new TableRowModel(rowData)
+            let rowModel = new TableRowModel(this, rowData)
             this.RowModels.push(rowModel)
 
             this.HeaderModels.forEach(headerModel => {
@@ -77,14 +172,19 @@ class TableModel {
                 rowModel.ItemModels.push(itemModel)
             })
         })
+
+        this._checkboxBehavior.InitState()
+
+        if (this._onInitRowModel) {
+            this._onInitRowModel()
+        }
     }
 
-    /** 刷新 */
-    Refresh(isInitHeaderModels: boolean = false) {
-        if (isInitHeaderModels) {
-            this.InitHeaderModels()
-        }
-        this.InitRowModel()
+    /** 触发“选中状态”改变
+     * （由“Table”内部自动调用） */
+    RiseOnSelectStateChange() {
+        if (!this._onSelectStateChange) return
+        this._onSelectStateChange(this.SelectedRowDatas.value)
     }
     //#endregion 【Functions】
 }
@@ -93,15 +193,24 @@ class TableModel {
 class TableRowModel {
     //#region 【Fields】
     _id = nanoid()
+    /** 行数据 */
     _rowData: object
+    /** 所属“表格”配置 */
+    _tableModel: TableModel
     //#endregion 【Fields】
+
+    //#region 【Properties】
+    /** 是否“选中” */
+    IsChecked = ref(false)
 
     /** “项目模型”集合 */
     ItemModels: ShallowReactive<TableItemModel[]> = shallowReactive([])
+    //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(rowData: object) {
+    constructor(tableModel: TableModel, rowData: object) {
         this._rowData = rowData
+        this._tableModel = tableModel
     }
     //#endregion 【Ctor】
 }

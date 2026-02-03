@@ -1,7 +1,7 @@
 import { ref, shallowRef, shallowReactive, type ShallowReactive } from 'vue'
 import { NavButtonModel } from './NavButtonModel'
 import { NavFolderModel } from './NavFolderModel'
-import type { TryNumberAction } from '../../base'
+import type { NumberAction } from '../../base'
 import { type NavFolderConfig, CreateNavFolderModel } from './NavConfig'
 
 type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
@@ -13,15 +13,15 @@ class NavBarModel {
 
     /** 获取“导航栏”宽度
      * （NavBar内部会自动添加回调） */
-    _getNavWidth: TryNumberAction = undefined
+    _getNavWidth?: NumberAction
 
     /** 获取“文件夹”高度
      * （NavBar内部会自动添加回调） */
-    _getFolderHeight: TryNumberAction = undefined
+    _getFolderHeight?: NumberAction
 
     /** 获取“按钮”高度
      * （NavBar内部会自动添加回调） */
-    _getButtonHeight: TryNumberAction = undefined
+    _getButtonHeight?: NumberAction
 
     /** “选中按钮”改变后委托
      * （PageView内部会自动添加回调） */

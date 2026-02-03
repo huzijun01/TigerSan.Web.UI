@@ -3,27 +3,27 @@ import Icons from "./base/icon"
 import Colors from "./base/colors"
 import Constants from "./base/constants"
 import {
+    // Class:
+    Int,
+
     // Action:
     type Action,
-    type TryAction,
-    type NumberAction,
-    type TryNumberAction,
     type BooleanAction,
-    type TryBooleanAction,
+    type NumberAction,
     type StringAction,
-    type TryStringAction,
 
     // Func:
-    type StringFunc,
-    type TryStringFunc,
-    type StringArrayFunc,
-    type TryStringArrayFunc,
-    type StringGetter,
-    type TryStringGetter,
+    type BooleanFunc,
+    type BooleanGetter,
+    type BooleanSetter,
+    type NumberFunc,
+    type ObjectFunc,
+    type ObjectArrayFunc,
     type ObjectSetter,
-    type TryObjectSetter,
     type Object2StringFunc,
-    type TryObject2StringFunc,
+    type StringFunc,
+    type StringArrayFunc,
+    type StringGetter,
 } from "./base/types"
 
 /* 导出: */
@@ -33,25 +33,25 @@ export {
     Constants,
 }
 export {
+    // Class:
+    Int,
+
     // Action:
     type Action,
-    type TryAction,
-    type NumberAction,
-    type TryNumberAction,
     type BooleanAction,
-    type TryBooleanAction,
+    type NumberAction,
     type StringAction,
-    type TryStringAction,
 
     // Func:
-    type StringFunc,
-    type TryStringFunc,
-    type StringArrayFunc,
-    type TryStringArrayFunc,
-    type StringGetter,
-    type TryStringGetter,
+    type BooleanFunc,
+    type BooleanGetter,
+    type BooleanSetter,
+    type NumberFunc,
+    type ObjectFunc,
+    type ObjectArrayFunc,
     type ObjectSetter,
-    type TryObjectSetter,
     type Object2StringFunc,
-    type TryObject2StringFunc,
+    type StringFunc,
+    type StringArrayFunc,
+    type StringGetter,
 }

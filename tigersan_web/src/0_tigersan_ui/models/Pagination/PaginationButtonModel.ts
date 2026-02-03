@@ -1,7 +1,7 @@
 import { ref } from "vue"
 import { nanoid } from 'nanoid'
 import { PaginationModel } from "./PaginationModel"
-import { Int, type Action, type NumberFunc } from "@/0_tigersan_ui/base/types"
+import { Int, type Action, type NumberFunc } from "@/0_tigersan_ui/base"
 
 class PaginationButtonModel {
     //#region 【Fields】

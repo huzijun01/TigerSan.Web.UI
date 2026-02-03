@@ -1,13 +1,13 @@
 import { nanoid } from "nanoid"
 import { computed, ref, shallowReactive, type ShallowReactive } from "vue"
-import type { TryObject2StringFunc } from "@/0_tigersan_ui/base"
+import type { Object2StringFunc } from "@/0_tigersan_ui/base"
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void
 
 class ConverterBase {
     //#region 【Fields】
     /** 转换器 */
-    _converter: TryObject2StringFunc
+    _converter?: Object2StringFunc
     //#endregion 【Fields】
 
     //#region 【Properties】

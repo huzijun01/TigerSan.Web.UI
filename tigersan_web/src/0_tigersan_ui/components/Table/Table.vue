@@ -4,8 +4,9 @@
             <!-- 表头区域 -->
             <thead :style="styleObj">
                 <tr>
-                    <th>
-                        <input type="checkbox">
+                    <th v-if="model.IsShowCheckBox.value">
+                        <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
+                            v-model="model.IsSelectAll.value" v-on:change="OnIsSelectAllChanged">
                     </th>
                     <th v-for="h in model.HeaderModels" :key="h._id"><span class="ellipsis">{{ h.Text.value }}</span>
                     </th>
@@ -15,8 +16,8 @@
             <!-- 表格主体 -->
             <tbody>
                 <tr v-for="r in model.RowModels" :key="r._id">
-                    <td>
-                        <input type="checkbox">
+                    <td v-if="model.IsShowCheckBox.value">
+                        <input type="checkbox" v-model="r.IsChecked.value" v-on:change="OnIsCheckedChanged(r)">
                     </td>
                     <td v-for="i in r.ItemModels" :key="i._id">
                         <TableItem type="checkbox" :model="i" />
@@ -29,7 +30,7 @@
 
 <script lang="ts" setup>
 import TableItem from './TableItem.vue';
-import { TableModel } from '../../models';
+import { TableModel, TableRowModel } from '../../models';
 import { onMounted } from 'vue';
 
 // 字段:
@@ -48,6 +49,18 @@ let styleObj = {
 onMounted(() => {
     model.InitRowModel()
 })
+
+// 方法:
+function OnIsSelectAllChanged() {
+    model._checkboxBehavior.onIsSelectAllChanged()
+    model.RiseOnSelectStateChange()
+}
+
+function OnIsCheckedChanged(rowModel: TableRowModel) {
+    let source = rowModel.IsChecked.value ? rowModel : undefined
+    model._checkboxBehavior.onIsCheckedChanged(source)
+    model.RiseOnSelectStateChange()
+}
 </script>
 
 <style lang="less" scoped>
