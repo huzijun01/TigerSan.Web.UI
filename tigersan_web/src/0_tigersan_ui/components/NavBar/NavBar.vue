@@ -1,11 +1,13 @@
 <template>
     <div class="nav-panel" ref="refRoot" :style="{ 'width': strWidth }">
         <!-- Logo: -->
-        <div class="loge-panel">
+        <div class="logo-panel">
             <!-- 遮罩: -->
-            <div class="mask">
+            <div class="logo-mask">
                 <!-- 图片: -->
-                <img class="logo" :src="logo" />
+                <div class="logo-border flex-center">
+                    <img class="logo" :src="logo" />
+                </div>
 
                 <!-- 文本: -->
                 <div class="title">{{ title }}</div>
@@ -94,8 +96,8 @@ function GetWidth(): number {
 </script>
 
 <style lang="less" scoped>
-@loge-size: 25px;
-@loge-panel-padding: 10px;
+@logo-size: 25px;
+@logo-panel-padding: 10px;
 
 .nav-panel {
     position: relative;
@@ -104,28 +106,38 @@ function GetWidth(): number {
     height: 100%;
     overflow: hidden;
     transition: var(--Global-Transition);
+    background: var(--theme-nav-background);
+    border-radius: var(--theme-nav-logo-border-radius);
 
-    .loge-panel {
+    .logo-panel {
         display: flex;
         align-items: center;
         justify-content: center;
         grid-row: 1 / 2;
-        padding: @loge-panel-padding 0px;
+        padding: @logo-panel-padding 0px;
 
-        .mask {
+        .logo-mask {
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
 
-            .logo {
-                width: @loge-size;
-                height: @loge-size;
-                margin-right: 5px;
+            .logo-border {
+                border-radius: 5px;
+                margin-right: 10px;
+                padding: var(--theme-nav-logo-border-padding);
+                background: var(--theme-nav-logo-border-background);
+
+                .logo {
+                    width: @logo-size;
+                    height: @logo-size;
+                }
             }
 
             .title {
+                color: var(--theme-nav-color);
                 font-size: 16px;
+                font-weight: bold;
             }
         }
     }
@@ -141,7 +153,7 @@ function GetWidth(): number {
 
     .menu {
         grid-row: 2 / 3;
-        height: calc(100vh - @loge-size - @loge-panel-padding * 2);
+        height: calc(100vh - @logo-size - @logo-panel-padding * 2);
         overflow: auto;
     }
 }

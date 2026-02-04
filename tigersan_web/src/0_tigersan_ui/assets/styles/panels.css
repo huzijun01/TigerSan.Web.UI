@@ -19,3 +19,33 @@
   flex-grow: 1;
   flex-shrink: 0;
 }
+.flex-between {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-between > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-left {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+.flex-left > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-right {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.flex-right > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}

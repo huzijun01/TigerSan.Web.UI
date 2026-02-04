@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    color: var(--theme-color);
 }
 
 /* 通用重置 - 针对所有输入类元素 */

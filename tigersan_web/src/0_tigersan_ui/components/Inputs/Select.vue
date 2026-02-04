@@ -179,11 +179,11 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
 
     &.disabled {
         cursor: default;
-        color: var(--color-placeholder-text);
+        color: var(--theme-color-placeholder);
     }
 
     &.open {
-        border-color: var(--color-brand);
+        border-color: var(--theme-border-active);
     }
 
     .text {
@@ -195,7 +195,7 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
     .placeholder {
         flex-grow: 1;
         padding: @padding;
-        color: var(--color-placeholder-text);
+        color: var(--theme-color-placeholder);
         .ellipsis();
     }
 
@@ -203,7 +203,7 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
         /* 尺寸: */
         margin-right: @padding;
         /* 颜色: */
-        color: var(--color-placeholder-text);
+        color: var(--theme-color-placeholder);
         /* 过渡: */
         transition: var(--Global-Transition);
     }
@@ -217,9 +217,9 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
     /* 尺寸: */
     padding: 5px 0px;
     border-radius: 5px;
-    border: 1px solid var(--color-brand);
+    border: 1px solid var(--theme-border-active);
     /* 颜色: */
-    background: var(--color-dark-fill);
+    background: var(--theme-background-input);
     /* 其它: */
     z-index: 999;
     /* 动画配置 */
@@ -239,7 +239,7 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
         .ellipsis();
 
         &:hover {
-            background: var(--color-white-10);
+            background: var(--theme-mask-hover);
         }
     }
 }

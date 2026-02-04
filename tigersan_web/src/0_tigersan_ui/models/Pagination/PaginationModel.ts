@@ -53,6 +53,8 @@ class PaginationModel {
     IsShowPageSize = ref(true)
     /** 是否显示“页文本框” */
     IsShowPageTextBox = ref(true)
+    /** 是否显示“被选行”个数 */
+    IsShowSelectedRowCount = ref(false)
     /** “按钮模型”集合
      * （由“PaginationModel”维护） */
     ButtonModels = shallowReactive(new Array<PaginationButtonModel>())

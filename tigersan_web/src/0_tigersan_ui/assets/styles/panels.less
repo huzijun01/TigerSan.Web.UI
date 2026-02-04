@@ -2,6 +2,7 @@
     display: none !important;
 }
 
+// 水平居中
 .flex-center {
     display: flex;
     align-items: center;
@@ -13,6 +14,7 @@
     }
 }
 
+// 水平拉伸
 .flex-stretch {
     display: flex;
     align-items: stretch;
@@ -20,6 +22,45 @@
 
     &>* {
         flex-grow: 1;
+        flex-shrink: 0;
+    }
+}
+
+// 两端对齐
+.flex-between {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    &>* {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
+// 左对齐
+.flex-left {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+
+    &>* {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
+// 右对齐
+.flex-right {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+
+    &>* {
+        flex-grow: 0;
         flex-shrink: 0;
     }
 }

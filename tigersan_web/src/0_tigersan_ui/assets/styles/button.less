@@ -6,8 +6,8 @@ button {
     border-radius: 4px;
     padding: 8px 15px;
     /* 颜色 */
-    color: var(--color-basic-white);
-    background-color: var(--color-brand);
+    color: var(--theme-button-color);
+    background-color: var(--theme-brand);
     /* 文本 */
     font-weight: bold;
     /* 其它 */
@@ -22,7 +22,7 @@ button {
     }
 
     &:disabled {
-        color: var(--color-foreground-disabled);
+        color: var(--theme-button-color-disabled);
         filter: brightness(0.8);
     }
 }
@@ -47,11 +47,11 @@ button {
     background: transparent;
 
     &:hover {
-        background: var(--color-white-25);
+        background: var(--theme-mask-hover);
     }
 
     &:active {
-        background: var(--color-white-50);
+        background: var(--theme-mask-active);
     }
 }
 

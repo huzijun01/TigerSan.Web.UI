@@ -1,4 +1,5 @@
 @import '../0_tigersan_ui/assets.css';
+@import 'theme.css';
 * {
   user-select: none;
 }
@@ -18,7 +19,6 @@ body {
   height: 100vh;
   /* 背景 */
   filter: brightness(0.8);
-  background: var(--color-page-background);
   background-size: cover;
   background-position: top;
   background-repeat: no-repeat;

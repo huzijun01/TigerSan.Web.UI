@@ -12,25 +12,25 @@
     border-radius: 2px;
     padding: 5px 10px;
     /* 颜色: */
-    color: var(--color-primary-text);
-    background: var(--color-dark-fill);
-    border-color: var(--color-dark-border);
+    color: var(--theme-color);
+    background: var(--theme-background-input);
+    border-color: var(--theme-border);
     /* 过渡: */
     transition: var(--Global-Transition);
     /* 文本: */
     line-height: 1.5;
 
     &:hover {
-        border-color: var(--color-disabled-text);
+        border-color: var(--theme-border-hover);
     }
 
     &:focus {
-        border-color: var(--color-brand);
+        border-color: var(--theme-border-active);
     }
 
     &:disabled {
-        color: var(--color-disabled-text);
-        border-color: var(--color-dark-border);
+        color: var(--theme-color-disabled);
+        border-color: var(--theme-border-disabled);
     }
 }
 
@@ -55,8 +55,8 @@ input[type="checkbox"] {
     border: 2px solid;
     border-radius: 4px;
     /* 颜色: */
-    color: var(--color-primary-text);
-    border-color: var(--color-dark-border);
+    color: white;
+    border-color: var(--theme-border);
     /* 过渡: */
     transition: var(--Global-Transition);
 
@@ -70,8 +70,8 @@ input[type="checkbox"] {
 
     &:checked {
         /* 颜色: */
-        border-color: var(--color-brand);
-        background: var(--color-brand);
+        border-color: var(--theme-brand);
+        background: var(--theme-brand);
 
         &::after {
             /* 透明度: */
@@ -80,8 +80,8 @@ input[type="checkbox"] {
     }
 
     &:disabled {
-        color: var(--color-disabled-text);
-        border-color: var(--color-dark-border);
-        background: var(--color-white-10);
+        color: var(--theme-color-disabled);
+        border-color: var(--theme-border-disabled);
+        background: var(--theme-mask-hover);
     }
 }

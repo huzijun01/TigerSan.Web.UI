@@ -22,7 +22,7 @@ const actualHeight = ref(18)
 let { model } = defineProps({
     model: {
         type: TableItemModel,
-        default: () => new TableItemModel(new TableHeaderModel(new TableModel([]), ''), new TableRowModel({}))
+        default: () => new TableItemModel(new TableHeaderModel(new TableModel([]), ''), new TableRowModel(new TableModel([]), {}))
     }
 })
 
@@ -130,7 +130,6 @@ function GetHeight(): number {
         /* 颜色: */
         outline: none;
         box-shadow: none;
-        color: var(--color-primary-text);
         background: transparent;
         /* 文本: */
         resize: none;

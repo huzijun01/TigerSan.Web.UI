@@ -77,18 +77,24 @@ function OnClick() {
 
     &.selected {
         font-weight: bold;
-        color: var(--color-brand);
+
+        &>* {
+            color: var(--theme-brand);
+        }
     }
 
     &.enabled.have-hover:hover {
         .show-hover-text();
-        color: var(--color-brand);
+
+        &>* {
+            color: var(--theme-brand);
+        }
     }
 
     &.disabled {
         .show-text();
         cursor: default;
-        color: var(--color-disabled-text);
+        color: var(--theme-color-disabled);
     }
 }
 </style>

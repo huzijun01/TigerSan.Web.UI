@@ -44,8 +44,11 @@ function Close() {
 .page-button {
     position: relative;
     border-radius: 10px 10px 0px 0px;
-    color: var(--color-primary-text);
     transition: var(--Global-Transition);
+
+    * {
+        color: var(--theme-color);
+    }
 
     .sub-border {
         display: flex;
@@ -79,13 +82,13 @@ function Close() {
         width: 2px;
         height: 20px;
         transform: translateY(-50%);
-        background: var(--color-white-25);
         transition: var(--Global-Transition);
+        background: var(--theme-nav-line-background);
     }
 
     &:hover {
         .sub-border {
-            background: var(--color-white-10);
+            background: var(--theme-nav-item-background-hover);
         }
 
         .line {
@@ -95,10 +98,10 @@ function Close() {
 
     &.selected {
         font-weight: bold;
-        background: var(--color-brand-25);
+        background: var(--theme-nav-item-background-selected);
 
         * {
-            color: var(--color-brand);
+            color: var(--theme-brand);
         }
 
         .sub-border {

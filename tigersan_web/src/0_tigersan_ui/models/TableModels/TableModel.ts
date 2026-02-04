@@ -24,7 +24,7 @@ class TableModel {
     _headerConfigs: TableHeaderConfig[]
     /** 列头背景
      * （防止tbody中的内容透过） */
-    _headerBackground: String = Colors.LightFill
+    _headerBackground: String = 'var(--theme-table-header-background)'
     /** 复选框行为
      * （由“TableModel”维护） */
     _checkboxBehavior: CheckboxBehavior
@@ -105,15 +105,9 @@ class TableModel {
     //#region 【Ctor】
     constructor(headerConfigs: TableHeaderConfig[]) {
         this._headerConfigs = headerConfigs
-        this.InitHeaderModels()
-        this.InitCheckboxBehavior()
-    }
-    //#endregion 【Ctor】
 
-    //#region 【Functions】
-    //#region [private]
-    /** 初始化“复选框行为” */
-    private InitCheckboxBehavior() {
+        /** 初始化“复选框行为” */
+        this.InitHeaderModels()
         this._checkboxBehavior = new CheckboxBehavior(
             () => this.IsSelectAll.value,
             bool => this.IsSelectAll.value = bool,
@@ -136,8 +130,9 @@ class TableModel {
             this._checkboxBehavior.IsAllowMultiSelect = this.IsAllowMultiSelect.value
         })
     }
-    //#endregion [private]
+    //#endregion 【Ctor】
 
+    //#region 【Functions】
     /** 刷新 */
     Refresh(isInitHeaderModels: boolean = false) {
         if (isInitHeaderModels) {
@@ -231,7 +226,7 @@ class TableItemModel {
     /** 是否只读 */
     IsReadonly = computed(() => this._headerModel.IsReadonly.value)
     /** 颜色 */
-    Color = ref(Colors.PrimaryText)
+    Color = ref('')
     /** 背景 */
     Background = ref(Colors.Transparent)
 

@@ -1,78 +1,49 @@
 <template>
-    <div class="page-bar-panel" ref="refRoot">
-        <div class="page-bar" :style="{ width: strWidth }">
+    <div class="page-bar-panel">
+        <div class="page-bar" :style="styleObj">
             <PageButton v-for="b in model.OpenedButtonModels" :key="b._id" :model="b" />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { computed } from 'vue';
 import { PageButton } from '../../components';
 import { NavBarModel } from '../../models';
 
 // 字段:
-let offset = 0
-const width = ref(-1)
-const refRoot = ref<HTMLElement | undefined>()
-
-let { model } = defineProps({
+let { model, offsetX } = defineProps({
     model: {
         type: NavBarModel,
         default: new NavBarModel()
-    }
+    },
+    offsetX: {
+        type: Number,
+        default: 35
+    },
 })
 
-const strWidth = computed(() => width.value < 0 ? "auto" : `${width.value}px`)
+const marginX = 10
 
-// 过程:
-onMounted(() => {
-    InitOffset()
-    InitResizeObserver()
-    UpdatePagePanelWidth()
-})
-
-// 方法:
-function InitResizeObserver() {
-    window.addEventListener('resize', UpdatePagePanelWidth)
-
-    watch(model.IsOpen, UpdatePagePanelWidth)
-}
-
-function UpdatePagePanelWidth() {
-    width.value = window.innerWidth
-        - (model.IsOpen.value ? model.Width.value : 0)
-        - offset
-}
-
-function InitOffset() {
-    let refRootWidth = GetWidth()
-    if (!refRootWidth) {
-        console.log('The refRootWidth is undefined!')
-        return
-    }
-
-    if (!model._getNavWidth) {
-        console.log('The _getNavWidth is undefined!')
-        return
-    }
-
-    offset = window.innerWidth - refRootWidth - model._getNavWidth()
+const styleObj = computed(() => {
+    let offset = offsetX + marginX
 
     if (model.IsOpen.value) {
-        offset -= model.Width.value
+        offset += model.Width.value
     }
-}
 
-function GetWidth() {
-    return refRoot.value?.offsetWidth
-}
+    return {
+        maxWidth: `calc(100vw - ${offset}px)`
+    }
+})
 </script>
 
 <style lang="less" scoped>
+@margin-x: 5px;
+
 .page-bar-panel {
     flex-grow: 1;
-    margin: 10px 5px 0px 5px;
+    margin: 10px @margin-x 0px @margin-x;
     overflow: hidden;
 
     .page-bar {

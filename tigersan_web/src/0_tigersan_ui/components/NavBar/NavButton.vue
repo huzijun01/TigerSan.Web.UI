@@ -49,17 +49,28 @@ function OnClick() {
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;
-    color: var(--color-primary-text);
     transition: var(--Global-Transition);
 
+    &>* {
+        color: var(--theme-nav-color);
+    }
+
     &:hover {
-        color: var(--color-brand);
+        background: var(--theme-nav-item-background-hover);
+
+        * {
+            font-weight: bold;
+            color: var(--theme-nav-color-hover);
+        }
     }
 
     &.selected {
         font-weight: bold;
-        color: var(--color-brand);
-        background: var(--color-brand-10);
+        background: var(--theme-nav-item-background-selected);
+
+        * {
+            color: var(--theme-nav-color-selected);
+        }
     }
 
     .icon {

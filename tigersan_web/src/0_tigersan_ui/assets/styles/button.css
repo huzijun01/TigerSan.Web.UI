@@ -5,8 +5,8 @@ button {
   border-radius: 4px;
   padding: 8px 15px;
   /* 颜色 */
-  color: var(--color-basic-white);
-  background-color: var(--color-brand);
+  color: var(--theme-button-color);
+  background-color: var(--theme-brand);
   /* 文本 */
   font-weight: bold;
   /* 其它 */
@@ -19,7 +19,7 @@ button:active {
   filter: brightness(1.1);
 }
 button:disabled {
-  color: var(--color-foreground-disabled);
+  color: var(--theme-button-color-disabled);
   filter: brightness(0.8);
 }
 .square-button {
@@ -51,10 +51,10 @@ button:disabled {
   background: transparent;
 }
 .circle-button:hover {
-  background: var(--color-white-25);
+  background: var(--theme-mask-hover);
 }
 .circle-button:active {
-  background: var(--color-white-50);
+  background: var(--theme-mask-active);
 }
 .btn_clear {
   /* 尺寸 */

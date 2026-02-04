@@ -1,3 +1,6 @@
+/* Form: */
+import { VerifyStates, VerifyResult, FormModel, FormItemModel } from './models/Form/FormModel'
+
 /* Inputs: */
 import { type MenuItemModelAction, MenuItemModel, SelectModel } from './models/Inputs/SelectModel'
 
@@ -49,6 +52,9 @@ import {
 } from './models/DialogModel'
 
 export {
+    /* Form: */
+    VerifyStates, VerifyResult, FormModel, FormItemModel,
+
     /* Inputs: */
     type MenuItemModelAction, MenuItemModel, SelectModel,
 

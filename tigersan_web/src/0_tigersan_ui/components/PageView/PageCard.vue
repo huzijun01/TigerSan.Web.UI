@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
-import { Colors, Constants } from '../../base';
+import { Constants } from '../../base';
 import { ClassObserver } from '../../helpers';
 
 // 字段:
@@ -37,7 +37,7 @@ let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = de
     },
     background: {
         type: String,
-        default: Colors.LightFill
+        default: 'var(--theme-background-card)'
     },
 })
 

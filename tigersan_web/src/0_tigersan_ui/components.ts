@@ -1,5 +1,12 @@
+// Button:
+import IconButton from "./components/Button/IconButton.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
+import Pop from "./components/Dialog/Pop.vue"
+// Form:
+import Form from './components/Form/Form.vue'
+import FormRow from './components/Form/FormRow.vue'
+import FormItem from './components/Form/FormItem.vue'
 // Inputs:
 import Select from "./components/Inputs/Select.vue"
 // NavBar:
@@ -21,8 +28,15 @@ import Table from "./components/Table/Table.vue"
 import TableItem from "./components/Table/TableItem.vue"
 
 export {
+    // Button:
+    IconButton,
     // Dialog:
     Dialog,
+    Pop,
+    // Form:
+    Form,
+    FormRow,
+    FormItem,
     // Inputs:
     Select,
     // NavBar:

@@ -113,3 +113,68 @@
     background: #888;
   }
 }
+* {
+  /* Firefox宽度: */
+  scrollbar-width: thin;
+  /* Firefox颜色: */
+  scrollbar-color: #4e4e4e #1e1e1e;
+  /* WebKit容器: */
+  /* 轨道: */
+  /* 滑块: */
+}
+*::-webkit-scrollbar {
+  width: 4px;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background: #1e1e1e;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: linear-gradient(180deg, #444, #222);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #666, #333);
+}
+/* 【主题】 */
+:root {
+  /* [主色] */
+  --theme-brand: var(--color-brand);
+  /* [前景] */
+  --theme-color: var(--color-primary-text);
+  --theme-color-disabled: var(--color-disabled-text);
+  --theme-color-placeholder: var(--color-placeholder-text);
+  --theme-button-color-disabled: var(--color-foreground-disabled);
+  /* [背景] */
+  --theme-background-card: var(--color-light-fill);
+  --theme-background-panel: var(--color-base-fill);
+  --theme-background-input: var(--color-dark-fill);
+  --theme-background-input-disabled: var(--color-white-10);
+  /* [边框] */
+  --theme-border: var(--color-dark-border);
+  --theme-border-hover: var(--theme-brand);
+  --theme-border-active: var(--theme-brand);
+  --theme-border-disabled: var(--color-dark-border);
+  --theme-border-divider: #474747;
+  /* [遮罩] */
+  --theme-mask-hover: var(--color-white-10);
+  --theme-mask-active: var(--color-white-50);
+  /* [按钮] */
+  --theme-button-color: var(--color-primary-text);
+  /* [导航] */
+  --theme-nav-color: var(--color-primary-text);
+  --theme-nav-color-hover: var(--theme-brand);
+  --theme-nav-color-selected: var(--theme-brand);
+  --theme-nav-background: var(--theme-background-card);
+  --theme-nav-item-background-hover: var(--color-white-10);
+  --theme-nav-item-background-selected: var(--color-brand-25);
+  --theme-nav-line-background: var(--color-white-25);
+  --theme-nav-logo-border-padding: 5px;
+  --theme-nav-logo-border-background: transparent;
+  --theme-nav-logo-border-radius: 0;
+  /* [表格] */
+  --theme-table-header-background: var(--theme-background-card);
+  --theme-table-line-background: var(--color-basic-white);
+  /* [弹窗] */
+  --theme-dialog-title-color: var(--theme-color);
+}

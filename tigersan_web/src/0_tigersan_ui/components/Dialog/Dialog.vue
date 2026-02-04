@@ -1,6 +1,6 @@
 <template>
     <Teleport to="body">
-        <div class="mask" v-if="isShow">
+        <div class="dialog-mask" v-if="isShow">
             <div class="popPanel" v-for="m in dialogModels" :key="m.id" :style="{ borderColor: m.color }">
                 <div class="titlePanel" :style="{ background: m.color }">
                     <div class="title">{{ m.title }}</div>
@@ -35,7 +35,9 @@ function Close(id: string) {
 </script>
 
 <style lang="less" scoped>
-.mask {
+.dialog-mask {
+    /* 位置 */
+    position: relative;
     /* 显示 */
     display: flex;
     /* 对齐 */
@@ -66,9 +68,9 @@ function Close(id: string) {
         /* 边框 */
         border: 1px solid;
         box-shadow: var(--box-shadow);
-        border-color: var(--color-brand);
+        border-color: var(--theme-brand);
         /* 颜色 */
-        background: var(--color-base-fill);
+        background: var(--theme-background-panel);
 
         .titlePanel {
             /* 行 */
@@ -78,8 +80,6 @@ function Close(id: string) {
             grid-template-columns: 1fr auto;
             /* 尺寸 */
             padding: 10px 20px;
-            /* 颜色 */
-            background: var(--color-brand);
 
             .title {
                 /* 列 */
@@ -89,6 +89,8 @@ function Close(id: string) {
                 justify-self: center;
                 /* 字体 */
                 font-weight: bold;
+                /* 颜色 */
+                color: var(--theme-dialog-title-color);
             }
 
             .btnClose {

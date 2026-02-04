@@ -8,6 +8,7 @@
 }
 .flex-center > * {
   flex-grow: 0;
+  flex-shrink: 0;
 }
 .flex-stretch {
   display: flex;
@@ -16,6 +17,7 @@
 }
 .flex-stretch > * {
   flex-grow: 1;
+  flex-shrink: 0;
 }
 .ellipsis {
   overflow: hidden !important;
@@ -28,23 +30,23 @@
   border-radius: 2px;
   padding: 5px 10px;
   /* 颜色: */
-  color: var(--color-primary-text);
-  background: var(--color-dark-fill);
-  border-color: var(--color-dark-border);
+  color: var(--theme-color);
+  background: var(--theme-background-input);
+  border-color: var(--theme-border);
   /* 过渡: */
   transition: var(--Global-Transition);
   /* 文本: */
   line-height: 1.5;
 }
 .input-border:hover {
-  border-color: var(--color-disabled-text);
+  border-color: var(--theme-border-hover);
 }
 .input-border:focus {
-  border-color: var(--color-brand);
+  border-color: var(--theme-border-active);
 }
 .input-border:disabled {
-  color: var(--color-disabled-text);
-  border-color: var(--color-dark-border);
+  color: var(--theme-color-disabled);
+  border-color: var(--theme-border-disabled);
 }
 input[type="text"],
 input[type="password"],
@@ -58,9 +60,9 @@ textarea {
   border-radius: 2px;
   padding: 5px 10px;
   /* 颜色: */
-  color: var(--color-primary-text);
-  background: var(--color-dark-fill);
-  border-color: var(--color-dark-border);
+  color: var(--theme-color);
+  background: var(--theme-background-input);
+  border-color: var(--theme-border);
   /* 过渡: */
   transition: var(--Global-Transition);
   /* 文本: */
@@ -72,7 +74,7 @@ input[type="email"]:hover,
 input[type="number"]:hover,
 input[type="search"]:hover,
 textarea:hover {
-  border-color: var(--color-disabled-text);
+  border-color: var(--theme-border-hover);
 }
 input[type="text"]:focus,
 input[type="password"]:focus,
@@ -80,7 +82,7 @@ input[type="email"]:focus,
 input[type="number"]:focus,
 input[type="search"]:focus,
 textarea:focus {
-  border-color: var(--color-brand);
+  border-color: var(--theme-border-active);
 }
 input[type="text"]:disabled,
 input[type="password"]:disabled,
@@ -88,8 +90,8 @@ input[type="email"]:disabled,
 input[type="number"]:disabled,
 input[type="search"]:disabled,
 textarea:disabled {
-  color: var(--color-disabled-text);
-  border-color: var(--color-dark-border);
+  color: var(--theme-color-disabled);
+  border-color: var(--theme-border-disabled);
 }
 input[type="checkbox"] {
   /* 显示: */
@@ -102,13 +104,14 @@ input[type="checkbox"] {
   border: 2px solid;
   border-radius: 4px;
   /* 颜色: */
-  color: var(--color-primary-text);
-  border-color: var(--color-dark-border);
+  color: white;
+  border-color: var(--theme-border);
   /* 过渡: */
   transition: var(--Global-Transition);
 }
 input[type="checkbox"] > * {
   flex-grow: 0;
+  flex-shrink: 0;
 }
 input[type="checkbox"]::after {
   /* 文本: */
@@ -119,15 +122,15 @@ input[type="checkbox"]::after {
 }
 input[type="checkbox"]:checked {
   /* 颜色: */
-  border-color: var(--color-brand);
-  background: var(--color-brand);
+  border-color: var(--theme-brand);
+  background: var(--theme-brand);
 }
 input[type="checkbox"]:checked::after {
   /* 透明度: */
   opacity: 1;
 }
 input[type="checkbox"]:disabled {
-  color: var(--color-disabled-text);
-  border-color: var(--color-dark-border);
-  background: var(--color-white-10);
+  color: var(--theme-color-disabled);
+  border-color: var(--theme-border-disabled);
+  background: var(--theme-mask-hover);
 }

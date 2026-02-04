@@ -52,7 +52,7 @@ onMounted(() => {
 
 // 方法:
 function OnIsSelectAllChanged() {
-    model._checkboxBehavior.onIsSelectAllChanged()
+    model._checkboxBehavior?.onIsSelectAllChanged()
     model.RiseOnSelectStateChange()
 }
 
@@ -70,11 +70,11 @@ function OnIsCheckedChanged(rowModel: TableRowModel) {
 
     td,
     th {
-        color: var(--color-primary-text);
+        color: var(--theme-color);
         padding: 12px 0px;
 
         &:hover {
-            background: var(--color-white-10);
+            background: var(--theme-mask-hover);
         }
     }
 
@@ -127,7 +127,7 @@ function OnIsCheckedChanged(rowModel: TableRowModel) {
     left: 0;
     width: 100%;
     height: 1px;
-    background: white;
+    background: var(--theme-table-line-background);
     transform: translateY(100%);
 }
 </style>

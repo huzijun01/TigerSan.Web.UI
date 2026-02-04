@@ -10,6 +10,7 @@ import {
     type Action,
     type BooleanAction,
     type NumberAction,
+    type ObjectAction,
     type StringAction,
 
     // Func:
@@ -40,6 +41,7 @@ export {
     type Action,
     type BooleanAction,
     type NumberAction,
+    type ObjectAction,
     type StringAction,
 
     // Func:

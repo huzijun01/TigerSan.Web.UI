@@ -2,7 +2,7 @@
     <PageCard>
         <div class="table-page">
             <!-- 顶部: -->
-            <div class="top-panel">
+            <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>网关管理：</span>
@@ -11,7 +11,7 @@
                     <div class="row-panel">
                         <span>状态:</span>
                         <Select :model="stateSelectModel"></Select>
-                        <input type="text">
+                        <input type="text" placeholder="输入名称或MAC">
                     </div>
                 </div>
                 <div class="button-panel">
@@ -22,7 +22,7 @@
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="Refresh">刷新</button>
-                        <button @click="Add">+ 新增</button>
+                        <button @click="formModel.Show">+ 新增</button>
                         <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="Edit">修改</button>
                         <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
@@ -34,22 +34,32 @@
             <Table :model="testTableModel"></Table>
 
             <!-- 底部: -->
-            <div class="bottom-panel flex-center">
-                <div class="select-count">Select: {{ testTableModel.SelectedRowCount.value }}</div>
-                <Pagination :model="paginationModel"></Pagination>
+            <div class="bottom-panel flex-center ">
+                <Pagination :model="paginationModel" :selectedRowCount="testTableModel.SelectedRowCount.value">
+                </Pagination>
             </div>
         </div>
     </PageCard>
+    <GatewayForm :model="formModel"></GatewayForm>
 </template>
 
 <script lang="ts" setup>
-import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models';
+import { SelectModel, PaginationModel, FormModel } from '@/0_tigersan_ui/models';
 import { Table, Select, PageCard, Pagination } from '@/0_tigersan_ui/components'
 import { testTableModel } from '@/testTableModel'
 import { dialog } from '@/0_tigersan_ui/stores';
 import { Int } from '@/0_tigersan_ui/base';
+import GatewayForm from '@/forms/GatewayForm.vue'
+import { GatewayModel } from '@/testTableModel'
 
 // 【字段】:
+// 表单:
+const formModel = new FormModel(() => new GatewayModel())
+formModel._onSubmit = () => {
+    dialog.ShowSuccess('提交成功')
+    formModel.Close()
+}
+
 // 表格:
 const { IsOnlySelected } = testTableModel
 
@@ -73,6 +83,7 @@ testTableModel._onInitRowModel = () => {
 
 // 分页器:
 let paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
 paginationModel.Checked = num => {
     // dialog.ShowInformation(`Num = ${num}`)
 }
@@ -94,10 +105,6 @@ function BluetoothUpdate() {
 
 function Refresh() {
     dialog.ShowSuccess('刷新')
-}
-
-function Add() {
-    dialog.ShowInformation('新增')
 }
 
 function Restart() {
@@ -137,10 +144,6 @@ function Delete() {
     /* 顶部: */
     .top-panel {
         // 显示:
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: space-between; // 两端对齐
         overflow: auto;
         flex-shrink: 0;
         // 尺寸:
@@ -178,10 +181,6 @@ function Delete() {
         // 显示:
         flex-shrink: 0;
         overflow: auto;
-
-        .select-count {
-            margin-right: @Gap;
-        }
     }
 }
 </style>

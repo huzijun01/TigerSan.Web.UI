@@ -41,6 +41,7 @@ let navBarModel = new NavBarModel({
     ]
 })
 
-navBarModel.IsOpen.value = false
+navBarModel.IsOpen.value = true
+navBarModel.Width.value = 220
 
 export default navBarModel
