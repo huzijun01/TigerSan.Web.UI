@@ -57,9 +57,9 @@
 </template>
 
 <script lang="ts" setup>
-import { gatewayTable } from '@/tables/gatewayTable'
-import { dialog } from '@/0_tigersan_ui/stores'
 import { Int } from '@/0_tigersan_ui/base'
+import { dialog } from '@/0_tigersan_ui/stores'
+import { gatewayTable } from './GatewayTable'
 import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
@@ -80,7 +80,7 @@ import {
     Add,
     Edit,
     Delete,
-} from '@/forms/gatewayForm'
+} from './GatewayForm'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = gatewayTable

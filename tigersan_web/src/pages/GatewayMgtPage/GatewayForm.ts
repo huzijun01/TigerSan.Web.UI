@@ -2,7 +2,7 @@ import { ref, type InputHTMLAttributes } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
-import { GatewayModel, gatewayTable } from '@/tables/gatewayTable'
+import { GatewayModel, gatewayTable } from './GatewayTable'
 import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 
 /** “网关名称”项目配置 */

@@ -1,4 +1,5 @@
-import TablePage from '@/pages/TablePage.vue'
+import GatewayMgtPage from '@/pages/GatewayMgtPage/GatewayMgtPage.vue'
+import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import { Icons } from '@/0_tigersan_ui/base'
 import { NavBarModel } from '@/0_tigersan_ui/models'
 
@@ -9,8 +10,10 @@ let navBarModel = new NavBarModel({
             Icon: Icons.Memory,
             Buttons: [
                 {
+                    IsSelected: true,
                     Icon: '',
                     Title: "人员管理标签",
+                    _component: PersonMgtLabelPage,
                 },
                 {
                     Icon: '',
@@ -18,7 +21,7 @@ let navBarModel = new NavBarModel({
                 },
                 {
                     Icon: '',
-                    Title: "环境管理标签",
+                    Title: "环境传感器",
                 },
             ]
         },
@@ -39,10 +42,9 @@ let navBarModel = new NavBarModel({
     ],
     Buttons: [
         {
-            IsSelected: true,
             Icon: Icons.EQP,
             Title: "网关管理",
-            _component: TablePage
+            _component: GatewayMgtPage
         },
         {
             Icon: Icons.Setting_Linear,
