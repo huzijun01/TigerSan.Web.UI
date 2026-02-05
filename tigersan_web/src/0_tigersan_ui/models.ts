@@ -1,5 +1,5 @@
 /* Form: */
-import { VerifyStates, VerifyResult, FormModel, FormItemModel } from './models/Form/FormModel'
+import { FormResult, VerifyResult, SubmitResult, FormModel, FormItemModel } from './models/Form/FormModel'
 
 /* Inputs: */
 import { type MenuItemModelAction, MenuItemModel, SelectModel } from './models/Inputs/SelectModel'
@@ -48,12 +48,15 @@ import {
 
 /* Dialog: */
 import {
+    type DialogCallback,
+    DialogMode,
+    DialogState,
     DialogModel,
 } from './models/DialogModel'
 
 export {
     /* Form: */
-    VerifyStates, VerifyResult, FormModel, FormItemModel,
+    FormResult, VerifyResult, SubmitResult, FormModel, FormItemModel,
 
     /* Inputs: */
     type MenuItemModelAction, MenuItemModel, SelectModel,
@@ -92,5 +95,8 @@ export {
     SetTableHeaderModel,
 
     /* Dialog: */
+    type DialogCallback,
+    DialogMode,
+    DialogState,
     DialogModel,
 }

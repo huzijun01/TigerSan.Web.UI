@@ -86,7 +86,6 @@ class CheckboxBehavior {
     UncheckOtherCheckboxs(rowModel?: object) {
         let checkboxModels = this.CheckboxModels
         checkboxModels.forEach(checkboxModel => {
-            debugger
             if (checkboxModel._rowModel === rowModel) return
             checkboxModel.IsChecked = false
         })

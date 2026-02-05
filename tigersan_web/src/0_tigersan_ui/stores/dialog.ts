@@ -1,12 +1,12 @@
-import { reactive } from 'vue'
+import { shallowReactive } from 'vue'
 import { defineStore } from 'pinia'
 import { Colors } from '../base'
-import { DialogModel } from '../models'
+import { DialogMode, DialogModel, type DialogCallback } from '../models'
 import { StoreIDs } from './base/StoreIDs'
 
 /* 仓库 */
 const useDialogStore = defineStore(StoreIDs.dialog, () => {
-  let dialogModels: DialogModel[] = reactive([])
+  let dialogModels = shallowReactive<DialogModel[]>([])
 
   return { dialogModels }
 })
@@ -15,10 +15,12 @@ const useDialogStore = defineStore(StoreIDs.dialog, () => {
 function ShowDialog(
   title: string,
   msg: string,
+  callback?: DialogCallback,
+  mode: DialogMode = DialogMode.NoButton,
   background: string = Colors.Brand) {
   let { dialogModels } = useDialogStore()
 
-  dialogModels.push(new DialogModel(title, msg, background))
+  dialogModels.push(new DialogModel(title, msg, callback, mode, background))
 }
 
 function ShowInformation(msg: string) {
@@ -26,15 +28,15 @@ function ShowInformation(msg: string) {
 }
 
 function ShowSuccess(msg: string) {
-  ShowDialog('Success', msg, Colors.Success)
+  ShowDialog('Success', msg, undefined, DialogMode.NoButton, Colors.Success)
 }
 
 function ShowWarning(msg: string) {
-  ShowDialog('Warning', msg, Colors.Warning)
+  ShowDialog('Warning', msg, undefined, DialogMode.NoButton, Colors.Warning)
 }
 
 function ShowError(msg: string) {
-  ShowDialog('Error', msg, Colors.Danger)
+  ShowDialog('Error', msg, undefined, DialogMode.NoButton, Colors.Danger)
 }
 
 const dialog = {

@@ -19,6 +19,8 @@ type Object2StringFunc = (obj?: object) => string
 type StringFunc = (str: string) => void
 type StringArrayFunc = (arr: string[]) => void
 type StringGetter = (obj: object, propName: string) => string
+type UnknownGetter = (source: object) => unknown
+type UnknownSetter = (source: object, value: unknown) => void
 
 export {
     // Class:
@@ -43,4 +45,6 @@ export {
     type StringFunc,
     type StringArrayFunc,
     type StringGetter,
+    type UnknownGetter,
+    type UnknownSetter,
 }

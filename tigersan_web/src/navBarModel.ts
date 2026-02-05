@@ -1,5 +1,3 @@
-import Counter from '@/components/Counter.vue'
-import InputPage from '@/pages/InputPage.vue'
 import TablePage from '@/pages/TablePage.vue'
 import { Icons } from '@/0_tigersan_ui/base'
 import { NavBarModel } from '@/0_tigersan_ui/models'
@@ -7,37 +5,50 @@ import { NavBarModel } from '@/0_tigersan_ui/models'
 let navBarModel = new NavBarModel({
     Folders: [
         {
-            Icon: Icons.Chart_Line,
-            Title: "图表",
+            Title: "设备管理",
+            Icon: Icons.Memory,
             Buttons: [
                 {
-                    IsSelected: true,
-                    Icon: Icons.Grid,
-                    Title: "表格",
-                    _component: TablePage
+                    Icon: '',
+                    Title: "人员管理标签",
+                },
+                {
+                    Icon: '',
+                    Title: "资产管理标签",
+                },
+                {
+                    Icon: '',
+                    Title: "环境管理标签",
                 },
             ]
         },
         {
-            Title: "表单",
+            Title: "操作管理",
+            Icon: Icons.ViewProcess,
             Buttons: [
                 {
-                    Icon: Icons.VerificationCode,
-                    Title: "输入框",
-                    _component: InputPage
+                    Icon: '',
+                    Title: "操作记录",
                 },
-            ]
-        },
-        {
-            Title: "其它",
-            Buttons: [
                 {
-                    Icon: Icons.VerificationCode,
-                    Title: "Counter",
-                    _component: Counter
+                    Icon: '',
+                    Title: "操作重试",
                 },
             ]
         }
+    ],
+    Buttons: [
+        {
+            IsSelected: true,
+            Icon: Icons.EQP,
+            Title: "网关管理",
+            _component: TablePage
+        },
+        {
+            IsSelected: true,
+            Icon: Icons.Setting_Linear,
+            Title: "系统设置",
+        },
     ]
 })
 

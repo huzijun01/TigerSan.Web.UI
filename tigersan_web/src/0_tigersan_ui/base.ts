@@ -25,6 +25,8 @@ import {
     type StringFunc,
     type StringArrayFunc,
     type StringGetter,
+    type UnknownGetter,
+    type UnknownSetter,
 } from "./base/types"
 
 /* 导出: */
@@ -56,4 +58,6 @@ export {
     type StringFunc,
     type StringArrayFunc,
     type StringGetter,
+    type UnknownGetter,
+    type UnknownSetter,
 }

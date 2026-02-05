@@ -14,7 +14,7 @@
             </div>
             <div class="button-panel flex-right">
                 <button class="cancel" @click="model.Close">{{ model.CancelText.value }}</button>
-                <button class="submit bg-success" @click="OnSubmit">{{ model.SubmitText.value }}</button>
+                <button class="submit bg-success" @click="model.OnSubmit">{{ model.SubmitText.value }}</button>
             </div>
         </div>
     </Pop>
@@ -39,14 +39,6 @@ onMounted(() => {
 })
 
 // 方法:
-function OnSubmit() {
-    if (!model.IsVerifyOk()) {
-        return
-    }
-
-    if (!model._onSubmit) return
-    model._onSubmit()
-}
 </script>
 
 <style lang="less" scoped>

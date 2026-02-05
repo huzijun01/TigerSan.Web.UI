@@ -15,7 +15,7 @@ import { FormModel, FormItemModel } from '../../models/Form/FormModel';
 let { model } = defineProps({
     model: {
         type: FormItemModel,
-        default: new FormItemModel(new FormModel())
+        default: new FormItemModel(new FormModel(), () => { }, () => { })
     }
 })
 </script>

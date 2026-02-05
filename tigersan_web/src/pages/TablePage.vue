@@ -22,7 +22,7 @@
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="Refresh">刷新</button>
-                        <button @click="formModel.Show">+ 新增</button>
+                        <button @click="Add">+ 新增</button>
                         <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="Edit">修改</button>
                         <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
@@ -44,21 +44,19 @@
 </template>
 
 <script lang="ts" setup>
-import { SelectModel, PaginationModel, FormModel } from '@/0_tigersan_ui/models';
+import { SelectModel, PaginationModel, FormModel, SubmitResult, DialogMode, DialogState } from '@/0_tigersan_ui/models';
 import { Table, Select, PageCard, Pagination } from '@/0_tigersan_ui/components'
 import { testTableModel } from '@/testTableModel'
-import { dialog } from '@/0_tigersan_ui/stores';
-import { Int } from '@/0_tigersan_ui/base';
+import { dialog } from '@/0_tigersan_ui/stores'
+import { Colors, Int } from '@/0_tigersan_ui/base'
 import GatewayForm from '@/forms/GatewayForm.vue'
 import { GatewayModel } from '@/testTableModel'
 
 // 【字段】:
 // 表单:
-const formModel = new FormModel(() => new GatewayModel())
-formModel._onSubmit = () => {
-    dialog.ShowSuccess('提交成功')
-    formModel.Close()
-}
+const formModel = new FormModel()
+formModel.CancelText.value = '取消'
+formModel.SubmitText.value = '确定'
 
 // 表格:
 const { IsOnlySelected } = testTableModel
@@ -104,19 +102,73 @@ function BluetoothUpdate() {
 }
 
 function Refresh() {
-    dialog.ShowSuccess('刷新')
+    testTableModel.Refresh()
 }
 
 function Restart() {
     dialog.ShowInformation('重启')
 }
 
+function Add() {
+    formModel.Title.value = '新增网关'
+
+    formModel._getSource = () => {
+        return new GatewayModel()
+    }
+
+    formModel._onSubmit = source => {
+        testTableModel.RowDatas.push(source)
+        testTableModel.Refresh()
+
+        return new SubmitResult('添加成功')
+    }
+
+    formModel.Show()
+}
+
 function Edit() {
-    dialog.ShowWarning('修改')
+    formModel.Title.value = '修改网关'
+
+    let index = 0
+
+    formModel._getSource = () => {
+        const rowData = testTableModel.SelectedRowDatas.value[0]
+        if (!rowData) {
+            console.log('The rowData is undefined!')
+            return {}
+        }
+
+        index = testTableModel.RowDatas.indexOf(rowData)
+        return rowData
+    }
+
+    formModel._onSubmit = source => {
+        testTableModel.RowDatas[index] = source
+        testTableModel.Refresh()
+
+        return new SubmitResult('修改成功')
+    }
+
+    formModel.Show()
 }
 
 function Delete() {
-    dialog.ShowError('删除')
+    dialog.ShowDialog('确认', '是否确定删除？', DeleteRowData, DialogMode.YesOrNo, Colors.Warning)
+}
+
+function DeleteRowData(state: DialogState) {
+    if (state != DialogState.Yes) return
+
+    const rowData = testTableModel.SelectedRowDatas.value[0]
+    if (!rowData) {
+        console.log('The rowData is undefined!')
+        return {}
+    }
+
+    testTableModel.RowDatas = testTableModel.RowDatas.filter(r => r != rowData)
+    testTableModel.Refresh()
+
+    dialog.ShowSuccess('删除成功')
 }
 </script>
 
