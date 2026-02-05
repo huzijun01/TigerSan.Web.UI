@@ -27,6 +27,9 @@ import {
     type StringGetter,
     type UnknownGetter,
     type UnknownSetter,
+
+    // Function:
+    DefaultObjectAction,
 } from "./base/types"
 
 /* 导出: */
@@ -60,4 +63,7 @@ export {
     type StringGetter,
     type UnknownGetter,
     type UnknownSetter,
+
+    // Function:
+    DefaultObjectAction,
 }

@@ -1,3 +1,92 @@
+/** 对象浅复制 */
+function ObjectShallowCopy<T extends object>(obj: T): T {
+    // 处理基本类型直接返回
+    if (obj === null || typeof obj !== 'object') {
+        return obj as T;
+    }
+
+    // 获取原型并创建新对象
+    const proto = Object.getPrototypeOf(obj);
+    const copy = Object.create(proto);
+
+    // 复制所有自身属性（包括不可枚举属性和 Symbol）
+    const keys = Reflect.ownKeys(obj);
+    for (const key of keys) {
+        copy[key as keyof T] = obj[key as keyof T];
+    }
+
+    return copy;
+}
+
+
+/** 对象深复制 */
+function ObjectDeepCopy<T extends object>(obj: T): T {
+    const hash = new WeakMap<object, any>();
+
+    function _copy(obj: any): any {
+        // 处理基本类型和函数
+        if (obj === null || typeof obj !== 'object') {
+            return obj;
+        }
+
+        // 处理循环引用
+        if (hash.has(obj)) {
+            return hash.get(obj);
+        }
+
+        // 处理特殊类型
+        switch (true) {
+            case obj instanceof Date:
+                return new Date(obj.getTime());
+            case obj instanceof RegExp:
+                return new RegExp(obj);
+            // case ArrayBuffer.isView(obj): // 处理 TypedArray
+            //     return obj.slice();
+            case obj instanceof ArrayBuffer:
+                return obj.slice(0);
+            case obj instanceof Map:
+                const mapCopy = new Map();
+                hash.set(obj, mapCopy);
+                obj.forEach((value, key) => {
+                    mapCopy.set(_copy(key), _copy(value));
+                });
+                return mapCopy;
+            case obj instanceof Set:
+                const setCopy = new Set();
+                hash.set(obj, setCopy);
+                obj.forEach(value => {
+                    setCopy.add(_copy(value));
+                });
+                return setCopy;
+        }
+
+        // 处理数组
+        if (Array.isArray(obj)) {
+            const arrCopy = [...obj];
+            hash.set(obj, arrCopy);
+            for (let i = 0; i < arrCopy.length; i++) {
+                arrCopy[i] = _copy(arrCopy[i]);
+            }
+            return arrCopy;
+        }
+
+        // 处理普通对象
+        const proto = Object.getPrototypeOf(obj);
+        const objCopy = Object.create(proto);
+        hash.set(obj, objCopy);
+
+        // 复制所有自身属性（包括不可枚举和 Symbol）
+        const keys = Reflect.ownKeys(obj);
+        for (const key of keys) {
+            objCopy[key] = _copy(obj[key]);
+        }
+
+        return objCopy;
+    }
+
+    return _copy(obj);
+}
+
 /** 从对象中获取指定字段 */
 function DefaultStringGetter(obj: object, propName: string): string {
     const value = (obj as Record<string, unknown>)[propName];
@@ -12,6 +101,8 @@ function DefaultObjectSetter(obj: object, propName: string, value: any): void {
 }
 
 export {
+    ObjectShallowCopy,
+    ObjectDeepCopy,
     DefaultStringGetter,
     DefaultObjectSetter,
 }

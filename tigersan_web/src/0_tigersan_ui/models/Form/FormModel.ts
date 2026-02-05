@@ -2,6 +2,10 @@ import { ref, computed, watch } from "vue"
 import { Colors } from "@/0_tigersan_ui/base"
 import type { ObjectAction, UnknownGetter, UnknownSetter } from "@/0_tigersan_ui/base"
 import { dialog } from '@/0_tigersan_ui/stores'
+import { FormConfig, SetFormModel, GetItemModels } from './FormConfig'
+
+type FormVerify = (source: object) => VerifyResult
+type FormSubmit = (source: object) => SubmitResult
 
 /** 表单结果 */
 enum FormResult {
@@ -49,9 +53,7 @@ class FormModel {
     /** 获取“源数据”  */
     _getSource: ObjectAction
     /** 提交时 */
-    _onSubmit?: (source: object) => SubmitResult
-    /** 默认获取“源数据”方法  */
-    static _defaultGetSource: ObjectAction = () => { return {} }
+    _onSubmit?: FormSubmit
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -66,9 +68,10 @@ class FormModel {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor() {
-        this._getSource = FormModel._defaultGetSource
+    constructor(config: FormConfig) {
+        this._getSource = config._getSource
         this._source = this._getSource()
+        SetFormModel(this, config)
 
         // 显示时初始化:
         watch(this.IsShow, () => {
@@ -153,10 +156,10 @@ class FormModel {
         this.Close()
     }
 
-    /** 更新“目标数据” */
+    /** 更新“目标数据”集合 */
     UpdateTargets() {
         this.ForEachItemModels(itemModel => {
-            itemModel.Target.value = itemModel._getValue(this._source)
+            itemModel.UpdateTarget()
         })
     }
 
@@ -192,21 +195,27 @@ class FormItemModel {
     _formModel: FormModel
     _getValue: UnknownGetter
     _setValue: UnknownSetter
-    _isVerifyOk?: (source: object) => VerifyResult
+    _isVerifyOk?: FormVerify
     //#endregion 【Fields】
 
     //#region 【Properties】
-    /** 目标数据
-     * （需手动绑定，由“FormItemModel”维护） */
+    //#region [内部维护]
+    /** 目标数据：
+     * 会被“FormItemConfig”覆盖
+     * （由“FormItemModel”维护） */
     Target = ref<unknown>()
-    /** 是否“必填” */
-    IsEquired = ref(false)
+    /** 验证结果
+     * （由“FormItemModel”维护） */
+    VerifyResult = ref(FormResult.OK)
+    /** 验证文本
+     * （由“FormItemModel”维护） */
+    VerifyText = ref('')
+    //#endregion [内部维护]
+
     /** 标题 */
     PropName = ref('PropName')
-    /** 验证文本 */
-    VerifyText = ref('')
-    /** 验证结果 */
-    VerifyResult = ref(FormResult.OK)
+    /** 是否“必填” */
+    IsEquired = ref(false)
 
     //#region [computed]
     /** 是否显示“验证文本” */
@@ -257,13 +266,22 @@ class FormItemModel {
      * （会更新状态，需手动调用） */
     SetSource = (value: unknown) => {
         if (!this._setValue) return
+        // 修改“源数据”:
         this._setValue(this._formModel._source, value)
+        // 修改“目标数据”:
+        this.Target.value = value
+        // 验证:
         this.IsVerifyOk()
+    }
+
+    /** 更新“目标数据” */
+    UpdateTarget() {
+        this.Target.value = this._getValue(this._formModel._source)
     }
 
     /** 是否验证成功
      * （“FormItem”修改“源数据”时会自动调用） */
-    IsVerifyOk = () => {
+    IsVerifyOk = (): boolean => {
         if (!this._isVerifyOk) return true
 
         var res = this._isVerifyOk(this._formModel._source)
@@ -272,13 +290,21 @@ class FormItemModel {
             this.VerifyText.value = res.VerifyText
             this.VerifyResult.value = FormResult.Error
             return false
+        } else {
+            this.VerifyText.value = ''
+            this.VerifyResult.value = FormResult.OK
+            return true
         }
-
-        this.VerifyText.value = ''
-        this.VerifyResult.value = FormResult.OK
-        return true
     }
     //#endregion 【Functions】
 }
 
-export { FormResult, VerifyResult, SubmitResult, FormModel, FormItemModel }
+export {
+    type FormVerify,
+    type FormSubmit,
+    FormResult,
+    VerifyResult,
+    SubmitResult,
+    FormModel,
+    FormItemModel
+}

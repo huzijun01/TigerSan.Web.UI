@@ -10,12 +10,14 @@
 </template>
 
 <script lang="ts" setup>
+import { FormConfig } from '../../models';
 import { FormModel, FormItemModel } from '../../models/Form/FormModel';
+import { DefaultObjectAction } from '../../base';
 
 let { model } = defineProps({
     model: {
         type: FormItemModel,
-        default: new FormItemModel(new FormModel(), () => { }, () => { })
+        default: new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), () => { }, () => { })
     }
 })
 </script>

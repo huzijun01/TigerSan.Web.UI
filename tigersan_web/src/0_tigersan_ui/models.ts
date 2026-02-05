@@ -1,8 +1,26 @@
 /* Form: */
-import { FormResult, VerifyResult, SubmitResult, FormModel, FormItemModel } from './models/Form/FormModel'
+import {
+    type FormVerify,
+    type FormSubmit,
+    FormResult,
+    VerifyResult,
+    SubmitResult,
+    FormModel,
+    FormItemModel
+} from './models/Form/FormModel'
+import {
+    FormConfig,
+    FormItemConfig,
+    SetFormModel,
+    GetItemModels,
+} from './models/Form/FormConfig'
 
 /* Inputs: */
-import { type MenuItemModelAction, MenuItemModel, SelectModel } from './models/Inputs/SelectModel'
+import {
+    type MenuItemModelAction,
+    MenuItemModel,
+    SelectModel,
+} from './models/Inputs/SelectModel'
 
 /* NavBar: */
 import testNavBarModel from './models/NavBar/testNavBarModel'
@@ -56,10 +74,23 @@ import {
 
 export {
     /* Form: */
-    FormResult, VerifyResult, SubmitResult, FormModel, FormItemModel,
+    type FormVerify,
+    type FormSubmit,
+    FormResult,
+    VerifyResult,
+    SubmitResult,
+    FormModel,
+    FormItemModel,
+    // Config:
+    FormConfig,
+    FormItemConfig,
+    SetFormModel,
+    GetItemModels,
 
     /* Inputs: */
-    type MenuItemModelAction, MenuItemModel, SelectModel,
+    type MenuItemModelAction,
+    MenuItemModel,
+    SelectModel,
 
     /* NavBar: */
     type TryNavButtonHandler,

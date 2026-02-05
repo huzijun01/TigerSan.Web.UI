@@ -22,6 +22,10 @@ type StringGetter = (obj: object, propName: string) => string
 type UnknownGetter = (source: object) => unknown
 type UnknownSetter = (source: object, value: unknown) => void
 
+// Function:
+/** 默认“对象行为”  */
+function DefaultObjectAction() { return {} }
+
 export {
     // Class:
     Int,
@@ -47,4 +51,7 @@ export {
     type StringGetter,
     type UnknownGetter,
     type UnknownSetter,
+
+    // Function:
+    DefaultObjectAction,
 }

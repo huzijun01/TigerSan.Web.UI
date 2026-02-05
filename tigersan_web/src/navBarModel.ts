@@ -45,7 +45,6 @@ let navBarModel = new NavBarModel({
             _component: TablePage
         },
         {
-            IsSelected: true,
             Icon: Icons.Setting_Linear,
             Title: "系统设置",
         },

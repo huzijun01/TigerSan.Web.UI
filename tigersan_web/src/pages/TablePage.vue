@@ -31,35 +31,59 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="testTableModel"></Table>
+            <Table :model="gatewayTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="testTableModel.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="gatewayTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
     </PageCard>
-    <GatewayForm :model="formModel"></GatewayForm>
+
+    <!-- 表单: -->
+    <PopForm :model="gatewayForm">
+        <FormRow>
+            <FormItem :model="configName.ItemModel">
+                <input type="text" :value="configName.Target.value" v-on:input="SetName">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="configMacAddr.ItemModel">
+                <input type="text" :value="configMacAddr.Target.value" v-on:input="SetMacAddr">
+            </FormItem>
+        </FormRow>
+    </PopForm>
 </template>
 
 <script lang="ts" setup>
-import { SelectModel, PaginationModel, FormModel, SubmitResult, DialogMode, DialogState } from '@/0_tigersan_ui/models';
-import { Table, Select, PageCard, Pagination } from '@/0_tigersan_ui/components'
-import { testTableModel } from '@/testTableModel'
+import { gatewayTable } from '@/tables/gatewayTable'
 import { dialog } from '@/0_tigersan_ui/stores'
-import { Colors, Int } from '@/0_tigersan_ui/base'
-import GatewayForm from '@/forms/GatewayForm.vue'
-import { GatewayModel } from '@/testTableModel'
-
+import { Int } from '@/0_tigersan_ui/base'
+import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
+import {
+    Table,
+    Select,
+    PageCard,
+    Pagination,
+    PopForm,
+    FormRow,
+    FormItem
+} from '@/0_tigersan_ui/components'
+import {
+    configName,
+    configMacAddr,
+    gatewayForm,
+    SetName,
+    SetMacAddr,
+    Refresh,
+    Add,
+    Edit,
+    Delete,
+} from '@/forms/gatewayForm'
 // 【字段】:
-// 表单:
-const formModel = new FormModel()
-formModel.CancelText.value = '取消'
-formModel.SubmitText.value = '确定'
-
 // 表格:
-const { IsOnlySelected } = testTableModel
+const { IsOnlySelected } = gatewayTable
 
 // 【过程】:
 // 选择器:
@@ -74,9 +98,9 @@ stateSelectModel.Value.value = '全部'
 stateSelectModel.Items.push(...['全部', '在线', '离线'])
 
 // 表格:
-testTableModel.IsAllowMultiSelect.value = false
-testTableModel._onInitRowModel = () => {
-    paginationModel.Count.value = testTableModel.Count.value
+gatewayTable.IsAllowMultiSelect.value = false
+gatewayTable._onInitRowModel = () => {
+    paginationModel.Count.value = gatewayTable.Count.value
 }
 
 // 分页器:
@@ -101,74 +125,8 @@ function BluetoothUpdate() {
     dialog.ShowInformation('蓝牙固件升级')
 }
 
-function Refresh() {
-    testTableModel.Refresh()
-}
-
 function Restart() {
     dialog.ShowInformation('重启')
-}
-
-function Add() {
-    formModel.Title.value = '新增网关'
-
-    formModel._getSource = () => {
-        return new GatewayModel()
-    }
-
-    formModel._onSubmit = source => {
-        testTableModel.RowDatas.push(source)
-        testTableModel.Refresh()
-
-        return new SubmitResult('添加成功')
-    }
-
-    formModel.Show()
-}
-
-function Edit() {
-    formModel.Title.value = '修改网关'
-
-    let index = 0
-
-    formModel._getSource = () => {
-        const rowData = testTableModel.SelectedRowDatas.value[0]
-        if (!rowData) {
-            console.log('The rowData is undefined!')
-            return {}
-        }
-
-        index = testTableModel.RowDatas.indexOf(rowData)
-        return rowData
-    }
-
-    formModel._onSubmit = source => {
-        testTableModel.RowDatas[index] = source
-        testTableModel.Refresh()
-
-        return new SubmitResult('修改成功')
-    }
-
-    formModel.Show()
-}
-
-function Delete() {
-    dialog.ShowDialog('确认', '是否确定删除？', DeleteRowData, DialogMode.YesOrNo, Colors.Warning)
-}
-
-function DeleteRowData(state: DialogState) {
-    if (state != DialogState.Yes) return
-
-    const rowData = testTableModel.SelectedRowDatas.value[0]
-    if (!rowData) {
-        console.log('The rowData is undefined!')
-        return {}
-    }
-
-    testTableModel.RowDatas = testTableModel.RowDatas.filter(r => r != rowData)
-    testTableModel.Refresh()
-
-    dialog.ShowSuccess('删除成功')
 }
 </script>
 
