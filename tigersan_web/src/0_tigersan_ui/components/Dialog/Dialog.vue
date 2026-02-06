@@ -35,7 +35,7 @@ let isShow = computed(() => dialogModels.length > 0)
 function Close(id: string, state: DialogState) {
     let model = dialogModels.find(m => m.id === id)
     if (model == undefined) {
-        console.log('The models is undefined!');
+        console.warn('The models is undefined!');
         return
     }
 
@@ -84,7 +84,7 @@ function Close(id: string, state: DialogState) {
         box-shadow: var(--box-shadow);
         border-color: var(--theme-brand);
         /* 颜色 */
-        background: var(--theme-background-panel);
+        background: var(--theme-panel-background);
 
         .titlePanel {
             /* 行 */

@@ -30,7 +30,7 @@ import { FormConfig, FormModel } from '../../models'
 let { model } = defineProps({
     model: {
         type: FormModel,
-        default: new FormModel(new FormConfig(DefaultObjectAction))
+        default: () => new FormModel(new FormConfig(DefaultObjectAction))
     }
 })
 
@@ -53,7 +53,7 @@ table {
     display: flex;
     flex-direction: column;
     border-radius: 10px;
-    background-color: var(--theme-background-card);
+    background-color: var(--theme-card-background);
 
     .title-panel {
         padding: 16px 27px 16px 24px;

@@ -16,6 +16,5 @@
 table {
     border-collapse: separate;
     border-spacing: @margin-right @margin-bottom;
-    margin: -@margin-bottom -@margin-right;
 }
 </style>

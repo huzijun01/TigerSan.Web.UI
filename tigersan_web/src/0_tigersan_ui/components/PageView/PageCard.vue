@@ -37,7 +37,7 @@ let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = de
     },
     background: {
         type: String,
-        default: 'var(--theme-background-card)'
+        default: 'var(--theme-card-background)'
     },
 })
 

@@ -8,7 +8,7 @@ class EnvSensorModel {
     Version = ''
     State = ''
     Battery = ''
-    EQP_Time = ''
+    EqpTime = ''
     LastMsgTime = ''
     Operation = ''
 }
@@ -48,7 +48,7 @@ let envSensorTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'EQP_Time',
+        _propName: 'EqpTime',
         Text: '设备时间',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -76,7 +76,7 @@ let arr: EnvSensorModel[] =
             Version: '1.0.0',
             State: '在线',
             Battery: '100',
-            EQP_Time: '2026-01-21 17:33:56',
+            EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作1',
         },

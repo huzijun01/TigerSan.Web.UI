@@ -4,6 +4,7 @@ import type { Object2StringFunc } from "@/0_tigersan_ui/types"
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void
 
+/** “值转换控件”基类 */
 class ConverterBase {
     //#region 【Fields】
     /** 转换器 */
@@ -34,6 +35,7 @@ class ConverterBase {
     //#endregion 【Functions】
 }
 
+/** “菜单项目”模型 */
 class MenuItemModel extends ConverterBase {
     //#region 【Fields】
     /** 转换器 */
@@ -69,6 +71,7 @@ class MenuItemModel extends ConverterBase {
     //#endregion 【Functions】
 }
 
+/** “选择框”模型 */
 class SelectModel extends ConverterBase {
     //#region 【Fields】
     /** 选择后 */

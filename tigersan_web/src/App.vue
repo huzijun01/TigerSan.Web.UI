@@ -61,7 +61,7 @@ import { IconButton, Dialog, NavBar, PageBar, PageView } from '@/0_tigersan_ui/c
       display: flex;
       align-items: flex-start;
       grid-row: 1/2;
-      background: var(--theme-background-card);
+      background: var(--theme-card-background);
 
       &>button {
         flex-shrink: 0;
@@ -78,7 +78,7 @@ import { IconButton, Dialog, NavBar, PageBar, PageView } from '@/0_tigersan_ui/c
 
     .page-panel {
       grid-row: 2/3;
-      background: var(--theme-background-panel);
+      background: var(--theme-panel-background);
       overflow: hidden;
     }
   }

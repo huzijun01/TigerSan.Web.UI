@@ -22,7 +22,7 @@ import { computed } from 'vue';
 let { model, selectedRowCount } = defineProps({
     model: {
         type: PaginationModel,
-        default: new PaginationModel()
+        default: () => new PaginationModel()
     },
     selectedRowCount: {
         type: Number,

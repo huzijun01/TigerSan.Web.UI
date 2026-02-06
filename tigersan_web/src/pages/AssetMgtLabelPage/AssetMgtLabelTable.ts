@@ -5,7 +5,7 @@ import { TableModel, TextAlign } from "@/0_tigersan_ui/models"
 class AssetMgtLabelModel {
     Index = 0
     MacAddr = ''
-    EQP_Type = ''
+    EqpType = ''
     Version = ''
     State = ''
     Battery = ''
@@ -29,7 +29,7 @@ let assetMgtLabelTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'EQP_Type',
+        _propName: 'EqpType',
         Text: '设备型号',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -73,7 +73,7 @@ let arr: AssetMgtLabelModel[] =
         {
             Index: 1,
             MacAddr: 'EQP1',
-            EQP_Type: 'Type1',
+            EqpType: 'Type1',
             Version: '1.0.0',
             State: '在线',
             Battery: '100',

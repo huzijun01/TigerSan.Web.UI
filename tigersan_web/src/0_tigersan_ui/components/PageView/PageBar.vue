@@ -15,7 +15,7 @@ import { NavBarModel } from '../../models';
 let { model, offsetX } = defineProps({
     model: {
         type: NavBarModel,
-        default: new NavBarModel()
+        default: () => new NavBarModel()
     },
     offsetX: {
         type: Number,

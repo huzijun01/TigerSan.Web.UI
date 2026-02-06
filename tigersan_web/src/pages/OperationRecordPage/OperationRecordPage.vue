@@ -46,7 +46,7 @@ import {
 const { IsOnlySelected } = operationRecordTable
 
 // 【过程】:
-// 选择器:
+// 选择框:
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150
 operationTypeSelect.Placeholder.value = '请选择'

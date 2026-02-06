@@ -2,7 +2,8 @@ import { ref, type InputHTMLAttributes } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { AssetMgtLabelModel, assetMgtLabelTable } from './AssetMgtLabelTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import { IsNotUndefinedOrEmpty } from '@/0_tigersan_ui/helpers'
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig = {
@@ -11,15 +12,8 @@ const configMacAddr: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var res = new VerifyResult()
-
-        var AssetMgtLabel = source as AssetMgtLabelModel
-        if (AssetMgtLabel.MacAddr.trim() === '') {
-            res.VerifyText = '请输入MAC地址'
-            res.VerifyState = FormResult.Error
-        }
-
-        return res
+        var assetMgtLabel = source as AssetMgtLabelModel
+        return IsNotUndefinedOrEmpty(assetMgtLabel.MacAddr)
     }
 }
 
@@ -85,7 +79,7 @@ function DeleteRowData(state: DialogState) {
 
     const rowData = assetMgtLabelTable.SelectedRowDatas.value[0]
     if (!rowData) {
-        console.log('The rowData is undefined!')
+        console.warn('The rowData is undefined!')
         return {}
     }
 

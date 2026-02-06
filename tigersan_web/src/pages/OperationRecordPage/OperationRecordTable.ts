@@ -9,7 +9,7 @@ class OperationRecordModel {
     StartTime = ''
     StopTime = ''
     TotalSpentTime = ''
-    EQP_Count = 0
+    EqpCount = 0
     SuccessCount = 0
     FailCount = 0
     SuccessRate = 0
@@ -55,7 +55,7 @@ let operationRecordTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'EQP_Count',
+        _propName: 'EqpCount',
         Text: '设备总数',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -95,7 +95,7 @@ let arr: OperationRecordModel[] =
             StartTime: '2026-01-21 17:33:56',
             StopTime: '2026-01-21 17:33:56',
             TotalSpentTime: '9秒',
-            EQP_Count: 1,
+            EqpCount: 1,
             SuccessCount: 1,
             FailCount: 0,
             SuccessRate: 100,

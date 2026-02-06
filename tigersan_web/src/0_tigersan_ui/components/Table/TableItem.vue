@@ -73,9 +73,8 @@ function TextXSS() {
 function InitResizeObserver() {
     if (!refRoot.value) return
 
-    new ResizeObserver(() => {
-        UpdatePagePanelWidth()
-    }).observe(refRoot.value);
+    new ResizeObserver(UpdatePagePanelWidth)
+        .observe(refRoot.value)
 }
 
 function UpdatePagePanelWidth() {

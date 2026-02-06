@@ -1,8 +1,9 @@
 import { ref, type InputHTMLAttributes } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
+import { IsNotUndefinedOrEmpty } from '@/0_tigersan_ui/helpers'
 import { EnvSensorModel, envSensorTable } from './EnvSensorTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig = {
@@ -11,15 +12,8 @@ const configMacAddr: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var res = new VerifyResult()
-
-        var EnvSensor = source as EnvSensorModel
-        if (EnvSensor.MacAddr.trim() === '') {
-            res.VerifyText = '请输入MAC地址'
-            res.VerifyState = FormResult.Error
-        }
-
-        return res
+        var envSensor = source as EnvSensorModel
+        return IsNotUndefinedOrEmpty(envSensor.MacAddr)
     }
 }
 
@@ -85,7 +79,7 @@ function DeleteRowData(state: DialogState) {
 
     const rowData = envSensorTable.SelectedRowDatas.value[0]
     if (!rowData) {
-        console.log('The rowData is undefined!')
+        console.warn('The rowData is undefined!')
         return {}
     }
 

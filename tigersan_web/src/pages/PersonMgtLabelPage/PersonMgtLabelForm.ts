@@ -1,7 +1,7 @@
 import { ref, type InputHTMLAttributes } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
-import { ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
+import { IsNotUndefinedOrEmpty, ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
 import { PersonMgtLabelModel, personMgtLabelTable } from './PersonMgtLabelTable'
 import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 
@@ -12,34 +12,20 @@ const configIMEI: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var res = new VerifyResult()
-
-        var PersonMgtLabel = source as PersonMgtLabelModel
-        if (PersonMgtLabel.IMEI.trim() === '') {
-            res.VerifyText = '请输入MAC地址'
-            res.VerifyState = FormResult.Error
-        }
-
-        return res
+        var personMgtLabel = source as PersonMgtLabelModel
+        return IsNotUndefinedOrEmpty(personMgtLabel.IMEI)
     }
 }
 
 /** “网关名称”项目配置 */
-const configEQP_Name: FormItemConfig = {
-    _propName: 'EQP_Name',
+const configEqpName: FormItemConfig = {
+    _propName: 'EqpName',
     PropText: '网关名称',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var res = new VerifyResult()
-
-        var PersonMgtLabel = source as PersonMgtLabelModel
-        if (PersonMgtLabel.EQP_Name.trim() === '') {
-            res.VerifyText = '请输入名称'
-            res.VerifyState = FormResult.Error
-        }
-
-        return res
+        var personMgtLabel = source as PersonMgtLabelModel
+        return IsNotUndefinedOrEmpty(personMgtLabel.EqpName)
     }
 }
 
@@ -54,7 +40,7 @@ let configPersonMgtLabelForm: FormConfig = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _itemConfigs: [
-        configEQP_Name,
+        configEqpName,
         configIMEI,
     ]
 }
@@ -63,10 +49,10 @@ let configPersonMgtLabelForm: FormConfig = {
 const PersonMgtLabelForm = new FormModel(configPersonMgtLabelForm)
 
 // 【方法】:
-function SetEQP_Name(payload: Event) {
+function SetEqpName(payload: Event) {
     const input = payload.target as InputHTMLAttributes
-    if (configEQP_Name.SetSource) {
-        configEQP_Name.SetSource(input.value)
+    if (configEqpName.SetSource) {
+        configEqpName.SetSource(input.value)
     }
 }
 
@@ -107,7 +93,7 @@ function Edit() {
     PersonMgtLabelForm._getSource = () => {
         const rowData = personMgtLabelTable.SelectedRowDatas.value[0]
         if (!rowData) {
-            console.log('The rowData is undefined!')
+            console.warn('The rowData is undefined!')
             return {}
         }
 
@@ -140,7 +126,7 @@ function DeleteRowData(state: DialogState) {
 
     const rowData = personMgtLabelTable.SelectedRowDatas.value[0]
     if (!rowData) {
-        console.log('The rowData is undefined!')
+        console.warn('The rowData is undefined!')
         return {}
     }
 
@@ -151,10 +137,10 @@ function DeleteRowData(state: DialogState) {
 }
 
 export {
-    configEQP_Name,
+    configEqpName,
     configIMEI,
     PersonMgtLabelForm,
-    SetEQP_Name,
+    SetEqpName,
     SetIMEI,
     Refresh,
     Add,

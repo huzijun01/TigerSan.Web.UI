@@ -14,7 +14,7 @@ import { PaginationModel, PaginationButtonModel } from '../../models';
 let { model } = defineProps({
     model: {
         type: PaginationButtonModel,
-        default: new PaginationButtonModel(new PaginationModel())
+        default: () => new PaginationButtonModel(new PaginationModel())
     }
 })
 

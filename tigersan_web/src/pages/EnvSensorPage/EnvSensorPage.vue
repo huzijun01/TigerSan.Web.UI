@@ -76,7 +76,7 @@ import {
 const { IsOnlySelected } = envSensorTable
 
 // 【过程】:
-// 选择器:
+// 选择框:
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.Placeholder.value = '请选择'
@@ -89,7 +89,7 @@ typeSelect.Items.push(...[
 ])
 
 const stateSelect = new SelectModel()
-stateSelect.Width.value = 100
+stateSelect.Width.value = 120
 stateSelect.Value.value = '全部'
 stateSelect.Items.push(...['全部', '在线', '离线'])
 

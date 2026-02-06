@@ -70,9 +70,13 @@ class FormModel {
 
     //#region 【Ctor】
     constructor(config: FormConfig) {
+        // 初始化“字段”:
         this._getSource = config._getSource
         this._source = this._getSource()
         SetFormModel(this, config)
+
+        // 更新“目标数据”:
+        this.UpdateTargets()
 
         // 显示时初始化:
         watch(this.IsShow, () => {
@@ -89,7 +93,7 @@ class FormModel {
             const itemModel = this._itemModels[index]
 
             if (!itemModel) {
-                console.log('The itemModel is undefined!')
+                console.warn('The itemModel is undefined!')
                 continue
             }
 
@@ -216,7 +220,7 @@ class FormItemModel {
     //#endregion [内部维护]
 
     /** 属性文本 */
-    PropText = ref('Prop')
+    PropText = ref('')
     /** 是否“必填” */
     IsEquired = ref(false)
 

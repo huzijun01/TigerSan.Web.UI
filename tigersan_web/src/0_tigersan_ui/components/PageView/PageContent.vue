@@ -21,7 +21,7 @@ let { model } = defineProps({
 // 过程:
 onMounted(() => {
     if (!refRoot.value) {
-        console.log('The refRoot is undefined!')
+        console.warn('The refRoot is undefined!')
         return
     }
 

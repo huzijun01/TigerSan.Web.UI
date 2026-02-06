@@ -49,8 +49,8 @@
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="configEQP_Name.ItemModel">
-                <input type="text" :value="configEQP_Name.Target.value" v-on:input="SetEQP_Name">
+            <FormItem :model="configEqpName.ItemModel">
+                <input type="text" :value="configEqpName.Target.value" v-on:input="SetEqpName">
             </FormItem>
         </FormRow>
     </PopForm>
@@ -71,10 +71,10 @@ import {
     FormItem
 } from '@/0_tigersan_ui/components'
 import {
-    configEQP_Name,
+    configEqpName,
     configIMEI,
     PersonMgtLabelForm,
-    SetEQP_Name,
+    SetEqpName,
     SetIMEI,
     Refresh,
     Add,
@@ -86,7 +86,7 @@ import {
 const { IsOnlySelected } = personMgtLabelTable
 
 // 【过程】:
-// 选择器:
+// 选择框:
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.Placeholder.value = '请选择'
@@ -97,13 +97,13 @@ typeSelect.Items.push(...[
 ])
 
 const stateSelect = new SelectModel()
-stateSelect.Width.value = 100
+stateSelect.Width.value = 120
 stateSelect.Placeholder.value = '请选择'
 stateSelect.Value.value = '全部'
 stateSelect.Items.push(...['全部', '在线', '离线'])
 
 const bluetoothFirmwareSelect = new SelectModel()
-bluetoothFirmwareSelect.Width.value = 100
+bluetoothFirmwareSelect.Width.value = 120
 bluetoothFirmwareSelect.Value.value = '全部'
 bluetoothFirmwareSelect.Items.push(...['全部'])
 

@@ -146,10 +146,10 @@
   --theme-color-placeholder: var(--color-placeholder-text);
   --theme-button-color-disabled: var(--color-foreground-disabled);
   /* [背景] */
-  --theme-background-card: white;
-  --theme-background-panel: #f0f2f5;
-  --theme-background-input: white;
-  --theme-background-input-disabled: var(--color-black-10);
+  --theme-card-background: white;
+  --theme-panel-background: #f0f2f5;
+  --theme-input-background: white;
+  --theme-input-background-disabled: var(--color-black-10);
   /* [边框] */
   --theme-border: #d9d9d9;
   --theme-border-hover: var(--theme-brand);

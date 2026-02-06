@@ -1,6 +1,14 @@
 .display-none {
   display: none !important;
 }
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-column > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 .flex-center {
   display: flex;
   align-items: center;

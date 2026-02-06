@@ -23,7 +23,7 @@ import { RectPosition, GetWithinWindowRect } from '../../helpers';
 let { model } = defineProps({
     model: {
         type: SelectModel,
-        default: new SelectModel()
+        default: () => new SelectModel()
     }
 })
 
@@ -123,12 +123,12 @@ function UpdateMenuPosition() {
     if (!model.IsOpen.value) return
 
     if (!refRoot.value) {
-        console.log('The refRoot is undefined!')
+        console.warn('The refRoot is undefined!')
         return
     }
 
     if (!refMenu.value) {
-        console.log('The refRoot is undefined!')
+        console.warn('The refRoot is undefined!')
         return
     }
 
@@ -148,7 +148,7 @@ function UpdateMenuPosition() {
 /** 点击窗口后 */
 function window_OnClick(event: MouseEvent) {
     if (!refRoot.value) {
-        console.log('The refRoot is undefined!')
+        console.warn('The refRoot is undefined!')
         return
     }
 
@@ -169,10 +169,11 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
 @padding: 0 8px;
 @font-size: 14px;
 @import '../../assets/styles/input.less';
-@import '../../assets/styles/panels.less';
 
 .select {
-    .flex-center();
+    /* 显示: */
+    display: grid;
+    grid-template-columns: 1fr auto;
     .input-border();
     /* 文本: */
     cursor: pointer;
@@ -187,19 +188,28 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
     }
 
     .text {
-        flex-grow: 1;
+        /* 显示: */
+        grid-column: 1/2;
+        /* 尺寸: */
         padding: @padding;
+        /* 文本: */
         .ellipsis();
     }
 
     .placeholder {
-        flex-grow: 1;
+        /* 显示: */
+        grid-column: 1/2;
+        /* 尺寸: */
         padding: @padding;
+        /* 颜色: */
         color: var(--theme-color-placeholder);
+        /* 文本: */
         .ellipsis();
     }
 
     .arrow {
+        /* 显示: */
+        grid-column: 2/3;
         /* 尺寸: */
         margin-right: @padding;
         /* 颜色: */
@@ -219,7 +229,7 @@ function IsClickOutside(target: HTMLElement, container: HTMLElement): boolean {
     border-radius: 5px;
     border: 1px solid var(--theme-border-active);
     /* 颜色: */
-    background: var(--theme-background-input);
+    background: var(--theme-input-background);
     /* 其它: */
     z-index: 999;
     /* 动画配置 */

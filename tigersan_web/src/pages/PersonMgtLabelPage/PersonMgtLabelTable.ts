@@ -5,8 +5,8 @@ import { TableModel, TextAlign } from "@/0_tigersan_ui/models"
 class PersonMgtLabelModel {
     Index = 0
     IMEI = ''
-    EQP_Name = ''
-    EQP_Type = ''
+    EqpName = ''
+    EqpType = ''
     State = ''
     BluetoothFirmware = ''
     KeyEvent = ''
@@ -32,7 +32,7 @@ let personMgtLabelTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'EQP_Name',
+        _propName: 'EqpName',
         Text: '设备名称',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -45,7 +45,7 @@ let personMgtLabelTable = new TableModel([
         TextAlign: TextAlign.Center,
     },
     {
-        _propName: 'EQP_Type',
+        _propName: 'EqpType',
         Text: '设备型号',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -88,8 +88,8 @@ let arr: PersonMgtLabelModel[] =
         {
             Index: 1,
             IMEI: '863184079495485',
-            EQP_Name: 'EQP1',
-            EQP_Type: 'g1-e-grapes',
+            EqpName: 'EQP1',
+            EqpType: 'g1-e-grapes',
             State: '在线',
             BluetoothFirmware: '固件1',
             KeyEvent: '事件1',

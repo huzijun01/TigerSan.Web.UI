@@ -17,7 +17,7 @@ import { DefaultObjectAction } from '../../helpers'
 let { model } = defineProps({
     model: {
         type: FormItemModel,
-        default: new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), '')
+        default: () => new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), '')
     }
 })
 </script>
@@ -36,6 +36,7 @@ let { model } = defineProps({
 
 .prop-value {
     position: relative;
+    text-wrap: nowrap;
 
     .verify-text {
         position: absolute;

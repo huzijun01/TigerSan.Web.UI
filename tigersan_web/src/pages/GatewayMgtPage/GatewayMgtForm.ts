@@ -1,7 +1,7 @@
 import { ref, type InputHTMLAttributes } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
-import { ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
+import { IsNotUndefinedOrEmpty, ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
 import { GatewayMgtModel, gatewayMgtTable } from './GatewayMgtTable'
 import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 
@@ -12,15 +12,8 @@ const configName: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var res = new VerifyResult()
-
         var gateway = source as GatewayMgtModel
-        if (gateway.Name.trim() === '') {
-            res.VerifyText = '请输入名称'
-            res.VerifyState = FormResult.Error
-        }
-
-        return res
+        return IsNotUndefinedOrEmpty(gateway.Name)
     }
 }
 
@@ -31,15 +24,8 @@ const configMacAddr: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var res = new VerifyResult()
-
         var gateway = source as GatewayMgtModel
-        if (gateway.MacAddr.trim() === '') {
-            res.VerifyText = '请输入MAC地址'
-            res.VerifyState = FormResult.Error
-        }
-
-        return res
+        return IsNotUndefinedOrEmpty(gateway.MacAddr)
     }
 }
 
@@ -61,21 +47,6 @@ let configGatewayForm: FormConfig = {
 
 /** “网关”表单模型 */
 const gatewayForm = new FormModel(configGatewayForm)
-
-// 【方法】:
-function SetName(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configName.SetSource) {
-        configName.SetSource(input.value)
-    }
-}
-
-function SetMacAddr(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configMacAddr.SetSource) {
-        configMacAddr.SetSource(input.value)
-    }
-}
 
 /** 查 */
 function Refresh() {
@@ -107,7 +78,7 @@ function Edit() {
     gatewayForm._getSource = () => {
         const rowData = gatewayMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
-            console.log('The rowData is undefined!')
+            console.warn('The rowData is undefined!')
             return {}
         }
 
@@ -140,7 +111,7 @@ function DeleteRowData(state: DialogState) {
 
     const rowData = gatewayMgtTable.SelectedRowDatas.value[0]
     if (!rowData) {
-        console.log('The rowData is undefined!')
+        console.warn('The rowData is undefined!')
         return {}
     }
 
@@ -150,14 +121,29 @@ function DeleteRowData(state: DialogState) {
     dialog.ShowSuccess('删除成功')
 }
 
+// 【方法】:
+function SetName(payload: Event) {
+    const input = payload.target as InputHTMLAttributes
+    if (configName.SetSource) {
+        configName.SetSource(input.value)
+    }
+}
+
+function SetMacAddr(payload: Event) {
+    const input = payload.target as InputHTMLAttributes
+    if (configMacAddr.SetSource) {
+        configMacAddr.SetSource(input.value)
+    }
+}
+
 export {
     configName,
     configMacAddr,
     gatewayForm,
-    SetName,
-    SetMacAddr,
     Refresh,
     Add,
     Edit,
     Delete,
+    SetName,
+    SetMacAddr,
 }

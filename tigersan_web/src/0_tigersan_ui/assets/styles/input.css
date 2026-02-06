@@ -1,6 +1,14 @@
 .display-none {
   display: none !important;
 }
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-column > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 .flex-center {
   display: flex;
   align-items: center;
@@ -19,6 +27,36 @@
   flex-grow: 1;
   flex-shrink: 0;
 }
+.flex-between {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-between > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-left {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+.flex-left > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-right {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.flex-right > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 .ellipsis {
   overflow: hidden !important;
   white-space: nowrap !important;
@@ -31,7 +69,7 @@
   padding: 5px 10px;
   /* 颜色: */
   color: var(--theme-color);
-  background: var(--theme-background-input);
+  background: var(--theme-input-background);
   border-color: var(--theme-border);
   /* 过渡: */
   transition: var(--Global-Transition);
@@ -61,7 +99,7 @@ textarea {
   padding: 5px 10px;
   /* 颜色: */
   color: var(--theme-color);
-  background: var(--theme-background-input);
+  background: var(--theme-input-background);
   border-color: var(--theme-border);
   /* 过渡: */
   transition: var(--Global-Transition);

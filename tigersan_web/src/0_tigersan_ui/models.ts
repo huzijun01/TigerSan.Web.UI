@@ -1,3 +1,8 @@
+/* Drawer: */
+import {
+    DrawerBoxModel
+} from './models/Drawer/DrawerBoxModel'
+
 /* Form: */
 import {
     type FormVerify,
@@ -73,6 +78,9 @@ import {
 } from './models/DialogModel'
 
 export {
+    /* Drawer: */
+    DrawerBoxModel,
+
     /* Form: */
     type FormVerify,
     type FormSubmit,

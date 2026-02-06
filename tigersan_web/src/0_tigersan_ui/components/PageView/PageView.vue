@@ -13,7 +13,7 @@ import { NavBarModel } from '../../models'
 let { model } = defineProps({
     model: {
         type: NavBarModel,
-        default: new NavBarModel()
+        default: () => new NavBarModel()
     }
 })
 </script>

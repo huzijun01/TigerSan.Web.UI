@@ -185,7 +185,7 @@ class PaginationModel {
     private InitButtonModels(start: Int, end: Int) {
         this.ButtonModels.splice(0)
         if (start.value < 0 || end.value < 0 || start.value > end.value) {
-            console.log('The start or end is out of range!')
+            console.warn('The start or end is out of range!')
             return
         }
 

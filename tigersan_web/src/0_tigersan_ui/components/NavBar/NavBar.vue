@@ -50,7 +50,7 @@ let { logo, title, model } = defineProps({
     },
     model: {
         type: NavBarModel,
-        default: new NavBarModel()
+        default: () => new NavBarModel()
     }
 })
 

@@ -5,7 +5,7 @@ import { TableModel, TextAlign } from "@/0_tigersan_ui/models"
 class OperationRetryModel {
     Index = 0
     MacAddr = ''
-    EQP_Type = ''
+    EqpType = ''
     OperationType = ''
     OperationTime = ''
     Operation = ''
@@ -27,7 +27,7 @@ let operationRetryTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'EQP_Type',
+        _propName: 'EqpType',
         Text: '设备型号',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -58,7 +58,7 @@ let arr: OperationRetryModel[] =
         {
             Index: 1,
             MacAddr: 'AC233FC21C39',
-            EQP_Type: 'MBT02',
+            EqpType: 'MBT02',
             OperationType: '传感器',
             OperationTime: '2026-01-21 17:33:56',
             Operation: '操作1',

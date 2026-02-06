@@ -74,19 +74,19 @@ import {
     configName,
     configMacAddr,
     gatewayForm,
-    SetName,
-    SetMacAddr,
     Refresh,
     Add,
     Edit,
     Delete,
+    SetName,
+    SetMacAddr,
 } from './GatewayMgtForm'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = gatewayMgtTable
 
 // 【过程】:
-// 选择器:
+// 选择框:
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.Placeholder.value = '请选择'

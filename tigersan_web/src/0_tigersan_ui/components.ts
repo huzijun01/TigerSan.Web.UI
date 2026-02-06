@@ -3,6 +3,8 @@ import IconButton from "./components/Button/IconButton.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
 import Pop from "./components/Dialog/Pop.vue"
+// Drawer:
+import DrawerBox from "./components/Drawer/DrawerBox.vue"
 // Form:
 import Form from './components/Form/Form.vue'
 import PopForm from './components/Form/PopForm.vue'
@@ -34,6 +36,8 @@ export {
     // Dialog:
     Dialog,
     Pop,
+    // Drawer:
+    DrawerBox,
     // Form:
     Form,
     PopForm,
