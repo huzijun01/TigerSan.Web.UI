@@ -1,22 +1,20 @@
 import { Colors } from "@/0_tigersan_ui/base"
 import { TableModel, TextAlign } from "@/0_tigersan_ui/models"
 
-/** “人员管理标签”模型 */
-class PersonMgtLabelModel {
+/** "环境传感器"模型 */
+class EnvSensorModel {
     Index = 0
-    IMEI = ''
-    EQP_Name = ''
-    EQP_Type = ''
+    MacAddr = ''
+    Version = ''
     State = ''
-    BluetoothFirmware = ''
-    KeyEvent = ''
-    TriggerEvent = ''
     Battery = ''
+    EQP_Time = ''
     LastMsgTime = ''
+    Operation = ''
 }
 
 // 列头:
-let personMgtLabelTable = new TableModel([
+let envSensorTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -25,15 +23,14 @@ let personMgtLabelTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'IMEI',
-        Text: 'IMEI',
-        TextAlign: TextAlign.Center,
+        _propName: 'MacAddr',
+        Text: 'MAC地址',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
-        _propName: 'EQP_Name',
-        Text: '设备名称',
+        _propName: 'Version',
+        Text: '固件版本',
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -45,63 +42,49 @@ let personMgtLabelTable = new TableModel([
         TextAlign: TextAlign.Center,
     },
     {
-        _propName: 'EQP_Type',
-        Text: '设备型号',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'BluetoothFirmware',
-        Text: '蓝牙固件',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'KeyEvent',
-        Text: '按键事件',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'TriggerEvent',
-        Text: '触发事件',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
         _propName: 'Battery',
         Text: '电量（%）',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
+        _propName: 'EQP_Time',
+        Text: '设备时间',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
         _propName: 'LastMsgTime',
-        Text: '最近通讯时间',
+        Text: '最近广播时间',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
+        _propName: 'Operation',
+        Text: '操作',
         IsReadonly: true,
         IsAllowWrap: false,
     },
 ])
 
 // 数据:
-let arr: PersonMgtLabelModel[] =
+let arr: EnvSensorModel[] =
     [
         {
             Index: 1,
-            IMEI: '863184079495485',
-            EQP_Name: 'EQP1',
-            EQP_Type: 'g1-e-grapes',
+            MacAddr: 'EQP1',
+            Version: '1.0.0',
             State: '在线',
-            BluetoothFirmware: '固件1',
-            KeyEvent: '事件1',
-            TriggerEvent: '触发1',
             Battery: '100',
+            EQP_Time: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
+            Operation: '操作1',
         },
     ]
-personMgtLabelTable.RowDatas.push(...arr)
+envSensorTable.RowDatas.push(...arr)
 
 // 初始化:
-personMgtLabelTable._initItem = itemModel => {
+envSensorTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {
             itemModel.Color.value = Colors.Success
@@ -114,6 +97,6 @@ personMgtLabelTable._initItem = itemModel => {
 }
 
 export {
-    PersonMgtLabelModel,
-    personMgtLabelTable,
+    EnvSensorModel,
+    envSensorTable,
 }

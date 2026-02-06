@@ -1,4 +1,4 @@
-import type { BooleanAction, BooleanFunc, BooleanGetter, BooleanSetter } from "../base"
+import type { BooleanAction, BooleanFunc, BooleanGetter, BooleanSetter } from '../types'
 
 type CheckboxModelsGetter = () => CheckboxModel[]
 
@@ -130,4 +130,8 @@ class CheckboxBehavior {
     //#endregion 【Functions】
 }
 
-export { type CheckboxModelsGetter, CheckboxModel, CheckboxBehavior }
+export {
+    type CheckboxModelsGetter,
+    CheckboxModel,
+    CheckboxBehavior
+}

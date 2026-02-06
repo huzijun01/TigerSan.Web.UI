@@ -103,7 +103,7 @@ function GetWidth(): number {
     position: relative;
     display: grid;
     grid-template-rows: auto 1fr;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
     transition: var(--Global-Transition);
     background: var(--theme-nav-background);

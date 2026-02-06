@@ -14,7 +14,7 @@
         <button class="square-button" @click="navBarModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <!-- 页标签栏: -->
-        <PageBar :model="navBarModel" :offsetX="35 + 316" />
+        <PageBar :model="navBarModel" :offsetX="35 + 328" />
 
         <div class="info flex-center">
           <IconButton :icon="Icons.Question" text="帮助"></IconButton>

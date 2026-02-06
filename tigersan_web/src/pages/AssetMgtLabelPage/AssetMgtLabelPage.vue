@@ -11,46 +11,41 @@
                     <div class="row-panel">
                         <span>在线状态:</span>
                         <Select :model="stateSelect"></Select>
-                        <span>蓝牙固件:</span>
-                        <Select :model="bluetoothFirmwareSelect"></Select>
-                        <input type="text" placeholder="输入IMEI">
+                        <span>固件版本:</span>
+                        <Select :model="firmwareSelect"></Select>
+                        <input type="text" placeholder="输入名称或MAC">
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="Refresh">刷新</button>
                         <button @click="Add">+ 导入设备</button>
+                        <button @click="BatchOperation">批量操作</button>
                     </div>
                     <div class="row-panel">
-                        <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
                         <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
+                        <button :disabled="!IsOnlySelected" @click="SetCol">列管理</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
                     </div>
                 </div>
             </div>
 
             <!-- 表格: -->
-            <Table :model="personMgtLabelTable"></Table>
+            <Table :model="assetMgtLabelTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="personMgtLabelTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="assetMgtLabelTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="PersonMgtLabelForm">
+    <PopForm :model="AssetMgtLabelForm">
         <FormRow>
-            <FormItem :model="configIMEI.ItemModel">
-                <input type="text" :value="configIMEI.Target.value" v-on:input="SetIMEI">
-            </FormItem>
-        </FormRow>
-        <FormRow>
-            <FormItem :model="configEQP_Name.ItemModel">
-                <input type="text" :value="configEQP_Name.Target.value" v-on:input="SetEQP_Name">
+            <FormItem :model="configMacAddr.ItemModel">
+                <input type="text" :value="configMacAddr.Target.value" v-on:input="SetMacAddr">
             </FormItem>
         </FormRow>
     </PopForm>
@@ -59,7 +54,7 @@
 <script lang="ts" setup>
 import { Int } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
-import { personMgtLabelTable } from './PersonMgtLabelTable'
+import { assetMgtLabelTable } from './AssetMgtLabelTable'
 import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
@@ -71,46 +66,46 @@ import {
     FormItem
 } from '@/0_tigersan_ui/components'
 import {
-    configEQP_Name,
-    configIMEI,
-    PersonMgtLabelForm,
-    SetEQP_Name,
-    SetIMEI,
+    configMacAddr,
+    AssetMgtLabelForm,
+    SetMacAddr,
     Refresh,
     Add,
-    Edit,
     Delete,
-} from './PersonMgtLabelForm'
+} from './AssetMgtLabelForm'
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = personMgtLabelTable
+const { IsOnlySelected } = assetMgtLabelTable
 
 // 【过程】:
 // 选择器:
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.Placeholder.value = '请选择'
-typeSelect.Value.value = 'MWC03 4G智能工牌'
+typeSelect.Value.value = 'MBT02 可连接资产标签'
 typeSelect.Items.push(...[
-    'MWC03 4G智能工牌',
-    'MWC04 4G小型融合定位工牌',
+    'MBT02 可连接资产标签',
+    'MBT02 资产中继器',
+    'MTB04 5G资产标签',
 ])
 
 const stateSelect = new SelectModel()
 stateSelect.Width.value = 100
-stateSelect.Placeholder.value = '请选择'
 stateSelect.Value.value = '全部'
 stateSelect.Items.push(...['全部', '在线', '离线'])
 
-const bluetoothFirmwareSelect = new SelectModel()
-bluetoothFirmwareSelect.Width.value = 100
-bluetoothFirmwareSelect.Value.value = '全部'
-bluetoothFirmwareSelect.Items.push(...['全部'])
+const firmwareSelect = new SelectModel()
+firmwareSelect.Width.value = 100
+firmwareSelect.Value.value = '全部'
+firmwareSelect.Items.push(...[
+    '全部',
+    '3.2.0'
+])
 
 // 表格:
-personMgtLabelTable.IsAllowMultiSelect.value = false
-personMgtLabelTable._onInitRowModel = () => {
-    paginationModel.Count.value = personMgtLabelTable.Count.value
+assetMgtLabelTable.IsAllowMultiSelect.value = false
+assetMgtLabelTable._onInitRowModel = () => {
+    paginationModel.Count.value = assetMgtLabelTable.Count.value
 }
 
 // 分页器:
@@ -123,12 +118,17 @@ paginationModel.Checked = num => {
 paginationModel.PageSizes.push(new Int(100))
 
 // 【方法】:
+function BatchOperation() {
+    dialog.ShowInformation('批量操作')
+}
+
+
 function SetParams() {
     dialog.ShowInformation('修改参数')
 }
 
-function Restart() {
-    dialog.ShowInformation('重启')
+function SetCol() {
+    dialog.ShowInformation('OTA升级')
 }
 </script>
 

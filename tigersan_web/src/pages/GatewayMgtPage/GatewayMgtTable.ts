@@ -1,8 +1,8 @@
 import { Colors } from "@/0_tigersan_ui/base"
 import { TableModel, TextAlign } from "@/0_tigersan_ui/models"
 
-/** 网关模型 */
-class GatewayModel {
+/** “网关管理”模型 */
+class GatewayMgtModel {
     Index = 0
     MacAddr = ''
     Name = ''
@@ -13,7 +13,7 @@ class GatewayModel {
 }
 
 // 列头:
-let gatewayTable = new TableModel([
+let gatewayMgtTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -36,7 +36,7 @@ let gatewayTable = new TableModel([
     },
     {
         _propName: 'State',
-        Text: '状态',
+        Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
         TextAlign: TextAlign.Center,
@@ -62,7 +62,7 @@ let gatewayTable = new TableModel([
 ])
 
 // 数据:
-let arr: GatewayModel[] =
+let arr: GatewayMgtModel[] =
     [
         {
             Index: 1,
@@ -128,10 +128,10 @@ let arr: GatewayModel[] =
             Version: '3.7.0',
         },
     ]
-gatewayTable.RowDatas.push(...arr)
+gatewayMgtTable.RowDatas.push(...arr)
 
 // 初始化:
-gatewayTable._initItem = itemModel => {
+gatewayMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {
             itemModel.Color.value = Colors.Success
@@ -144,6 +144,6 @@ gatewayTable._initItem = itemModel => {
 }
 
 export {
-    GatewayModel,
-    gatewayTable,
+    GatewayMgtModel,
+    gatewayMgtTable,
 }

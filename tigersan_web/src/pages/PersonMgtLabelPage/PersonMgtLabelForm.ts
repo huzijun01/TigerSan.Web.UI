@@ -7,17 +7,10 @@ import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyRes
 
 /** “IMEI”项目配置 */
 const configIMEI: FormItemConfig = {
-    PropName: 'IMEI',
+    _propName: 'IMEI',
+    PropText: 'IMEI',
     IsEquired: true,
     Target: ref<unknown>(),
-    _getValue: source => {
-        var PersonMgtLabel = source as PersonMgtLabelModel
-        return PersonMgtLabel.IMEI
-    },
-    _setValue: (source, value) => {
-        var PersonMgtLabel = source as PersonMgtLabelModel
-        PersonMgtLabel.IMEI = value as string
-    },
     _isVerifyOk: (source) => {
         var res = new VerifyResult()
 
@@ -33,17 +26,10 @@ const configIMEI: FormItemConfig = {
 
 /** “网关名称”项目配置 */
 const configEQP_Name: FormItemConfig = {
-    PropName: '网关名称',
+    _propName: 'EQP_Name',
+    PropText: '网关名称',
     IsEquired: true,
     Target: ref<unknown>(),
-    _getValue: source => {
-        var PersonMgtLabel = source as PersonMgtLabelModel
-        return PersonMgtLabel.EQP_Name
-    },
-    _setValue: (source, value) => {
-        var PersonMgtLabel = source as PersonMgtLabelModel
-        PersonMgtLabel.EQP_Name = value as string
-    },
     _isVerifyOk: (source) => {
         var res = new VerifyResult()
 

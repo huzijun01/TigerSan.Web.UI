@@ -1,4 +1,4 @@
-import { type NumberFunc } from "../types"
+import { type NumberFunc } from "../../types"
 
 class Int {
     // 字段:

@@ -1,6 +1,7 @@
 import { ref, shallowReactive, watch } from "vue"
 import { PaginationButtonModel } from "./PaginationButtonModel"
-import { Int, type NumberFunc } from "@/0_tigersan_ui/base"
+import { Int } from "@/0_tigersan_ui/base"
+import type { NumberFunc } from "@/0_tigersan_ui/types"
 import { SelectModel } from "../Inputs/SelectModel"
 
 class PaginationModel {

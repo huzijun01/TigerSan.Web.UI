@@ -22,8 +22,9 @@
 
 <script lang="ts" setup>
 import Pop from '../Dialog/Pop.vue'
-import { FormConfig, FormModel } from '../../models';
-import { DefaultObjectAction, Icons } from '../../base'
+import { Icons } from '../../base'
+import { DefaultObjectAction } from '../../helpers'
+import { FormConfig, FormModel } from '../../models'
 
 // 字段:
 let { model } = defineProps({

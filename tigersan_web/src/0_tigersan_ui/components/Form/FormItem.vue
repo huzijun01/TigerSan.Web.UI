@@ -1,6 +1,6 @@
 <template>
     <td class="prop-name" :class="{ 'equired': model.IsEquired.value }">
-        <span>{{ model.PropName.value }}</span>
+        <span>{{ model.PropText.value }}</span>
     </td>
     <td class="prop-value">
         <slot></slot>
@@ -10,14 +10,14 @@
 </template>
 
 <script lang="ts" setup>
-import { FormConfig } from '../../models';
-import { FormModel, FormItemModel } from '../../models/Form/FormModel';
-import { DefaultObjectAction } from '../../base';
+import { FormConfig } from '../../models'
+import { FormModel, FormItemModel } from '../../models/Form/FormModel'
+import { DefaultObjectAction } from '../../helpers'
 
 let { model } = defineProps({
     model: {
         type: FormItemModel,
-        default: new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), () => { }, () => { })
+        default: new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), '')
     }
 })
 </script>

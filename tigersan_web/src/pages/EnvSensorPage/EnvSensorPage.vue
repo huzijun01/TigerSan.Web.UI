@@ -11,9 +11,7 @@
                     <div class="row-panel">
                         <span>在线状态:</span>
                         <Select :model="stateSelect"></Select>
-                        <span>蓝牙固件:</span>
-                        <Select :model="bluetoothFirmwareSelect"></Select>
-                        <input type="text" placeholder="输入IMEI">
+                        <input type="text" placeholder="输入名称或MAC">
                     </div>
                 </div>
                 <div class="button-panel">
@@ -22,35 +20,30 @@
                         <button @click="Add">+ 导入设备</button>
                     </div>
                     <div class="row-panel">
-                        <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="Edit">修改</button>
+                        <button :disabled="!IsOnlySelected" @click="SetTime">授时</button>
+                        <button :disabled="!IsOnlySelected" @click="PowerOff">关机</button>
+                        <button :disabled="!IsOnlySelected" @click="OTA_Update">OTA升级</button>
                         <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
-                        <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
                     </div>
                 </div>
             </div>
 
             <!-- 表格: -->
-            <Table :model="personMgtLabelTable"></Table>
+            <Table :model="envSensorTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="personMgtLabelTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="envSensorTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="PersonMgtLabelForm">
+    <PopForm :model="EnvSensorForm">
         <FormRow>
-            <FormItem :model="configIMEI.ItemModel">
-                <input type="text" :value="configIMEI.Target.value" v-on:input="SetIMEI">
-            </FormItem>
-        </FormRow>
-        <FormRow>
-            <FormItem :model="configEQP_Name.ItemModel">
-                <input type="text" :value="configEQP_Name.Target.value" v-on:input="SetEQP_Name">
+            <FormItem :model="configMacAddr.ItemModel">
+                <input type="text" :value="configMacAddr.Target.value" v-on:input="SetMacAddr">
             </FormItem>
         </FormRow>
     </PopForm>
@@ -59,7 +52,7 @@
 <script lang="ts" setup>
 import { Int } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
-import { personMgtLabelTable } from './PersonMgtLabelTable'
+import { envSensorTable } from './EnvSensorTable'
 import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
@@ -71,46 +64,39 @@ import {
     FormItem
 } from '@/0_tigersan_ui/components'
 import {
-    configEQP_Name,
-    configIMEI,
-    PersonMgtLabelForm,
-    SetEQP_Name,
-    SetIMEI,
+    configMacAddr,
+    EnvSensorForm,
+    SetMacAddr,
     Refresh,
     Add,
-    Edit,
     Delete,
-} from './PersonMgtLabelForm'
+} from './EnvSensorForm'
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = personMgtLabelTable
+const { IsOnlySelected } = envSensorTable
 
 // 【过程】:
 // 选择器:
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.Placeholder.value = '请选择'
-typeSelect.Value.value = 'MWC03 4G智能工牌'
+typeSelect.Value.value = 'MST03 资产测温标签'
 typeSelect.Items.push(...[
-    'MWC03 4G智能工牌',
-    'MWC04 4G小型融合定位工牌',
+    '资产测温标签',
+    'MWC03 MSR01-A 毫米波雷达传感器',
+    'MWC04 MSR01-B 毫米波雷达传感器',
+    'MST03 Light Sensor',
 ])
 
 const stateSelect = new SelectModel()
 stateSelect.Width.value = 100
-stateSelect.Placeholder.value = '请选择'
 stateSelect.Value.value = '全部'
 stateSelect.Items.push(...['全部', '在线', '离线'])
 
-const bluetoothFirmwareSelect = new SelectModel()
-bluetoothFirmwareSelect.Width.value = 100
-bluetoothFirmwareSelect.Value.value = '全部'
-bluetoothFirmwareSelect.Items.push(...['全部'])
-
 // 表格:
-personMgtLabelTable.IsAllowMultiSelect.value = false
-personMgtLabelTable._onInitRowModel = () => {
-    paginationModel.Count.value = personMgtLabelTable.Count.value
+envSensorTable.IsAllowMultiSelect.value = false
+envSensorTable._onInitRowModel = () => {
+    paginationModel.Count.value = envSensorTable.Count.value
 }
 
 // 分页器:
@@ -123,12 +109,16 @@ paginationModel.Checked = num => {
 paginationModel.PageSizes.push(new Int(100))
 
 // 【方法】:
-function SetParams() {
-    dialog.ShowInformation('修改参数')
+function PowerOff() {
+    dialog.ShowInformation('关机')
 }
 
-function Restart() {
-    dialog.ShowInformation('重启')
+function OTA_Update() {
+    dialog.ShowInformation('OTA升级')
+}
+
+function SetTime() {
+    dialog.ShowInformation('授时')
 }
 </script>
 

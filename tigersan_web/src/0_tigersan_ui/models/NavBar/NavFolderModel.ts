@@ -1,6 +1,6 @@
 import { ref, shallowReactive, type ShallowReactive } from 'vue'
 import { Icons } from '../../base';
-import type { Action } from '../../base/types';
+import type { Action } from '../../types';
 import { nanoid } from 'nanoid'
 import { NavBarModel } from './NavBarModel'
 import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'

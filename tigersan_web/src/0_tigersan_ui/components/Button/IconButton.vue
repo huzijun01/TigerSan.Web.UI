@@ -28,7 +28,7 @@ const isShowText = computed(() => {
 })
 </script>
 <style lang="less" scoped>
-@size: 30px;
+@size: 28px;
 
 .icon-button {
     cursor: pointer;

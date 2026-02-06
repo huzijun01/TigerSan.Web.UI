@@ -1,5 +1,3 @@
-import { Int } from "./types/Int"
-
 // Action:
 type Action = () => void
 type BooleanAction = () => boolean
@@ -9,27 +7,21 @@ type StringAction = () => string
 
 // Func:
 type BooleanFunc = (bool: boolean) => void
-type BooleanGetter = (obj: object) => boolean
-type BooleanSetter = (obj: object, bool: boolean) => void
 type NumberFunc = (num: number) => void
 type ObjectFunc = (obj: object) => void
 type ObjectArrayFunc = (arr: object[]) => void
-type ObjectSetter = (obj: object, propName: string, value: any) => void
 type Object2StringFunc = (obj?: object) => string
 type StringFunc = (str: string) => void
 type StringArrayFunc = (arr: string[]) => void
-type StringGetter = (obj: object, propName: string) => string
-type UnknownGetter = (source: object) => unknown
-type UnknownSetter = (source: object, value: unknown) => void
 
-// Function:
-/** 默认“对象行为”  */
-function DefaultObjectAction() { return {} }
+// getter\setter:
+type BooleanGetter = (obj: object) => boolean
+type BooleanSetter = (obj: object, bool: boolean) => void
+type StringGetter = (obj: object, propName: string) => string
+type UnknownGetter = (obj: object, propName: string) => unknown
+type UnknownSetter = (obj: object, propName: string, value: unknown) => void
 
 export {
-    // Class:
-    Int,
-
     // Action:
     type Action,
     type BooleanAction,
@@ -39,19 +31,17 @@ export {
 
     // Func:
     type BooleanFunc,
-    type BooleanGetter,
-    type BooleanSetter,
     type NumberFunc,
     type ObjectFunc,
     type ObjectArrayFunc,
-    type ObjectSetter,
     type Object2StringFunc,
     type StringFunc,
     type StringArrayFunc,
+
+    // getter\setter:
+    type BooleanGetter,
+    type BooleanSetter,
     type StringGetter,
     type UnknownGetter,
     type UnknownSetter,
-
-    // Function:
-    DefaultObjectAction,
 }

@@ -1,6 +1,6 @@
 import { Colors } from '@/0_tigersan_ui/base'
-import type { StringGetter, ObjectSetter, ObjectArrayFunc, Action } from '@/0_tigersan_ui/base'
-import { DefaultStringGetter, DefaultObjectSetter, CheckboxModel, CheckboxBehavior } from '@/0_tigersan_ui/helpers'
+import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '@/0_tigersan_ui/types'
+import { DefaultStringGetter, DefaultUnknownSetter, CheckboxModel, CheckboxBehavior } from '@/0_tigersan_ui/helpers'
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 
@@ -281,7 +281,7 @@ class TableHeaderModel {
     /** 文本获取方法 */
     _strGetter: StringGetter = DefaultStringGetter
     /** 对象修改方法 */
-    _objSetter: ObjectSetter = DefaultObjectSetter
+    _objSetter: UnknownSetter = DefaultUnknownSetter
     //#endregion 【Fields】
 
     /** 文本 */
@@ -308,7 +308,7 @@ class TableHeaderConfig {
     /** 文本获取方法 */
     _strGetter?: StringGetter
     /** 对象修改方法 */
-    _objSetter?: ObjectSetter
+    _objSetter?: UnknownSetter
     /** 文本 */
     Text?: string
     /** 文本对齐 */

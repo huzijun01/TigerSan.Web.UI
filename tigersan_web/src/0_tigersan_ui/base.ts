@@ -2,35 +2,7 @@
 import Icons from "./base/icon"
 import Colors from "./base/colors"
 import Constants from "./base/constants"
-import {
-    // Class:
-    Int,
-
-    // Action:
-    type Action,
-    type BooleanAction,
-    type NumberAction,
-    type ObjectAction,
-    type StringAction,
-
-    // Func:
-    type BooleanFunc,
-    type BooleanGetter,
-    type BooleanSetter,
-    type NumberFunc,
-    type ObjectFunc,
-    type ObjectArrayFunc,
-    type ObjectSetter,
-    type Object2StringFunc,
-    type StringFunc,
-    type StringArrayFunc,
-    type StringGetter,
-    type UnknownGetter,
-    type UnknownSetter,
-
-    // Function:
-    DefaultObjectAction,
-} from "./base/types"
+import { Int } from "./base/types/Int"
 
 /* 导出: */
 export {
@@ -41,29 +13,4 @@ export {
 export {
     // Class:
     Int,
-
-    // Action:
-    type Action,
-    type BooleanAction,
-    type NumberAction,
-    type ObjectAction,
-    type StringAction,
-
-    // Func:
-    type BooleanFunc,
-    type BooleanGetter,
-    type BooleanSetter,
-    type NumberFunc,
-    type ObjectFunc,
-    type ObjectArrayFunc,
-    type ObjectSetter,
-    type Object2StringFunc,
-    type StringFunc,
-    type StringArrayFunc,
-    type StringGetter,
-    type UnknownGetter,
-    type UnknownSetter,
-
-    // Function:
-    DefaultObjectAction,
 }

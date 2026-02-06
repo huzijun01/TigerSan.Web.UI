@@ -1,4 +1,4 @@
-/** 对象浅复制 */
+/** “对象”浅复制 */
 function ObjectShallowCopy<T extends object>(obj: T): T {
     // 处理基本类型直接返回
     if (obj === null || typeof obj !== 'object') {
@@ -19,7 +19,7 @@ function ObjectShallowCopy<T extends object>(obj: T): T {
 }
 
 
-/** 对象深复制 */
+/** “对象”深复制 */
 function ObjectDeepCopy<T extends object>(obj: T): T {
     const hash = new WeakMap<object, any>();
 
@@ -87,7 +87,10 @@ function ObjectDeepCopy<T extends object>(obj: T): T {
     return _copy(obj);
 }
 
-/** 从对象中获取指定字段 */
+/** 默认“对象行为”  */
+function DefaultObjectAction() { return {} }
+
+/** 从“对象”中获取“指定字段”，并转为字符串 */
 function DefaultStringGetter(obj: object, propName: string): string {
     const value = (obj as Record<string, unknown>)[propName];
 
@@ -95,14 +98,21 @@ function DefaultStringGetter(obj: object, propName: string): string {
     return value != null ? String(value) : ''
 }
 
-/** 将值赋给对象中获取指定字段 */
-function DefaultObjectSetter(obj: object, propName: string, value: any): void {
-    (obj as Record<string, any>)[propName] = value;
+/** 从“对象”中获取“指定字段” */
+function DefaultUnknownGetter(obj: object, propName: string): unknown {
+    return (obj as Record<string, unknown>)[propName]
+}
+
+/** 将“值”赋给“对象”中的“指定字段” */
+function DefaultUnknownSetter(obj: object, propName: string, value: unknown): void {
+    (obj as Record<string, unknown>)[propName] = value;
 }
 
 export {
     ObjectShallowCopy,
     ObjectDeepCopy,
+    DefaultObjectAction,
     DefaultStringGetter,
-    DefaultObjectSetter,
+    DefaultUnknownGetter,
+    DefaultUnknownSetter,
 }

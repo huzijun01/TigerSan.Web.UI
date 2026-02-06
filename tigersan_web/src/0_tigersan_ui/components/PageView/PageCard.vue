@@ -17,11 +17,11 @@ const isOpen = ref(false)
 let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = defineProps({
     margin: {
         type: Number,
-        default: 15
+        default: 20
     },
     padding: {
         type: Number,
-        default: 15
+        default: 20
     },
     borderRadius: {
         type: Number,
@@ -42,7 +42,7 @@ let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = de
 })
 
 let styleObj = computed(() => {
-    let offsetX = margin * 2
+    let offsetX = margin * 2 + padding * 2
     let offsetY = margin * 2 + topPanelHeight
     if (isOpen.value) {
         offsetX += navWidth

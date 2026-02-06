@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import { computed, ref, shallowReactive, type ShallowReactive } from "vue"
-import type { Object2StringFunc } from "@/0_tigersan_ui/base"
+import type { Object2StringFunc } from "@/0_tigersan_ui/types"
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void
 

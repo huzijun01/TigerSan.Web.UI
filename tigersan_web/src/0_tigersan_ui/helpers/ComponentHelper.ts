@@ -9,4 +9,6 @@ function CreateApp(component: Component) {
     })
 }
 
-export { CreateApp }
+export {
+    CreateApp
+}

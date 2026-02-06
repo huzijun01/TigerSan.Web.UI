@@ -1,8 +1,9 @@
 import { ref, computed, watch } from "vue"
 import { Colors } from "@/0_tigersan_ui/base"
-import type { ObjectAction, UnknownGetter, UnknownSetter } from "@/0_tigersan_ui/base"
 import { dialog } from '@/0_tigersan_ui/stores'
-import { FormConfig, SetFormModel, GetItemModels } from './FormConfig'
+import { FormConfig, SetFormModel } from './FormConfig'
+import type { ObjectAction, UnknownGetter, UnknownSetter } from "@/0_tigersan_ui/types"
+import { DefaultUnknownGetter, DefaultUnknownSetter } from "@/0_tigersan_ui/helpers"
 
 type FormVerify = (source: object) => VerifyResult
 type FormSubmit = (source: object) => SubmitResult
@@ -98,7 +99,7 @@ class FormModel {
 
     /** 初始化“验证状态”
      * （“Form”显示后会自动调用） */
-    private InitVerifyState = () => {
+    private InitVerifyState() {
         this.ForEachItemModels(itemModel => {
             itemModel.VerifyText.value = ''
             itemModel.VerifyResult.value = FormResult.OK
@@ -107,7 +108,7 @@ class FormModel {
 
     /** 初始化“源数据”
      * （“Form”显示后会自动调用） */
-    private InitData = () => {
+    private InitData() {
         // 获取“源数据”:
         this._source = this._getSource()
 
@@ -192,9 +193,11 @@ class FormModel {
 /** 表单项目模型 */
 class FormItemModel {
     //#region 【Fields】
+    /** 属性名 */
+    _propName: string
     _formModel: FormModel
-    _getValue: UnknownGetter
-    _setValue: UnknownSetter
+    _getValue: UnknownGetter = DefaultUnknownGetter
+    _setValue: UnknownSetter = DefaultUnknownSetter
     _isVerifyOk?: FormVerify
     //#endregion 【Fields】
 
@@ -212,8 +215,8 @@ class FormItemModel {
     VerifyText = ref('')
     //#endregion [内部维护]
 
-    /** 标题 */
-    PropName = ref('PropName')
+    /** 属性文本 */
+    PropText = ref('Prop')
     /** 是否“必填” */
     IsEquired = ref(false)
 
@@ -252,12 +255,10 @@ class FormItemModel {
     //#region 【Ctor】
     constructor(
         formModel: FormModel,
-        getValue: UnknownGetter,
-        setValue: UnknownSetter
+        propName: string
     ) {
         this._formModel = formModel
-        this._getValue = getValue
-        this._setValue = setValue
+        this._propName = propName
     }
     //#endregion 【Ctor】
 
@@ -267,7 +268,7 @@ class FormItemModel {
     SetSource = (value: unknown) => {
         if (!this._setValue) return
         // 修改“源数据”:
-        this._setValue(this._formModel._source, value)
+        this._setValue(this._formModel._source, this._propName, value)
         // 修改“目标数据”:
         this.Target.value = value
         // 验证:
@@ -276,7 +277,7 @@ class FormItemModel {
 
     /** 更新“目标数据” */
     UpdateTarget() {
-        this.Target.value = this._getValue(this._formModel._source)
+        this.Target.value = this._getValue(this._formModel._source, this._propName)
     }
 
     /** 是否验证成功

@@ -6,7 +6,7 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>网关管理：</span>
-                        <Select :model="typeSelectModel"></Select>
+                        <Select :model="typeSelect"></Select>
                     </div>
                     <div class="row-panel">
                         <span>状态:</span>
@@ -31,11 +31,11 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="gatewayTable"></Table>
+            <Table :model="gatewayMgtTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="gatewayTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="gatewayMgtTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
@@ -59,7 +59,7 @@
 <script lang="ts" setup>
 import { Int } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
-import { gatewayTable } from './GatewayTable'
+import { gatewayMgtTable } from './GatewayMgtTable'
 import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
@@ -80,17 +80,18 @@ import {
     Add,
     Edit,
     Delete,
-} from './GatewayForm'
+} from './GatewayMgtForm'
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = gatewayTable
+const { IsOnlySelected } = gatewayMgtTable
 
 // 【过程】:
 // 选择器:
-const typeSelectModel = new SelectModel()
-typeSelectModel.Width.value = 300
-typeSelectModel.Value.value = 'G1'
-typeSelectModel.Items.push(...['G1', 'MG6', 'MG8 Micro-USB LTE Gateway', 'MG5 Outdoor LTE Gateway'])
+const typeSelect = new SelectModel()
+typeSelect.Width.value = 300
+typeSelect.Placeholder.value = '请选择'
+typeSelect.Value.value = 'G1'
+typeSelect.Items.push(...['G1', 'MG6', 'MG8 Micro-USB LTE Gateway', 'MG5 Outdoor LTE Gateway'])
 
 const stateSelectModel = new SelectModel()
 stateSelectModel.Width.value = 100
@@ -98,9 +99,9 @@ stateSelectModel.Value.value = '全部'
 stateSelectModel.Items.push(...['全部', '在线', '离线'])
 
 // 表格:
-gatewayTable.IsAllowMultiSelect.value = false
-gatewayTable._onInitRowModel = () => {
-    paginationModel.Count.value = gatewayTable.Count.value
+gatewayMgtTable.IsAllowMultiSelect.value = false
+gatewayMgtTable._onInitRowModel = () => {
+    paginationModel.Count.value = gatewayMgtTable.Count.value
 }
 
 // 分页器:

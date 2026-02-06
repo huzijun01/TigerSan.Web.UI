@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import type { ObjectAction, UnknownGetter, UnknownSetter } from "../../base"
+import type { ObjectAction, UnknownGetter, UnknownSetter } from "../../types"
 import { type FormVerify, type FormSubmit, FormModel, FormItemModel } from "./FormModel"
 
 /** 表单配置 */
@@ -34,8 +34,10 @@ class FormConfig {
 /** 表单项目配置 */
 class FormItemConfig {
     //#region 【Fields】
-    _getValue: UnknownGetter
-    _setValue: UnknownSetter
+    /** 属性名 */
+    _propName: string
+    _getValue?: UnknownGetter
+    _setValue?: UnknownSetter
     _isVerifyOk?: FormVerify
     //#endregion 【Fields】
 
@@ -52,19 +54,15 @@ class FormItemConfig {
     SetSource?: (value: unknown) => void
     //#endregion [需手动绑定]
 
-    /** 标题 */
-    PropName?: string
+    /** 属性文本 */
+    PropText?: string
     /** 是否“必填” */
     IsEquired?: boolean
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(
-        getValue: UnknownGetter,
-        setValue: UnknownSetter
-    ) {
-        this._getValue = getValue
-        this._setValue = setValue
+    constructor(propName: string) {
+        this._propName = propName
     }
     //#endregion 【Ctor】
 }
@@ -90,19 +88,17 @@ function GetItemModels(formModel: FormModel, formConfig: FormConfig): FormItemMo
 
     formConfig._itemConfigs.forEach(itemConfig => {
         // create:
-        const itemModel = new FormItemModel(
-            formModel,
-            itemConfig._getValue,
-            itemConfig._setValue
-        )
+        const itemModel = new FormItemModel(formModel, itemConfig._propName)
 
         // Fields:
         itemModel._isVerifyOk = itemConfig._isVerifyOk
+        if (itemConfig._getValue != undefined) itemModel._getValue = itemConfig._getValue
+        if (itemConfig._setValue != undefined) itemModel._setValue = itemConfig._setValue
 
         // Properties:
         itemModel.Target = itemConfig.Target // 覆盖“目标数据”
         if (itemConfig.IsEquired != undefined) itemModel.IsEquired.value = itemConfig.IsEquired
-        if (itemConfig.PropName != undefined) itemModel.PropName.value = itemConfig.PropName
+        if (itemConfig.PropText != undefined) itemModel.PropText.value = itemConfig.PropText
 
         // Functions:
         itemConfig.ItemModel = itemModel // 传入“表单项目模型”

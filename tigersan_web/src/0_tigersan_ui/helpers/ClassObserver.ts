@@ -1,4 +1,4 @@
-import { type StringArrayFunc } from "../base"
+import type { StringArrayFunc } from '../types'
 
 /** class监听 */
 class ClassObserver {
@@ -47,4 +47,6 @@ class ClassObserver {
     //#endregion 【Functions】
 }
 
-export { ClassObserver }
+export {
+    ClassObserver
+}
