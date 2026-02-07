@@ -13,6 +13,7 @@ type ObjectArrayFunc = (arr: object[]) => void
 type Object2StringFunc = (obj?: object) => string
 type StringFunc = (str: string) => void
 type StringArrayFunc = (arr: string[]) => void
+type UnknownFunc = (value: unknown, oldValue?: unknown) => void
 
 // getter\setter:
 type BooleanGetter = (obj: object) => boolean
@@ -37,6 +38,7 @@ export {
     type Object2StringFunc,
     type StringFunc,
     type StringArrayFunc,
+    type UnknownFunc,
 
     // getter\setter:
     type BooleanGetter,

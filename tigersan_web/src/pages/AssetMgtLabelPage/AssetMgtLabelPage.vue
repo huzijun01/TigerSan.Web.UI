@@ -6,26 +6,26 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>产品类型：</span>
-                        <Select :model="typeSelect"></Select>
+                        <Select :model="select.typeSelect"></Select>
                     </div>
                     <div class="row-panel">
                         <span>在线状态:</span>
-                        <Select :model="stateSelect"></Select>
+                        <Select :model="select.stateSelect"></Select>
                         <span>固件版本:</span>
-                        <Select :model="firmwareSelect"></Select>
+                        <Select :model="select.firmwareSelect"></Select>
                         <input type="text" placeholder="输入名称或MAC">
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="Refresh">刷新</button>
-                        <button @click="Add">+ 导入设备</button>
+                        <button class="bg-success" @click="form.Refresh">刷新</button>
+                        <button @click="form.Add">+ 导入设备</button>
                         <button @click="BatchOperation">批量操作</button>
                     </div>
                     <div class="row-panel">
                         <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
                         <button :disabled="!IsOnlySelected" @click="SetCol">列管理</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
@@ -42,20 +42,21 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="AssetMgtLabelForm">
+    <PopForm :model="form.assetMgtLabelForm">
         <FormRow>
-            <FormItem :model="configMacAddr.ItemModel">
-                <input type="text" :value="configMacAddr.Target.value" v-on:input="SetMacAddr">
+            <FormItem :model="form.configMacAddr.ItemModel">
+                <input type="text" v-model="form.configMacAddr.Target.value">
             </FormItem>
         </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
-import { Int } from '@/0_tigersan_ui/base'
+import form from './AssetMgtLabelForm'
+import select from './AssetMgtLabelSelect'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { assetMgtLabelTable } from './AssetMgtLabelTable'
-import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
+import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
     Select,
@@ -65,43 +66,11 @@ import {
     FormRow,
     FormItem
 } from '@/0_tigersan_ui/components'
-import {
-    configMacAddr,
-    AssetMgtLabelForm,
-    SetMacAddr,
-    Refresh,
-    Add,
-    Delete,
-} from './AssetMgtLabelForm'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = assetMgtLabelTable
 
 // 【过程】:
-// 选择框:
-const typeSelect = new SelectModel()
-typeSelect.Width.value = 300
-typeSelect.Placeholder.value = '请选择'
-typeSelect.Value.value = 'MBT02 可连接资产标签'
-typeSelect.Items.push(...[
-    'MBT02 可连接资产标签',
-    'MBT02 资产中继器',
-    'MTB04 5G资产标签',
-])
-
-const stateSelect = new SelectModel()
-stateSelect.Width.value = 120
-stateSelect.Value.value = '全部'
-stateSelect.Items.push(...['全部', '在线', '离线'])
-
-const firmwareSelect = new SelectModel()
-firmwareSelect.Width.value = 120
-firmwareSelect.Value.value = '全部'
-firmwareSelect.Items.push(...[
-    '全部',
-    '3.2.0'
-])
-
 // 表格:
 assetMgtLabelTable.IsAllowMultiSelect.value = false
 assetMgtLabelTable._onInitRowModel = () => {
@@ -111,11 +80,6 @@ assetMgtLabelTable._onInitRowModel = () => {
 // 分页器:
 let paginationModel = new PaginationModel()
 paginationModel.IsShowSelectedRowCount.value = true
-paginationModel.Checked = num => {
-    // dialog.ShowInformation(`Num = ${num}`)
-}
-
-paginationModel.PageSizes.push(new Int(100))
 
 // 【方法】:
 function BatchOperation() {

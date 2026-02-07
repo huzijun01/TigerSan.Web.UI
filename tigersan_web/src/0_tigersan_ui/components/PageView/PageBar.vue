@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { PageButton } from '../../components';
-import { NavBarModel } from '../../models';
+import { NavBarModel } from '../../models'
 
 // 字段:
 let { model, offsetX } = defineProps({

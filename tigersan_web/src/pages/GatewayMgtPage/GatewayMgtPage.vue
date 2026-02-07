@@ -6,11 +6,11 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>网关管理：</span>
-                        <Select :model="typeSelect"></Select>
+                        <Select :model="select.typeSelect"></Select>
                     </div>
                     <div class="row-panel">
                         <span>状态:</span>
-                        <Select :model="stateSelectModel"></Select>
+                        <Select :model="select.stateSelectModel"></Select>
                         <input type="text" placeholder="输入名称或MAC">
                     </div>
                 </div>
@@ -21,11 +21,11 @@
                         <button :disabled="!IsOnlySelected" @click="BluetoothUpdate">蓝牙固件升级</button>
                     </div>
                     <div class="row-panel">
-                        <button class="bg-success" @click="Refresh">刷新</button>
-                        <button @click="Add">+ 新增</button>
+                        <button class="bg-success" @click="form.Refresh">刷新</button>
+                        <button @click="form.Add">+ 新增</button>
                         <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="Delete">删除</button>
+                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
@@ -42,25 +42,26 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="gatewayForm">
+    <PopForm :model="form.gatewayForm">
         <FormRow>
-            <FormItem :model="configName.ItemModel">
-                <input type="text" :value="configName.Target.value" v-on:input="SetName">
+            <FormItem :model="form.configName.ItemModel">
+                <input type="text" v-model="form.configName.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="configMacAddr.ItemModel">
-                <input type="text" :value="configMacAddr.Target.value" v-on:input="SetMacAddr">
+            <FormItem :model="form.configMacAddr.ItemModel">
+                <input type="text" v-model="form.configMacAddr.Target.value">
             </FormItem>
         </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
-import { Int } from '@/0_tigersan_ui/base'
+import form from './GatewayMgtForm'
+import select from './GatewayMgtSelect'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { gatewayMgtTable } from './GatewayMgtTable'
-import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
+import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
     Select,
@@ -70,34 +71,11 @@ import {
     FormRow,
     FormItem
 } from '@/0_tigersan_ui/components'
-import {
-    configName,
-    configMacAddr,
-    gatewayForm,
-    Refresh,
-    Add,
-    Edit,
-    Delete,
-    SetName,
-    SetMacAddr,
-} from './GatewayMgtForm'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = gatewayMgtTable
 
 // 【过程】:
-// 选择框:
-const typeSelect = new SelectModel()
-typeSelect.Width.value = 300
-typeSelect.Placeholder.value = '请选择'
-typeSelect.Value.value = 'G1'
-typeSelect.Items.push(...['G1', 'MG6', 'MG8 Micro-USB LTE Gateway', 'MG5 Outdoor LTE Gateway'])
-
-const stateSelectModel = new SelectModel()
-stateSelectModel.Width.value = 100
-stateSelectModel.Value.value = '全部'
-stateSelectModel.Items.push(...['全部', '在线', '离线'])
-
 // 表格:
 gatewayMgtTable.IsAllowMultiSelect.value = false
 gatewayMgtTable._onInitRowModel = () => {
@@ -107,11 +85,6 @@ gatewayMgtTable._onInitRowModel = () => {
 // 分页器:
 let paginationModel = new PaginationModel()
 paginationModel.IsShowSelectedRowCount.value = true
-paginationModel.Checked = num => {
-    // dialog.ShowInformation(`Num = ${num}`)
-}
-
-paginationModel.PageSizes.push(new Int(100))
 
 // 【方法】:
 function BatchOperation() {

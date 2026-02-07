@@ -30,7 +30,7 @@ class NavBarModel {
 
     //#region 【Properties】
     /** 宽度 */
-    Width = ref(200)
+    Width = ref(220)
 
     /** 是否打开 */
     IsOpen = ref(true)

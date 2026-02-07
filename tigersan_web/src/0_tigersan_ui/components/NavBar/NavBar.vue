@@ -25,6 +25,11 @@
             <NavFolder v-for="f in model.FolderModel.FolderModels" :key="f._id" :model="f" />
             <NavButton v-for="b in model.FolderModel.ButtonModels" :key="b._id" :model="b" />
         </div>
+
+        <!-- 底部: -->
+        <div class="footer">
+            <slot></slot>
+        </div>
     </div>
 </template>
 
@@ -68,8 +73,8 @@ model._getNavWidth = GetWidth
 onMounted(() => {
     AddHeightGetter()
     UpdateBodyClass()
-    model.UpdateHeight()
     UpdateWidthString()
+    model.UpdateHeight()
 })
 
 // 方法:
@@ -96,25 +101,27 @@ function GetWidth(): number {
 </script>
 
 <style lang="less" scoped>
+@offset-x: 10px;
 @logo-size: 25px;
-@logo-panel-padding: 10px;
+@nav-padding: 15px;
 
 .nav-panel {
     position: relative;
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 1fr auto;
     height: 100vh;
     overflow: hidden;
     transition: var(--Global-Transition);
     background: var(--theme-nav-background);
     border-radius: var(--theme-nav-logo-border-radius);
 
+    // Logo:
     .logo-panel {
         display: flex;
         align-items: center;
         justify-content: center;
         grid-row: 1 / 2;
-        padding: @logo-panel-padding 0px;
+        padding: @nav-padding @offset-x @nav-padding 0px;
 
         .logo-mask {
             display: flex;
@@ -142,7 +149,9 @@ function GetWidth(): number {
         }
     }
 
+    // 临时菜单:
     .temp-menu {
+        /* 显示: */
         grid-row: 2 / 3;
         position: absolute;
         /* 透明: */
@@ -151,10 +160,22 @@ function GetWidth(): number {
         pointer-events: none;
     }
 
+    // 菜单:
     .menu {
+        /* 显示: */
         grid-row: 2 / 3;
-        height: calc(100vh - @logo-size - @logo-panel-padding * 2);
         overflow: auto;
+        /* 尺寸: */
+        padding: 0px @nav-padding;
+    }
+
+    // 底部:
+    .footer {
+        /* 显示: */
+        grid-row: 3 / 4;
+        /* 尺寸: */
+        padding: @nav-padding;
+        padding: @nav-padding @nav-padding + @offset-x @nav-padding @nav-padding;
     }
 }
 </style>

@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import TableItem from './TableItem.vue';
-import { TableModel, TableRowModel } from '../../models';
+import { TableModel, TableRowModel } from '../../models'
 import { onMounted } from 'vue';
 
 // 字段:

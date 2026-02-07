@@ -6,9 +6,9 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>操作类型:</span>
-                        <Select :model="operationTypeSelect"></Select>
+                        <Select :model="select.operationTypeSelect"></Select>
                         <span>产品类型：</span>
-                        <Select :model="productTypeSelect"></Select>
+                        <Select :model="select.productTypeSelect"></Select>
                         <input type="text" placeholder="输入MAC地址">
                     </div>
                 </div>
@@ -32,10 +32,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Int } from '@/0_tigersan_ui/base'
+import select from './OperationRetrySelect'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { operationRetryTable } from './OperationRetryTable'
-import { SelectModel, PaginationModel } from '@/0_tigersan_ui/models'
+import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
     Select,
@@ -47,38 +47,6 @@ import {
 const { IsOnlySelected } = operationRetryTable
 
 // 【过程】:
-// 选择框:
-const operationTypeSelect = new SelectModel()
-operationTypeSelect.Width.value = 150
-operationTypeSelect.Placeholder.value = '请选择'
-operationTypeSelect.Value.value = '全部'
-operationTypeSelect.Items.push(...[
-    '全部',
-    '修改参数',
-    '升级',
-    '亮灯',
-    '恢复出厂',
-    '关机',
-    '连接状态',
-    '参数同步',
-    '响铃命令',
-    '关灯命令',
-    '亮灯&响铃',
-    '设备导入',
-    '关闭铃声',
-    '传感器',
-])
-
-const productTypeSelect = new SelectModel()
-productTypeSelect.Width.value = 350
-productTypeSelect.Placeholder.value = '请选择'
-productTypeSelect.Value.value = 'MBT02可连接资产标签'
-productTypeSelect.Items.push(...[
-    'MBT02可连接资产标签',
-    'MBT02资产中继器',
-    'MST03 Light Sensor',
-])
-
 // 表格:
 operationRetryTable.IsAllowMultiSelect.value = false
 operationRetryTable._onInitRowModel = () => {
@@ -88,11 +56,6 @@ operationRetryTable._onInitRowModel = () => {
 // 分页器:
 let paginationModel = new PaginationModel()
 paginationModel.IsShowSelectedRowCount.value = true
-paginationModel.Checked = num => {
-    // dialog.ShowInformation(`Num = ${num}`)
-}
-
-paginationModel.PageSizes.push(new Int(100))
 
 // 【方法】:
 function Refresh() {

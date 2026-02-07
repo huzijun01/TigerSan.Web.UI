@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "12052454",
+      "name": "Server",
+      "font_class": "Server",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "12169486",
+      "name": "Router",
+      "font_class": "Router",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
       "icon_id": "46625583",
       "name": "Memory",
       "font_class": "Memory",

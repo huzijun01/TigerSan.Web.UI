@@ -1,4 +1,4 @@
-import { ref, type InputHTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { AssetMgtLabelModel, assetMgtLabelTable } from './AssetMgtLabelTable'
@@ -23,7 +23,7 @@ const AddGetSource = () => {
 }
 
 /** “资产管理标签”表单配置 */
-let configAssetMgtLabelForm: FormConfig = {
+let configassetMgtLabelForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -33,15 +33,7 @@ let configAssetMgtLabelForm: FormConfig = {
 }
 
 /** “资产管理标签”表单模型 */
-const AssetMgtLabelForm = new FormModel(configAssetMgtLabelForm)
-
-// 【方法】:
-function SetMacAddr(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configMacAddr.SetSource) {
-        configMacAddr.SetSource(input.value)
-    }
-}
+const assetMgtLabelForm = new FormModel(configassetMgtLabelForm)
 
 /** 查 */
 function Refresh() {
@@ -50,18 +42,18 @@ function Refresh() {
 
 /** 增 */
 function Add() {
-    AssetMgtLabelForm.Title.value = '导入设备'
+    assetMgtLabelForm.Title.value = '导入设备'
 
-    AssetMgtLabelForm._getSource = AddGetSource
+    assetMgtLabelForm._getSource = AddGetSource
 
-    AssetMgtLabelForm._onSubmit = source => {
+    assetMgtLabelForm._onSubmit = source => {
         assetMgtLabelTable.RowDatas.push(source)
         assetMgtLabelTable.Refresh()
 
         return new SubmitResult('添加成功')
     }
 
-    AssetMgtLabelForm.Show()
+    assetMgtLabelForm.Show()
 }
 
 /** 删 */
@@ -89,10 +81,9 @@ function DeleteRowData(state: DialogState) {
     dialog.ShowSuccess('删除成功')
 }
 
-export {
+export default {
     configMacAddr,
-    AssetMgtLabelForm,
-    SetMacAddr,
+    assetMgtLabelForm,
     Refresh,
     Add,
     Delete,

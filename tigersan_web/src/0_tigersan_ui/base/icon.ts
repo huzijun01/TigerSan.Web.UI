@@ -116,6 +116,7 @@ export default class Icons {
 
     // R:
     static Radar = "";
+    static Router = "";
     static Refresh = "";
 
     // S:
@@ -123,6 +124,7 @@ export default class Icons {
     static Size = "";
     static Stop = "";
     static Skin = "";
+    static Server = "";
     static Search = "";
     static Switch = "";
     static Screen = "";

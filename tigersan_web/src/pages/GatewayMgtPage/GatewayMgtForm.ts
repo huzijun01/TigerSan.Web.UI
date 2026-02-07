@@ -1,9 +1,9 @@
-import { ref, type InputHTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { IsNotUndefinedOrEmpty, ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
 import { GatewayMgtModel, gatewayMgtTable } from './GatewayMgtTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 
 /** “网关名称”项目配置 */
 const configName: FormItemConfig = {
@@ -121,22 +121,7 @@ function DeleteRowData(state: DialogState) {
     dialog.ShowSuccess('删除成功')
 }
 
-// 【方法】:
-function SetName(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configName.SetSource) {
-        configName.SetSource(input.value)
-    }
-}
-
-function SetMacAddr(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configMacAddr.SetSource) {
-        configMacAddr.SetSource(input.value)
-    }
-}
-
-export {
+export default {
     configName,
     configMacAddr,
     gatewayForm,
@@ -144,6 +129,4 @@ export {
     Add,
     Edit,
     Delete,
-    SetName,
-    SetMacAddr,
 }

@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { Icons } from '../../base'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { NavButton, NavFolder } from '../../components'
 import { NavBarModel, NavFolderModel } from '../../models'
 
@@ -34,7 +34,10 @@ defineExpose({
 })
 
 // 过程:
-model.UpdateOldState()
+onMounted(() => {
+    model.UpdateOldState()
+    model.UpdateHeight()
+})
 
 // 方法:
 function OnClick() {

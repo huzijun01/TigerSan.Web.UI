@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { Teleport, computed, type ShallowReactive } from 'vue';
 import { useDialogStore } from '../../stores/dialog';
-import { DialogState, type DialogModel } from '@/0_tigersan_ui/models';
+import { DialogState, type DialogModel } from '@/0_tigersan_ui/models'
 
 // 全局数据：
 const store = useDialogStore()

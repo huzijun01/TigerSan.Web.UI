@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { StringXSS, StringToHtml } from '../../helpers';
-import { TableHeaderModel, TableItemModel, TableModel, TableRowModel, TextAlign } from '../../models';
+import { TableHeaderModel, TableItemModel, TableModel, TableRowModel, TextAlign } from '../../models'
 import { ref, onMounted, computed } from 'vue'
 
 // 字段:

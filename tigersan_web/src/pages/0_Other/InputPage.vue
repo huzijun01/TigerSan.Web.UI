@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SelectModel } from '@/0_tigersan_ui/models';
+import { SelectModel } from '@/0_tigersan_ui/models'
 import { Select, PageCard } from '@/0_tigersan_ui/components'
 import { dialog } from '@/0_tigersan_ui/stores';
 

@@ -1,4 +1,4 @@
-import { ref, type InputHTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 import { IsWithinRange } from '@/0_tigersan_ui/helpers'
 
@@ -38,7 +38,7 @@ const configEqpOfflineMinutes: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var alarmSetting = source as AlarmSettingModel
-        return IsWithinRange(alarmSetting.EqpOfflineMinutes, 1, 1000)
+        return IsWithinRange(alarmSetting.EqpOfflineMinutes, 0, 1000)
     }
 }
 
@@ -73,34 +73,9 @@ let configGatewayForm: FormConfig = {
 /** “网关”表单模型 */
 const alarmSettingForm = new FormModel(configGatewayForm)
 
-// 【方法】:
-function SetBatteryAlarmRate(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configBatteryAlarmRate.SetSource) {
-        configBatteryAlarmRate.SetSource(input.value)
-    }
-}
-
-function SetEqpOfflineMinutes(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configEqpOfflineMinutes.SetSource) {
-        configEqpOfflineMinutes.SetSource(input.value)
-    }
-}
-
-function SetEqpOfflineSeconds(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configEqpOfflineSeconds.SetSource) {
-        configEqpOfflineSeconds.SetSource(input.value)
-    }
-}
-
-export {
+export default {
     alarmSettingForm,
     configBatteryAlarmRate,
     configEqpOfflineMinutes,
     configEqpOfflineSeconds,
-    SetBatteryAlarmRate,
-    SetEqpOfflineMinutes,
-    SetEqpOfflineSeconds,
 }

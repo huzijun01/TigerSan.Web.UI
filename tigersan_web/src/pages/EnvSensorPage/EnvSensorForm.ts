@@ -1,4 +1,4 @@
-import { ref, type InputHTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { IsNotUndefinedOrEmpty } from '@/0_tigersan_ui/helpers'
@@ -23,7 +23,7 @@ const AddGetSource = () => {
 }
 
 /** “环境传感器”表单配置 */
-let configEnvSensorForm: FormConfig = {
+let configenvSensorForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -33,15 +33,7 @@ let configEnvSensorForm: FormConfig = {
 }
 
 /** “环境传感器”表单模型 */
-const EnvSensorForm = new FormModel(configEnvSensorForm)
-
-// 【方法】:
-function SetMacAddr(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configMacAddr.SetSource) {
-        configMacAddr.SetSource(input.value)
-    }
-}
+const envSensorForm = new FormModel(configenvSensorForm)
 
 /** 查 */
 function Refresh() {
@@ -50,18 +42,18 @@ function Refresh() {
 
 /** 增 */
 function Add() {
-    EnvSensorForm.Title.value = '导入设备'
+    envSensorForm.Title.value = '导入设备'
 
-    EnvSensorForm._getSource = AddGetSource
+    envSensorForm._getSource = AddGetSource
 
-    EnvSensorForm._onSubmit = source => {
+    envSensorForm._onSubmit = source => {
         envSensorTable.RowDatas.push(source)
         envSensorTable.Refresh()
 
         return new SubmitResult('添加成功')
     }
 
-    EnvSensorForm.Show()
+    envSensorForm.Show()
 }
 
 /** 删 */
@@ -89,10 +81,9 @@ function DeleteRowData(state: DialogState) {
     dialog.ShowSuccess('删除成功')
 }
 
-export {
+export default {
     configMacAddr,
-    EnvSensorForm,
-    SetMacAddr,
+    envSensorForm,
     Refresh,
     Add,
     Delete,

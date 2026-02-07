@@ -1,6 +1,6 @@
 <template>
     <td class="prop-name" :class="{ 'equired': model.IsEquired.value }">
-        <span>{{ model.PropText.value }}</span>
+        <span class="prop-text">{{ model.PropText.value }}</span>
     </td>
     <td class="prop-value">
         <slot></slot>
@@ -10,14 +10,15 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { FormConfig } from '../../models'
-import { FormModel, FormItemModel } from '../../models/Form/FormModel'
 import { DefaultObjectAction } from '../../helpers'
+import { FormModel, FormItemModel } from '../../models/Form/FormModel'
 
 let { model } = defineProps({
     model: {
         type: FormItemModel,
-        default: () => new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), '')
+        default: () => new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), '', ref())
     }
 })
 </script>
@@ -26,6 +27,10 @@ let { model } = defineProps({
 .prop-name {
     margin-right: 10px;
     text-wrap: nowrap;
+
+    .prop-text {
+        user-select: text;
+    }
 
     &.equired::before {
         margin-right: 4px;

@@ -16,7 +16,7 @@ class NavFolderModel {
     //#region 【Fields】
     _id = nanoid()
 
-    _oldHeight: number = 0
+    _oldHeight: number = -1
     _oldIsOpened: boolean = true
 
     /** 更新“文件夹”高度
@@ -34,7 +34,7 @@ class NavFolderModel {
     /** 是否打开 */
     IsOpen = ref(true)
     /** 子项高度 */
-    SubItemsHeight = ref(50)
+    SubItemsHeight = ref(0)
     /** 所属“导航栏”模型 */
     NavBarModel: NavBarModel
     /** 所属“目录”模型 */

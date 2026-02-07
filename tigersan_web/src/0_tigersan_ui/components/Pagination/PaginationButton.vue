@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { PaginationModel, PaginationButtonModel } from '../../models';
+import { PaginationModel, PaginationButtonModel } from '../../models'
 
 // 字段:
 let { model } = defineProps({

@@ -3,7 +3,11 @@
     <!-- 左侧: -->
     <div class="left-panel">
       <!-- 导航栏: -->
-      <NavBar :model="navBarModel" title="大业工业" />
+      <NavBar :model="navBarModel" title="大业工业">
+        <div class="footer-panel flex-center">
+          <span class="version">版本：V1.0.0</span>
+        </div>
+      </NavBar>
     </div>
 
     <!-- 右侧: -->
@@ -82,5 +86,10 @@ import { IconButton, Dialog, NavBar, PageBar, PageView } from '@/0_tigersan_ui/c
       overflow: hidden;
     }
   }
+}
+
+.version {
+  font-size: 12px;
+  color: var(--color-primary-text);
 }
 </style>

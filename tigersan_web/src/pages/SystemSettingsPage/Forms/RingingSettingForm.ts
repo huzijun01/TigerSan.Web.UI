@@ -1,4 +1,4 @@
-import { ref, type InputHTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 import { IsNotUndefinedOrEmpty, IsWithinRange } from '@/0_tigersan_ui/helpers'
 
@@ -19,7 +19,7 @@ ringingSetting.FirmwareVersion = undefined
 ringingSetting.Enable = 20
 
 /** “产品类型”项目配置 */
-const configRingingProductType: FormItemConfig = {
+const configProductType: FormItemConfig = {
     _propName: 'ProductType',
     PropText: '产品类型',
     IsEquired: true,
@@ -31,7 +31,7 @@ const configRingingProductType: FormItemConfig = {
 }
 
 /** “固件版本”项目配置 */
-const configRingingFirmwareVersion: FormItemConfig = {
+const configFirmwareVersion: FormItemConfig = {
     _propName: 'FirmwareVersion',
     PropText: '固件版本',
     IsEquired: true,
@@ -43,7 +43,7 @@ const configRingingFirmwareVersion: FormItemConfig = {
 }
 
 /** “是否启用”项目配置 */
-const configRingingEnable: FormItemConfig = {
+const configEnable: FormItemConfig = {
     _propName: 'Enable',
     PropText: '响铃设置',
     Target: ref<unknown>(),
@@ -64,43 +64,18 @@ let configGatewayForm: FormConfig = {
     SubmitText: '确定',
     _getSource: GetSource,
     _itemConfigs: [
-        configRingingProductType,
-        configRingingEnable,
-        configRingingFirmwareVersion,
+        configProductType,
+        configEnable,
+        configFirmwareVersion,
     ]
 }
 
 /** “网关”表单模型 */
 const ringingSettingForm = new FormModel(configGatewayForm)
 
-// 【方法】:
-function SetRingingProductType(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configRingingProductType.SetSource) {
-        configRingingProductType.SetSource(input.value)
-    }
-}
-
-function SetRingingFirmwareVersion(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configRingingFirmwareVersion.SetSource) {
-        configRingingFirmwareVersion.SetSource(input.value)
-    }
-}
-
-function SetRingingEnableRinging(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configRingingEnable.SetSource) {
-        configRingingEnable.SetSource(input.value)
-    }
-}
-
-export {
+export default {
     ringingSettingForm,
-    configRingingProductType,
-    configRingingFirmwareVersion,
-    configRingingEnable,
-    SetRingingProductType,
-    SetRingingFirmwareVersion,
-    SetRingingEnableRinging,
+    configProductType,
+    configFirmwareVersion,
+    configEnable,
 }

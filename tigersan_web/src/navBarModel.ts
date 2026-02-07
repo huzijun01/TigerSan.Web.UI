@@ -11,8 +11,9 @@ import { NavBarModel } from '@/0_tigersan_ui/models'
 let navBarModel = new NavBarModel({
     Folders: [
         {
+            IsOpen: false,
             Title: "设备管理",
-            Icon: Icons.Memory,
+            Icon: Icons.Server,
             Buttons: [
                 {
                     Icon: '',
@@ -32,6 +33,7 @@ let navBarModel = new NavBarModel({
             ]
         },
         {
+            IsOpen: false,
             Title: "操作管理",
             Icon: Icons.ViewProcess,
             Buttons: [
@@ -51,7 +53,7 @@ let navBarModel = new NavBarModel({
     Buttons: [
         {
             IsSelected: true,
-            Icon: Icons.EQP,
+            Icon: Icons.Router,
             Title: "网关管理",
             _component: GatewayMgtPage
         },
@@ -64,6 +66,5 @@ let navBarModel = new NavBarModel({
 })
 
 navBarModel.IsOpen.value = true
-navBarModel.Width.value = 220
 
 export default navBarModel

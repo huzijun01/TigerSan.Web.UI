@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import { Icons } from '../../base';
-import { SelectModel } from '../../models';
+import { SelectModel } from '../../models'
 import { RectPosition, GetWithinWindowRect } from '../../helpers';
 
 // 字段:

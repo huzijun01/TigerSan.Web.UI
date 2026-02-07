@@ -1,8 +1,8 @@
-import { ref, computed, watch } from "vue"
+import { ref, type Ref, computed, watch } from "vue"
 import { Colors } from "@/0_tigersan_ui/base"
 import { dialog } from '@/0_tigersan_ui/stores'
 import { FormConfig, SetFormModel } from './FormConfig'
-import type { ObjectAction, UnknownGetter, UnknownSetter } from "@/0_tigersan_ui/types"
+import type { ObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "@/0_tigersan_ui/types"
 import { DefaultUnknownGetter, DefaultUnknownSetter } from "@/0_tigersan_ui/helpers"
 
 type FormVerify = (source: object) => VerifyResult
@@ -103,7 +103,7 @@ class FormModel {
 
     /** 初始化“验证状态”
      * （“Form”显示后会自动调用） */
-    private InitVerifyState() {
+    InitVerifyState() {
         this.ForEachItemModels(itemModel => {
             itemModel.VerifyText.value = ''
             itemModel.VerifyResult.value = FormResult.OK
@@ -112,7 +112,7 @@ class FormModel {
 
     /** 初始化“源数据”
      * （“Form”显示后会自动调用） */
-    private InitData() {
+    InitData() {
         // 获取“源数据”:
         this._source = this._getSource()
 
@@ -199,18 +199,23 @@ class FormItemModel {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
+    /** 所属“表单模型” */
     _formModel: FormModel
+    /** “源数据”getter */
     _getValue: UnknownGetter = DefaultUnknownGetter
+    /** “源数据”setter */
     _setValue: UnknownSetter = DefaultUnknownSetter
+    /** 改变后 */
+    _onChange?: UnknownFunc
+    /** 是否“验证无误” */
     _isVerifyOk?: FormVerify
     //#endregion 【Fields】
 
     //#region 【Properties】
     //#region [内部维护]
-    /** 目标数据：
-     * 会被“FormItemConfig”覆盖
-     * （由“FormItemModel”维护） */
-    Target = ref<unknown>()
+    /** 目标数据
+     * （值改变时，会执行“OnChange”） */
+    readonly Target: Ref<unknown>
     /** 验证结果
      * （由“FormItemModel”维护） */
     VerifyResult = ref(FormResult.OK)
@@ -259,22 +264,29 @@ class FormItemModel {
     //#region 【Ctor】
     constructor(
         formModel: FormModel,
-        propName: string
+        propName: string,
+        target: Ref<unknown>
     ) {
         this._formModel = formModel
         this._propName = propName
+        this.Target = target
+
+        // 监听:
+        watch(this.Target, this.OnChange)
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
     /** 修改“源数据”
-     * （会更新状态，需手动调用） */
-    SetSource = (value: unknown) => {
+     * （“Target”改变时，会自动调用） */
+    OnChange = (value: unknown, oldValue: unknown) => {
         if (!this._setValue) return
         // 修改“源数据”:
         this._setValue(this._formModel._source, this._propName, value)
-        // 修改“目标数据”:
-        this.Target.value = value
+        // 执行“改变后”回调:
+        if (this._onChange) {
+            this._onChange(value, oldValue)
+        }
         // 验证:
         this.IsVerifyOk()
     }

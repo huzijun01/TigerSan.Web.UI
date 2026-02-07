@@ -1,9 +1,9 @@
-import { ref, type InputHTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { Colors } from '@/0_tigersan_ui/base'
 import { dialog } from '@/0_tigersan_ui/stores'
 import { IsNotUndefinedOrEmpty, ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
 import { PersonMgtLabelModel, personMgtLabelTable } from './PersonMgtLabelTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormResult, VerifyResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
 
 /** “IMEI”项目配置 */
 const configIMEI: FormItemConfig = {
@@ -35,7 +35,7 @@ const AddGetSource = () => {
 }
 
 /** “网关”表单配置 */
-let configPersonMgtLabelForm: FormConfig = {
+let configpersonMgtLabelForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -46,22 +46,7 @@ let configPersonMgtLabelForm: FormConfig = {
 }
 
 /** “网关”表单模型 */
-const PersonMgtLabelForm = new FormModel(configPersonMgtLabelForm)
-
-// 【方法】:
-function SetEqpName(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configEqpName.SetSource) {
-        configEqpName.SetSource(input.value)
-    }
-}
-
-function SetIMEI(payload: Event) {
-    const input = payload.target as InputHTMLAttributes
-    if (configIMEI.SetSource) {
-        configIMEI.SetSource(input.value)
-    }
-}
+const personMgtLabelForm = new FormModel(configpersonMgtLabelForm)
 
 /** 查 */
 function Refresh() {
@@ -70,27 +55,27 @@ function Refresh() {
 
 /** 增 */
 function Add() {
-    PersonMgtLabelForm.Title.value = '新增网关'
+    personMgtLabelForm.Title.value = '新增网关'
 
-    PersonMgtLabelForm._getSource = AddGetSource
+    personMgtLabelForm._getSource = AddGetSource
 
-    PersonMgtLabelForm._onSubmit = source => {
+    personMgtLabelForm._onSubmit = source => {
         personMgtLabelTable.RowDatas.push(source)
         personMgtLabelTable.Refresh()
 
         return new SubmitResult('添加成功')
     }
 
-    PersonMgtLabelForm.Show()
+    personMgtLabelForm.Show()
 }
 
 /** 改 */
 function Edit() {
-    PersonMgtLabelForm.Title.value = '修改网关'
+    personMgtLabelForm.Title.value = '修改网关'
 
     let iRow = 0
 
-    PersonMgtLabelForm._getSource = () => {
+    personMgtLabelForm._getSource = () => {
         const rowData = personMgtLabelTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
@@ -101,14 +86,14 @@ function Edit() {
         return ObjectShallowCopy(rowData)
     }
 
-    PersonMgtLabelForm._onSubmit = source => {
+    personMgtLabelForm._onSubmit = source => {
         personMgtLabelTable.RowDatas[iRow] = source
         personMgtLabelTable.Refresh()
 
         return new SubmitResult('修改成功')
     }
 
-    PersonMgtLabelForm.Show()
+    personMgtLabelForm.Show()
 }
 
 /** 删 */
@@ -136,12 +121,10 @@ function DeleteRowData(state: DialogState) {
     dialog.ShowSuccess('删除成功')
 }
 
-export {
+export default {
     configEqpName,
     configIMEI,
-    PersonMgtLabelForm,
-    SetEqpName,
-    SetIMEI,
+    personMgtLabelForm,
     Refresh,
     Add,
     Edit,
