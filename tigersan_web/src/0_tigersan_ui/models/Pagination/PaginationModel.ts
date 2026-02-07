@@ -100,8 +100,8 @@ class PaginationModel {
     constructor() {
         this.PageSizeWidth = 100
         this.InitStableButtons()
-        this.Init()
         this.InitWatch()
+        this.Init()
     }
     //#endregion 【Ctor】
 
