@@ -1,5 +1,3 @@
-enum StoreIDs {
+export enum StoreIDs {
     dialog = 'dialog'
 }
-
-export { StoreIDs }

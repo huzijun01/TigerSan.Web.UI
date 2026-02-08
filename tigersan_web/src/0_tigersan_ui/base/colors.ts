@@ -1,4 +1,4 @@
-export default class Colors {
+export class Colors {
     /* [主色] */
     static Brand = "var(--color-brand)"
     static Brand10 = "var(--color-brand-10)"

@@ -1,4 +1,4 @@
-export default class Icons {
+export class Icons {
     // A:
     static All = "";
     static Add = "";

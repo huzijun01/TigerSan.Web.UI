@@ -1,4 +1,4 @@
-export default class ObjectHelper {
+export class ObjectHelper {
     /** “对象”浅复制 */
     static ObjectShallowCopy<T extends object>(obj: T): T {
         // 处理基本类型直接返回

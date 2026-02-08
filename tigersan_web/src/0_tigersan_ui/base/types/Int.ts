@@ -1,6 +1,6 @@
 import { type NumberFunc } from "../../types"
 
-class Int {
+export class Int {
     // 字段:
     private _value = 0
     _set?: NumberFunc
@@ -62,5 +62,3 @@ class Int {
         return Math.floor(a.value % b.value)
     }
 }
-
-export { Int }

@@ -1,14 +1,2 @@
-import { StoreIDs } from './stores/base/StoreIDs'
-
-// Dialog:
-import {
-    useDialogStore,
-    dialog,
-} from './stores/dialog'
-
-export {
-    StoreIDs,
-    // Dialog:
-    useDialogStore,
-    dialog,
-}
+export * from './stores/base/StoreIDs'
+export * from './stores/dialog'

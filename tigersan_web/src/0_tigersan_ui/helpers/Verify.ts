@@ -1,6 +1,6 @@
 import { FormResult, VerifyResult } from "../models/Form/FormModel"
 
-export default class Verify {
+export class Verify {
     /** 是否非空 */
     static IsNotEmpty(str: string): VerifyResult {
         var res = new VerifyResult()

@@ -1,4 +1,4 @@
-export default class ArrayHelper {
+export class ArrayHelper {
     /** 删除元素 */
     static DeleteItem<T>(arr: T[], item: T) {
         const index = arr.findIndex(i => i === item);

@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
 
-export default class StringHelper {
+export class StringHelper {
     /** 过滤所有DOM标签 */
     static StringXSS(str: string) {
         return DOMPurify.sanitize(str, {
