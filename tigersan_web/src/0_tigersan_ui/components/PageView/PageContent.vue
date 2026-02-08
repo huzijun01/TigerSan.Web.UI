@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
 import { ref, onMounted } from 'vue'
-import { CreateApp } from '../../helpers';
+import { ComponentHelper } from '../../helpers';
 import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
@@ -26,7 +26,7 @@ onMounted(() => {
     }
 
     // 创建App:
-    const app = CreateApp(model?._component ?? DefaultPage)
+    const app = ComponentHelper.CreateApp(model?._component ?? DefaultPage)
 
     // 挂载:
     app.mount(refRoot.value)

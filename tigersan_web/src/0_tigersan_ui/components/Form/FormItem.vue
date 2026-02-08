@@ -12,13 +12,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { FormConfig } from '../../models'
-import { DefaultObjectAction } from '../../helpers'
+import { ObjectHelper } from '../../helpers'
 import { FormModel, FormItemModel } from '../../models/Form/FormModel'
 
 let { model } = defineProps({
     model: {
         type: FormItemModel,
-        default: () => new FormItemModel(new FormModel(new FormConfig(DefaultObjectAction)), '', ref())
+        default: () => new FormItemModel(new FormModel(new FormConfig(ObjectHelper.DefaultObjectAction)), '', ref())
     }
 })
 </script>

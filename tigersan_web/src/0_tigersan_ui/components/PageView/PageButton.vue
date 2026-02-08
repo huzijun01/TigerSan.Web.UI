@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { Icons } from '../../base'
-import { DeleteItem, GetFirstItem } from '../../helpers'
+import { ArrayHelper } from '../../helpers'
 import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
@@ -32,10 +32,10 @@ function OnClick() {
 
 function Close() {
     const oldIsSelected = model.IsSelected.value
-    DeleteItem(model.NavBarModel.OpenedButtonModels, model)
+    ArrayHelper.DeleteItem(model.NavBarModel.OpenedButtonModels, model)
 
     if (oldIsSelected) {
-        model.NavBarModel.SelectedButtonModel = GetFirstItem(model.NavBarModel.OpenedButtonModels)
+        model.NavBarModel.SelectedButtonModel = ArrayHelper.GetFirstItem(model.NavBarModel.OpenedButtonModels)
     }
 }
 </script>

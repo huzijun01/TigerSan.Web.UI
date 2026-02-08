@@ -52,20 +52,20 @@
 </template>
 
 <script lang="ts" setup>
-import form from './AssetMgtLabelForm'
-import select from './AssetMgtLabelSelect'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { assetMgtLabelTable } from './AssetMgtLabelTable'
-import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
+    dialog,
     Table,
     Select,
     PageCard,
     Pagination,
     PopForm,
     FormRow,
-    FormItem
-} from '@/0_tigersan_ui/components'
+    FormItem,
+    PaginationModel,
+} from '@/tigerui'
+import form from './AssetMgtLabelForm'
+import select from './AssetMgtLabelSelect'
+import { assetMgtLabelTable } from './AssetMgtLabelTable'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = assetMgtLabelTable

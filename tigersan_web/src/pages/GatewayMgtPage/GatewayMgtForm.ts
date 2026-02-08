@@ -1,9 +1,9 @@
 import { ref } from 'vue'
-import { Colors } from '@/0_tigersan_ui/base'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { IsNotUndefinedOrEmpty, ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
 import { GatewayMgtModel, gatewayMgtTable } from './GatewayMgtTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import {
+    Colors, dialog, Verify, ObjectHelper,
+    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
+} from '@/tigerui'
 
 /** “网关名称”项目配置 */
 const configName: FormItemConfig = {
@@ -13,7 +13,7 @@ const configName: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var gateway = source as GatewayMgtModel
-        return IsNotUndefinedOrEmpty(gateway.Name)
+        return Verify.IsNotUndefinedOrEmpty(gateway.Name)
     }
 }
 
@@ -25,7 +25,7 @@ const configMacAddr: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var gateway = source as GatewayMgtModel
-        return IsNotUndefinedOrEmpty(gateway.MacAddr)
+        return Verify.IsNotUndefinedOrEmpty(gateway.MacAddr)
     }
 }
 
@@ -83,7 +83,7 @@ function Edit() {
         }
 
         iRow = gatewayMgtTable.RowDatas.indexOf(rowData)
-        return ObjectShallowCopy(rowData)
+        return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
     gatewayForm._onSubmit = source => {

@@ -50,20 +50,20 @@
 </template>
 
 <script lang="ts" setup>
-import form from './EnvSensorForm'
-import select from './EnvSensorSelect'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { envSensorTable } from './EnvSensorTable'
-import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
+    dialog,
     Table,
     Select,
     PageCard,
     Pagination,
     PopForm,
     FormRow,
-    FormItem
-} from '@/0_tigersan_ui/components'
+    FormItem,
+    PaginationModel,
+} from '@/tigerui'
+import form from './EnvSensorForm'
+import select from './EnvSensorSelect'
+import { envSensorTable } from './EnvSensorTable'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = envSensorTable

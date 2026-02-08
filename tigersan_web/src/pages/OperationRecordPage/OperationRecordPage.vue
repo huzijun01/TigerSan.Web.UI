@@ -31,16 +31,15 @@
 </template>
 
 <script lang="ts" setup>
-import select from './OperationRecordSelect'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { operationRecordTable } from './OperationRecordTable'
-import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
     Select,
     PageCard,
     Pagination,
-} from '@/0_tigersan_ui/components'
+    PaginationModel,
+} from '@/tigerui'
+import select from './OperationRecordSelect'
+import { operationRecordTable } from './OperationRecordTable'
 // 【字段】:
 
 // 【过程】:

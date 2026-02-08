@@ -1,9 +1,9 @@
 import { ref } from 'vue'
-import { Colors } from '@/0_tigersan_ui/base'
-import { dialog } from '@/0_tigersan_ui/stores'
 import { AssetMgtLabelModel, assetMgtLabelTable } from './AssetMgtLabelTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
-import { IsNotUndefinedOrEmpty } from '@/0_tigersan_ui/helpers'
+import {
+    Verify, dialog, Colors,
+    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
+} from '@/tigerui'
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig = {
@@ -13,7 +13,7 @@ const configMacAddr: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var assetMgtLabel = source as AssetMgtLabelModel
-        return IsNotUndefinedOrEmpty(assetMgtLabel.MacAddr)
+        return Verify.IsNotUndefinedOrEmpty(assetMgtLabel.MacAddr)
     }
 }
 

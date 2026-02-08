@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-import { FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
-import { IsNotUndefinedOrEmpty, IsWithinRange } from '@/0_tigersan_ui/helpers'
+import { Verify, FormModel, FormConfig, FormItemConfig } from '@/tigerui'
 
 /** “灯光设置”模型 */
 class LightSettingModel {
@@ -38,7 +37,7 @@ const configProductType: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var lightSetting = source as LightSettingModel
-        return IsNotUndefinedOrEmpty(lightSetting.ProductType)
+        return Verify.IsNotUndefinedOrEmpty(lightSetting.ProductType)
     }
 }
 
@@ -50,7 +49,7 @@ const configFirmwareVersion: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var lightSetting = source as LightSettingModel
-        return IsNotUndefinedOrEmpty(lightSetting.FirmwareVersion)
+        return Verify.IsNotUndefinedOrEmpty(lightSetting.FirmwareVersion)
     }
 }
 
@@ -61,7 +60,7 @@ const configEnable: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var lightSetting = source as LightSettingModel
-        return IsWithinRange(lightSetting.Enable, 1, 59)
+        return Verify.IsWithinRange(lightSetting.Enable, 1, 59)
     }
 }
 
@@ -72,7 +71,7 @@ const configFlash_Fast_On: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var lightSetting = source as LightSettingModel
-        return IsWithinRange(lightSetting.Flash_Fast_On, 200, 65000)
+        return Verify.IsWithinRange(lightSetting.Flash_Fast_On, 200, 65000)
     }
 }
 
@@ -83,7 +82,7 @@ const configFlash_Fast_Off: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var lightSetting = source as LightSettingModel
-        return IsWithinRange(lightSetting.Flash_Fast_Off, 200, 65000)
+        return Verify.IsWithinRange(lightSetting.Flash_Fast_Off, 200, 65000)
     }
 }
 

@@ -1,9 +1,8 @@
 import { ref } from 'vue'
-import { Colors } from '@/0_tigersan_ui/base'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { IsNotUndefinedOrEmpty } from '@/0_tigersan_ui/helpers'
 import { EnvSensorModel, envSensorTable } from './EnvSensorTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import {
+    Colors, dialog, Verify, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
+} from '@/tigerui'
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig = {
@@ -13,7 +12,7 @@ const configMacAddr: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var envSensor = source as EnvSensorModel
-        return IsNotUndefinedOrEmpty(envSensor.MacAddr)
+        return Verify.IsNotUndefinedOrEmpty(envSensor.MacAddr)
     }
 }
 

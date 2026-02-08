@@ -39,10 +39,8 @@ import {
     FormRow,
     FormItem,
     DrawerBox,
-} from '@/0_tigersan_ui/components'
-import {
     DrawerBoxModel,
-} from '@/0_tigersan_ui/models'
+} from '@/tigerui'
 
 // 抽屉盒子:
 const lightSettingDrawerBox = new DrawerBoxModel()

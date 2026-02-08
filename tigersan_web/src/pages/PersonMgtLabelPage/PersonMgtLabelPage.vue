@@ -57,11 +57,6 @@
 </template>
 
 <script lang="ts" setup>
-import form from './PersonMgtLabelForm'
-import select from './PersonMgtLabelSelect'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { personMgtLabelTable } from './PersonMgtLabelTable'
-import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
     Select,
@@ -69,8 +64,13 @@ import {
     Pagination,
     PopForm,
     FormRow,
-    FormItem
-} from '@/0_tigersan_ui/components'
+    dialog,
+    FormItem,
+    PaginationModel,
+} from '@/tigerui'
+import form from './PersonMgtLabelForm'
+import select from './PersonMgtLabelSelect'
+import { personMgtLabelTable } from './PersonMgtLabelTable'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = personMgtLabelTable

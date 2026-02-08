@@ -1,9 +1,9 @@
 import { ref } from 'vue'
-import { Colors } from '@/0_tigersan_ui/base'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { IsNotUndefinedOrEmpty, ObjectShallowCopy } from '@/0_tigersan_ui/helpers'
 import { PersonMgtLabelModel, personMgtLabelTable } from './PersonMgtLabelTable'
-import { DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
+import {
+    Colors, dialog, Verify, ObjectHelper,
+    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
+} from '@/tigerui'
 
 /** “IMEI”项目配置 */
 const configIMEI: FormItemConfig = {
@@ -13,7 +13,7 @@ const configIMEI: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var personMgtLabel = source as PersonMgtLabelModel
-        return IsNotUndefinedOrEmpty(personMgtLabel.IMEI)
+        return Verify.IsNotUndefinedOrEmpty(personMgtLabel.IMEI)
     }
 }
 
@@ -25,7 +25,7 @@ const configEqpName: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var personMgtLabel = source as PersonMgtLabelModel
-        return IsNotUndefinedOrEmpty(personMgtLabel.EqpName)
+        return Verify.IsNotUndefinedOrEmpty(personMgtLabel.EqpName)
     }
 }
 
@@ -83,7 +83,7 @@ function Edit() {
         }
 
         iRow = personMgtLabelTable.RowDatas.indexOf(rowData)
-        return ObjectShallowCopy(rowData)
+        return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
     personMgtLabelForm._onSubmit = source => {

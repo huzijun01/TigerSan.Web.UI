@@ -1,7 +1,7 @@
 import type { StringArrayFunc } from '../types'
 
 /** class监听 */
-class ClassObserver {
+export default class ClassObserver {
     //#region 【Fields】
     private _element: HTMLElement
     private _observer: MutationObserver
@@ -45,8 +45,4 @@ class ClassObserver {
         return Array.from(element.classList)
     }
     //#endregion 【Functions】
-}
-
-export {
-    ClassObserver
 }

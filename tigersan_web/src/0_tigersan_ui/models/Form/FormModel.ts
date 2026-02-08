@@ -3,7 +3,7 @@ import { Colors } from "@/0_tigersan_ui/base"
 import { dialog } from '@/0_tigersan_ui/stores'
 import { FormConfig, SetFormModel } from './FormConfig'
 import type { ObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "@/0_tigersan_ui/types"
-import { DefaultUnknownGetter, DefaultUnknownSetter } from "@/0_tigersan_ui/helpers"
+import { ObjectHelper } from "@/0_tigersan_ui/helpers"
 
 type FormVerify = (source: object) => VerifyResult
 type FormSubmit = (source: object) => SubmitResult
@@ -202,9 +202,9 @@ class FormItemModel {
     /** 所属“表单模型” */
     _formModel: FormModel
     /** “源数据”getter */
-    _getValue: UnknownGetter = DefaultUnknownGetter
+    _getValue: UnknownGetter = ObjectHelper.DefaultUnknownGetter
     /** “源数据”setter */
-    _setValue: UnknownSetter = DefaultUnknownSetter
+    _setValue: UnknownSetter = ObjectHelper.DefaultUnknownSetter
     /** 改变后 */
     _onChange?: UnknownFunc
     /** 是否“验证无误” */

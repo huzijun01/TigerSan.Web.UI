@@ -32,16 +32,15 @@
 </template>
 
 <script lang="ts" setup>
-import select from './OperationRetrySelect'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { operationRetryTable } from './OperationRetryTable'
-import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
     Table,
     Select,
     PageCard,
     Pagination,
-} from '@/0_tigersan_ui/components'
+    PaginationModel,
+} from '@/tigerui'
+import select from './OperationRetrySelect'
+import { operationRetryTable } from './OperationRetryTable'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = operationRetryTable

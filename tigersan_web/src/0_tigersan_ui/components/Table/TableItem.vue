@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { StringXSS, StringToHtml } from '../../helpers';
+import { StringHelper } from '../../helpers';
 import { TableHeaderModel, TableItemModel, TableModel, TableRowModel, TextAlign } from '../../models'
 import { ref, onMounted, computed } from 'vue'
 
@@ -44,8 +44,8 @@ let classObj = computed(() => {
 
 const formattedText = computed(() => {
     return model._headerModel.IsAllowWrap.value
-        ? StringToHtml(model.Text.value) :
-        StringToHtml(model.Text.value, '')
+        ? StringHelper.StringToHtml(model.Text.value) :
+        StringHelper.StringToHtml(model.Text.value, '')
 })
 
 // 过程:
@@ -67,7 +67,7 @@ function OnChange() {
 }
 
 function TextXSS() {
-    model.Text.value = StringXSS(model.Text.value)
+    model.Text.value = StringHelper.StringXSS(model.Text.value)
 }
 
 function InitResizeObserver() {

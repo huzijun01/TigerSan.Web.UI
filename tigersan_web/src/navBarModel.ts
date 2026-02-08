@@ -1,3 +1,4 @@
+import { Icons, NavBarModel } from '@/tigerui'
 import GatewayMgtPage from '@/pages/GatewayMgtPage/GatewayMgtPage.vue'
 import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'
@@ -5,8 +6,6 @@ import EnvSensorPage from '@/pages/EnvSensorPage/EnvSensorPage.vue'
 import OperationRecordPage from '@/pages/OperationRecordPage/OperationRecordPage.vue'
 import OperationRetryPage from '@/pages/OperationRetryPage/OperationRetryPage.vue'
 import SystemSettingsPage from '@/pages/SystemSettingsPage/SystemSettingsPage.vue'
-import { Icons } from '@/0_tigersan_ui/base'
-import { NavBarModel } from '@/0_tigersan_ui/models'
 
 let navBarModel = new NavBarModel({
     Folders: [

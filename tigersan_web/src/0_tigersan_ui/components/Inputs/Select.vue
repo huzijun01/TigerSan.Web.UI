@@ -17,7 +17,7 @@
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import { Icons } from '../../base';
 import { SelectModel } from '../../models'
-import { RectPosition, GetWithinWindowRect } from '../../helpers';
+import { RectPosition, RectHelper } from '../../helpers';
 
 // 字段:
 let { model } = defineProps({
@@ -136,7 +136,7 @@ function UpdateMenuPosition() {
     let rectRoot = refRoot.value.getBoundingClientRect()
 
     // 菜单矩形:
-    let rectMenu = GetWithinWindowRect(rectRoot, refMenu.value.offsetWidth, refMenu.value.offsetHeight)
+    let rectMenu = RectHelper.GetWithinWindowRect(rectRoot, refMenu.value.offsetWidth, refMenu.value.offsetHeight)
 
     // 设置位置:
     isTopOpen.value = rectMenu.Position === RectPosition.Top

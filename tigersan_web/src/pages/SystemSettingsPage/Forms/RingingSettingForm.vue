@@ -29,10 +29,8 @@ import {
     FormRow,
     FormItem,
     DrawerBox,
-} from '@/0_tigersan_ui/components'
-import {
     DrawerBoxModel,
-} from '@/0_tigersan_ui/models'
+} from '@/tigerui'
 
 const ringingSettingDrawerBox = new DrawerBoxModel()
 ringingSettingDrawerBox.Title.value = '响铃设置'

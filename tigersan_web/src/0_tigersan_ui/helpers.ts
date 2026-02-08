@@ -1,99 +1,41 @@
-// ArrayHelper:
-import {
-    DeleteItem,
-    GetFirstItem,
-} from "./helpers/ArrayHelper"
+/* 导入: */
+import ArrayHelper from "./helpers/ArrayHelper"
+import ClassObserver from "./helpers/ClassObserver"
+import ComponentHelper from "./helpers/ComponentHelper"
+import ObjectHelper from "./helpers/ObjectHelper"
+import StringHelper from "./helpers/StringHelper"
+import Verify from "./helpers/Verify"
 
-// ComponentHelper:
+// CheckboxBehavior:
 import {
     type CheckboxModelsGetter,
     CheckboxModel,
     CheckboxBehavior
 } from "./helpers/CheckboxBehavior"
 
-// ComponentHelper:
-import {
-    CreateApp
-} from "./helpers/ComponentHelper"
-
-// ObjectHelper:
-import {
-    ObjectShallowCopy,
-    ObjectDeepCopy,
-    DefaultObjectAction,
-    DefaultStringGetter,
-    DefaultUnknownGetter,
-    DefaultUnknownSetter,
-} from "./helpers/ObjectHelper"
-
-// ClassObserver:
-import {
-    ClassObserver
-} from "./helpers/ClassObserver"
-
 // RectHelper:
 import {
     RectPosition,
     GetWithinWindowRectResult,
-    IsWithin,
-    GetRectByTop,
-    GetRectByBottom,
-    GetWindowRect,
-    GetWithinWindowRect,
+    RectHelper,
 } from "./helpers/RectHelper"
 
-// StringHelper:
-import {
-    StringXSS,
-    StringToHtml
-} from "./helpers/StringHelper"
-
-// Verification:
-import {
-    IsNotEmpty,
-    IsNotUndefinedOrEmpty,
-    IsWithinRange,
-} from "./helpers/Verification"
-
+/* 导出: */
 export {
-    // ArrayHelper:
-    DeleteItem,
-    GetFirstItem,
+    ArrayHelper,
+    ClassObserver,
+    ComponentHelper,
+    ObjectHelper,
+    StringHelper,
+    Verify,
 
-    // ComponentHelper:
+    // CheckboxBehavior:
     type CheckboxModelsGetter,
     CheckboxModel,
     CheckboxBehavior,
 
-    // ComponentHelper:
-    CreateApp,
-
-    // ObjectHelper:
-    ObjectShallowCopy,
-    ObjectDeepCopy,
-    DefaultObjectAction,
-    DefaultStringGetter,
-    DefaultUnknownGetter,
-    DefaultUnknownSetter,
-
-    // ClassObserver:
-    ClassObserver,
-
     // RectHelper:
     RectPosition,
     GetWithinWindowRectResult,
-    IsWithin,
-    GetRectByTop,
-    GetRectByBottom,
-    GetWindowRect,
-    GetWithinWindowRect,
-
-    // StringHelper:
-    StringXSS,
-    StringToHtml,
-
-    // Verification:
-    IsNotEmpty,
-    IsNotUndefinedOrEmpty,
-    IsWithinRange,
+    RectHelper,
 }

@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import { dialog } from '@/0_tigersan_ui/stores/dialog'
 import { ref } from 'vue'
+import { dialog } from '@/tigerui'
 
 let sum = ref(0)
 

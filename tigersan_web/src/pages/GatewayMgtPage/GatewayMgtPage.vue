@@ -57,20 +57,20 @@
 </template>
 
 <script lang="ts" setup>
-import form from './GatewayMgtForm'
-import select from './GatewayMgtSelect'
-import { dialog } from '@/0_tigersan_ui/stores'
-import { gatewayMgtTable } from './GatewayMgtTable'
-import { PaginationModel } from '@/0_tigersan_ui/models'
 import {
+    dialog,
     Table,
     Select,
     PageCard,
     Pagination,
     PopForm,
     FormRow,
-    FormItem
-} from '@/0_tigersan_ui/components'
+    FormItem,
+    PaginationModel
+} from '@/tigerui'
+import form from './GatewayMgtForm'
+import select from './GatewayMgtSelect'
+import { gatewayMgtTable } from './GatewayMgtTable'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = gatewayMgtTable

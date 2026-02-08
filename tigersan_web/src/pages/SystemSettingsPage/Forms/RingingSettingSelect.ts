@@ -1,6 +1,4 @@
-import {
-    SelectModel,
-} from '@/0_tigersan_ui/models'
+import { SelectModel } from '@/tigerui'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300

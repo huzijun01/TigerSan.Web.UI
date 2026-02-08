@@ -6,11 +6,10 @@ import { Int } from "./base/types/Int"
 
 /* 导出: */
 export {
+    // types:
+    Int,
+    // base:
     Icons,
     Colors,
     Constants,
-}
-export {
-    // Class:
-    Int,
 }

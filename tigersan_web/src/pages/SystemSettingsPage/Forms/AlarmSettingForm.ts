@@ -1,6 +1,8 @@
 import { ref } from 'vue'
-import { FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
-import { IsWithinRange } from '@/0_tigersan_ui/helpers'
+import {
+    Verify,
+    FormModel, FormConfig, FormItemConfig
+} from '@/tigerui'
 
 /** “预警设置”模型 */
 class AlarmSettingModel {
@@ -26,7 +28,7 @@ const configBatteryAlarmRate: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var alarmSetting = source as AlarmSettingModel
-        return IsWithinRange(alarmSetting.BatteryAlarmRate, 1, 100)
+        return Verify.IsWithinRange(alarmSetting.BatteryAlarmRate, 1, 100)
     }
 }
 
@@ -38,7 +40,7 @@ const configEqpOfflineMinutes: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var alarmSetting = source as AlarmSettingModel
-        return IsWithinRange(alarmSetting.EqpOfflineMinutes, 0, 1000)
+        return Verify.IsWithinRange(alarmSetting.EqpOfflineMinutes, 0, 1000)
     }
 }
 
@@ -49,7 +51,7 @@ const configEqpOfflineSeconds: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var alarmSetting = source as AlarmSettingModel
-        return IsWithinRange(alarmSetting.EqpOfflineSeconds, 1, 59)
+        return Verify.IsWithinRange(alarmSetting.EqpOfflineSeconds, 1, 59)
     }
 }
 

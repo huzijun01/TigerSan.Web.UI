@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-import { FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/models'
-import { IsNotUndefinedOrEmpty, IsWithinRange } from '@/0_tigersan_ui/helpers'
+import { Verify, FormModel, FormConfig, FormItemConfig } from '@/tigerui'
 
 /** “响铃设置”模型 */
 class RingingSettingModel {
@@ -26,7 +25,7 @@ const configProductType: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var ringingSetting = source as RingingSettingModel
-        return IsNotUndefinedOrEmpty(ringingSetting.ProductType)
+        return Verify.IsNotUndefinedOrEmpty(ringingSetting.ProductType)
     }
 }
 
@@ -38,7 +37,7 @@ const configFirmwareVersion: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var ringingSetting = source as RingingSettingModel
-        return IsNotUndefinedOrEmpty(ringingSetting.FirmwareVersion)
+        return Verify.IsNotUndefinedOrEmpty(ringingSetting.FirmwareVersion)
     }
 }
 
@@ -49,7 +48,7 @@ const configEnable: FormItemConfig = {
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var ringingSetting = source as RingingSettingModel
-        return IsWithinRange(ringingSetting.Enable, 1, 59)
+        return Verify.IsWithinRange(ringingSetting.Enable, 1, 59)
     }
 }
 
