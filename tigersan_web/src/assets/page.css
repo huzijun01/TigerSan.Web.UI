@@ -1,0 +1,44 @@
+.child-margin-bottom > div:not(:last-child) {
+  margin-bottom: 10px;
+}
+.child-margin-right > :not(:last-child) {
+  margin-right: 10px;
+}
+.table-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* 顶部: */
+  /* 底部: */
+}
+.table-page .top-panel {
+  overflow: auto;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+.table-page .top-panel > * {
+  flex-shrink: 0;
+}
+.table-page .top-panel .filter-panel > div:not(:last-child) {
+  margin-bottom: 10px;
+}
+.table-page .top-panel .filter-panel .row-panel {
+  display: flex;
+  align-items: center;
+}
+.table-page .top-panel .filter-panel .row-panel > :not(:last-child) {
+  margin-right: 10px;
+}
+.table-page .top-panel .button-panel {
+  padding-left: 20px;
+}
+.table-page .top-panel .button-panel > div:not(:last-child) {
+  margin-bottom: 10px;
+}
+.table-page .top-panel .button-panel .row-panel > :not(:last-child) {
+  margin-right: 10px;
+}
+.table-page .bottom-panel {
+  flex-shrink: 0;
+  overflow: auto;
+}
