@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { StoreIDs } from '@/tigerui'
 
 class RouterHelper {
-    go?: (path: string) => void
+    go: (path: string) => void = () => { }
 }
 
 /* 仓库 */
