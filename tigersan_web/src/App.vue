@@ -1,24 +1,25 @@
 <template>
-  <div class="app-panel">
-    <RouterView />
+  <div class="app-panel flex-stretch">
+    <RouterPage />
   </div>
   <Dialog></Dialog>
 </template>
 
 <script lang="ts" setup>
-import { Dialog } from '@/tigerui'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useRouterStore } from '@/stores'
+import { createRouter, Dialog, RouterPage } from '@/tigerui'
+import Home from "@/routes/Home.vue"
+import Login from "@/routes/Login/Login.vue"
 
-const router = useRouter()
-
-onMounted(() => {
-  const routerHelper = useRouterStore()
-  routerHelper.go = (path: string) => {
-    router.replace(path)
-  }
-})
+createRouter([
+  {
+    path: '/',
+    component: Home
+  },
+  {
+    path: 'Login',
+    component: Login
+  },
+])
 </script>
 
 <style lang="less" scoped>

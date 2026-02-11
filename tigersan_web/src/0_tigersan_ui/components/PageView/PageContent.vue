@@ -6,15 +6,14 @@
 import DefaultPage from './DefaultPage.vue'
 import { ref, onMounted } from 'vue'
 import { ComponentHelper } from '../../helpers';
-import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
 
-let { model } = defineProps({
-    model: {
-        type: NavButtonModel,
-        default: NavBarModel._defaultButtonModel
+let { component } = defineProps({
+    component: {
+        type: Object,
+        default: DefaultPage
     }
 })
 
@@ -26,7 +25,7 @@ onMounted(() => {
     }
 
     // 创建App:
-    const app = ComponentHelper.CreateApp(model?._component ?? DefaultPage)
+    const app = ComponentHelper.CreateApp(component ?? DefaultPage)
 
     // 挂载:
     app.mount(refRoot.value)

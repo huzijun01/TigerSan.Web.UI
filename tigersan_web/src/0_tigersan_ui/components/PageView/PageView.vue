@@ -1,7 +1,7 @@
 <template>
     <div v-for="b in model.OpenedButtonModels" :key="b._id" class="flex-stretch"
         :class="{ 'display-none': !b.IsSelected.value }">
-        <PageContent :model="b" />
+        <PageContent :component="b._component" />
     </div>
 </template>
 

@@ -40,22 +40,20 @@
 import AppConfig from '@/AppConfig'
 import navBarModel from '@/navBarModel'
 import { onBeforeMount, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserInfo } from '@/stores'
-import { Icons, IconButton, NavBar, PageBar, PageView } from '@/tigerui'
+import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter } from '@/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
 
 // 字段:
 const userName = ref('')
 const offsetX = ref(0)
 const refInfoPanel = ref<HTMLElement | undefined>()
-const router = useRouter()
 const userInfo = useUserInfo()
 
 // 过程:
 onBeforeMount(() => {
   if (!IsUserInfoVerifyOk(userInfo)) {
-    router.replace('Login')
+    useRouter().GoTo('Login')
     return
   }
 })
@@ -72,7 +70,17 @@ onMounted(() => {
 
 // 方法:
 function OnExit() {
-  router.replace('Login')
+  dialog.ShowDialog(
+    '确认',
+    '是否要退出登录？',
+    Login,
+    DialogMode.YesOrNo,
+    Colors.Warning)
+}
+
+function Login(state: DialogState) {
+  if (state != DialogState.Yes) return
+  useRouter().GoTo('Login')
 }
 </script>
 

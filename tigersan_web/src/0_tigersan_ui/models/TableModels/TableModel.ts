@@ -221,6 +221,7 @@ class TableItemModel {
     }
     //#endregion 【Fields】
 
+    //#region 【Properties】
     /** 文本 */
     Text = ref('')
     /** 是否只读 */
@@ -229,6 +230,7 @@ class TableItemModel {
     Color = ref('')
     /** 背景 */
     Background = ref(Colors.Transparent)
+    //#endregion 【Properties】
 
     //#region 【Ctor】
     constructor(headerModel: TableHeaderModel, rowModel: TableRowModel) {
@@ -284,6 +286,7 @@ class TableHeaderModel {
     _objSetter: UnknownSetter = ObjectHelper.DefaultUnknownSetter
     //#endregion 【Fields】
 
+    //#region 【Properties】
     /** 文本 */
     Text = ref('null')
     /** 文本对齐 */
@@ -292,6 +295,7 @@ class TableHeaderModel {
     IsReadonly = ref(false)
     /** 是否允许换行 */
     IsAllowWrap = ref(true)
+    //#endregion 【Properties】
 
     //#region 【Ctor】
     constructor(tableModel: TableModel, propName: string) {

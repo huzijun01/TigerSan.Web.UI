@@ -1,7 +1,8 @@
 import { UserInfo } from '@/models'
-import { useUserInfo, useRouterStore } from '@/stores'
+import { useUserInfo } from '@/stores'
 import {
     Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, FormResult,
+    useRouter,
 } from '@/tigerui'
 
 const uname = new TextBoxModel()
@@ -58,19 +59,12 @@ const AddGetSource = () => {
 
 /** 提交 */
 const OnSubmit = (source: object) => {
-    const routerHelper = useRouterStore()
-    if (!routerHelper.go) {
-        const msg = 'The router is undefined!'
-        console.warn(msg)
-        return new SubmitResult(msg, FormResult.Warning)
-    }
-
     const userInfo = useUserInfo()
     const newUserInfo = source as UserInfo
     userInfo.UserName = newUserInfo.UserName
     userInfo.Password = newUserInfo.Password
     userInfo.Captcha = newUserInfo.Captcha
-    routerHelper.go('/')
+    useRouter().GoTo('/')
 
     return new SubmitResult('登录成功')
 }

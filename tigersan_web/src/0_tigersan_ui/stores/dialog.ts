@@ -1,8 +1,8 @@
 import { shallowReactive } from 'vue'
 import { defineStore } from 'pinia'
 import { Colors } from '../base'
-import { DialogMode, DialogModel, type DialogCallback } from '../models'
 import { StoreIDs } from './base/StoreIDs'
+import { DialogMode, DialogModel, type DialogCallback } from '../models'
 
 /* 仓库 */
 const useDialogStore = defineStore(StoreIDs.dialog, () => {

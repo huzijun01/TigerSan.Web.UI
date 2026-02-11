@@ -27,6 +27,7 @@ import PageButton from "./components/PageView/PageButton.vue"
 import PageCard from "./components/PageView/PageCard.vue"
 import PageContent from "./components/PageView/PageContent.vue"
 import PageView from "./components/PageView/PageView.vue"
+import RouterPage from "./components/PageView/RouterPage.vue"
 // Pagination:
 import Pagination from "./components/Pagination/Pagination.vue"
 import PaginationButton from "./components/Pagination/PaginationButton.vue"
@@ -64,6 +65,7 @@ export {
     PageCard,
     PageContent,
     PageView,
+    RouterPage,
     // Pagination:
     Pagination,
     PaginationButton,

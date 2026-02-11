@@ -17,6 +17,9 @@ export * from './models/NavBar/NavButtonModel'
 export * from './models/NavBar/NavFolderModel'
 export * from './models/NavBar/NavConfig'
 
+/* PageView: */
+export * from './models/PageView/RouterPageModel'
+
 /* Pagination: */
 export * from './models/Pagination/PaginationModel'
 export * from './models/Pagination/PaginationButtonModel'
