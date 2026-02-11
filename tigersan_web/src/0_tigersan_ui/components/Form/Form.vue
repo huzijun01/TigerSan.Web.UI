@@ -1,5 +1,5 @@
 <template>
-    <table class="form-panel">
+    <table class="form-panel" :style="styleObj">
         <tbody>
             <slot></slot>
         </tbody>
@@ -7,14 +7,30 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
+
+let { marginH, marginV } = defineProps({
+    marginH: {
+        type: Number,
+        default: 20
+    },
+    marginV: {
+        type: Number,
+        default: 25
+    }
+})
+
+const styleObj = computed(
+    () => {
+        return {
+            borderSpacing: `${marginH}px ${marginV}px`
+        }
+    }
+)
 </script>
 
 <style lang="less" scoped>
-@margin-bottom: 25px;
-@margin-right: 20px;
-
 table {
     border-collapse: separate;
-    border-spacing: @margin-right @margin-bottom;
 }
 </style>

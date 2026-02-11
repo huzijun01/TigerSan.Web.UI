@@ -1,5 +1,5 @@
 <template>
-    <div class="icon-button flex-center">
+    <div class="icon-button flex-center" @click="OnClick">
         <div class="icon iconfont" v-if="isShowIcon">{{ icon }}</div>
         <div class="text" v-if="isShowText">{{ text }}</div>
     </div>
@@ -8,7 +8,7 @@
 import { Icons } from '@/0_tigersan_ui/base'
 import { computed } from 'vue';
 
-let { icon, text } = defineProps({
+let { icon, text, click } = defineProps({
     icon: {
         type: String,
         default: Icons.About
@@ -16,6 +16,9 @@ let { icon, text } = defineProps({
     text: {
         type: String,
         default: 'Button'
+    },
+    click: {
+        type: Function,
     }
 })
 
@@ -26,6 +29,12 @@ const isShowIcon = computed(() => {
 const isShowText = computed(() => {
     return text.trim() != ''
 })
+
+function OnClick(payload: PointerEvent) {
+    if (click) {
+        click(payload)
+    }
+}
 </script>
 <style lang="less" scoped>
 @size: 28px;

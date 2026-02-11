@@ -1,3 +1,5 @@
 export enum StoreIDs {
-    dialog = 'dialog'
+    dialog = 'dialog',
+    router = 'router',
+    userInfo = 'userInfo',
 }

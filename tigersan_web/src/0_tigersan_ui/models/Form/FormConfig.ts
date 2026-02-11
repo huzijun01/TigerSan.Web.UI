@@ -73,7 +73,7 @@ class FormItemConfig {
 function SetFormModel(formModel: FormModel, formConfig: FormConfig) {
     // Fields:
     formModel._itemModels = GetItemModels(formModel, formConfig)
-    formModel._onSubmit = formModel._onSubmit
+    formModel._onSubmit = formConfig._onSubmit
 
     // Properties:
     if (formConfig.IsShow != undefined) formModel.IsShow.value = formConfig.IsShow

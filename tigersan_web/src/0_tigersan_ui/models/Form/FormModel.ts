@@ -46,6 +46,10 @@ class SubmitResult {
 /** 表单模型 */
 class FormModel {
     //#region 【Fields】
+    /** 是否“显示结果” */
+    _isShowResult = true
+    /** 是否“显示成功结果” */
+    _isShowSuccessResult = true
     /** 源数据
      * （由“FormModel”内部维护） */
     _source: object
@@ -101,6 +105,12 @@ class FormModel {
         }
     }
 
+    /** 初始化 */
+    Init() {
+        this.InitData()
+        this.InitVerifyState()
+    }
+
     /** 初始化“验证状态”
      * （“Form”显示后会自动调用） */
     InitVerifyState() {
@@ -145,16 +155,20 @@ class FormModel {
         const res = this._onSubmit(this._source)
 
         // 显示结果:
-        switch (res.Result) {
-            case FormResult.Error:
-                dialog.ShowError(res.Msg)
-                return
-            case FormResult.Warning:
-                dialog.ShowWarning(res.Msg)
-                break
-            default:
-                dialog.ShowSuccess(res.Msg)
-                break
+        if (this._isShowResult) {
+            switch (res.Result) {
+                case FormResult.Error:
+                    dialog.ShowError(res.Msg)
+                    return
+                case FormResult.Warning:
+                    dialog.ShowWarning(res.Msg)
+                    break
+                default:
+                    if (this._isShowSuccessResult) {
+                        dialog.ShowSuccess(res.Msg)
+                    }
+                    break
+            }
         }
 
         // 关闭:
@@ -230,6 +244,11 @@ class FormItemModel {
     IsEquired = ref(false)
 
     //#region [computed]
+    /** 是否显示“属性名” */
+    IsShowPropName = computed(() => {
+        return this.PropText.value.trim() != ''
+    })
+
     /** 是否显示“验证文本” */
     IsShowVerify = computed(() => {
         return this.VerifyText.value.trim() != ''

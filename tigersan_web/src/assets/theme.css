@@ -159,6 +159,8 @@
   /* [遮罩] */
   --theme-mask-hover: var(--color-black-10);
   --theme-mask-active: var(--color-black-50);
+  /* [链接] */
+  --theme-link-color: #34a1ff;
   /* [按钮] */
   --theme-button-color: var(--color-primary-text);
   /* [导航] */

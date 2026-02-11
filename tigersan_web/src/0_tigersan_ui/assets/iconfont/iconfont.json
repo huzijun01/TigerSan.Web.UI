@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1117092",
+      "name": "Eye",
+      "font_class": "Eye",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
       "icon_id": "12052454",
       "name": "Server",
       "font_class": "Server",
@@ -291,13 +298,6 @@
       "font_class": "Setting_Linear",
       "unicode": "e62f",
       "unicode_decimal": 58927
-    },
-    {
-      "icon_id": "14314759",
-      "name": "Eye",
-      "font_class": "Eye",
-      "unicode": "e63f",
-      "unicode_decimal": 58943
     },
     {
       "icon_id": "15222465",

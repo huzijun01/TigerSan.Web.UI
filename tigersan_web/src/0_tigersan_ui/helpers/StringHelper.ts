@@ -18,4 +18,8 @@ export class StringHelper {
         return str.replace(/\r\n|\r|\n/g, strEnter)
             .replace(/ {2}/g, '&nbsp;&nbsp;')
     }
+
+    static IsNotEmpty(str: string): boolean {
+        return str.trim() != ''
+    }
 }

@@ -172,3 +172,7 @@ input[type="checkbox"]:disabled {
   border-color: var(--theme-border-disabled);
   background: var(--theme-mask-hover);
 }
+.link {
+  cursor: pointer;
+  color: var(--theme-link-color);
+}

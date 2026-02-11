@@ -6,7 +6,9 @@ export * from './models/Form/FormModel'
 export * from './models/Form/FormConfig'
 
 /* Inputs: */
+export * from './models/Inputs/PasswordModel'
 export * from './models/Inputs/SelectModel'
+export * from './models/Inputs/TextBoxModel'
 
 /* NavBar: */
 export * from './models/NavBar/testNavBarModel'

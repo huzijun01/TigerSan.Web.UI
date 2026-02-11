@@ -41,7 +41,7 @@ export class Icons {
     static Delete_Planar = "";
 
     // E:
-    static Eye = "";
+    static Eye = "";
     static EQP = "";
     static Edit = "";
     static Eye_Close = "";

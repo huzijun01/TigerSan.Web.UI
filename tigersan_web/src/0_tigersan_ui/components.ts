@@ -1,5 +1,7 @@
 // Button:
 import IconButton from "./components/Button/IconButton.vue"
+// Content:
+import Lottie from "./components/Content/Lottie.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
 import Pop from "./components/Dialog/Pop.vue"
@@ -11,7 +13,9 @@ import PopForm from './components/Form/PopForm.vue'
 import FormRow from './components/Form/FormRow.vue'
 import FormItem from './components/Form/FormItem.vue'
 // Inputs:
+import Password from "./components/Inputs/Password.vue"
 import Select from "./components/Inputs/Select.vue"
+import TextBox from "./components/Inputs/TextBox.vue"
 // NavBar:
 import NavBar from "./components/NavBar/NavBar.vue"
 import NavButton from "./components/NavBar/NavButton.vue"
@@ -33,6 +37,8 @@ import TableItem from "./components/Table/TableItem.vue"
 export {
     // Button:
     IconButton,
+    // Content:
+    Lottie,
     // Dialog:
     Dialog,
     Pop,
@@ -44,7 +50,9 @@ export {
     FormRow,
     FormItem,
     // Inputs:
+    Password,
     Select,
+    TextBox,
     // NavBar:
     NavBar,
     NavButton,
