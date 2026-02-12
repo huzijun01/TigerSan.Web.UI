@@ -1,5 +1,5 @@
 <template>
-  <div class="app-panel flex-stretch">
+  <div class="app-panel flex-stretch full-view">
     <RouterPage />
   </div>
   <Dialog></Dialog>
@@ -22,10 +22,4 @@ createRouter([
 ])
 </script>
 
-<style lang="less" scoped>
-.app-panel {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-</style>
+<style lang="less" scoped></style>
