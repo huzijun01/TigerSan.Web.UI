@@ -40,11 +40,11 @@ class NavButtonModel {
 
     //#region 【Ctor】
     constructor(
-        navBarModel: NavBarModel,
+        navModel: NavBarModel,
         navFolderModel: NavFolderModel,
         component?: Component
     ) {
-        this.NavBarModel = navBarModel
+        this.NavBarModel = navModel
         this.NavFolderModel = navFolderModel
         this._component = component
     }

@@ -1,4 +1,4 @@
-import { Icons, NavBarModel } from '@/tigerui'
+import { Icons, NavFolderConfig } from '@/tigerui'
 import GatewayMgtPage from '@/pages/GatewayMgtPage/GatewayMgtPage.vue'
 import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'
@@ -7,7 +7,7 @@ import OperationRecordPage from '@/pages/OperationRecordPage/OperationRecordPage
 import OperationRetryPage from '@/pages/OperationRetryPage/OperationRetryPage.vue'
 import SystemSettingsPage from '@/pages/SystemSettingsPage/SystemSettingsPage.vue'
 
-let navBarModel = new NavBarModel({
+const homeMgtNavConfig: NavFolderConfig = {
     Folders: [
         {
             IsOpen: false,
@@ -62,8 +62,8 @@ let navBarModel = new NavBarModel({
             _component: SystemSettingsPage
         },
     ]
-})
+}
 
-navBarModel.IsOpen.value = true
-
-export default navBarModel
+export {
+    homeMgtNavConfig
+}

@@ -3,7 +3,7 @@
     <!-- 左侧: -->
     <div class="left-panel">
       <!-- 导航栏: -->
-      <NavBar :model="navBarModel" :title="AppConfig.Title">
+      <NavBar :model="navModel" :title="AppConfig.Title">
         <div class="footer-panel flex-center">
           <span class="version">版本：V{{ AppConfig.Version }}</span>
         </div>
@@ -15,12 +15,13 @@
       <!-- 顶部: -->
       <div class="top-panel">
         <!-- 按钮: -->
-        <button class="square-button" @click="navBarModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
+        <button class="square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <!-- 页标签栏: -->
-        <PageBar :model="navBarModel" :offsetX="offsetX" />
+        <PageBar :model="navModel" :offsetX="offsetX" />
 
         <div class="info-panel flex-center" ref="refInfoPanel">
+          <IconButton :icon="Icons.Monitor" text="公司管理" :click="navData.GoCompanyMgt"></IconButton>
           <IconButton :icon="Icons.Question" text="帮助"></IconButton>
           <IconButton :icon="Icons.Refresh" text="进度"></IconButton>
           <IconButton :icon="Icons.User" :text="userName"></IconButton>
@@ -30,7 +31,7 @@
 
       <!-- 页面: -->
       <div class="page-panel flex-stretch">
-        <PageView :model="navBarModel" />
+        <PageView :model="navModel" />
       </div>
     </div>
   </div>
@@ -38,11 +39,11 @@
 
 <script lang="ts" setup>
 import AppConfig from '@/AppConfig'
-import navBarModel from '@/navBarModel'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
 import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter } from '@/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
+import { navModel, navData } from '@/navModel'
 
 // 字段:
 const userName = ref('')

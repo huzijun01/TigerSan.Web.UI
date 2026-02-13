@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { createRouter, Dialog, RouterPage } from '@/tigerui'
-import Home from "@/routes/Home.vue"
+import Home from "@/routes/Home/Home.vue"
 import Login from "@/routes/Login/Login.vue"
 
 createRouter([

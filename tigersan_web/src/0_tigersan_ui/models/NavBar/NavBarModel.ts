@@ -66,14 +66,24 @@ class NavBarModel {
     //#region 【Ctor】
     constructor(folder?: NavFolderConfig) {
         if (!folder) return
-
-        let folderModel = CreateNavFolderModel(this, folder)
-        this.FolderModel.FolderModels = folderModel.FolderModels
-        this.FolderModel.ButtonModels = folderModel.ButtonModels
+        this.Init(folder)
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    /** 初始化 */
+    Init(folder: NavFolderConfig) {
+        // 状态:
+        this.OpenedButtonModels.splice(0)
+        this.SelectedButtonModel = undefined
+        // 内容:
+        let folderModel = CreateNavFolderModel(this, folder)
+        this.FolderModel.FolderModels.splice(0)
+        this.FolderModel.FolderModels.push(...folderModel.FolderModels)
+        this.FolderModel.ButtonModels.splice(0)
+        this.FolderModel.ButtonModels.push(...folderModel.ButtonModels)
+    }
+
     /** 获取“文件夹” */
     GetFolder() {
         return new NavFolderModel(this)

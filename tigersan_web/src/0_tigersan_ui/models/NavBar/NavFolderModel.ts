@@ -55,8 +55,8 @@ class NavFolderModel {
     //#endregion 【Events】
 
     //#region 【Ctor】
-    constructor(navBarModel: NavBarModel, navFolderModel?: NavFolderModel) {
-        this.NavBarModel = navBarModel
+    constructor(navModel: NavBarModel, navFolderModel?: NavFolderModel) {
+        this.NavBarModel = navModel
         this.NavFolderModel = navFolderModel
     }
     //#endregion 【Ctor】

@@ -35,11 +35,13 @@ import form from './LoginForm'
 import { onMounted } from 'vue';
 import { useUserInfo } from '@/stores';
 import { Form, FormRow, FormItem, TextBox, Password } from '@/tigerui'
+import { navData } from '@/navModel';
 
 onMounted(() => {
   const userInfo = useUserInfo()
   userInfo.Clear()
   form.loginForm.Init()
+  navData.GoCompanyMgt()
 })
 </script>
 
