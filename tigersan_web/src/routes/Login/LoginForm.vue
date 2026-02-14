@@ -17,7 +17,7 @@
           <FormItem :model="form.configCaptcha.ItemModel">
             <div class="captcha-panel">
               <TextBox type="text" :model="form.captcha"></TextBox>
-              <img class="captcha-img" src="../../../public/captcha.jpg" alt="">
+              <img class="captcha-img" src="http://www.tigersan.cn/0_file/image/captcha.jpg" alt="">
             </div>
           </FormItem>
         </FormRow>

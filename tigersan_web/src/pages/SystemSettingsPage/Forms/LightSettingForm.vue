@@ -17,6 +17,11 @@
                 </FormItem>
             </FormRow>
             <FormRow>
+                <FormItem :model="form.configEnable.ItemModel">
+                    <Switch :model="form.enableSwitch"></Switch>
+                </FormItem>
+            </FormRow>
+            <FormRow>
                 <FormItem :model="form.configFlash_Fast_On.ItemModel">
                     <input type="text" v-model="form.configFlash_Fast_On.Target.value">
                     <span> ms</span>
@@ -36,6 +41,7 @@ import select from './LightSettingSelect'
 import {
     Form,
     Select,
+    Switch,
     FormRow,
     FormItem,
     DrawerBox,

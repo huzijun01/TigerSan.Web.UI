@@ -15,6 +15,7 @@ import FormItem from './components/Form/FormItem.vue'
 // Inputs:
 import Password from "./components/Inputs/Password.vue"
 import Select from "./components/Inputs/Select.vue"
+import Switch from "./components/Inputs/Switch.vue"
 import TextBox from "./components/Inputs/TextBox.vue"
 // NavBar:
 import NavBar from "./components/NavBar/NavBar.vue"
@@ -53,6 +54,7 @@ export {
     // Inputs:
     Password,
     Select,
+    Switch,
     TextBox,
     // NavBar:
     NavBar,

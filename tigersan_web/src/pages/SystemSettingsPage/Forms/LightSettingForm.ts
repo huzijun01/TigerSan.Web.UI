@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Verify, FormModel, FormConfig, FormItemConfig } from '@/tigerui'
+import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel } from '@/tigerui'
 
 /** “灯光设置”模型 */
 class LightSettingModel {
@@ -8,7 +8,7 @@ class LightSettingModel {
     /** 固件版本 */
     FirmwareVersion? = ''
     /** 是否启用 */
-    Enable = 0
+    Enable = false
     /** 闪烁时长（快、亮灯） */
     Flash_Fast_On = 200
     /** 闪烁时长（快、灭灯） */
@@ -23,11 +23,13 @@ class LightSettingModel {
     Flash_Medium_Off = 200
 }
 
+/** 组件模型 */
+const enableSwitch = new SwitchModel()
+
 /** “灯光设置”实例 */
 const lightSetting = new LightSettingModel()
 lightSetting.ProductType = undefined
 lightSetting.FirmwareVersion = undefined
-lightSetting.Enable = 20
 
 /** “产品类型”项目配置 */
 const configProductType: FormItemConfig = {
@@ -57,11 +59,8 @@ const configFirmwareVersion: FormItemConfig = {
 const configEnable: FormItemConfig = {
     _propName: 'Enable',
     PropText: '灯光设置',
-    Target: ref<unknown>(),
-    _isVerifyOk: (source) => {
-        var lightSetting = source as LightSettingModel
-        return Verify.IsWithinRange(lightSetting.Enable, 1, 59)
-    }
+    IsEquired: true,
+    Target: enableSwitch.Value
 }
 
 /** “快闪亮灯”项目配置 */
@@ -109,6 +108,7 @@ let configLightSettingForm: FormConfig = {
 const lightSettingForm = new FormModel(configLightSettingForm)
 
 export default {
+    enableSwitch,
     lightSettingForm,
     configProductType,
     configFirmwareVersion,

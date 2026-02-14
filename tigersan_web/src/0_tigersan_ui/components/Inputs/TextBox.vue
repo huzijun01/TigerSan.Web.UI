@@ -8,12 +8,13 @@
 </template>
 
 <script lang="ts" setup>
-import { Icons, TextBoxModel } from '@/tigerui'
+import { Icons } from '../../base'
+import { TextBoxModel } from '../../models'
 
 let { model } = defineProps({
     model: {
         type: TextBoxModel,
-        default: new TextBoxModel()
+        default: () => new TextBoxModel()
     }
 })
 </script>

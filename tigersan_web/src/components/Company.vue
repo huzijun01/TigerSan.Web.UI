@@ -18,7 +18,7 @@ import { CompanyMgtModel } from '@/pages/CompanyMgtPage/CompanyMgtTable'
 const { model } = defineProps({
     model: {
         type: Object,
-        default: new CompanyMgtModel()
+        default: () => new CompanyMgtModel()
     },
 })
 

@@ -17,7 +17,7 @@ import { PasswordModel } from '../../models'
 let { model } = defineProps({
     model: {
         type: PasswordModel,
-        default: new PasswordModel()
+        default: () => new PasswordModel()
     }
 })
 </script>

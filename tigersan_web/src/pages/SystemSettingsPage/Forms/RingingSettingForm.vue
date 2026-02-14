@@ -16,6 +16,11 @@
                     </div>
                 </FormItem>
             </FormRow>
+            <FormRow>
+                <FormItem :model="form.configEnable.ItemModel">
+                    <Switch :model="form.enableSwitch"></Switch>
+                </FormItem>
+            </FormRow>
         </Form>
     </DrawerBox>
 </template>
@@ -26,6 +31,7 @@ import select from './RingingSettingSelect'
 import {
     Form,
     Select,
+    Switch,
     FormRow,
     FormItem,
     DrawerBox,

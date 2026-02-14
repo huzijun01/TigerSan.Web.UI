@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Verify, FormModel, FormConfig, FormItemConfig } from '@/tigerui'
+import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel } from '@/tigerui'
 
 /** “响铃设置”模型 */
 class RingingSettingModel {
@@ -8,14 +8,16 @@ class RingingSettingModel {
     /** 固件版本 */
     FirmwareVersion? = ''
     /** 是否启用 */
-    Enable = 0
+    Enable = false
 }
+
+/** 组件模型 */
+const enableSwitch = new SwitchModel()
 
 /** “响铃设置”实例 */
 const ringingSetting = new RingingSettingModel()
 ringingSetting.ProductType = undefined
 ringingSetting.FirmwareVersion = undefined
-ringingSetting.Enable = 20
 
 /** “产品类型”项目配置 */
 const configProductType: FormItemConfig = {
@@ -45,11 +47,8 @@ const configFirmwareVersion: FormItemConfig = {
 const configEnable: FormItemConfig = {
     _propName: 'Enable',
     PropText: '响铃设置',
-    Target: ref<unknown>(),
-    _isVerifyOk: (source) => {
-        var ringingSetting = source as RingingSettingModel
-        return Verify.IsWithinRange(ringingSetting.Enable, 1, 59)
-    }
+    IsEquired: true,
+    Target: enableSwitch.Value
 }
 
 /** “增”源数据获取方法 */
@@ -73,6 +72,7 @@ let configGatewayForm: FormConfig = {
 const ringingSettingForm = new FormModel(configGatewayForm)
 
 export default {
+    enableSwitch,
     ringingSettingForm,
     configProductType,
     configFirmwareVersion,
