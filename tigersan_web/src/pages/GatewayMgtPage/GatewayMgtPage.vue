@@ -67,7 +67,7 @@ import {
     FormRow,
     FormItem,
     PaginationModel
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import form from './GatewayMgtForm'
 import select from './GatewayMgtSelect'
 import { gatewayMgtTable } from './GatewayMgtTable'

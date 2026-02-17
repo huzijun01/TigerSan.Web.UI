@@ -37,7 +37,7 @@ import {
     PageCard,
     Pagination,
     PaginationModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import select from './OperationRecordSelect'
 import { operationRecordTable } from './OperationRecordTable'
 // 【字段】:

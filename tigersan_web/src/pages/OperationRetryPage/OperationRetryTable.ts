@@ -1,4 +1,4 @@
-import { TableModel, TextAlign } from "@/tigerui"
+import { TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 
 /** "操作重试"模型 */
 class OperationRetryModel {

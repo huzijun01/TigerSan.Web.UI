@@ -62,7 +62,7 @@ import {
     FormRow,
     FormItem,
     PaginationModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import form from './AssetMgtLabelForm'
 import select from './AssetMgtLabelSelect'
 import { assetMgtLabelTable } from './AssetMgtLabelTable'

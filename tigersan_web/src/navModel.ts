@@ -1,4 +1,4 @@
-import { NavBarModel } from '@/tigerui'
+import { NavBarModel } from '@/0_tigersan_ui/tigerui'
 import { homeMgtNavConfig } from "@/routes/Home/homeMgtNavConfig"
 import { companyMgtNavConfig } from "@/routes/Home/companyMgtNavConfig"
 

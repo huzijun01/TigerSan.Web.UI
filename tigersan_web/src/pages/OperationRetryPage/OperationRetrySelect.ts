@@ -1,4 +1,4 @@
-import { SelectModel } from '@/tigerui'
+import { SelectModel } from '@/0_tigersan_ui/tigerui'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150

@@ -1,4 +1,4 @@
-import { Colors, TableModel, TextAlign } from "@/tigerui"
+import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 
 /** "环境传感器"模型 */
 class EnvSensorModel {

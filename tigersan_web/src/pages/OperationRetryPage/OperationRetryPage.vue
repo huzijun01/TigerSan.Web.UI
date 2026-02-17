@@ -38,7 +38,7 @@ import {
     PageCard,
     Pagination,
     PaginationModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import select from './OperationRetrySelect'
 import { operationRetryTable } from './OperationRetryTable'
 // 【字段】:

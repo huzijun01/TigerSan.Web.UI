@@ -44,7 +44,7 @@ import {
     FormItem,
     DrawerBox,
     DrawerBoxModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 // 抽屉盒子:
 const alarmSettingDrawerBox = new DrawerBoxModel()

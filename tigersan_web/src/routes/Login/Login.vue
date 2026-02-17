@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Lottie } from '@/tigerui'
+import { Lottie } from '@/0_tigersan_ui/tigerui'
 import LoginForm from './LoginForm.vue'
 </script>
 

@@ -3,7 +3,7 @@ import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper,
     DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig = {

@@ -1,4 +1,4 @@
-import { Colors, TableModel, TextAlign } from "@/tigerui"
+import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 
 /** “网关管理”模型 */
 class GatewayMgtModel {

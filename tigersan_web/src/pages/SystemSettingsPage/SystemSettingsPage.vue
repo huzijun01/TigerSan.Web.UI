@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PageCard } from '@/tigerui'
+import { PageCard } from '@/0_tigersan_ui/tigerui'
 import AlarmSettingForm from './Forms/AlarmSettingForm.vue'
 import LightSettingForm from './Forms/LightSettingForm.vue'
 import RingingSettingForm from './Forms/RingingSettingForm.vue'

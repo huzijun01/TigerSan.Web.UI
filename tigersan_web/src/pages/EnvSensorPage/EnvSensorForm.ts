@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { EnvSensorModel, envSensorTable } from './EnvSensorTable'
 import {
     Colors, dialog, Verify, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig = {

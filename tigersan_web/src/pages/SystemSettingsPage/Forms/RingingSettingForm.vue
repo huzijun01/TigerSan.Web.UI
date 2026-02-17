@@ -36,7 +36,7 @@ import {
     FormItem,
     DrawerBox,
     DrawerBoxModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 const ringingSettingDrawerBox = new DrawerBoxModel()
 ringingSettingDrawerBox.Title.value = '响铃设置'

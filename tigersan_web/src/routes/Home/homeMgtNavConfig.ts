@@ -1,4 +1,4 @@
-import { Icons, NavFolderConfig } from '@/tigerui'
+import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import GatewayMgtPage from '@/pages/GatewayMgtPage/GatewayMgtPage.vue'
 import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'

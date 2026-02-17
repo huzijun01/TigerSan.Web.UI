@@ -1,4 +1,4 @@
-import { StringHelper } from "@/tigerui"
+import { StringHelper } from '@/0_tigersan_ui/tigerui'
 
 export class UserInfo {
     UserName = ''

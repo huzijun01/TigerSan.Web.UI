@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import { computed, ref, shallowReactive, type App, type ShallowReactive } from "vue"
-import type { Object2StringFunc } from "@/0_tigersan_ui/types"
+import type { Object2StringFunc } from "../../types"
 import { RectPosition, RectHelper } from '../../helpers';
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void

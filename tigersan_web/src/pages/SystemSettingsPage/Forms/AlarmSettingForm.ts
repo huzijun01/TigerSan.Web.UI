@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import {
     Verify,
     FormModel, FormConfig, FormItemConfig
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 /** “预警设置”模型 */
 class AlarmSettingModel {

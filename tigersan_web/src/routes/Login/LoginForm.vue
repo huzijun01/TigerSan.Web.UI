@@ -34,7 +34,7 @@
 import form from './LoginForm'
 import { onMounted } from 'vue';
 import { useUserInfo } from '@/stores';
-import { Form, FormRow, FormItem, TextBox, Password } from '@/tigerui'
+import { Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
 import { navData } from '@/navModel';
 
 onMounted(() => {

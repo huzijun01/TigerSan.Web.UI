@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createRouter, Dialog, RouterPage } from '@/tigerui'
+import { createRouter, Dialog, RouterPage } from '@/0_tigersan_ui/tigerui'
 import Home from "@/routes/Home/Home.vue"
 import Login from "@/routes/Login/Login.vue"
 

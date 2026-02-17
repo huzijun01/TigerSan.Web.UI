@@ -60,7 +60,7 @@ import {
     FormRow,
     FormItem,
     PaginationModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import form from './EnvSensorForm'
 import select from './EnvSensorSelect'
 import { envSensorTable } from './EnvSensorTable'

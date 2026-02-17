@@ -15,7 +15,7 @@
       <!-- 顶部: -->
       <div class="top-panel">
         <!-- 按钮: -->
-        <button class="square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
+        <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <!-- 页标签栏: -->
         <PageBar :model="navModel" :offsetX="offsetX" />
@@ -41,7 +41,7 @@
 import AppConfig from '@/AppConfig'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
-import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter } from '@/tigerui'
+import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter } from '@/0_tigersan_ui/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
 import { navModel, navData } from '@/navModel'
 
@@ -109,12 +109,14 @@ function Login(state: DialogState) {
       grid-row: 1/2;
       background: var(--theme-card-background);
 
-      &>button {
+      .nav-button {
         flex-shrink: 0;
+        z-index: 1;
       }
 
       .info-panel {
         align-self: center;
+        flex-shrink: 0;
 
         &>* {
           margin-right: 15px;

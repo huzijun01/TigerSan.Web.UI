@@ -1,4 +1,4 @@
-import { type BooleanFunc } from "@/tigerui"
+import { type BooleanFunc } from "../../types"
 import { computed, ref } from "vue"
 
 class SwitchModel {

@@ -67,7 +67,7 @@ import {
     dialog,
     FormItem,
     PaginationModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import form from './PersonMgtLabelForm'
 import select from './PersonMgtLabelSelect'
 import { personMgtLabelTable } from './PersonMgtLabelTable'

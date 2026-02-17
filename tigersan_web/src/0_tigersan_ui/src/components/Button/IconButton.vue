@@ -5,7 +5,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { Icons } from '@/0_tigersan_ui/base'
+import { Icons } from '../../base'
 import { computed } from 'vue';
 
 let { icon, text, click } = defineProps({
@@ -37,7 +37,7 @@ function OnClick(payload: PointerEvent) {
 }
 </script>
 <style lang="less" scoped>
-@size: 28px;
+@size: 24px;
 
 .icon-button {
     cursor: pointer;

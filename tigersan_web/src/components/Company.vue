@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Icons, StringHelper } from '@/tigerui'
+import { Icons, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { CompanyMgtModel } from '@/pages/CompanyMgtPage/CompanyMgtTable'
 
 //字段:

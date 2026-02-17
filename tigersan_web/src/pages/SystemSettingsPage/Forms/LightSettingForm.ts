@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel } from '@/tigerui'
+import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel } from '@/0_tigersan_ui/tigerui'
 
 /** “灯光设置”模型 */
 class LightSettingModel {

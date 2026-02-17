@@ -1,4 +1,4 @@
-import { Colors, TableModel, TextAlign } from "@/tigerui"
+import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
 class AssetMgtLabelModel {

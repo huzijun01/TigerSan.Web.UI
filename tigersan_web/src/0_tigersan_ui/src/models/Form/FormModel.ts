@@ -1,9 +1,9 @@
 import { ref, type Ref, computed, watch } from "vue"
-import { Colors } from "@/0_tigersan_ui/base"
-import { dialog } from '@/0_tigersan_ui/stores'
+import { Colors } from "../../base"
+import { dialog } from '../../stores'
 import { FormConfig, SetFormModel } from './FormConfig'
-import type { ObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "@/0_tigersan_ui/types"
-import { ObjectHelper } from "@/0_tigersan_ui/helpers"
+import type { ObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
+import { ObjectHelper } from "../../helpers"
 
 type FormVerify = (source: object) => VerifyResult
 type FormSubmit = (source: object) => SubmitResult

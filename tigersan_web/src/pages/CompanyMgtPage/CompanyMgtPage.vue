@@ -53,7 +53,7 @@ import {
     PageCard,
     Pagination,
     PaginationModel,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
 import form from './CompanyMgtForm'
 import Company from '@/components/Company.vue'

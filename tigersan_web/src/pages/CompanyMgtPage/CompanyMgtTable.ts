@@ -1,4 +1,4 @@
-import { TableModel, TextAlign } from "@/tigerui"
+import { TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 import { nanoid } from "nanoid"
 import { navData } from '@/navModel'
 

@@ -1,4 +1,4 @@
-import type { StringFunc } from "@/tigerui"
+import type { StringFunc } from "../../types"
 import { ref, computed } from "vue"
 
 class TextBoxModel {

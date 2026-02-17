@@ -3,7 +3,7 @@ import { PersonMgtLabelModel, personMgtLabelTable } from './PersonMgtLabelTable'
 import {
     Colors, dialog, Verify, ObjectHelper,
     DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 /** “IMEI”项目配置 */
 const configIMEI: FormItemConfig = {

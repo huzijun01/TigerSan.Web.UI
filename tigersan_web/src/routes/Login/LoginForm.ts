@@ -3,7 +3,7 @@ import { useUserInfo } from '@/stores'
 import {
     Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, FormResult,
     useRouter,
-} from '@/tigerui'
+} from '@/0_tigersan_ui/tigerui'
 
 const uname = new TextBoxModel()
 uname.Width.value = "100%"

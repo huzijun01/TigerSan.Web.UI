@@ -1,6 +1,6 @@
-import { Colors } from '@/0_tigersan_ui/base'
-import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '@/0_tigersan_ui/types'
-import { ObjectHelper, CheckboxModel, CheckboxBehavior } from '@/0_tigersan_ui/helpers'
+import { Colors } from '../../base'
+import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '../../types'
+import { ObjectHelper, CheckboxModel, CheckboxBehavior } from '../../helpers'
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 

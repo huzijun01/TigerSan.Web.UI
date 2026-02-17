@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { dialog } from '@/tigerui'
+import { dialog } from '@/0_tigersan_ui/tigerui'
 
 let sum = ref(0)
 
