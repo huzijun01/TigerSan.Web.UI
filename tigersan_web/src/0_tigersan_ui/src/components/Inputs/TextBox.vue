@@ -3,7 +3,7 @@
         <input type="text" v-model="model.Value.value" :placeholder="model.Placeholder.value"
             :readonly="model.IsReadonly.value" :style="model.styleObj.value" @input="model.OnInput"
             @change="model.OnChange">
-        <div class="button-panel flex-center" ref="refButtonPanel">
+        <div class="button-panel flex-center">
             <div class="button iconfont" @click="model.OnClear">{{ Icons.Close_Circle }}</div>
         </div>
     </div>
@@ -19,8 +19,6 @@ let { model } = defineProps({
         default: () => new TextBoxModel()
     }
 })
-
-const { refButtonPanel } = model
 </script>
 
 <style lang="less" scoped>
@@ -28,6 +26,10 @@ const { refButtonPanel } = model
 
 .textbox {
     position: relative;
+
+    &>input {
+        padding-right: 31px;
+    }
 
     .button-panel {
         position: absolute;

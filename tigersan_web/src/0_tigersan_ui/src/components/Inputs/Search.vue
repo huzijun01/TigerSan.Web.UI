@@ -3,7 +3,7 @@
         <input type="text" v-model="model.Value.value" :placeholder="model.Placeholder.value"
             :readonly="model.IsReadonly.value" :style="model.styleObj.value" @input="model.OnInput"
             @change="model.OnChange">
-        <div class="button-panel flex-center" ref="refButtonPanel">
+        <div class="button-panel flex-center">
             <div class="button iconfont" @click="model.OnSearch">{{ Icons.Search }}</div>
             <div class="button iconfont" @click="model.OnClear">{{ Icons.Close_Circle }}</div>
         </div>
@@ -20,8 +20,6 @@ let { model } = defineProps({
         default: () => new SearchModel()
     }
 })
-
-const { refButtonPanel } = model
 </script>
 
 <style lang="less" scoped>
@@ -29,6 +27,10 @@ const { refButtonPanel } = model
 
 .search {
     position: relative;
+
+    &>input {
+        padding-right: 57px;
+    }
 
     .button-panel {
         position: absolute;

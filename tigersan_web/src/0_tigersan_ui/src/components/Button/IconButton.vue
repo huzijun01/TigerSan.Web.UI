@@ -1,7 +1,7 @@
 <template>
     <div class="icon-button flex-center" @click="OnClick">
         <div class="icon iconfont" v-if="isShowIcon">{{ icon }}</div>
-        <div class="text" v-if="isShowText">{{ text }}</div>
+        <div class="text ellipsis" v-if="isShowText">{{ text }}</div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -60,6 +60,7 @@ function OnClick(payload: PointerEvent) {
 
     .text {
         margin: 0 10px;
+        max-width: 200px;
     }
 }
 </style>
