@@ -27,6 +27,7 @@ export class Icons {
     static Covert = "";
     static Close_All = "";
     static Close_Thin = "";
+    static Close_Circle = "";
     static Chart_Pie = "";
     static Chart_Line = "";
 
@@ -125,7 +126,7 @@ export class Icons {
     static Stop = "";
     static Skin = "";
     static Server = "";
-    static Search = "";
+    static Search = "";
     static Switch = "";
     static Screen = "";
     static StartUp = "";

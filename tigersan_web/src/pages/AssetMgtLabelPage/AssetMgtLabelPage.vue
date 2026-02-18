@@ -13,7 +13,7 @@
                         <Select :model="select.stateSelect"></Select>
                         <span>固件版本:</span>
                         <Select :model="select.firmwareSelect"></Select>
-                        <input type="text" placeholder="输入名称或MAC">
+                        <Search :model="select.searchMac"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -56,6 +56,7 @@ import {
     dialog,
     Table,
     Select,
+    Search,
     PageCard,
     Pagination,
     PopForm,

@@ -1,4 +1,7 @@
-import { SelectModel } from '@/0_tigersan_ui/tigerui'
+import { SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
+
+const searchMac = new SearchModel()
+searchMac.Placeholder.value = '请输入名称或MAC'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
@@ -17,6 +20,7 @@ stateSelect.Value.value = '全部'
 stateSelect.Items.push(...['全部', '在线', '离线'])
 
 export default {
+    searchMac,
     typeSelect,
     stateSelect,
 }

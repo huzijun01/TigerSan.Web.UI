@@ -1,4 +1,7 @@
-import { SelectModel } from '@/0_tigersan_ui/tigerui'
+import { SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
+
+const searchIMEI = new SearchModel()
+searchIMEI.Placeholder.value = '请输入IMEI'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
@@ -21,6 +24,7 @@ bluetoothFirmwareSelect.Value.value = '全部'
 bluetoothFirmwareSelect.Items.push(...['全部'])
 
 export default {
+    searchIMEI,
     typeSelect,
     stateSelect,
     bluetoothFirmwareSelect,

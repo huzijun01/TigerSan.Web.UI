@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <input type="text" placeholder="请输入公司名称">
+                        <Search :model="form.searchCompany"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -47,6 +47,7 @@
 
 <script lang="ts" setup>
 import {
+    Search,
     PopForm,
     FormRow,
     FormItem,

@@ -7,6 +7,7 @@ export * from './models/Form/FormConfig'
 
 /* Inputs: */
 export * from './models/Inputs/PasswordModel'
+export * from './models/Inputs/SearchModel'
 export * from './models/Inputs/SelectModel'
 export * from './models/Inputs/SwitchModel'
 export * from './models/Inputs/TextBoxModel'

@@ -13,7 +13,7 @@
                         <Select :model="select.stateSelect"></Select>
                         <span>蓝牙固件:</span>
                         <Select :model="select.bluetoothFirmwareSelect"></Select>
-                        <input type="text" placeholder="输入IMEI">
+                        <Search :model="select.searchIMEI"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -60,6 +60,7 @@
 import {
     Table,
     Select,
+    Search,
     PageCard,
     Pagination,
     PopForm,

@@ -1,4 +1,7 @@
-import { SelectModel } from '@/0_tigersan_ui/tigerui'
+import { SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
+
+const searchMac = new SearchModel()
+searchMac.Placeholder.value = '请输入名称或MAC'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150
@@ -32,6 +35,7 @@ productTypeSelect.Items.push(...[
 ])
 
 export default {
+    searchMac,
     operationTypeSelect,
     productTypeSelect,
 }

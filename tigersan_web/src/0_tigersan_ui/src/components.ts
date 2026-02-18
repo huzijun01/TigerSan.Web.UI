@@ -14,6 +14,7 @@ import FormRow from './components/Form/FormRow.vue'
 import FormItem from './components/Form/FormItem.vue'
 // Inputs:
 import Password from "./components/Inputs/Password.vue"
+import Search from "./components/Inputs/Search.vue"
 import Select from "./components/Inputs/Select.vue"
 import Switch from "./components/Inputs/Switch.vue"
 import TextBox from "./components/Inputs/TextBox.vue"
@@ -53,6 +54,7 @@ export {
     FormItem,
     // Inputs:
     Password,
+    Search,
     Select,
     Switch,
     TextBox,

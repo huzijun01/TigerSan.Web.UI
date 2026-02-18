@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9097234",
+      "name": "Search",
+      "font_class": "Search",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "1304878",
+      "name": "Close_Circle",
+      "font_class": "Close_Circle",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
       "icon_id": "1117092",
       "name": "Eye",
       "font_class": "Eye",
@@ -32,13 +46,6 @@
       "font_class": "Memory",
       "unicode": "f07a",
       "unicode_decimal": 61562
-    },
-    {
-      "icon_id": "248980",
-      "name": "Search",
-      "font_class": "Search",
-      "unicode": "e699",
-      "unicode_decimal": 59033
     },
     {
       "icon_id": "405727",

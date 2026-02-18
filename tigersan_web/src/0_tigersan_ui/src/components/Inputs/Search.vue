@@ -1,10 +1,10 @@
 <template>
-    <div class="password flex-stretch">
-        <input :type="model.Type.value" v-model="model.Value.value" :placeholder="model.Placeholder.value"
+    <div class="search flex-stretch">
+        <input type="text" v-model="model.Value.value" :placeholder="model.Placeholder.value"
             :readonly="model.IsReadonly.value" :style="model.styleObj.value" @input="model.OnInput"
             @change="model.OnChange">
         <div class="button-panel flex-center" ref="refButtonPanel">
-            <div class="button iconfont" @click="model.OnClickEye">{{ model.EyeText.value }}</div>
+            <div class="button iconfont" @click="model.OnSearch">{{ Icons.Search }}</div>
             <div class="button iconfont" @click="model.OnClear">{{ Icons.Close_Circle }}</div>
         </div>
     </div>
@@ -12,12 +12,12 @@
 
 <script lang="ts" setup>
 import { Icons } from '../../base'
-import { PasswordModel } from '../../models'
+import { SearchModel } from '../../models'
 
 let { model } = defineProps({
     model: {
-        type: PasswordModel,
-        default: () => new PasswordModel()
+        type: SearchModel,
+        default: () => new SearchModel()
     }
 })
 
@@ -27,7 +27,7 @@ const { refButtonPanel } = model
 <style lang="less" scoped>
 @size: 16px;
 
-.password {
+.search {
     position: relative;
 
     .button-panel {

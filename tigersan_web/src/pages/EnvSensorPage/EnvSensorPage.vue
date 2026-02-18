@@ -11,7 +11,7 @@
                     <div class="row-panel">
                         <span>在线状态:</span>
                         <Select :model="select.stateSelect"></Select>
-                        <input type="text" placeholder="输入名称或MAC">
+                        <Search :model="select.searchMac"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -54,6 +54,7 @@ import {
     dialog,
     Table,
     Select,
+    Search,
     PageCard,
     Pagination,
     PopForm,

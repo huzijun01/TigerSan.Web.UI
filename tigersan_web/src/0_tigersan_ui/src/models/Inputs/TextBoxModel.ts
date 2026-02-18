@@ -5,6 +5,7 @@ class TextBoxModel {
     //#region 【Fields】
     _onChange?: StringFunc
     _onInput?: StringFunc
+    refButtonPanel = ref<HTMLElement | undefined>()
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -16,7 +17,8 @@ class TextBoxModel {
     //#region [computed]
     styleObj = computed(() => {
         return {
-            width: this.Width.value
+            width: this.Width.value,
+            paddingRight: `${(this.refButtonPanel.value?.offsetWidth ?? 0) + 5}px`
         }
     })
     //#endregion [computed]

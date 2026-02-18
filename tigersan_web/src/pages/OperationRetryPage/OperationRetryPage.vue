@@ -9,7 +9,7 @@
                         <Select :model="select.operationTypeSelect"></Select>
                         <span>产品类型：</span>
                         <Select :model="select.productTypeSelect"></Select>
-                        <input type="text" placeholder="输入MAC地址">
+                        <Search :model="select.searchMac"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -35,6 +35,7 @@
 import {
     Table,
     Select,
+    Search,
     PageCard,
     Pagination,
     PaginationModel,
