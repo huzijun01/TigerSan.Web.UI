@@ -99,24 +99,22 @@ function Login(state: DialogState) {
   }
 
   .right-panel {
+    grid-column: 2/3;
     display: grid;
     grid-template-rows: auto 1fr;
-    grid-column: 2/3;
 
     .top-panel {
-      display: flex;
-      align-items: flex-start;
       grid-row: 1/2;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       background: var(--theme-card-background);
 
       .nav-button {
-        flex-shrink: 0;
         z-index: 1;
       }
 
       .info-panel {
-        align-self: center;
-        flex-shrink: 0;
+        overflow: auto;
 
         &>* {
           margin-right: 15px;
