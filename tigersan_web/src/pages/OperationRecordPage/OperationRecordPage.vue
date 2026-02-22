@@ -10,6 +10,9 @@
                         <span>产品类型：</span>
                         <Select :model="select.productTypeSelect"></Select>
                     </div>
+                    <div class="row-panel">
+                        <DatePicker :model="select.date"></DatePicker>
+                    </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
@@ -35,11 +38,13 @@ import {
     Table,
     Select,
     PageCard,
+    DatePicker,
     Pagination,
     PaginationModel,
 } from '@/0_tigersan_ui/tigerui'
 import select from './OperationRecordSelect'
 import { operationRecordTable } from './OperationRecordTable'
+
 // 【字段】:
 
 // 【过程】:

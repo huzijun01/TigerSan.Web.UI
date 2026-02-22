@@ -1,3 +1,5 @@
+@import '../0_tigersan_ui/src/assets/styles/panels.less';
+
 @Gap: 10px;
 
 .child-margin-bottom {
@@ -32,12 +34,12 @@
         }
 
         .filter-panel {
+            // 尺寸:
             .child-margin-bottom();
 
             .row-panel {
                 // 显示:
-                display: flex;
-                align-items: center;
+                .flex-left();
                 .child-margin-right();
             }
         }
@@ -48,6 +50,8 @@
             .child-margin-bottom();
 
             .row-panel {
+                // 显示:
+                .flex-right();
                 .child-margin-right();
             }
         }

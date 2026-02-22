@@ -9,7 +9,10 @@
                         <Select :model="select.operationTypeSelect"></Select>
                         <span>产品类型：</span>
                         <Select :model="select.productTypeSelect"></Select>
+                    </div>
+                    <div class="row-panel">
                         <Search :model="select.searchMac"></Search>
+                        <DatePicker :model="select.date"></DatePicker>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -37,6 +40,7 @@ import {
     Select,
     Search,
     PageCard,
+    DatePicker,
     Pagination,
     PaginationModel,
 } from '@/0_tigersan_ui/tigerui'

@@ -1,3 +1,67 @@
+.display-none {
+  display: none !important;
+}
+.full-view {
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-column > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-center > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-stretch {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.flex-stretch > * {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+.flex-between {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-between > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-left {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+.flex-left > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.flex-right {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.flex-right > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 .child-margin-bottom > div:not(:last-child) {
   margin-bottom: 10px;
 }
@@ -24,7 +88,13 @@
 }
 .table-page .top-panel .filter-panel .row-panel {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
+  justify-content: flex-start;
+}
+.table-page .top-panel .filter-panel .row-panel > * {
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 .table-page .top-panel .filter-panel .row-panel > :not(:last-child) {
   margin-right: 10px;
@@ -34,6 +104,16 @@
 }
 .table-page .top-panel .button-panel > div:not(:last-child) {
   margin-bottom: 10px;
+}
+.table-page .top-panel .button-panel .row-panel {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.table-page .top-panel .button-panel .row-panel > * {
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 .table-page .top-panel .button-panel .row-panel > :not(:last-child) {
   margin-right: 10px;

@@ -1,4 +1,4 @@
-import { SelectModel } from '@/0_tigersan_ui/tigerui'
+import { DatePickerModel, DateType, SelectModel } from '@/0_tigersan_ui/tigerui'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150
@@ -39,7 +39,14 @@ productTypeSelect.Items.push(...[
     'MSR01-B 毫米波雷达传感器(人流量版)',
 ])
 
+const date = new DatePickerModel()
+date._type = DateType.datetimerange
+date._onChange = value => {
+    console.log(value)
+}
+
 export default {
     operationTypeSelect,
     productTypeSelect,
+    date,
 }

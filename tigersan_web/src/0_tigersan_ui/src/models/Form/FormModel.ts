@@ -213,6 +213,8 @@ class FormItemModel {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
+    /** “属性名”垂直对齐 */
+    _propNameVerticalAlign = 'middle'
     /** 所属“表单模型” */
     _formModel: FormModel
     /** “源数据”getter */
@@ -269,6 +271,13 @@ class FormItemModel {
                 break
         }
         return color
+    })
+
+    /** “属性名”样式对象 */
+    propNameStyleObj = computed(() => {
+        return {
+            verticalAlign: this._propNameVerticalAlign
+        }
     })
 
     /** “验证文本”样式对象 */

@@ -1,5 +1,6 @@
 <template>
-    <td class="prop-name" v-if="model.IsShowPropName.value" :class="{ 'equired': model.IsEquired.value }">
+    <td class="prop-name" v-if="model.IsShowPropName.value" :class="{ 'equired': model.IsEquired.value }"
+        :style="model.propNameStyleObj.value">
         <span class="prop-text">{{ model.PropText.value }}</span>
     </td>
     <td class="prop-value">

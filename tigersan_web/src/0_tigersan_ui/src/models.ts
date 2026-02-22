@@ -6,6 +6,7 @@ export * from './models/Form/FormModel'
 export * from './models/Form/FormConfig'
 
 /* Inputs: */
+export * from './models/Inputs/DatePickerModel'
 export * from './models/Inputs/PasswordModel'
 export * from './models/Inputs/SearchModel'
 export * from './models/Inputs/SelectModel'

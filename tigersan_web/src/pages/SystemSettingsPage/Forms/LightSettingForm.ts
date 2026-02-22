@@ -14,13 +14,21 @@ class LightSettingModel {
     /** 闪烁时长（快、灭灯） */
     Flash_Fast_Off = 200
     /** 闪烁时长（较快、亮灯） */
-    Flash_Faster_On = 200
+    Flash_Faster_On = 500
     /** 闪烁时长（较快、灭灯） */
-    Flash_Faster_Off = 200
+    Flash_Faster_Off = 500
     /** 闪烁时长（中、亮灯） */
-    Flash_Medium_On = 200
+    Flash_Medium_On = 1000
     /** 闪烁时长（中、灭灯） */
-    Flash_Medium_Off = 200
+    Flash_Medium_Off = 1000
+    /** 闪烁时长（较慢、亮灯） */
+    Flash_Slower_On = 2000
+    /** 闪烁时长（较慢、灭灯） */
+    Flash_Slower_Off = 2000
+    /** 闪烁时长（慢、亮灯） */
+    Flash_Slow_On = 4000
+    /** 闪烁时长（慢、灭灯） */
+    Flash_Slow_Off = 4000
 }
 
 /** 组件模型 */
@@ -63,7 +71,16 @@ const configEnable: FormItemConfig = {
     Target: enableSwitch.Value
 }
 
-/** “快闪亮灯”项目配置 */
+/** “单次亮灯时长”项目配置 */
+const configLightTime: FormItemConfig = {
+    _propName: 'LightTime',
+    _propNameVerticalAlign: 'top',
+    PropText: '单次亮灯时长',
+    IsEquired: true,
+    Target: enableSwitch.Value
+}
+
+/** “快、亮灯”项目配置 */
 const configFlash_Fast_On: FormItemConfig = {
     _propName: 'Flash_Fast_On',
     PropText: '亮灯',
@@ -74,7 +91,7 @@ const configFlash_Fast_On: FormItemConfig = {
     }
 }
 
-/** “快闪灭灯”项目配置 */
+/** “快、灭灯”项目配置 */
 const configFlash_Fast_Off: FormItemConfig = {
     _propName: 'Flash_Fast_Off',
     PropText: '灭灯',
@@ -85,9 +102,97 @@ const configFlash_Fast_Off: FormItemConfig = {
     }
 }
 
+/** “较快、亮灯”项目配置 */
+const configFlash_Faster_On: FormItemConfig = {
+    _propName: 'Flash_Faster_On',
+    PropText: '亮灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Faster_On, 200, 65000)
+    }
+}
+
+/** “较快、灭灯”项目配置 */
+const configFlash_Faster_Off: FormItemConfig = {
+    _propName: 'Flash_Faster_Off',
+    PropText: '灭灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Faster_Off, 200, 65000)
+    }
+}
+
+/** “中、亮灯”项目配置 */
+const configFlash_Medium_On: FormItemConfig = {
+    _propName: 'Flash_Medium_On',
+    PropText: '亮灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Medium_On, 200, 65000)
+    }
+}
+
+/** “中、灭灯”项目配置 */
+const configFlash_Medium_Off: FormItemConfig = {
+    _propName: 'Flash_Medium_Off',
+    PropText: '灭灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Medium_Off, 200, 65000)
+    }
+}
+
+/** “较慢、亮灯”项目配置 */
+const configFlash_Slower_On: FormItemConfig = {
+    _propName: 'Flash_Slower_On',
+    PropText: '亮灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Slower_On, 200, 65000)
+    }
+}
+
+/** “较慢、灭灯”项目配置 */
+const configFlash_Slower_Off: FormItemConfig = {
+    _propName: 'Flash_Slower_Off',
+    PropText: '灭灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Slower_Off, 200, 65000)
+    }
+}
+
 /** “增”源数据获取方法 */
 const GetSource = () => {
     return lightSetting
+}
+
+/** “慢、亮灯”项目配置 */
+const configFlash_Slow_On: FormItemConfig = {
+    _propName: 'Flash_Slow_On',
+    PropText: '亮灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Slow_On, 200, 65000)
+    }
+}
+
+/** “慢、灭灯”项目配置 */
+const configFlash_Slow_Off: FormItemConfig = {
+    _propName: 'Flash_Slow_Off',
+    PropText: '灭灯',
+    Target: ref<unknown>(),
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsWithinRange(lightSetting.Flash_Slow_Off, 200, 65000)
+    }
 }
 
 /** “灯光设置”表单配置 */
@@ -99,8 +204,17 @@ let configLightSettingForm: FormConfig = {
         configProductType,
         configEnable,
         configFirmwareVersion,
+        configLightTime,
         configFlash_Fast_On,
         configFlash_Fast_Off,
+        configFlash_Faster_On,
+        configFlash_Faster_Off,
+        configFlash_Medium_On,
+        configFlash_Medium_Off,
+        configFlash_Slower_On,
+        configFlash_Slower_Off,
+        configFlash_Slow_On,
+        configFlash_Slow_Off,
     ]
 }
 
@@ -113,6 +227,15 @@ export default {
     configProductType,
     configFirmwareVersion,
     configEnable,
+    configLightTime,
     configFlash_Fast_On,
     configFlash_Fast_Off,
+    configFlash_Faster_On,
+    configFlash_Faster_Off,
+    configFlash_Medium_On,
+    configFlash_Medium_Off,
+    configFlash_Slower_On,
+    configFlash_Slower_Off,
+    configFlash_Slow_On,
+    configFlash_Slow_Off,
 }

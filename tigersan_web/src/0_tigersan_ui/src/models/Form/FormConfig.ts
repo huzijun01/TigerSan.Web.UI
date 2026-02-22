@@ -36,6 +36,8 @@ class FormItemConfig {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
+    /** “属性名”垂直对齐 */
+    _propNameVerticalAlign?: string
     /** Getter */
     _getValue?: UnknownGetter
     _setValue?: UnknownSetter
@@ -93,6 +95,7 @@ function GetItemModels(formModel: FormModel, formConfig: FormConfig): FormItemMo
         const itemModel = new FormItemModel(formModel, itemConfig._propName, itemConfig.Target)
 
         // Fields:
+        if (itemConfig._propNameVerticalAlign != undefined) itemModel._propNameVerticalAlign = itemConfig._propNameVerticalAlign
         if (itemConfig._getValue != undefined) itemModel._getValue = itemConfig._getValue
         if (itemConfig._setValue != undefined) itemModel._setValue = itemConfig._setValue
         itemModel._onChange = itemConfig._onChange

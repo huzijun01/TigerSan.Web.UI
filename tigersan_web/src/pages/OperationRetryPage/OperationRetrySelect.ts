@@ -1,4 +1,4 @@
-import { SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
+import { DatePickerModel, DateType, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
 const searchMac = new SearchModel()
 searchMac.Placeholder.value = '请输入名称或MAC'
@@ -34,8 +34,15 @@ productTypeSelect.Items.push(...[
     'MST03 Light Sensor',
 ])
 
+const date = new DatePickerModel()
+date._type = DateType.datetimerange
+date._onChange = value => {
+    console.log(value)
+}
+
 export default {
     searchMac,
     operationTypeSelect,
     productTypeSelect,
+    date,
 }

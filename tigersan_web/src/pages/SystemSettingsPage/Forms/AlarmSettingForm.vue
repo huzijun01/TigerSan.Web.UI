@@ -4,7 +4,7 @@
         <Form>
             <FormRow>
                 <FormItem :model="form.configBatteryAlarmRate.ItemModel">
-                    <input type="text" v-model="form.configBatteryAlarmRate.Target.value">
+                    <input type="text" class="num" v-model="form.configBatteryAlarmRate.Target.value">
                     <span> %</span>
                 </FormItem>
                 <FormItem>
@@ -18,11 +18,11 @@
             </FormRow>
             <FormRow>
                 <FormItem :model="form.configEqpOfflineMinutes.ItemModel">
-                    <input type="text" v-model="form.configEqpOfflineMinutes.Target.value">
+                    <input type="text" class="num" v-model="form.configEqpOfflineMinutes.Target.value">
                     <span> 分钟</span>
                 </FormItem>
                 <FormItem :model="form.configEqpOfflineSeconds.ItemModel">
-                    <input type="text" v-model="form.configEqpOfflineSeconds.Target.value">
+                    <input type="text" class="num" v-model="form.configEqpOfflineSeconds.Target.value">
                     <span> 秒</span>
                 </FormItem>
                 <FormItem>
@@ -61,6 +61,10 @@ alarmSettingDrawerBox.Title.value = '预警设置'
         &>button:not(:last-child) {
             margin-right: 10px;
         }
+    }
+
+    .num{
+        width: 100px;
     }
 }
 </style>
