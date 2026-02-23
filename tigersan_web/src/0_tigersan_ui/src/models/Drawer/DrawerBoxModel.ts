@@ -7,7 +7,8 @@ class DrawerBoxModel {
     Title = ref('Title')
     /** 是否“打开” */
     IsOpen = ref(true)
-    /** 内容高度 */
+    /** 内容高度
+     * （由“DrawerBox”内部维护） */
     ContentHeight = ref(0)
     /** 内容最大高度 */
     ContentMaxHeight = ref(500)
