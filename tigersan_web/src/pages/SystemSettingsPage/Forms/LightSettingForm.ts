@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel } from '@/0_tigersan_ui/tigerui'
+import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel, CheckboxModel, CheckboxGroupModel } from '@/0_tigersan_ui/tigerui'
 
 /** “灯光设置”模型 */
 class LightSettingModel {
@@ -9,6 +9,8 @@ class LightSettingModel {
     FirmwareVersion? = ''
     /** 是否启用 */
     Enable = false
+    /** 灯色 */
+    LightColor = []
     /** 闪烁时长（快、亮灯） */
     Flash_Fast_On = 200
     /** 闪烁时长（快、灭灯） */
@@ -33,6 +35,23 @@ class LightSettingModel {
 
 /** 组件模型 */
 const enableSwitch = new SwitchModel()
+const redCheckbox = new CheckboxModel()
+redCheckbox.IsChecked.value = true
+redCheckbox.Text.value = '红色'
+redCheckbox.Value.value = '红色'
+const blueCheckbox = new CheckboxModel()
+blueCheckbox.Text.value = '蓝色'
+blueCheckbox.Value.value = '蓝色'
+const greenCheckbox = new CheckboxModel()
+greenCheckbox.Text.value = '绿色'
+greenCheckbox.Value.value = '绿色'
+const yelloCheckbox = new CheckboxModel()
+yelloCheckbox.Text.value = '黄色'
+yelloCheckbox.Value.value = '黄色'
+const whiteCheckbox = new CheckboxModel()
+whiteCheckbox.Text.value = '白色'
+whiteCheckbox.Value.value = '白色'
+const colorGroup = new CheckboxGroupModel()
 
 /** “灯光设置”实例 */
 const lightSetting = new LightSettingModel()
@@ -69,6 +88,18 @@ const configEnable: FormItemConfig = {
     PropText: '灯光设置',
     IsEquired: true,
     Target: enableSwitch.Value
+}
+
+/** “灯色”项目配置 */
+const configLightColor: FormItemConfig = {
+    _propName: 'LightColor',
+    PropText: '灯色',
+    IsEquired: true,
+    Target: colorGroup.Values,
+    _isVerifyOk: (source) => {
+        var lightSetting = source as LightSettingModel
+        return Verify.IsArrayNotEmpty(lightSetting.LightColor)
+    }
 }
 
 /** “单次亮灯时长”项目配置 */
@@ -204,6 +235,7 @@ let configLightSettingForm: FormConfig = {
         configProductType,
         configEnable,
         configFirmwareVersion,
+        configLightColor,
         configLightTime,
         configFlash_Fast_On,
         configFlash_Fast_Off,
@@ -223,10 +255,17 @@ const lightSettingForm = new FormModel(configLightSettingForm)
 
 export default {
     enableSwitch,
+    redCheckbox,
+    blueCheckbox,
+    greenCheckbox,
+    yelloCheckbox,
+    whiteCheckbox,
+    colorGroup,
     lightSettingForm,
     configProductType,
     configFirmwareVersion,
     configEnable,
+    configLightColor,
     configLightTime,
     configFlash_Fast_On,
     configFlash_Fast_Off,

@@ -1,6 +1,6 @@
 import { Colors } from '../../base'
 import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '../../types'
-import { ObjectHelper, CheckboxModel, CheckboxBehavior } from '../../helpers'
+import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior } from '../../helpers'
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 
@@ -112,9 +112,9 @@ class TableModel {
             () => this.IsSelectAll.value,
             bool => this.IsSelectAll.value = bool,
             () => {
-                let CheckboxModels = new Array<CheckboxModel>()
+                let CheckboxModels = new Array<CheckboxBehaviorModel>()
                 this.RowModels.forEach(rowModel => {
-                    let checkboxModel = new CheckboxModel(
+                    let checkboxModel = new CheckboxBehaviorModel(
                         rowModel,
                         rowModel => (rowModel as TableRowModel).IsChecked.value,
                         (rowModel, bool) => { (rowModel as TableRowModel).IsChecked.value = bool }

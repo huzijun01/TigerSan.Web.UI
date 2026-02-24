@@ -13,6 +13,8 @@ import PopForm from './components/Form/PopForm.vue'
 import FormRow from './components/Form/FormRow.vue'
 import FormItem from './components/Form/FormItem.vue'
 // Inputs:
+import Checkbox from "./components/Inputs/Checkbox.vue"
+import CheckboxGroup from "./components/Inputs/CheckboxGroup.vue"
 import DatePicker from "./components/Inputs/DatePicker.vue"
 import Password from "./components/Inputs/Password.vue"
 import Search from "./components/Inputs/Search.vue"
@@ -54,6 +56,8 @@ export {
     FormRow,
     FormItem,
     // Inputs:
+    Checkbox,
+    CheckboxGroup,
     DatePicker,
     Password,
     Search,

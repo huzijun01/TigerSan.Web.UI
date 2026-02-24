@@ -1,9 +1,9 @@
 import type { BooleanAction, BooleanFunc, BooleanGetter, BooleanSetter } from '../types'
 
-type CheckboxModelsGetter = () => CheckboxModel[]
+type CheckboxModelsGetter = () => CheckboxBehaviorModel[]
 
 /** 复选框模型 */
-class CheckboxModel {
+class CheckboxBehaviorModel {
     //#region 【Fields】
     private _getIsChecked: BooleanGetter
     private _setIsChecked: BooleanSetter
@@ -132,6 +132,6 @@ class CheckboxBehavior {
 
 export {
     type CheckboxModelsGetter,
-    CheckboxModel,
+    CheckboxBehaviorModel,
     CheckboxBehavior
 }

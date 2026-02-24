@@ -21,6 +21,21 @@
                     </FormRow>
                 </Form>
 
+                <!-- 灯色: -->
+                <Form>
+                    <FormRow>
+                        <FormItem :model="form.configLightColor.ItemModel">
+                            <CheckboxGroup :model="form.colorGroup">
+                                <Checkbox :model="form.redCheckbox"></Checkbox>
+                                <Checkbox :model="form.blueCheckbox"></Checkbox>
+                                <Checkbox :model="form.greenCheckbox"></Checkbox>
+                                <Checkbox :model="form.yelloCheckbox"></Checkbox>
+                                <Checkbox :model="form.whiteCheckbox"></Checkbox>
+                            </CheckboxGroup>
+                        </FormItem>
+                    </FormRow>
+                </Form>
+
                 <!-- 单次亮灯时长: -->
                 <Form>
                     <FormRow>
@@ -127,6 +142,8 @@ import {
     Switch,
     FormRow,
     FormItem,
+    Checkbox,
+    CheckboxGroup,
     DrawerBox,
     DrawerBoxModel,
 } from '@/0_tigersan_ui/tigerui'
@@ -134,7 +151,7 @@ import {
 // 抽屉盒子:
 const lightSettingDrawerBox = new DrawerBoxModel()
 lightSettingDrawerBox.Title.value = '设备亮灯'
-lightSettingDrawerBox.ContentMaxHeight.value = 800
+lightSettingDrawerBox.ContentMaxHeight.value = 820
 
 // 选择框:
 </script>
@@ -161,5 +178,9 @@ lightSettingDrawerBox.ContentMaxHeight.value = 800
             }
         }
     }
+}
+
+.checkbox {
+    margin-right: 30px;
 }
 </style>

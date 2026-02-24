@@ -44,4 +44,16 @@ export class Verify {
 
         return res
     }
+
+    /** 是否“数组不为空” */
+    static IsArrayNotEmpty(arr: Array<unknown>): VerifyResult {
+        var res = new VerifyResult()
+
+        if (arr.length < 1) {
+            res.VerifyText = '请选择'
+            res.VerifyState = FormResult.Error
+        }
+
+        return res
+    }
 }

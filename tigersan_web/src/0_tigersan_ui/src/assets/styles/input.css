@@ -1,6 +1,11 @@
 .display-none {
   display: none !important;
 }
+.full-view {
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden;
+}
 .flex-column {
   display: flex;
   flex-direction: column;
