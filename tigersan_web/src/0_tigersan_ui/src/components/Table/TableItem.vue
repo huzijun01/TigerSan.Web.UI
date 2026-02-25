@@ -1,17 +1,20 @@
 <template>
     <div class="table-item" ref="refRoot">
         <div class="size-panel">
-            <span class="size" :class="classObj" v-html="formattedText"></span>
+            <div class="size" :class="model.ClassObj.value" v-html="formattedText"></div>
             <span class="placeholder">*</span>
         </div>
-        <textarea class="input" :class="classObj" :style="styleObj" :readonly="model.IsReadonly.value"
-            v-model="model.Text.value" @input="OnInput" @change="OnChange"></textarea>
+        <textarea v-if="model._headerModel.IsAllowWrap.value" class="input" :style="inputStyleObj"
+            :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput"
+            @change="OnChange"></textarea>
+        <input type="text" v-if="!model._headerModel.IsAllowWrap.value" class="input ellipsis" :style="inputStyleObj"
+            :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput" @change="OnChange"></input>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { StringHelper } from '../../helpers';
-import { TableHeaderModel, TableItemModel, TableModel, TableRowModel, TextAlign } from '../../models'
+import { TableHeaderModel, TableItemModel, TableModel, TableRowModel } from '../../models'
 import { ref, onMounted, computed } from 'vue'
 
 // 字段:
@@ -26,19 +29,13 @@ let { model } = defineProps({
     }
 })
 
-let styleObj = computed(() => {
+const inputStyleObj = computed(() => {
     return {
         width: `${actualWidth.value}px`,
         height: `${actualHeight.value}px`,
         textAlign: model._headerModel.TextAlign.value,
         color: model.Color.value,
         background: model.Background.value,
-    }
-})
-
-let classObj = computed(() => {
-    return {
-        ellipsis: !model._headerModel.IsAllowWrap.value,
     }
 })
 

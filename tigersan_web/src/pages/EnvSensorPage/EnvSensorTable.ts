@@ -83,6 +83,12 @@ let arr: EnvSensorModel[] =
 envSensorTable.RowDatas.push(...arr)
 
 // 初始化:
+envSensorTable._initHeader = headerModel => {
+    if (headerModel._propName === 'Index') {
+        headerModel.Width.value = 50
+    }
+}
+
 envSensorTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {

@@ -132,6 +132,6 @@ function Login(state: DialogState) {
 
 .version {
   font-size: 12px;
-  color: var(--color-primary-text);
+  color: var(--theme-color);
 }
 </style>

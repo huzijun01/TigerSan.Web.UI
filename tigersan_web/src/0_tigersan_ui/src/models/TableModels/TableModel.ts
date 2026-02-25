@@ -52,6 +52,9 @@ class TableModel {
     /** “行模型”集合 */
     RowModels: ShallowReactive<TableRowModel[]> = shallowReactive([])
 
+    /** 是否“填充父容器” */
+    IsFill = ref(true)
+
     /** 是否“全选” */
     IsSelectAll = ref(false)
 
@@ -62,6 +65,13 @@ class TableModel {
     IsAllowMultiSelect = ref(true)
 
     //#region [computed]
+    /** 类对象 */
+    ClassObj = computed(() => {
+        return {
+            fill: this.IsFill.value
+        }
+    })
+
     /** 是否“已选中” */
     IsSelected = computed(() => {
         return this.SelectedRowDatas.value.length > 0
@@ -134,7 +144,7 @@ class TableModel {
 
     //#region 【Functions】
     /** 刷新 */
-    Refresh(isInitHeaderModels: boolean = false) {
+    Refresh(isInitHeaderModels: boolean = true) {
         if (isInitHeaderModels) {
             this.InitHeaderModels()
         }
@@ -148,6 +158,7 @@ class TableModel {
         this._headerConfigs.forEach(headerConfig => {
             let headerModel = new TableHeaderModel(this, headerConfig._propName)
             SetTableHeaderModel(headerModel, headerConfig)
+            debugger
             if (this._initHeader) this._initHeader(headerModel) // 初始化
             this.HeaderModels.push(headerModel)
         })
@@ -230,6 +241,15 @@ class TableItemModel {
     Color = ref('')
     /** 背景 */
     Background = ref(Colors.Transparent)
+
+    //#region [computed]
+    /** 类对象 */
+    ClassObj = computed(() => {
+        return {
+            ellipsis: !this._headerModel.IsAllowWrap.value,
+        }
+    })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -289,12 +309,23 @@ class TableHeaderModel {
     //#region 【Properties】
     /** 文本 */
     Text = ref('null')
+    /** 宽度 */
+    Width = ref<number | undefined>(undefined)
     /** 文本对齐 */
-    TextAlign = ref(TextAlign.Left)
+    TextAlign = ref(TextAlign.Center)
     /** 是否只读 */
-    IsReadonly = ref(false)
+    IsReadonly = ref(true)
     /** 是否允许换行 */
-    IsAllowWrap = ref(true)
+    IsAllowWrap = ref(false)
+
+    //#region [computed]
+    /** 样式对象 */
+    widthStyleObj = computed(() => {
+        return {
+            width: this.Width.value != undefined ? `${this.Width.value}px` : 'auto'
+        }
+    })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Ctor】

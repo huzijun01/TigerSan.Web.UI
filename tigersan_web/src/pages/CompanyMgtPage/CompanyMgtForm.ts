@@ -17,8 +17,8 @@ const configName: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var gateway = source as CompanyMgtModel
-        return Verify.IsNotUndefinedOrEmpty(gateway.Name)
+        var station = source as CompanyMgtModel
+        return Verify.IsNotUndefinedOrEmpty(station.Name)
     }
 }
 
@@ -29,8 +29,8 @@ const configAddr: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var gateway = source as CompanyMgtModel
-        return Verify.IsNotUndefinedOrEmpty(gateway.Addr)
+        var station = source as CompanyMgtModel
+        return Verify.IsNotUndefinedOrEmpty(station.Addr)
     }
 }
 
@@ -51,7 +51,7 @@ let configCompanyForm: FormConfig = {
 }
 
 /** “网关”表单模型 */
-const gatewayForm = new FormModel(configCompanyForm)
+const stationForm = new FormModel(configCompanyForm)
 
 /** 查 */
 function Refresh() {
@@ -60,27 +60,27 @@ function Refresh() {
 
 /** 增 */
 function Add() {
-    gatewayForm.Title.value = '新增网关'
+    stationForm.Title.value = '新增网关'
 
-    gatewayForm._getSource = AddGetSource
+    stationForm._getSource = AddGetSource
 
-    gatewayForm._onSubmit = source => {
+    stationForm._onSubmit = source => {
         companyMgtTable.RowDatas.push(source)
         companyMgtTable.Refresh()
 
         return new SubmitResult('添加成功')
     }
 
-    gatewayForm.Show()
+    stationForm.Show()
 }
 
 /** 改 */
 function Edit() {
-    gatewayForm.Title.value = '修改网关'
+    stationForm.Title.value = '修改网关'
 
     let iRow = 0
 
-    gatewayForm._getSource = () => {
+    stationForm._getSource = () => {
         const rowData = companyMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
@@ -91,14 +91,14 @@ function Edit() {
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    gatewayForm._onSubmit = source => {
+    stationForm._onSubmit = source => {
         companyMgtTable.RowDatas[iRow] = source
         companyMgtTable.Refresh()
 
         return new SubmitResult('修改成功')
     }
 
-    gatewayForm.Show()
+    stationForm.Show()
 }
 
 /** 删 */
@@ -130,7 +130,7 @@ export default {
     searchCompany,
     configName,
     configAddr,
-    gatewayForm,
+    stationForm,
     Refresh,
     Add,
     Edit,

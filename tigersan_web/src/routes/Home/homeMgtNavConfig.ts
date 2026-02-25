@@ -1,5 +1,5 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
-import GatewayMgtPage from '@/pages/GatewayMgtPage/GatewayMgtPage.vue'
+import StationMgtPage from '@/pages/StationMgtPage/StationMgtPage.vue'
 import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'
 import EnvSensorPage from '@/pages/EnvSensorPage/EnvSensorPage.vue'
@@ -53,8 +53,8 @@ const homeMgtNavConfig: NavFolderConfig = {
         {
             IsSelected: true,
             Icon: Icons.Router,
-            Title: "网关管理",
-            _component: GatewayMgtPage
+            Title: "基站管理",
+            _component: StationMgtPage
         },
         {
             Icon: Icons.Setting_Linear,

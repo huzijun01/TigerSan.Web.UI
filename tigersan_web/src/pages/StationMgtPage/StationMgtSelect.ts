@@ -10,8 +10,8 @@ typeSelect.Value.value = 'G1'
 typeSelect.Items.push(...[
     'G1',
     'MG6',
-    'MG8 Micro-USB LTE Gateway',
-    'MG5 Outdoor LTE Gateway'])
+    'MG8 Micro-USB LTE Station',
+    'MG5 Outdoor LTE Station'])
 
 const stateSelectModel = new SelectModel()
 stateSelectModel.Width.value = 100

@@ -1,7 +1,7 @@
 import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 
-/** “网关管理”模型 */
-class GatewayMgtModel {
+/** “基站管理”模型 */
+class StationMgtModel {
     Index = 0
     MacAddr = ''
     Name = ''
@@ -12,7 +12,7 @@ class GatewayMgtModel {
 }
 
 // 列头:
-let gatewayMgtTable = new TableModel([
+let stationMgtTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -61,7 +61,7 @@ let gatewayMgtTable = new TableModel([
 ])
 
 // 数据:
-let arr: GatewayMgtModel[] =
+let arr: StationMgtModel[] =
     [
         {
             Index: 1,
@@ -127,10 +127,16 @@ let arr: GatewayMgtModel[] =
             Version: '3.7.0',
         },
     ]
-gatewayMgtTable.RowDatas.push(...arr)
+stationMgtTable.RowDatas.push(...arr)
 
 // 初始化:
-gatewayMgtTable._initItem = itemModel => {
+stationMgtTable._initHeader = headerModel => {
+    if (headerModel._propName === 'Index') {
+        headerModel.Width.value = 50
+    }
+}
+
+stationMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {
             itemModel.Color.value = Colors.Success
@@ -143,6 +149,6 @@ gatewayMgtTable._initItem = itemModel => {
 }
 
 export {
-    GatewayMgtModel,
-    gatewayMgtTable,
+    StationMgtModel,
+    stationMgtTable,
 }

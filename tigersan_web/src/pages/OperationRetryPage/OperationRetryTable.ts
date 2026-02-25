@@ -66,6 +66,12 @@ let arr: OperationRetryModel[] =
 operationRetryTable.RowDatas.push(...arr)
 
 // 初始化:
+operationRetryTable._initHeader = headerModel => {
+    if (headerModel._propName === 'Index') {
+        headerModel.Width.value = 50
+    }
+}
+
 operationRetryTable._initItem = itemModel => {
 }
 

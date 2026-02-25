@@ -103,6 +103,12 @@ let arr: OperationRecordModel[] =
 operationRecordTable.RowDatas.push(...arr)
 
 // 初始化:
+operationRecordTable._initHeader = headerModel => {
+    if (headerModel._propName === 'Index') {
+        headerModel.Width.value = 50
+    }
+}
+
 operationRecordTable._initItem = itemModel => {
 }
 

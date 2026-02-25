@@ -100,6 +100,12 @@ let arr: PersonMgtLabelModel[] =
 personMgtLabelTable.RowDatas.push(...arr)
 
 // 初始化:
+personMgtLabelTable._initHeader = headerModel => {
+    if (headerModel._propName === 'Index') {
+        headerModel.Width.value = 50
+    }
+}
+
 personMgtLabelTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { GatewayMgtModel, gatewayMgtTable } from './GatewayMgtTable'
+import { StationMgtModel, stationMgtTable } from './StationMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
 } from '@/0_tigersan_ui/tigerui'
@@ -11,8 +11,8 @@ const configName: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var gateway = source as GatewayMgtModel
-        return Verify.IsNotUndefinedOrEmpty(gateway.Name)
+        var station = source as StationMgtModel
+        return Verify.IsNotUndefinedOrEmpty(station.Name)
     }
 }
 
@@ -23,18 +23,18 @@ const configMacAddr: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var gateway = source as GatewayMgtModel
-        return Verify.IsNotUndefinedOrEmpty(gateway.MacAddr)
+        var station = source as StationMgtModel
+        return Verify.IsNotUndefinedOrEmpty(station.MacAddr)
     }
 }
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new GatewayMgtModel()
+    return new StationMgtModel()
 }
 
 /** “网关”表单配置 */
-let configGatewayForm: FormConfig = {
+let configStationForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -45,54 +45,54 @@ let configGatewayForm: FormConfig = {
 }
 
 /** “网关”表单模型 */
-const gatewayForm = new FormModel(configGatewayForm)
+const stationForm = new FormModel(configStationForm)
 
 /** 查 */
 function Refresh() {
-    gatewayMgtTable.Refresh()
+    stationMgtTable.Refresh()
 }
 
 /** 增 */
 function Add() {
-    gatewayForm.Title.value = '新增网关'
+    stationForm.Title.value = '新增网关'
 
-    gatewayForm._getSource = AddGetSource
+    stationForm._getSource = AddGetSource
 
-    gatewayForm._onSubmit = source => {
-        gatewayMgtTable.RowDatas.push(source)
-        gatewayMgtTable.Refresh()
+    stationForm._onSubmit = source => {
+        stationMgtTable.RowDatas.push(source)
+        stationMgtTable.Refresh()
 
         return new SubmitResult('添加成功')
     }
 
-    gatewayForm.Show()
+    stationForm.Show()
 }
 
 /** 改 */
 function Edit() {
-    gatewayForm.Title.value = '修改网关'
+    stationForm.Title.value = '修改网关'
 
     let iRow = 0
 
-    gatewayForm._getSource = () => {
-        const rowData = gatewayMgtTable.SelectedRowDatas.value[0]
+    stationForm._getSource = () => {
+        const rowData = stationMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return {}
         }
 
-        iRow = gatewayMgtTable.RowDatas.indexOf(rowData)
+        iRow = stationMgtTable.RowDatas.indexOf(rowData)
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    gatewayForm._onSubmit = source => {
-        gatewayMgtTable.RowDatas[iRow] = source
-        gatewayMgtTable.Refresh()
+    stationForm._onSubmit = source => {
+        stationMgtTable.RowDatas[iRow] = source
+        stationMgtTable.Refresh()
 
         return new SubmitResult('修改成功')
     }
 
-    gatewayForm.Show()
+    stationForm.Show()
 }
 
 /** 删 */
@@ -108,14 +108,14 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const rowData = gatewayMgtTable.SelectedRowDatas.value[0]
+    const rowData = stationMgtTable.SelectedRowDatas.value[0]
     if (!rowData) {
         console.warn('The rowData is undefined!')
         return {}
     }
 
-    gatewayMgtTable.RowDatas = gatewayMgtTable.RowDatas.filter(r => r != rowData)
-    gatewayMgtTable.Refresh()
+    stationMgtTable.RowDatas = stationMgtTable.RowDatas.filter(r => r != rowData)
+    stationMgtTable.Refresh()
 
     dialog.ShowSuccess('删除成功')
 }
@@ -123,7 +123,7 @@ function DeleteRowData(state: DialogState) {
 export default {
     configName,
     configMacAddr,
-    gatewayForm,
+    stationForm,
     Refresh,
     Add,
     Edit,

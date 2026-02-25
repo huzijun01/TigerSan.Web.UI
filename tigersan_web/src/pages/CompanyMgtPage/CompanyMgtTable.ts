@@ -46,6 +46,12 @@ let arr: CompanyMgtModel[] =
 companyMgtTable.RowDatas.push(...arr)
 
 // 初始化:
+companyMgtTable._initHeader = headerModel => {
+    if (headerModel._propName === 'Index') {
+        headerModel.Width.value = 50
+    }
+}
+
 companyMgtTable._initItem = itemModel => {
 }
 

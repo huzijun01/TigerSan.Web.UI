@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <span>网关管理：</span>
+                        <span>基站管理：</span>
                         <Select :model="select.typeSelect"></Select>
                     </div>
                     <div class="row-panel">
@@ -31,18 +31,18 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="gatewayMgtTable"></Table>
+            <Table :model="stationMgtTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="gatewayMgtTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="stationMgtTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.gatewayForm">
+    <PopForm :model="form.stationForm">
         <FormRow>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">
@@ -69,18 +69,18 @@ import {
     FormItem,
     PaginationModel
 } from '@/0_tigersan_ui/tigerui'
-import form from './GatewayMgtForm'
-import select from './GatewayMgtSelect'
-import { gatewayMgtTable } from './GatewayMgtTable'
+import form from './StationMgtForm'
+import select from './StationMgtSelect'
+import { stationMgtTable } from './StationMgtTable'
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = gatewayMgtTable
+const { IsOnlySelected } = stationMgtTable
 
 // 【过程】:
 // 表格:
-gatewayMgtTable.IsAllowMultiSelect.value = false
-gatewayMgtTable._onInitRowModel = () => {
-    paginationModel.Count.value = gatewayMgtTable.Count.value
+stationMgtTable.IsAllowMultiSelect.value = false
+stationMgtTable._onInitRowModel = () => {
+    paginationModel.Count.value = stationMgtTable.Count.value
 }
 
 // 分页器:

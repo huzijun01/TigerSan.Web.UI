@@ -31,7 +31,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.gatewayForm">
+    <PopForm :model="form.stationForm">
         <FormRow>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">

@@ -61,7 +61,7 @@ const GetSource = () => {
 }
 
 /** “网关”表单配置 */
-let configGatewayForm: FormConfig = {
+let configStationForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: GetSource,
@@ -73,7 +73,7 @@ let configGatewayForm: FormConfig = {
 }
 
 /** “网关”表单模型 */
-const alarmSettingForm = new FormModel(configGatewayForm)
+const alarmSettingForm = new FormModel(configStationForm)
 
 export default {
     alarmSettingForm,
