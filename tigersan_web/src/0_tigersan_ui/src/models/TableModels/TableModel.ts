@@ -116,8 +116,7 @@ class TableModel {
     constructor(headerConfigs: TableHeaderConfig[]) {
         this._headerConfigs = headerConfigs
 
-        /** 初始化“复选框行为” */
-        this.InitHeaderModels()
+        // 初始化“复选框行为”:
         this._checkboxBehavior = new CheckboxBehavior(
             () => this.IsSelectAll.value,
             bool => this.IsSelectAll.value = bool,
@@ -144,7 +143,7 @@ class TableModel {
 
     //#region 【Functions】
     /** 刷新 */
-    Refresh(isInitHeaderModels: boolean = true) {
+    Refresh(isInitHeaderModels: boolean = false) {
         if (isInitHeaderModels) {
             this.InitHeaderModels()
         }
@@ -158,7 +157,6 @@ class TableModel {
         this._headerConfigs.forEach(headerConfig => {
             let headerModel = new TableHeaderModel(this, headerConfig._propName)
             SetTableHeaderModel(headerModel, headerConfig)
-            debugger
             if (this._initHeader) this._initHeader(headerModel) // 初始化
             this.HeaderModels.push(headerModel)
         })

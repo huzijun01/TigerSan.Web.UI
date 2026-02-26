@@ -84,7 +84,6 @@ assetMgtLabelTable.RowDatas.push(...arr)
 
 // 初始化:
 assetMgtLabelTable._initHeader = headerModel => {
-    debugger
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
     }

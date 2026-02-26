@@ -47,7 +47,7 @@ let styleObj = {
 
 // 过程:
 onMounted(() => {
-    model.InitRowModel()
+    model.Refresh(true)
 })
 
 // 方法:
