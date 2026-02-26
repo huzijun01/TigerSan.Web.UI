@@ -60,8 +60,8 @@ const GetSource = () => {
     return alarmSetting
 }
 
-/** “网关”表单配置 */
-let configStationForm: FormConfig = {
+/** “预警设置”表单配置 */
+let configAlarmSettingForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: GetSource,
@@ -72,8 +72,8 @@ let configStationForm: FormConfig = {
     ]
 }
 
-/** “网关”表单模型 */
-const alarmSettingForm = new FormModel(configStationForm)
+/** “预警设置”表单模型 */
+const alarmSettingForm = new FormModel(configAlarmSettingForm)
 
 export default {
     alarmSettingForm,

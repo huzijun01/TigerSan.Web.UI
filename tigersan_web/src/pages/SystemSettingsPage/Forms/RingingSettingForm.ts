@@ -3,7 +3,7 @@ import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel } from '@/0_
 
 /** “响铃设置”模型 */
 class ringingSettingModel {
-    /** 产品类型 */
+    /** 设备类型 */
     ProductType? = ''
     /** 固件版本 */
     FirmwareVersion? = ''
@@ -39,10 +39,10 @@ const ringingSetting = new ringingSettingModel()
 ringingSetting.ProductType = undefined
 ringingSetting.FirmwareVersion = undefined
 
-/** “产品类型”项目配置 */
+/** “设备类型”项目配置 */
 const configProductType: FormItemConfig = {
     _propName: 'ProductType',
-    PropText: '产品类型',
+    PropText: '设备类型',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {

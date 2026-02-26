@@ -4,10 +4,10 @@ import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
 } from '@/0_tigersan_ui/tigerui'
 
-/** “网关名称”项目配置 */
+/** “设备名称”项目配置 */
 const configName: FormItemConfig = {
     _propName: 'Name',
-    PropText: '网关名称',
+    PropText: '设备名称',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
@@ -33,7 +33,7 @@ const AddGetSource = () => {
     return new StationMgtModel()
 }
 
-/** “网关”表单配置 */
+/** “基站管理”表单配置 */
 let configStationForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -44,7 +44,7 @@ let configStationForm: FormConfig = {
     ]
 }
 
-/** “网关”表单模型 */
+/** “基站管理”表单模型 */
 const stationForm = new FormModel(configStationForm)
 
 /** 查 */
@@ -54,14 +54,12 @@ function Refresh() {
 
 /** 增 */
 function Add() {
-    stationForm.Title.value = '新增网关'
+    stationForm.Title.value = '新增基站'
 
     stationForm._getSource = AddGetSource
 
     stationForm._onSubmit = source => {
         stationMgtTable.RowDatas.push(source)
-        stationMgtTable.Refresh()
-
         return new SubmitResult('添加成功')
     }
 
@@ -70,7 +68,7 @@ function Add() {
 
 /** 改 */
 function Edit() {
-    stationForm.Title.value = '修改网关'
+    stationForm.Title.value = '修改基站'
 
     let iRow = 0
 
@@ -114,8 +112,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    stationMgtTable.RowDatas = stationMgtTable.RowDatas.filter(r => r != rowData)
-    stationMgtTable.Refresh()
+    stationMgtTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }

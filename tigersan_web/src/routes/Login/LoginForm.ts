@@ -69,7 +69,7 @@ const OnSubmit = (source: object) => {
     return new SubmitResult('登录成功')
 }
 
-/** “网关”表单配置 */
+/** “登录”表单配置 */
 let configLoginForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -82,7 +82,7 @@ let configLoginForm: FormConfig = {
     ]
 }
 
-/** “网关”表单模型 */
+/** “登录”表单模型 */
 const loginForm = new FormModel(configLoginForm)
 loginForm._isShowSuccessResult = false
 

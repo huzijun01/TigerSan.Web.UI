@@ -29,7 +29,7 @@ let stationMgtTable = new TableModel([
     },
     {
         _propName: 'Name',
-        Text: '网关名称',
+        Text: '设备名称',
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -144,6 +144,17 @@ stationMgtTable._initItem = itemModel => {
         } else if (itemModel.Text.value === '离线') {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
+        }
+    }
+
+    if (itemModel._headerModel._propName === 'Battery') {
+        const battery = itemModel.GetSource() as number
+        if (battery >= 50) {
+            itemModel.Color.value = Colors.Success
+        } else if (battery >= 25) {
+            itemModel.Color.value = Colors.Warning
+        } else {
+            itemModel.Color.value = Colors.Danger
         }
     }
 }

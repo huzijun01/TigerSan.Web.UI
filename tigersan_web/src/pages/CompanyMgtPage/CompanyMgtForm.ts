@@ -39,7 +39,7 @@ const AddGetSource = () => {
     return new CompanyMgtModel()
 }
 
-/** “网关”表单配置 */
+/** “公司管理”表单配置 */
 let configCompanyForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -50,7 +50,7 @@ let configCompanyForm: FormConfig = {
     ]
 }
 
-/** “网关”表单模型 */
+/** “公司管理”表单模型 */
 const stationForm = new FormModel(configCompanyForm)
 
 /** 查 */
@@ -60,14 +60,12 @@ function Refresh() {
 
 /** 增 */
 function Add() {
-    stationForm.Title.value = '新增网关'
+    stationForm.Title.value = '新增基站'
 
     stationForm._getSource = AddGetSource
 
     stationForm._onSubmit = source => {
         companyMgtTable.RowDatas.push(source)
-        companyMgtTable.Refresh()
-
         return new SubmitResult('添加成功')
     }
 
@@ -76,7 +74,7 @@ function Add() {
 
 /** 改 */
 function Edit() {
-    stationForm.Title.value = '修改网关'
+    stationForm.Title.value = '修改基站'
 
     let iRow = 0
 
@@ -120,8 +118,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    companyMgtTable.RowDatas = companyMgtTable.RowDatas.filter(r => r != rowData)
-    companyMgtTable.Refresh()
+    companyMgtTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }

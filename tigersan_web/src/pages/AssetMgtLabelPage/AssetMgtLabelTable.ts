@@ -7,7 +7,7 @@ class AssetMgtLabelModel {
     EqpType = ''
     Version = ''
     State = ''
-    Battery = ''
+    Battery = 0
     LastMsgTime = ''
     Operation = ''
 }
@@ -17,7 +17,6 @@ let assetMgtLabelTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -44,7 +43,6 @@ let assetMgtLabelTable = new TableModel([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        TextAlign: TextAlign.Center,
     },
     {
         _propName: 'Battery',
@@ -75,9 +73,29 @@ let arr: AssetMgtLabelModel[] =
             EqpType: 'Type1',
             Version: '1.0.0',
             State: '在线',
-            Battery: '100',
+            Battery: 100,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作1',
+        },
+        {
+            Index: 2,
+            MacAddr: 'EQP2',
+            EqpType: 'Type2',
+            Version: '1.0.0',
+            State: '在线',
+            Battery: 45,
+            LastMsgTime: '2026-01-21 17:33:56',
+            Operation: '操作2',
+        },
+        {
+            Index: 3,
+            MacAddr: 'EQP3',
+            EqpType: 'Type3',
+            Version: '1.0.0',
+            State: '在线',
+            Battery: 20,
+            LastMsgTime: '2026-01-21 17:33:56',
+            Operation: '操作3',
         },
     ]
 assetMgtLabelTable.RowDatas.push(...arr)
@@ -97,6 +115,17 @@ assetMgtLabelTable._initItem = itemModel => {
         } else if (itemModel.Text.value === '离线') {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
+        }
+    }
+
+    if (itemModel._headerModel._propName === 'Battery') {
+        const battery = itemModel.GetSource() as number
+        if (battery >= 50) {
+            itemModel.Color.value = Colors.Success
+        } else if (battery >= 25) {
+            itemModel.Color.value = Colors.Warning
+        } else {
+            itemModel.Color.value = Colors.Danger
         }
     }
 }

@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <span>产品类型：</span>
+                        <span>设备类型：</span>
                         <Select :model="select.typeSelect"></Select>
                     </div>
                     <div class="row-panel">

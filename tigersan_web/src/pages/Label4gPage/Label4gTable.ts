@@ -1,7 +1,7 @@
 import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
-class PersonMgtLabelModel {
+class Label4gModel {
     Index = 0
     IMEI = ''
     EqpName = ''
@@ -15,7 +15,7 @@ class PersonMgtLabelModel {
 }
 
 // 列头:
-let personMgtLabelTable = new TableModel([
+let label4gTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -82,7 +82,7 @@ let personMgtLabelTable = new TableModel([
 ])
 
 // 数据:
-let arr: PersonMgtLabelModel[] =
+let arr: Label4gModel[] =
     [
         {
             Index: 1,
@@ -111,7 +111,7 @@ let arr: PersonMgtLabelModel[] =
         {
             Index: 3,
             IMEI: '863184079495485',
-            EqpName: 'EQP1',
+            EqpName: 'EQP3',
             EqpType: 'g1-e-grapes',
             State: '在线',
             BluetoothFirmware: '固件3',
@@ -121,16 +121,16 @@ let arr: PersonMgtLabelModel[] =
             LastMsgTime: '2026-01-21 17:33:56',
         },
     ]
-personMgtLabelTable.RowDatas.push(...arr)
+label4gTable.RowDatas.push(...arr)
 
 // 初始化:
-personMgtLabelTable._initHeader = headerModel => {
+label4gTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
     }
 }
 
-personMgtLabelTable._initItem = itemModel => {
+label4gTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {
             itemModel.Color.value = Colors.Success
@@ -154,6 +154,6 @@ personMgtLabelTable._initItem = itemModel => {
 }
 
 export {
-    PersonMgtLabelModel,
-    personMgtLabelTable,
+    Label4gModel,
+    label4gTable,
 }

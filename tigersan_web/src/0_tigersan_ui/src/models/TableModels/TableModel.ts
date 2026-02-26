@@ -1,6 +1,6 @@
 import { Colors } from '../../base'
 import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '../../types'
-import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior } from '../../helpers'
+import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 
@@ -20,6 +20,8 @@ enum TextAlign {
 /** “表格”配置 */
 class TableModel {
     //#region 【Fields】
+    /** 是否“自动刷新” */
+    _isAutoRefresh = true
     /** “列头配置”集合 */
     _headerConfigs: TableHeaderConfig[]
     /** 列头背景
@@ -44,7 +46,7 @@ class TableModel {
 
     //#region 【Properties】
     /** “行数据”集合 */
-    RowDatas: ShallowReactive<object[]> = shallowReactive([])
+    readonly RowDatas: ShallowReactive<object[]> = shallowReactive([])
 
     /** “列头模型”集合 */
     HeaderModels: ShallowReactive<TableHeaderModel[]> = shallowReactive([])
@@ -115,6 +117,13 @@ class TableModel {
     //#region 【Ctor】
     constructor(headerConfigs: TableHeaderConfig[]) {
         this._headerConfigs = headerConfigs
+
+        // 监听“源数据”集合:
+        watch(this.RowDatas, () => {
+            if (this._isAutoRefresh) {
+                this.Refresh()
+            }
+        })
 
         // 初始化“复选框行为”:
         this._checkboxBehavior = new CheckboxBehavior(
@@ -189,6 +198,16 @@ class TableModel {
     RiseOnSelectStateChange() {
         if (!this._onSelectStateChange) return
         this._onSelectStateChange(this.SelectedRowDatas.value)
+    }
+
+    /** 设置“行数据”集合 */
+    SetRowDatas(rowDatas: object[]) {
+        ArrayHelper.DeleteItem(this.RowDatas, rowDatas)
+    }
+
+    /** 删除“行数据” */
+    DeleteRowData(rowData: object) {
+        ArrayHelper.DeleteItem(this.RowDatas, rowData)
     }
     //#endregion 【Functions】
 }
@@ -286,6 +305,11 @@ class TableItemModel {
     SetRowData() {
         this._headerModel
             ._objSetter(this._rowModel._rowData, this._headerModel._propName, this.Text.value)
+    }
+
+    /** 获取“源数据” */
+    GetSource(): unknown {
+        return ObjectHelper.DefaultUnknownGetter(this._rowModel._rowData, this._headerModel._propName)
     }
     //#endregion 【Functions】
 }

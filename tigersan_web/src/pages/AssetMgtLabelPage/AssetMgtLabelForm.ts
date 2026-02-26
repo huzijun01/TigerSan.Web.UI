@@ -48,8 +48,6 @@ function Add() {
 
     assetMgtLabelForm._onSubmit = source => {
         assetMgtLabelTable.RowDatas.push(source)
-        assetMgtLabelTable.Refresh()
-
         return new SubmitResult('添加成功')
     }
 
@@ -75,8 +73,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    assetMgtLabelTable.RowDatas = assetMgtLabelTable.RowDatas.filter(r => r != rowData)
-    assetMgtLabelTable.Refresh()
+    assetMgtLabelTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }

@@ -47,8 +47,6 @@ function Add() {
 
     envSensorForm._onSubmit = source => {
         envSensorTable.RowDatas.push(source)
-        envSensorTable.Refresh()
-
         return new SubmitResult('添加成功')
     }
 
@@ -74,8 +72,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    envSensorTable.RowDatas = envSensorTable.RowDatas.filter(r => r != rowData)
-    envSensorTable.Refresh()
+    envSensorTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }

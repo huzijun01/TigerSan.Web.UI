@@ -7,7 +7,7 @@
                     <div class="row-panel">
                         <span>操作类型:</span>
                         <Select :model="select.operationTypeSelect"></Select>
-                        <span>产品类型：</span>
+                        <span>设备类型：</span>
                         <Select :model="select.productTypeSelect"></Select>
                     </div>
                     <div class="row-panel">

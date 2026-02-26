@@ -1,22 +1,23 @@
 <template>
     <div class="pagination flex-center">
-        <div class="select-count" v-if="model.IsShowSelectedRowCount.value">Select: {{ selectedRowCount }}
-        </div>
-        <div class="count" v-if="model.IsShowCount.value">Count: {{ model.Count.value }}</div>
+        <slot></slot>
+        <KeyValue :name="Texts.Select" :value="selectedRowCount" v-if="model.IsShowSelectedRowCount.value"></KeyValue>
+        <KeyValue :name="Texts.Count" :value="model.Count.value" v-if="model.IsShowCount.value"></KeyValue>
         <Select v-if="model.IsShowPageSize.value" :model="model.PageSizeSelectModel"></Select>
         <PaginationButton v-for="b in model.ButtonModels" :key="b._id" :model="b"></PaginationButton>
         <div class="page-to flex-center" v-if="model.IsShowPageTextBox.value">
-            <span>To</span>
+            <span>{{ Texts.To }}</span>
             <input type="text" v-model="model.PageText.value" :style="pageTextStyleObj" @keyup.enter="handleEnter">
-            <span>page</span>
+            <span>{{ Texts.page }}</span>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { Texts } from '../../text'
 import { PaginationModel } from '../../models'
-import { Select, PaginationButton } from '../../components'
-import { computed } from 'vue';
+import { Select, PaginationButton, KeyValue } from '../../components'
 
 // 字段:
 let { model, selectedRowCount } = defineProps({
@@ -47,13 +48,6 @@ function handleEnter(e: KeyboardEvent) {
 @Gap: 10px;
 
 .pagination {
-
-    .count,
-    .select,
-    .select-count {
-        margin-right: @Gap;
-    }
-
     .page-to {
         margin-left: @Gap;
 

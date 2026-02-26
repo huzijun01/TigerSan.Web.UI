@@ -3,7 +3,7 @@ import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel, CheckboxMod
 
 /** “灯光设置”模型 */
 class LightSettingModel {
-    /** 产品类型 */
+    /** 设备类型 */
     ProductType? = ''
     /** 固件版本 */
     FirmwareVersion? = ''
@@ -58,10 +58,10 @@ const lightSetting = new LightSettingModel()
 lightSetting.ProductType = undefined
 lightSetting.FirmwareVersion = undefined
 
-/** “产品类型”项目配置 */
+/** “设备类型”项目配置 */
 const configProductType: FormItemConfig = {
     _propName: 'ProductType',
-    PropText: '产品类型',
+    PropText: '设备类型',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {

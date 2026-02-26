@@ -31,7 +31,7 @@ let operationRecordTable = new TableModel([
     },
     {
         _propName: 'ProductType',
-        Text: '产品类型',
+        Text: '设备类型',
         IsReadonly: true,
         IsAllowWrap: false,
     },

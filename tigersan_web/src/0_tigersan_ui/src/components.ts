@@ -34,6 +34,7 @@ import PageContent from "./components/PageView/PageContent.vue"
 import PageView from "./components/PageView/PageView.vue"
 import RouterPage from "./components/PageView/RouterPage.vue"
 // Pagination:
+import KeyValue from "./components/Pagination/KeyValue.vue"
 import Pagination from "./components/Pagination/Pagination.vue"
 import PaginationButton from "./components/Pagination/PaginationButton.vue"
 // Table:
@@ -77,6 +78,7 @@ export {
     PageView,
     RouterPage,
     // Pagination:
+    KeyValue,
     Pagination,
     PaginationButton,
     // Table:

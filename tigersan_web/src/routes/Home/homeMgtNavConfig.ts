@@ -3,6 +3,7 @@ import StationMgtPage from '@/pages/StationMgtPage/StationMgtPage.vue'
 import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'
 import EnvSensorPage from '@/pages/EnvSensorPage/EnvSensorPage.vue'
+import Label4gPage from '@/pages/Label4gPage/Label4gPage.vue'
 import OperationRecordPage from '@/pages/OperationRecordPage/OperationRecordPage.vue'
 import OperationRetryPage from '@/pages/OperationRetryPage/OperationRetryPage.vue'
 import SystemSettingsPage from '@/pages/SystemSettingsPage/SystemSettingsPage.vue'
@@ -25,7 +26,7 @@ const homeMgtNavConfig: NavFolderConfig = {
         {
             IsOpen: false,
             Title: "标签管理",
-            Icon: Icons.Label_2,
+            Icon: Icons.Label_1,
             Buttons: [
                 {
                     Title: "人员管理标签",
@@ -41,6 +42,18 @@ const homeMgtNavConfig: NavFolderConfig = {
                     Title: "环境标签",
                     Icon: Icons.Environment,
                     _component: EnvSensorPage
+                },
+            ]
+        },
+        {
+            Title: "设备管理",
+            Icon: Icons.Server,
+            IsOpen: false,
+            Buttons: [
+                {
+                    Title: "4G标签",
+                    Icon: Icons.Label_2,
+                    _component: Label4gPage,
                 },
             ]
         },

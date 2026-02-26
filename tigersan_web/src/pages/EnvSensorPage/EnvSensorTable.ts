@@ -6,7 +6,7 @@ class EnvSensorModel {
     MacAddr = ''
     Version = ''
     State = ''
-    Battery = ''
+    Battery = 0
     EqpTime = ''
     LastMsgTime = ''
     Operation = ''
@@ -74,7 +74,27 @@ let arr: EnvSensorModel[] =
             MacAddr: 'EQP1',
             Version: '1.0.0',
             State: '在线',
-            Battery: '100',
+            Battery: 100,
+            EqpTime: '2026-01-21 17:33:56',
+            LastMsgTime: '2026-01-21 17:33:56',
+            Operation: '操作1',
+        },
+        {
+            Index: 2,
+            MacAddr: 'EQP2',
+            Version: '1.0.0',
+            State: '在线',
+            Battery: 45,
+            EqpTime: '2026-01-21 17:33:56',
+            LastMsgTime: '2026-01-21 17:33:56',
+            Operation: '操作1',
+        },
+        {
+            Index: 3,
+            MacAddr: 'EQP3',
+            Version: '1.0.0',
+            State: '在线',
+            Battery: 20,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作1',
@@ -97,6 +117,17 @@ envSensorTable._initItem = itemModel => {
         } else if (itemModel.Text.value === '离线') {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
+        }
+    }
+
+    if (itemModel._headerModel._propName === 'Battery') {
+        const battery = itemModel.GetSource() as number
+        if (battery >= 50) {
+            itemModel.Color.value = Colors.Success
+        } else if (battery >= 25) {
+            itemModel.Color.value = Colors.Warning
+        } else {
+            itemModel.Color.value = Colors.Danger
         }
     }
 }
