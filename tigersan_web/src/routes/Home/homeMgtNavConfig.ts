@@ -11,22 +11,35 @@ const homeMgtNavConfig: NavFolderConfig = {
     Folders: [
         {
             IsOpen: false,
-            Title: "设备管理",
-            Icon: Icons.Server,
+            Title: "基站管理",
+            Icon: Icons.Router,
             Buttons: [
                 {
-                    Icon: '',
+                    IsSelected: true,
+                    Icon: Icons.Router,
+                    Title: "基站管理",
+                    _component: StationMgtPage
+                },
+            ]
+        },
+        {
+            IsOpen: false,
+            Title: "标签管理",
+            Icon: Icons.Label_2,
+            Buttons: [
+                {
                     Title: "人员管理标签",
+                    Icon: Icons.Person,
                     _component: PersonMgtLabelPage,
                 },
                 {
-                    Icon: '',
                     Title: "资产管理标签",
+                    Icon: Icons.Asset,
                     _component: AssetMgtLabelPage,
                 },
                 {
-                    Icon: '',
-                    Title: "环境传感器",
+                    Title: "环境标签",
+                    Icon: Icons.Environment,
                     _component: EnvSensorPage
                 },
             ]
@@ -37,30 +50,31 @@ const homeMgtNavConfig: NavFolderConfig = {
             Icon: Icons.ViewProcess,
             Buttons: [
                 {
-                    Icon: '',
                     Title: "操作记录",
+                    Icon: Icons.Time,
                     _component: OperationRecordPage
                 },
                 {
-                    Icon: '',
                     Title: "操作重试",
+                    Icon: Icons.Refresh,
                     _component: OperationRetryPage
+                },
+            ]
+        },
+        {
+            IsOpen: false,
+            Title: "系统设置",
+            Icon: Icons.Setting_Linear,
+            Buttons: [
+                {
+                    Icon: Icons.Server,
+                    Title: "设备设置",
+                    _component: SystemSettingsPage
                 },
             ]
         }
     ],
     Buttons: [
-        {
-            IsSelected: true,
-            Icon: Icons.Router,
-            Title: "基站管理",
-            _component: StationMgtPage
-        },
-        {
-            Icon: Icons.Setting_Linear,
-            Title: "系统设置",
-            _component: SystemSettingsPage
-        },
     ]
 }
 

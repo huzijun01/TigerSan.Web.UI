@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3474551 */
-  src: url('iconfont.woff2?t=1771377326724') format('woff2'),
-       url('iconfont.woff?t=1771377326724') format('woff'),
-       url('iconfont.ttf?t=1771377326724') format('truetype');
+  src: url('iconfont.woff2?t=1772075648442') format('woff2'),
+       url('iconfont.woff?t=1772075648442') format('woff'),
+       url('iconfont.ttf?t=1772075648442') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,38 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Group:before {
+  content: "\e694";
+}
+
+.icon-Coin:before {
+  content: "\e614";
+}
+
+.icon-Wallet:before {
+  content: "\e653";
+}
+
+.icon-Asset:before {
+  content: "\e66d";
+}
+
+.icon-Environment:before {
+  content: "\e661";
+}
+
+.icon-Person:before {
+  content: "\e7ec";
+}
+
+.icon-Label_1:before {
+  content: "\e637";
+}
+
+.icon-Label_2:before {
+  content: "\e7ba";
 }
 
 .icon-Search:before {
@@ -131,10 +163,6 @@
 
 .icon-Add_Corner:before {
   content: "\e64d";
-}
-
-.icon-Team:before {
-  content: "\e749";
 }
 
 .icon-File_New:before {
