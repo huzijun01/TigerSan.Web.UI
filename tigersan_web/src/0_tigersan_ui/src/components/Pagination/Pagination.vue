@@ -1,8 +1,9 @@
 <template>
     <div class="pagination flex-center">
         <slot></slot>
-        <KeyValue :name="Texts.Select" :value="selectedRowCount" v-if="model.IsShowSelectedRowCount.value"></KeyValue>
-        <KeyValue :name="Texts.Count" :value="model.Count.value" v-if="model.IsShowCount.value"></KeyValue>
+        <KeyValue :propName="Texts.Select" :propValue="selectedRowCount" v-if="model.IsShowSelectedRowCount.value">
+        </KeyValue>
+        <KeyValue :propName="Texts.Count" :propValue="model.Count.value" v-if="model.IsShowCount.value"></KeyValue>
         <Select v-if="model.IsShowPageSize.value" :model="model.PageSizeSelectModel"></Select>
         <PaginationButton v-for="b in model.ButtonModels" :key="b._id" :model="b"></PaginationButton>
         <div class="page-to flex-center" v-if="model.IsShowPageTextBox.value">

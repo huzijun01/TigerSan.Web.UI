@@ -1,22 +1,22 @@
 <template>
     <div class="key-value" :style="marginRightStyle">
-        <span>{{ name }}</span>
+        <span>{{ propName }}</span>
         <span>{{ Texts.Colon }}</span>
-        <span :style="colorStyle">{{ value }}</span>
+        <span :style="colorStyle">{{ propValue }}</span>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { type PropType } from 'vue'
 import { Texts } from '../../text'
-
 // 字段:
-let { name, value, color, marginRight } = defineProps({
-    name: {
+let { propName, propValue, color, marginRight } = defineProps({
+    propName: {
         type: String,
         default: 'name'
     },
-    value: {
-        type: Object as any,
+    propValue: {
+        type: [String, Number, Boolean, Object, Array, Symbol, Function, Date, null] as PropType<any>,
         default: 'value'
     },
     color: {
