@@ -1,29 +1,37 @@
-import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { ref } from 'vue'
+import { OnlineState } from '@/models'
+import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “基站管理”模型 */
-class StationMgtModel {
+class BaseStationMgtModel {
     Index = 0
     MacAddr = ''
     Name = ''
-    State = ''
+    State = OnlineState.Offline
     Type = ''
     UpdateTime = ''
     Version = ''
 }
 
+// 字段:
+const onlineCount = ref(0)
+const offlineCount = ref(0)
+
+// 分页器:
+const paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
+
 // 列头:
-let stationMgtTable = new TableModel([
+const baseStationMgtTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
         _propName: 'MacAddr',
         Text: 'MAC地址',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -38,7 +46,6 @@ let stationMgtTable = new TableModel([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        TextAlign: TextAlign.Center,
     },
     {
         _propName: 'Type',
@@ -61,13 +68,13 @@ let stationMgtTable = new TableModel([
 ])
 
 // 数据:
-let arr: StationMgtModel[] =
+const arr: BaseStationMgtModel[] =
     [
         {
             Index: 1,
             MacAddr: 'AC233FC21C39',
             Name: '009',
-            State: '在线',
+            State: OnlineState.Online,
             UpdateTime: '2026-01-21 17:33:56',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
@@ -76,7 +83,7 @@ let arr: StationMgtModel[] =
             Index: 2,
             MacAddr: 'AC233FC23E1F',
             Name: 'MG6',
-            State: '在线',
+            State: OnlineState.Online,
             UpdateTime: '2026-01-12 11:06:27',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
@@ -85,7 +92,7 @@ let arr: StationMgtModel[] =
             Index: 3,
             MacAddr: 'AC233FC22827',
             Name: 'qd-A',
-            State: '在线',
+            State: OnlineState.Online,
             UpdateTime: '2026-01-14 11:39:58',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
@@ -94,7 +101,7 @@ let arr: StationMgtModel[] =
             Index: 4,
             MacAddr: 'AC233FC22827',
             Name: 'qd-B',
-            State: '在线',
+            State: OnlineState.Online,
             UpdateTime: '2026-01-14 11:39:58',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
@@ -103,7 +110,7 @@ let arr: StationMgtModel[] =
             Index: 5,
             MacAddr: 'AC233FC22827',
             Name: 'qd-C',
-            State: '在线',
+            State: OnlineState.Online,
             UpdateTime: '2026-01-14 11:39:58',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
@@ -112,7 +119,7 @@ let arr: StationMgtModel[] =
             Index: 6,
             MacAddr: 'AC233FC22827',
             Name: 'qd-D',
-            State: '在线',
+            State: OnlineState.Online,
             UpdateTime: '2026-01-14 11:39:58',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
@@ -121,27 +128,29 @@ let arr: StationMgtModel[] =
             Index: 7,
             MacAddr: 'AC233FC22827',
             Name: 'qd-E',
-            State: '离线',
+            State: OnlineState.Offline,
             UpdateTime: '2026-01-14 11:39:58',
             Type: 'g1-e-grapes',
             Version: '3.7.0',
         },
     ]
-stationMgtTable.RowDatas.push(...arr)
+baseStationMgtTable.RowDatas.push(...arr)
 
 // 初始化:
-stationMgtTable._initHeader = headerModel => {
+baseStationMgtTable.IsAllowMultiSelect.value = false
+
+baseStationMgtTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
     }
 }
 
-stationMgtTable._initItem = itemModel => {
+baseStationMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
-        if (itemModel.Text.value === '在线') {
+        if (itemModel.Text.value === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.Text.value === '离线') {
+        } else if (itemModel.Text.value === OnlineState.Offline) {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -159,7 +168,16 @@ stationMgtTable._initItem = itemModel => {
     }
 }
 
+baseStationMgtTable._onInitRowModel = rowDatas => {
+    paginationModel.Count.value = rowDatas.length
+    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
+    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+}
+
 export {
-    StationMgtModel,
-    stationMgtTable,
+    BaseStationMgtModel,
+    onlineCount,
+    offlineCount,
+    paginationModel,
+    baseStationMgtTable,
 }

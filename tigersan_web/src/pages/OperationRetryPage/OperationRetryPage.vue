@@ -35,17 +35,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    Table,
-    Select,
-    Search,
-    PageCard,
-    DatePicker,
-    Pagination,
-    PaginationModel,
-} from '@/0_tigersan_ui/tigerui'
 import select from './OperationRetrySelect'
 import { operationRetryTable } from './OperationRetryTable'
+import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker, Search } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = operationRetryTable

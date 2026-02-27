@@ -1,4 +1,4 @@
-import { TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "操作记录"模型 */
 class OperationRecordModel {
@@ -15,11 +15,10 @@ class OperationRecordModel {
 }
 
 // 列头:
-let operationRecordTable = new TableModel([
+const operationRecordTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -58,7 +57,6 @@ let operationRecordTable = new TableModel([
         Text: '设备总数',
         IsReadonly: true,
         IsAllowWrap: false,
-        TextAlign: TextAlign.Center,
     },
     {
         _propName: 'SuccessCount',
@@ -78,14 +76,14 @@ let operationRecordTable = new TableModel([
         IsReadonly: true,
         IsAllowWrap: false,
         _strGetter: (obj: object, propName: string) => {
-            let record = obj as OperationRecordModel
+            const record = obj as OperationRecordModel
             return `${record.SuccessRate.toFixed(2)}%`
         }
     },
 ])
 
 // 数据:
-let arr: OperationRecordModel[] =
+const arr: OperationRecordModel[] =
     [
         {
             Index: 1,

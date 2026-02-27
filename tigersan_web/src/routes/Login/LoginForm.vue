@@ -1,6 +1,6 @@
 <template>
   <div class="login-form-panel">
-    <div class="title flex-center">智能管理平台</div>
+    <div class="title flex-center">{{ AppConfig.Title }}</div>
     <div class="content-panel flex-stretch">
       <Form :marginH="0">
         <FormRow>
@@ -32,10 +32,11 @@
 
 <script lang="ts" setup>
 import form from './LoginForm'
-import { onMounted } from 'vue';
-import { useUserInfo } from '@/stores';
+import AppConfig from '@/AppConfig'
+import { onMounted } from 'vue'
+import { useUserInfo } from '@/stores'
+import { navData } from '@/navs/navModel'
 import { Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
-import { navData } from '@/navModel';
 
 onMounted(() => {
   const userInfo = useUserInfo()

@@ -5,6 +5,7 @@ import {
     useRouter,
 } from '@/0_tigersan_ui/tigerui'
 
+// 组件模型:
 const uname = new TextBoxModel()
 uname.Width.value = "100%"
 uname.Placeholder.value = "用户名/邮箱"
@@ -16,6 +17,7 @@ pwd.Placeholder.value = "密码"
 const captcha = new TextBoxModel()
 captcha.Placeholder.value = "验证码"
 
+// 配置:
 /** “用户名”项目配置 */
 const configUserName: FormItemConfig = {
     _propName: 'UserName',
@@ -53,8 +55,8 @@ const configCaptcha: FormItemConfig = {
 }
 
 /** “增”源数据获取方法 */
-const AddGetSource = () => {
-    return new UserInfo()
+const GetSource = () => {
+    return new UserInfo('uname', 'pwd', '1234')
 }
 
 /** 提交 */
@@ -73,7 +75,7 @@ const OnSubmit = (source: object) => {
 let configLoginForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
-    _getSource: AddGetSource,
+    _getSource: GetSource,
     _onSubmit: OnSubmit,
     _itemConfigs: [
         configUserName,

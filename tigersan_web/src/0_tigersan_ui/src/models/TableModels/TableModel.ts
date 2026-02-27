@@ -1,8 +1,8 @@
-import { Colors } from '../../base'
-import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '../../types'
-import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
+import { Colors, Theme } from '../../base'
+import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '../../types'
+import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
 
 type TableItemFunc = (itemModel: TableItemModel) => void
 type TryTableItemFunc = TableItemFunc | undefined
@@ -26,7 +26,7 @@ class TableModel {
     _headerConfigs: TableHeaderConfig[]
     /** 列头背景
      * （防止tbody中的内容透过） */
-    _headerBackground: String = 'var(--theme-table-header-background)'
+    _headerBackground: String = Theme.TableHeaderBackground
     /** 复选框行为
      * （由“TableModel”维护） */
     _checkboxBehavior: CheckboxBehavior
@@ -35,7 +35,7 @@ class TableModel {
     /** 初始化“列头” */
     _initHeader: TryTableHeaderFunc
     /** 初始化“行模型”后 */
-    _onInitRowModel?: Action
+    _onInitRowModel?: (rowDatas: ShallowReactive<object[]>) => void
     /** “项目文本”输入 */
     _onItemTextInput: TryTableItemFunc
     /** “项目文本”改变 */
@@ -188,9 +188,7 @@ class TableModel {
 
         this._checkboxBehavior.InitState()
 
-        if (this._onInitRowModel) {
-            this._onInitRowModel()
-        }
+        this._onInitRowModel?.(this.RowDatas)
     }
 
     /** 触发“选中状态”改变

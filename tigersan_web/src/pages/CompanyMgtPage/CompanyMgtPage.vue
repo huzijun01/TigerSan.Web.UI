@@ -47,13 +47,7 @@
 
 <script lang="ts" setup>
 import {
-    Search,
-    PopForm,
-    FormRow,
-    FormItem,
-    PageCard,
-    Pagination,
-    PaginationModel,
+    Search, PageCard, Pagination, PopForm, FormRow, FormItem, PaginationModel
 } from '@/0_tigersan_ui/tigerui'
 import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
 import form from './CompanyMgtForm'

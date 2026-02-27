@@ -1,4 +1,6 @@
-import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { ref } from 'vue'
+import { OnlineState } from '@/models'
+import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
 class PersonMgtLabelModel {
@@ -6,7 +8,7 @@ class PersonMgtLabelModel {
     IMEI = ''
     EqpName = ''
     EqpType = ''
-    State = ''
+    State = OnlineState.Offline
     BluetoothFirmware = ''
     KeyEvent = ''
     TriggerEvent = ''
@@ -14,19 +16,25 @@ class PersonMgtLabelModel {
     LastMsgTime = ''
 }
 
+// 字段:
+const onlineCount = ref(0)
+const offlineCount = ref(0)
+
+// 分页器:
+const paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
+
 // 列头:
-let personMgtLabelTable = new TableModel([
+const personMgtLabelTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
         _propName: 'IMEI',
         Text: 'IMEI',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -41,7 +49,6 @@ let personMgtLabelTable = new TableModel([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        TextAlign: TextAlign.Center,
     },
     {
         _propName: 'EqpType',
@@ -82,14 +89,14 @@ let personMgtLabelTable = new TableModel([
 ])
 
 // 数据:
-let arr: PersonMgtLabelModel[] =
+const arr: PersonMgtLabelModel[] =
     [
         {
             Index: 1,
             IMEI: '863184079495485',
             EqpName: 'EQP1',
             EqpType: 'g1-e-grapes',
-            State: '在线',
+            State: OnlineState.Online,
             BluetoothFirmware: '固件1',
             KeyEvent: '事件1',
             TriggerEvent: '触发1',
@@ -101,7 +108,7 @@ let arr: PersonMgtLabelModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP2',
             EqpType: 'g1-e-grapes',
-            State: '在线',
+            State: OnlineState.Online,
             BluetoothFirmware: '固件2',
             KeyEvent: '事件2',
             TriggerEvent: '触发2',
@@ -113,7 +120,7 @@ let arr: PersonMgtLabelModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP1',
             EqpType: 'g1-e-grapes',
-            State: '在线',
+            State: OnlineState.Offline,
             BluetoothFirmware: '固件3',
             KeyEvent: '事件3',
             TriggerEvent: '触发3',
@@ -124,6 +131,8 @@ let arr: PersonMgtLabelModel[] =
 personMgtLabelTable.RowDatas.push(...arr)
 
 // 初始化:
+personMgtLabelTable.IsAllowMultiSelect.value = false
+
 personMgtLabelTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
@@ -153,7 +162,17 @@ personMgtLabelTable._initItem = itemModel => {
     }
 }
 
+personMgtLabelTable._onInitRowModel = rowDatas => {
+    paginationModel.Count.value = rowDatas.length
+    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
+    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+}
+
+
 export {
+    onlineCount,
+    offlineCount,
+    paginationModel,
     PersonMgtLabelModel,
     personMgtLabelTable,
 }

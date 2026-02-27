@@ -76,6 +76,8 @@ export class Icons {
 
     // K:
     static Keyboard = ""
+    static Key_Tilted = ""
+    static Key_Vertical = ""
 
     // L:
     static Log = ""

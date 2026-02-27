@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Label4gModel, label4gTable } from './Label4gTable'
+import { Terminal4gModel, terminal4gTable } from './Terminal4gTable'
 import {
     Colors, dialog, Verify, ObjectHelper,
     DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
@@ -12,8 +12,8 @@ const configIMEI: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var label4g = source as Label4gModel
-        return Verify.IsNotUndefinedOrEmpty(label4g.IMEI)
+        var terminal4g = source as Terminal4gModel
+        return Verify.IsNotUndefinedOrEmpty(terminal4g.IMEI)
     }
 }
 
@@ -24,18 +24,18 @@ const configEqpName: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var label4g = source as Label4gModel
-        return Verify.IsNotUndefinedOrEmpty(label4g.EqpName)
+        var terminal4g = source as Terminal4gModel
+        return Verify.IsNotUndefinedOrEmpty(terminal4g.EqpName)
     }
 }
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new Label4gModel()
+    return new Terminal4gModel()
 }
 
 /** “4G标签”表单配置 */
-let configLabel4gForm: FormConfig = {
+let configTerminal4gForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -46,52 +46,52 @@ let configLabel4gForm: FormConfig = {
 }
 
 /** “4G标签”表单模型 */
-const label4gForm = new FormModel(configLabel4gForm)
+const terminal4gForm = new FormModel(configTerminal4gForm)
 
 /** 查 */
 function Refresh() {
-    label4gTable.Refresh()
+    terminal4gTable.Refresh()
 }
 
 /** 增 */
 function Add() {
-    label4gForm.Title.value = '新增标签'
+    terminal4gForm.Title.value = '新增标签'
 
-    label4gForm._getSource = AddGetSource
+    terminal4gForm._getSource = AddGetSource
 
-    label4gForm._onSubmit = source => {
-        label4gTable.RowDatas.push(source)
+    terminal4gForm._onSubmit = source => {
+        terminal4gTable.RowDatas.push(source)
         return new SubmitResult('添加成功')
     }
 
-    label4gForm.Show()
+    terminal4gForm.Show()
 }
 
 /** 改 */
 function Edit() {
-    label4gForm.Title.value = '修改标签'
+    terminal4gForm.Title.value = '修改标签'
 
     let iRow = 0
 
-    label4gForm._getSource = () => {
-        const rowData = label4gTable.SelectedRowDatas.value[0]
+    terminal4gForm._getSource = () => {
+        const rowData = terminal4gTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return {}
         }
 
-        iRow = label4gTable.RowDatas.indexOf(rowData)
+        iRow = terminal4gTable.RowDatas.indexOf(rowData)
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    label4gForm._onSubmit = source => {
-        label4gTable.RowDatas[iRow] = source
-        label4gTable.Refresh()
+    terminal4gForm._onSubmit = source => {
+        terminal4gTable.RowDatas[iRow] = source
+        terminal4gTable.Refresh()
 
         return new SubmitResult('修改成功')
     }
 
-    label4gForm.Show()
+    terminal4gForm.Show()
 }
 
 /** 删 */
@@ -107,13 +107,13 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const rowData = label4gTable.SelectedRowDatas.value[0]
+    const rowData = terminal4gTable.SelectedRowDatas.value[0]
     if (!rowData) {
         console.warn('The rowData is undefined!')
         return {}
     }
 
-    label4gTable.DeleteRowData(rowData)
+    terminal4gTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }
@@ -121,7 +121,7 @@ function DeleteRowData(state: DialogState) {
 export default {
     configEqpName,
     configIMEI,
-    label4gForm,
+    terminal4gForm,
     Refresh,
     Add,
     Edit,

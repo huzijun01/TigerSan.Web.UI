@@ -1,3 +1,12 @@
+export class Theme {
+    /* [主色] */
+    static Brand = "var(--theme-brand)"
+    static Color = "var(--theme-color)"
+    static Border = "var(--theme-border)"
+    static CardBackground = "var(--theme-card-background)"
+    static TableHeaderBackground = "var(--theme-table-header-background)"
+}
+
 export class Colors {
     /* [主色] */
     static Brand = "var(--color-brand)"

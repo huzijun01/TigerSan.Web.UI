@@ -1,32 +1,33 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
-import StationMgtPage from '@/pages/StationMgtPage/StationMgtPage.vue'
+import BaseStationMgtPage from '@/pages/BaseStationMgtPage/BaseStationMgtPage.vue'
 import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
 import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'
 import EnvSensorPage from '@/pages/EnvSensorPage/EnvSensorPage.vue'
-import Label4gPage from '@/pages/Label4gPage/Label4gPage.vue'
+import Terminal4gPage from '@/pages/Terminal4gPage/Terminal4gPage.vue'
 import OperationRecordPage from '@/pages/OperationRecordPage/OperationRecordPage.vue'
 import OperationRetryPage from '@/pages/OperationRetryPage/OperationRetryPage.vue'
 import SystemSettingsPage from '@/pages/SystemSettingsPage/SystemSettingsPage.vue'
 
-const homeMgtNavConfig: NavFolderConfig = {
+const navHomeMgt: NavFolderConfig = {
     Folders: [
         {
-            IsOpen: false,
             Title: "基站管理",
             Icon: Icons.Router,
+            IsOpen: true,
             Buttons: [
                 {
-                    IsSelected: true,
-                    Icon: Icons.Router,
                     Title: "基站管理",
-                    _component: StationMgtPage
+                    Icon: Icons.Router,
+                    IsSelected: true,
+                    IsShowCloseButton: false,
+                    _component: BaseStationMgtPage
                 },
             ]
         },
         {
-            IsOpen: false,
             Title: "标签管理",
-            Icon: Icons.Label_1,
+            Icon: Icons.Label_2,
+            IsOpen: false,
             Buttons: [
                 {
                     Title: "人员管理标签",
@@ -39,7 +40,7 @@ const homeMgtNavConfig: NavFolderConfig = {
                     _component: AssetMgtLabelPage,
                 },
                 {
-                    Title: "环境标签",
+                    Title: "传感器标签",
                     Icon: Icons.Environment,
                     _component: EnvSensorPage
                 },
@@ -51,9 +52,9 @@ const homeMgtNavConfig: NavFolderConfig = {
             IsOpen: false,
             Buttons: [
                 {
-                    Title: "4G标签",
-                    Icon: Icons.Label_2,
-                    _component: Label4gPage,
+                    Title: "4G定位终端",
+                    Icon: Icons.EQP,
+                    _component: Terminal4gPage,
                 },
             ]
         },
@@ -92,5 +93,5 @@ const homeMgtNavConfig: NavFolderConfig = {
 }
 
 export {
-    homeMgtNavConfig
+    navHomeMgt
 }

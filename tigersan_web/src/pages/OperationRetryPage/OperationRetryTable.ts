@@ -1,4 +1,4 @@
-import { TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "操作重试"模型 */
 class OperationRetryModel {
@@ -11,11 +11,10 @@ class OperationRetryModel {
 }
 
 // 列头:
-let operationRetryTable = new TableModel([
+const operationRetryTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -52,7 +51,7 @@ let operationRetryTable = new TableModel([
 ])
 
 // 数据:
-let arr: OperationRetryModel[] =
+const arr: OperationRetryModel[] =
     [
         {
             Index: 1,

@@ -34,6 +34,8 @@
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
                 <Pagination :model="paginationModel" :selectedRowCount="envSensorTable.SelectedRowCount.value">
+                    <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
+                    <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
             </div>
         </div>
@@ -50,38 +52,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    dialog,
-    Table,
-    Select,
-    Search,
-    PageCard,
-    Pagination,
-    PopForm,
-    FormRow,
-    FormItem,
-    PaginationModel,
-} from '@/0_tigersan_ui/tigerui'
 import form from './EnvSensorForm'
 import select from './EnvSensorSelect'
-import { envSensorTable } from './EnvSensorTable'
+import { envSensorTable, paginationModel, onlineCount, offlineCount } from './EnvSensorTable'
+import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = envSensorTable
-
-// 【过程】:
-// 选择框:
-
-
-// 表格:
-envSensorTable.IsAllowMultiSelect.value = false
-envSensorTable._onInitRowModel = () => {
-    paginationModel.Count.value = envSensorTable.Count.value
-}
-
-// 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
 
 // 【方法】:
 function PowerOff() {

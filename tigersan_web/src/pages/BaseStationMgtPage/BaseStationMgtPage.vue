@@ -31,18 +31,20 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="stationMgtTable"></Table>
+            <Table :model="baseStationMgtTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="stationMgtTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
+                    <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
+                    <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.stationForm">
+    <PopForm :model="form.baseStationForm">
         <FormRow>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">
@@ -57,35 +59,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    dialog,
-    Table,
-    Select,
-    Search,
-    PageCard,
-    Pagination,
-    PopForm,
-    FormRow,
-    FormItem,
-    PaginationModel
-} from '@/0_tigersan_ui/tigerui'
-import form from './StationMgtForm'
-import select from './StationMgtSelect'
-import { stationMgtTable } from './StationMgtTable'
+import form from './BaseStationMgtForm'
+import select from './BaseStationMgtSelect'
+import { baseStationMgtTable, onlineCount, offlineCount, paginationModel } from './BaseStationMgtTable'
+import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = stationMgtTable
-
-// 【过程】:
-// 表格:
-stationMgtTable.IsAllowMultiSelect.value = false
-stationMgtTable._onInitRowModel = () => {
-    paginationModel.Count.value = stationMgtTable.Count.value
-}
-
-// 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
+const { IsOnlySelected } = baseStationMgtTable
 
 // 【方法】:
 function BatchOperation() {

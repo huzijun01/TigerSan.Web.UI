@@ -31,18 +31,20 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="label4gTable"></Table>
+            <Table :model="terminal4gTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="label4gTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="terminal4gTable.SelectedRowCount.value">
+                    <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
+                    <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.label4gForm">
+    <PopForm :model="form.terminal4gForm">
         <FormRow>
             <FormItem :model="form.configIMEI.ItemModel">
                 <input type="text" v-model="form.configIMEI.Target.value">
@@ -57,35 +59,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    Table,
-    Select,
-    Search,
-    PageCard,
-    Pagination,
-    PopForm,
-    FormRow,
-    dialog,
-    FormItem,
-    PaginationModel,
-} from '@/0_tigersan_ui/tigerui'
-import form from './Label4gForm'
-import select from './Label4gSelect'
-import { label4gTable } from './Label4gTable'
+import form from './Terminal4gForm'
+import select from './Terminal4gSelect'
+import { terminal4gTable, onlineCount, offlineCount, paginationModel } from './Terminal4gTable'
+import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = label4gTable
-
-// 【过程】:
-// 表格:
-label4gTable.IsAllowMultiSelect.value = false
-label4gTable._onInitRowModel = () => {
-    paginationModel.Count.value = label4gTable.Count.value
-}
-
-// 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
+const { IsOnlySelected } = terminal4gTable
 
 // 【方法】:
 function SetParams() {

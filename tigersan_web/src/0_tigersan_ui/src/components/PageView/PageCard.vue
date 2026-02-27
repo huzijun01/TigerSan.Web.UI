@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
-import { Constants } from '../../base';
-import { ClassObserver } from '../../helpers';
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
+import { ClassObserver } from '../../helpers'
+import { Constants, Theme } from '../../base'
 
 // 字段:
 const isOpen = ref(false)
@@ -37,7 +37,7 @@ let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = de
     },
     background: {
         type: String,
-        default: 'var(--theme-card-background)'
+        default: Theme.CardBackground
     },
 })
 

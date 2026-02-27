@@ -1,12 +1,14 @@
-import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { ref } from 'vue'
+import { OnlineState } from '@/models'
+import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
-class Label4gModel {
+class Terminal4gModel {
     Index = 0
     IMEI = ''
     EqpName = ''
     EqpType = ''
-    State = ''
+    State = OnlineState.Offline
     BluetoothFirmware = ''
     KeyEvent = ''
     TriggerEvent = ''
@@ -14,19 +16,25 @@ class Label4gModel {
     LastMsgTime = ''
 }
 
+// 字段:
+const onlineCount = ref(0)
+const offlineCount = ref(0)
+
+// 分页器:
+const paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
+
 // 列头:
-let label4gTable = new TableModel([
+const terminal4gTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
         _propName: 'IMEI',
         Text: 'IMEI',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -41,7 +49,6 @@ let label4gTable = new TableModel([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        TextAlign: TextAlign.Center,
     },
     {
         _propName: 'EqpType',
@@ -82,14 +89,14 @@ let label4gTable = new TableModel([
 ])
 
 // 数据:
-let arr: Label4gModel[] =
+const arr: Terminal4gModel[] =
     [
         {
             Index: 1,
             IMEI: '863184079495485',
             EqpName: 'EQP1',
             EqpType: 'g1-e-grapes',
-            State: '在线',
+            State: OnlineState.Online,
             BluetoothFirmware: '固件1',
             KeyEvent: '事件1',
             TriggerEvent: '触发1',
@@ -101,7 +108,7 @@ let arr: Label4gModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP2',
             EqpType: 'g1-e-grapes',
-            State: '在线',
+            State: OnlineState.Online,
             BluetoothFirmware: '固件2',
             KeyEvent: '事件2',
             TriggerEvent: '触发2',
@@ -113,7 +120,7 @@ let arr: Label4gModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP3',
             EqpType: 'g1-e-grapes',
-            State: '在线',
+            State: OnlineState.Offline,
             BluetoothFirmware: '固件3',
             KeyEvent: '事件3',
             TriggerEvent: '触发3',
@@ -121,16 +128,18 @@ let arr: Label4gModel[] =
             LastMsgTime: '2026-01-21 17:33:56',
         },
     ]
-label4gTable.RowDatas.push(...arr)
+terminal4gTable.RowDatas.push(...arr)
 
 // 初始化:
-label4gTable._initHeader = headerModel => {
+terminal4gTable.IsAllowMultiSelect.value = false
+
+terminal4gTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
     }
 }
 
-label4gTable._initItem = itemModel => {
+terminal4gTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'State') {
         if (itemModel.Text.value === '在线') {
             itemModel.Color.value = Colors.Success
@@ -153,7 +162,16 @@ label4gTable._initItem = itemModel => {
     }
 }
 
+terminal4gTable._onInitRowModel = rowDatas => {
+    paginationModel.Count.value = rowDatas.length
+    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
+    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+}
+
 export {
-    Label4gModel,
-    label4gTable,
+    Terminal4gModel,
+    onlineCount,
+    offlineCount,
+    paginationModel,
+    terminal4gTable,
 }

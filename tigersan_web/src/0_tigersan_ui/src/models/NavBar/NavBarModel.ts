@@ -82,6 +82,7 @@ class NavBarModel {
         this.FolderModel.FolderModels.push(...folderModel.FolderModels)
         this.FolderModel.ButtonModels.splice(0)
         this.FolderModel.ButtonModels.push(...folderModel.ButtonModels)
+        this.UpdateHeight()
     }
 
     /** 获取“文件夹” */

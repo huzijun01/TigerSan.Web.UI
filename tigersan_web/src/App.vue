@@ -6,12 +6,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Language, SettingHelper } from '@/0_tigersan_ui/tigerui'
 import { createRouter, Dialog, RouterPage } from '@/0_tigersan_ui/tigerui'
 import Home from "@/routes/Home/Home.vue"
 import Login from "@/routes/Login/Login.vue"
-
-SettingHelper.SetLocale(Language.zhCn)
 
 createRouter([
   {

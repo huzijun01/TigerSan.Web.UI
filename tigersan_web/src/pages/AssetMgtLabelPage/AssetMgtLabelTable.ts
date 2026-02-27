@@ -1,4 +1,6 @@
-import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { ref } from 'vue'
+import { OnlineState } from '@/models'
+import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
 class AssetMgtLabelModel {
@@ -6,14 +8,22 @@ class AssetMgtLabelModel {
     MacAddr = ''
     EqpType = ''
     Version = ''
-    State = ''
+    State = OnlineState.Offline
     Battery = 0
     LastMsgTime = ''
     Operation = ''
 }
 
+// 字段:
+const onlineCount = ref(0)
+const offlineCount = ref(0)
+
+// 分页器:
+const paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
+
 // 列头:
-let assetMgtLabelTable = new TableModel([
+const assetMgtLabelTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -65,14 +75,14 @@ let assetMgtLabelTable = new TableModel([
 ])
 
 // 数据:
-let arr: AssetMgtLabelModel[] =
+const arr: AssetMgtLabelModel[] =
     [
         {
             Index: 1,
             MacAddr: 'EQP1',
             EqpType: 'Type1',
             Version: '1.0.0',
-            State: '在线',
+            State: OnlineState.Online,
             Battery: 100,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作1',
@@ -82,7 +92,7 @@ let arr: AssetMgtLabelModel[] =
             MacAddr: 'EQP2',
             EqpType: 'Type2',
             Version: '1.0.0',
-            State: '在线',
+            State: OnlineState.Online,
             Battery: 45,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作2',
@@ -92,7 +102,7 @@ let arr: AssetMgtLabelModel[] =
             MacAddr: 'EQP3',
             EqpType: 'Type3',
             Version: '1.0.0',
-            State: '在线',
+            State: OnlineState.Offline,
             Battery: 20,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作3',
@@ -130,7 +140,16 @@ assetMgtLabelTable._initItem = itemModel => {
     }
 }
 
+assetMgtLabelTable._onInitRowModel = rowDatas => {
+    paginationModel.Count.value = rowDatas.length
+    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
+    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+}
+
 export {
+    onlineCount,
+    offlineCount,
+    paginationModel,
     AssetMgtLabelModel,
     assetMgtLabelTable,
 }

@@ -1,9 +1,6 @@
 import { ref } from 'vue'
 import { AssetMgtLabelModel, assetMgtLabelTable } from './AssetMgtLabelTable'
-import {
-    Verify, dialog, Colors,
-    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
-} from '@/0_tigersan_ui/tigerui'
+import { Verify, dialog, Colors, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig = {

@@ -36,6 +36,8 @@
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
                 <Pagination :model="paginationModel" :selectedRowCount="personMgtLabelTable.SelectedRowCount.value">
+                    <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
+                    <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
             </div>
         </div>
@@ -57,35 +59,13 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    Table,
-    Select,
-    Search,
-    PageCard,
-    Pagination,
-    PopForm,
-    FormRow,
-    dialog,
-    FormItem,
-    PaginationModel,
-} from '@/0_tigersan_ui/tigerui'
 import form from './PersonMgtLabelForm'
 import select from './PersonMgtLabelSelect'
-import { personMgtLabelTable } from './PersonMgtLabelTable'
+import { personMgtLabelTable, paginationModel, onlineCount, offlineCount } from './PersonMgtLabelTable'
+import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = personMgtLabelTable
-
-// 【过程】:
-// 表格:
-personMgtLabelTable.IsAllowMultiSelect.value = false
-personMgtLabelTable._onInitRowModel = () => {
-    paginationModel.Count.value = personMgtLabelTable.Count.value
-}
-
-// 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
 
 // 【方法】:
 function SetParams() {

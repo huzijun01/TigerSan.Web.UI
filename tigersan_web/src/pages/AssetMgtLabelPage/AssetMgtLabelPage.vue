@@ -36,6 +36,8 @@
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
                 <Pagination :model="paginationModel" :selectedRowCount="assetMgtLabelTable.SelectedRowCount.value">
+                    <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
+                    <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
             </div>
         </div>
@@ -52,35 +54,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    dialog,
-    Table,
-    Select,
-    Search,
-    PageCard,
-    Pagination,
-    PopForm,
-    FormRow,
-    FormItem,
-    PaginationModel,
-} from '@/0_tigersan_ui/tigerui'
 import form from './AssetMgtLabelForm'
 import select from './AssetMgtLabelSelect'
-import { assetMgtLabelTable } from './AssetMgtLabelTable'
+import { assetMgtLabelTable, paginationModel, onlineCount, offlineCount } from './AssetMgtLabelTable'
+import { dialog, Table, Select, Search, KeyValue, PageCard, Pagination, PopForm, FormRow, FormItem, Colors } from '@/0_tigersan_ui/tigerui'
+
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = assetMgtLabelTable
-
-// 【过程】:
-// 表格:
-assetMgtLabelTable.IsAllowMultiSelect.value = false
-assetMgtLabelTable._onInitRowModel = () => {
-    paginationModel.Count.value = assetMgtLabelTable.Count.value
-}
-
-// 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
 
 // 【方法】:
 function BatchOperation() {

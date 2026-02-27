@@ -43,7 +43,7 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
 import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter } from '@/0_tigersan_ui/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
-import { navModel, navData } from '@/navModel'
+import { navModel, navData } from '@/navs/navModel'
 
 // 字段:
 const userName = ref('')

@@ -1,6 +1,6 @@
-import { TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
 import { nanoid } from "nanoid"
-import { navData } from '@/navModel'
+import { navData } from '@/navs/navModel'
+import { TableModel } from '@/0_tigersan_ui/tigerui'
 
 type CompanyEvent = (model: CompanyMgtModel) => void
 
@@ -11,16 +11,15 @@ class CompanyMgtModel {
     Addr = ''
     Image = ''
     onClick?: CompanyEvent
-    onDelete?: CompanyEvent
+    onDeconste?: CompanyEvent
     onEdit?: CompanyEvent
 }
 
 // 列头:
-let companyMgtTable = new TableModel([
+const companyMgtTable = new TableModel([
     {
         _propName: 'Name',
         Text: '公司名称',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -33,7 +32,7 @@ let companyMgtTable = new TableModel([
 ])
 
 // 数据:
-let arr: CompanyMgtModel[] =
+const arr: CompanyMgtModel[] =
     [
         {
             id: nanoid(),

@@ -1,22 +1,22 @@
 <template>
     <div class="pagination flex-center">
         <slot></slot>
-        <KeyValue :propName="Texts.Select" :propValue="selectedRowCount" v-if="model.IsShowSelectedRowCount.value">
+        <KeyValue :propName="Texts.Select.value" :propValue="selectedRowCount" v-if="model.IsShowSelectedRowCount.value">
         </KeyValue>
-        <KeyValue :propName="Texts.Count" :propValue="model.Count.value" v-if="model.IsShowCount.value"></KeyValue>
+        <KeyValue :propName="Texts.Count.value" :propValue="model.Count.value" v-if="model.IsShowCount.value"></KeyValue>
         <Select v-if="model.IsShowPageSize.value" :model="model.PageSizeSelectModel"></Select>
         <PaginationButton v-for="b in model.ButtonModels" :key="b._id" :model="b"></PaginationButton>
         <div class="page-to flex-center" v-if="model.IsShowPageTextBox.value">
-            <span>{{ Texts.To }}</span>
+            <span>{{ Texts.To.value }}</span>
             <input type="text" v-model="model.PageText.value" :style="pageTextStyleObj" @keyup.enter="handleEnter">
-            <span>{{ Texts.page }}</span>
+            <span>{{ Texts.page.value }}</span>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { Texts } from '../../text'
+import { Texts } from '../../texts'
 import { PaginationModel } from '../../models'
 import { Select, PaginationButton, KeyValue } from '../../components'
 

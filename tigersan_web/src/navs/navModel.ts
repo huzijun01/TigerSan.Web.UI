@@ -1,17 +1,17 @@
 import { NavBarModel } from '@/0_tigersan_ui/tigerui'
-import { homeMgtNavConfig } from "@/routes/Home/homeMgtNavConfig"
-import { companyMgtNavConfig } from "@/routes/Home/companyMgtNavConfig"
+import { navHomeMgt } from "@/navs/navHomeMgt"
+import { navCompanyMgt } from "@/navs/navCompanyMgt"
 
 let navModel = new NavBarModel()
 
 class NavData {
     GoHome = () => {
         navModel.IsOpen.value = true
-        navModel.Init(homeMgtNavConfig)
+        navModel.Init(navHomeMgt)
     }
     GoCompanyMgt = () => {
         navModel.IsOpen.value = true
-        navModel.Init(companyMgtNavConfig)
+        navModel.Init(navCompanyMgt)
     }
 }
 

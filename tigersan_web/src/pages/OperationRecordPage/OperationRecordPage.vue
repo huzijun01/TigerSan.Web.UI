@@ -34,16 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    Table,
-    Select,
-    PageCard,
-    DatePicker,
-    Pagination,
-    PaginationModel,
-} from '@/0_tigersan_ui/tigerui'
 import select from './OperationRecordSelect'
 import { operationRecordTable } from './OperationRecordTable'
+import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 

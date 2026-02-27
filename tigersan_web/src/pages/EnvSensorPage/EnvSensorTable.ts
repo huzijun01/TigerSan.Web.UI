@@ -1,23 +1,32 @@
-import { Colors, TableModel, TextAlign } from '@/0_tigersan_ui/tigerui'
+import { ref } from 'vue'
+import { OnlineState } from '@/models'
+import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "环境传感器"模型 */
 class EnvSensorModel {
     Index = 0
     MacAddr = ''
     Version = ''
-    State = ''
+    State = OnlineState.Offline
     Battery = 0
     EqpTime = ''
     LastMsgTime = ''
     Operation = ''
 }
 
+// 字段:
+const onlineCount = ref(0)
+const offlineCount = ref(0)
+
+// 分页器:
+const paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
+
 // 列头:
-let envSensorTable = new TableModel([
+const envSensorTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
-        TextAlign: TextAlign.Center,
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -38,7 +47,6 @@ let envSensorTable = new TableModel([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        TextAlign: TextAlign.Center,
     },
     {
         _propName: 'Battery',
@@ -67,13 +75,13 @@ let envSensorTable = new TableModel([
 ])
 
 // 数据:
-let arr: EnvSensorModel[] =
+const arr: EnvSensorModel[] =
     [
         {
             Index: 1,
             MacAddr: 'EQP1',
             Version: '1.0.0',
-            State: '在线',
+            State: OnlineState.Online,
             Battery: 100,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
@@ -83,7 +91,7 @@ let arr: EnvSensorModel[] =
             Index: 2,
             MacAddr: 'EQP2',
             Version: '1.0.0',
-            State: '在线',
+            State: OnlineState.Online,
             Battery: 45,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
@@ -93,7 +101,7 @@ let arr: EnvSensorModel[] =
             Index: 3,
             MacAddr: 'EQP3',
             Version: '1.0.0',
-            State: '在线',
+            State: OnlineState.Offline,
             Battery: 20,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
@@ -103,6 +111,8 @@ let arr: EnvSensorModel[] =
 envSensorTable.RowDatas.push(...arr)
 
 // 初始化:
+envSensorTable.IsAllowMultiSelect.value = false
+
 envSensorTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
@@ -132,7 +142,16 @@ envSensorTable._initItem = itemModel => {
     }
 }
 
+envSensorTable._onInitRowModel = rowDatas => {
+    paginationModel.Count.value = rowDatas.length
+    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
+    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+}
+
 export {
     EnvSensorModel,
+    onlineCount,
+    offlineCount,
+    paginationModel,
     envSensorTable,
 }

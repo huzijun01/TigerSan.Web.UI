@@ -108,4 +108,9 @@ export class ObjectHelper {
     static DefaultUnknownSetter(obj: object, propName: string, value: unknown): void {
         (obj as Record<string, unknown>)[propName] = value;
     }
+
+    /** 判断“属性值”是否等于“目标值”  */
+    static IsEqual(obj: object, propName: string, value: string): boolean {
+        return ObjectHelper.DefaultStringGetter(obj, propName) === value
+    }
 }

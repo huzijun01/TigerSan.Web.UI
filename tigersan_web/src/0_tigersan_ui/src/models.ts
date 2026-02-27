@@ -33,3 +33,6 @@ export * from './models/TableModels/TableModel'
 
 /* Dialog: */
 export * from './models/DialogModel'
+
+/* Text: */
+export * from './models/TextModel'

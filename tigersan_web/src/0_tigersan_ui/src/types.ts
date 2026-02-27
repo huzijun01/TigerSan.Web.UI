@@ -23,3 +23,6 @@ export type BooleanSetter = (obj: object, bool: boolean) => void
 export type StringGetter = (obj: object, propName: string) => string
 export type UnknownGetter = (obj: object, propName: string) => unknown
 export type UnknownSetter = (obj: object, propName: string, value: unknown) => void
+
+// Other:
+export const AnyTypes = [String, Number, Boolean, Object, Array, Symbol, Function, Date, null, undefined]

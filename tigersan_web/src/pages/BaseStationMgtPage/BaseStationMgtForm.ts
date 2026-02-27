@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { StationMgtModel, stationMgtTable } from './StationMgtTable'
+import { BaseStationMgtModel, baseStationMgtTable } from './BaseStationMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
 } from '@/0_tigersan_ui/tigerui'
@@ -11,8 +11,8 @@ const configName: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var station = source as StationMgtModel
-        return Verify.IsNotUndefinedOrEmpty(station.Name)
+        var baseStation = source as BaseStationMgtModel
+        return Verify.IsNotUndefinedOrEmpty(baseStation.Name)
     }
 }
 
@@ -23,18 +23,18 @@ const configMacAddr: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var station = source as StationMgtModel
-        return Verify.IsNotUndefinedOrEmpty(station.MacAddr)
+        var baseStation = source as BaseStationMgtModel
+        return Verify.IsNotUndefinedOrEmpty(baseStation.MacAddr)
     }
 }
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new StationMgtModel()
+    return new BaseStationMgtModel()
 }
 
 /** “基站管理”表单配置 */
-let configStationForm: FormConfig = {
+let configBaseStationForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -45,52 +45,52 @@ let configStationForm: FormConfig = {
 }
 
 /** “基站管理”表单模型 */
-const stationForm = new FormModel(configStationForm)
+const baseStationForm = new FormModel(configBaseStationForm)
 
 /** 查 */
 function Refresh() {
-    stationMgtTable.Refresh()
+    baseStationMgtTable.Refresh()
 }
 
 /** 增 */
 function Add() {
-    stationForm.Title.value = '新增基站'
+    baseStationForm.Title.value = '新增基站'
 
-    stationForm._getSource = AddGetSource
+    baseStationForm._getSource = AddGetSource
 
-    stationForm._onSubmit = source => {
-        stationMgtTable.RowDatas.push(source)
+    baseStationForm._onSubmit = source => {
+        baseStationMgtTable.RowDatas.push(source)
         return new SubmitResult('添加成功')
     }
 
-    stationForm.Show()
+    baseStationForm.Show()
 }
 
 /** 改 */
 function Edit() {
-    stationForm.Title.value = '修改基站'
+    baseStationForm.Title.value = '修改基站'
 
     let iRow = 0
 
-    stationForm._getSource = () => {
-        const rowData = stationMgtTable.SelectedRowDatas.value[0]
+    baseStationForm._getSource = () => {
+        const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return {}
         }
 
-        iRow = stationMgtTable.RowDatas.indexOf(rowData)
+        iRow = baseStationMgtTable.RowDatas.indexOf(rowData)
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    stationForm._onSubmit = source => {
-        stationMgtTable.RowDatas[iRow] = source
-        stationMgtTable.Refresh()
+    baseStationForm._onSubmit = source => {
+        baseStationMgtTable.RowDatas[iRow] = source
+        baseStationMgtTable.Refresh()
 
         return new SubmitResult('修改成功')
     }
 
-    stationForm.Show()
+    baseStationForm.Show()
 }
 
 /** 删 */
@@ -106,13 +106,13 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const rowData = stationMgtTable.SelectedRowDatas.value[0]
+    const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
     if (!rowData) {
         console.warn('The rowData is undefined!')
         return {}
     }
 
-    stationMgtTable.DeleteRowData(rowData)
+    baseStationMgtTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }
@@ -120,7 +120,7 @@ function DeleteRowData(state: DialogState) {
 export default {
     configName,
     configMacAddr,
-    stationForm,
+    baseStationForm,
     Refresh,
     Add,
     Edit,
