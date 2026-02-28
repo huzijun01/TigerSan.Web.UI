@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { Icons, StringHelper } from '@/0_tigersan_ui/tigerui'
-import { CompanyMgtModel } from '@/pages/CompanyMgtPage/CompanyMgtTable'
+import { CompanyMgtModel } from '@/pages/Company/CompanyMgtPage/CompanyMgtTable'
 
 //字段:
 const { model } = defineProps({

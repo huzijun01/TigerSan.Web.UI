@@ -78,7 +78,7 @@ class SelectModel extends ConverterBase {
     readonly IsEnabled = ref(true)
     /** 是否“允许搜索” */
     readonly IsAllowSearch = ref(false)
-    /** 查询文本
+    /** 搜索文本
      * （由“MenuItemModel”维护） */
     readonly SearchText = ref('')
     /** 占位文本 */

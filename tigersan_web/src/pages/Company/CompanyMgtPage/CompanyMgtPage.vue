@@ -66,7 +66,7 @@ paginationModel.Count.value = companyMgtTable.Count.value
 </script>
 
 <style lang="less" scoped>
-@import '../../assets/page.less';
+@import '@/assets/page.less';
 
 .company-panel {
     flex-grow: 1;

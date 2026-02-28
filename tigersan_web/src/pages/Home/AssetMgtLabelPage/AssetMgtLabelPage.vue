@@ -11,31 +11,31 @@
                     <div class="row-panel">
                         <span>在线状态:</span>
                         <Select :model="select.stateSelect"></Select>
-                        <span>蓝牙固件:</span>
-                        <Select :model="select.bluetoothFirmwareSelect"></Select>
-                        <Search :model="select.searchIMEI"></Search>
+                        <span>固件版本:</span>
+                        <Select :model="select.firmwareSelect"></Select>
+                        <Search :model="select.searchMac"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 导入设备</button>
+                        <button @click="BatchOperation">批量操作</button>
                     </div>
                     <div class="row-panel">
-                        <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                         <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
+                        <button :disabled="!IsOnlySelected" @click="SetCol">列管理</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
 
             <!-- 表格: -->
-            <Table :model="personMgtLabelTable"></Table>
+            <Table :model="assetMgtLabelTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="personMgtLabelTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="assetMgtLabelTable.SelectedRowCount.value">
                     <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
                     <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
@@ -44,39 +44,40 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.personMgtLabelForm">
+    <PopForm :model="form.assetMgtLabelForm">
         <FormRow>
-            <FormItem :model="form.configIMEI.ItemModel">
-                <input type="text" v-model="form.configIMEI.Target.value">
-            </FormItem>
-        </FormRow>
-        <FormRow>
-            <FormItem :model="form.configEqpName.ItemModel">
-                <input type="text" v-model="form.configEqpName.Target.value">
+            <FormItem :model="form.configMacAddr.ItemModel">
+                <input type="text" v-model="form.configMacAddr.Target.value">
             </FormItem>
         </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
-import form from './PersonMgtLabelForm'
-import select from './PersonMgtLabelSelect'
-import { personMgtLabelTable, paginationModel, onlineCount, offlineCount } from './PersonMgtLabelTable'
-import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+import form from './AssetMgtLabelForm'
+import select from './AssetMgtLabelSelect'
+import { assetMgtLabelTable, paginationModel, onlineCount, offlineCount } from './AssetMgtLabelTable'
+import { dialog, Table, Select, Search, KeyValue, PageCard, Pagination, PopForm, FormRow, FormItem, Colors } from '@/0_tigersan_ui/tigerui'
+
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = personMgtLabelTable
+const { IsOnlySelected } = assetMgtLabelTable
 
 // 【方法】:
+function BatchOperation() {
+    dialog.ShowInformation('批量操作')
+}
+
+
 function SetParams() {
     dialog.ShowInformation('修改参数')
 }
 
-function Restart() {
-    dialog.ShowInformation('重启')
+function SetCol() {
+    dialog.ShowInformation('OTA升级')
 }
 </script>
 
 <style lang="less" scoped>
-@import '../../assets/page.less';
+@import '@/assets/page.less';
 </style>

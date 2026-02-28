@@ -58,5 +58,5 @@ function Refresh() {
 </script>
 
 <style lang="less" scoped>
-@import '../../assets/page.less';
+@import '@/assets/page.less';
 </style>

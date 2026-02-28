@@ -1,12 +1,12 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
-import BaseStationMgtPage from '@/pages/BaseStationMgtPage/BaseStationMgtPage.vue'
-import PersonMgtLabelPage from '@/pages/PersonMgtLabelPage/PersonMgtLabelPage.vue'
-import AssetMgtLabelPage from '@/pages/AssetMgtLabelPage/AssetMgtLabelPage.vue'
-import EnvSensorPage from '@/pages/EnvSensorPage/EnvSensorPage.vue'
-import Terminal4gPage from '@/pages/Terminal4gPage/Terminal4gPage.vue'
-import OperationRecordPage from '@/pages/OperationRecordPage/OperationRecordPage.vue'
-import OperationRetryPage from '@/pages/OperationRetryPage/OperationRetryPage.vue'
-import SystemSettingsPage from '@/pages/SystemSettingsPage/SystemSettingsPage.vue'
+import BaseStationMgtPage from '@/pages/Home/BaseStationMgtPage/BaseStationMgtPage.vue'
+import PersonMgtLabelPage from '@/pages/Home/PersonMgtLabelPage/PersonMgtLabelPage.vue'
+import AssetMgtLabelPage from '@/pages/Home/AssetMgtLabelPage/AssetMgtLabelPage.vue'
+import EnvSensorPage from '@/pages/Home/EnvSensorPage/EnvSensorPage.vue'
+import Terminal4gPage from '@/pages/Home/Terminal4gPage/Terminal4gPage.vue'
+import OperationRecordPage from '@/pages/Home/OperationRecordPage/OperationRecordPage.vue'
+import OperationRetryPage from '@/pages/Home/OperationRetryPage/OperationRetryPage.vue'
+import SystemSettingsPage from '@/pages/Home/SystemSettingsPage/SystemSettingsPage.vue'
 
 const navHomeMgt: NavFolderConfig = {
     Folders: [
