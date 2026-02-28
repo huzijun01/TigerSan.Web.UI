@@ -8,14 +8,15 @@
                         <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
                             v-model="model.IsSelectAll.value" v-on:change="OnIsSelectAllChanged">
                     </th>
-                    <th v-for="h in model.HeaderModels" :key="h._id" :style="h.widthStyleObj.value"><span class="ellipsis">{{ h.Text.value }}</span>
+                    <th v-for="h in model.HeaderModels" :key="h._id" :style="h.widthStyleObj.value"><span
+                            class="ellipsis">{{ h.Text.value }}</span>
                     </th>
                 </tr>
             </thead>
 
             <!-- 表格主体 -->
             <tbody>
-                <tr v-for="r in model.RowModels" :key="r._id">
+                <tr v-for="r in model.RowModels" :key="r._id" :class="{ 'select': r.IsChecked.value }">
                     <td v-if="model.IsShowCheckBox.value" class="checkbox">
                         <input type="checkbox" v-model="r.IsChecked.value" v-on:change="OnIsCheckedChanged(r)">
                     </td>
@@ -145,5 +146,9 @@ function OnIsCheckedChanged(rowModel: TableRowModel) {
     table {
         width: 100%;
     }
+}
+
+tr.select {
+    background-color: var(--theme-table-row-background-selected);
 }
 </style>

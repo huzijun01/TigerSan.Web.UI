@@ -5,6 +5,7 @@
       <!-- 导航栏: -->
       <NavBar :model="navModel" :title="AppConfig.Title">
         <div class="footer-panel flex-center">
+          <span class="skin iconfont" @click="themeHelper.Toggle">{{ Icons.Skin }}</span>
           <span class="version">版本：V{{ AppConfig.Version }}</span>
         </div>
       </NavBar>
@@ -41,9 +42,11 @@
 import AppConfig from '@/AppConfig'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
-import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter } from '@/0_tigersan_ui/tigerui'
+import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, DomHelper } from '@/0_tigersan_ui/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
 import { navModel, navData } from '@/navs/navModel'
+import { themeHelper } from '@/helpers/ThemeHelper'
+
 
 // 字段:
 const userName = ref('')
@@ -128,6 +131,11 @@ function Login(state: DialogState) {
       overflow: hidden;
     }
   }
+}
+
+.skin {
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 .version {
