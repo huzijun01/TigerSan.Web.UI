@@ -5,6 +5,7 @@ searchIMEI.Placeholder.value = '请输入IMEI'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
+typeSelect.IsAllowSearch.value = true
 typeSelect.Placeholder.value = '请选择'
 typeSelect.Value.value = 'MWC03 4G智能工牌'
 typeSelect.Items.push(...[

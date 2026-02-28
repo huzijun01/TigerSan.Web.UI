@@ -1,69 +1,44 @@
 import { nanoid } from "nanoid"
-import { computed, ref, shallowReactive, type App, type ShallowReactive } from "vue"
-import type { Object2StringFunc } from "../../types"
-import { RectPosition, RectHelper } from '../../helpers';
+import { ref, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
+import { Texts } from "../../texts"
+import { ConverterBase } from "./ConverterBase"
+import { RectPosition, RectHelper } from '../../helpers'
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void
-
-/** “值转换控件”基类 */
-class ConverterBase {
-    //#region 【Fields】
-    /** 转换器 */
-    _converter?: Object2StringFunc
-    //#endregion 【Fields】
-
-    //#region 【Properties】
-    /** 值 */
-    Value = ref<Object | undefined>()
-    /** 文本 */
-    Text = computed(() => this.GetText(this.Value.value))
-    //#endregion 【Properties】
-
-    //#region 【Functions】
-    /** 获取“文本” */
-    GetText(value?: object) {
-        let text = ''
-
-        if (this._converter) {
-            text = this._converter(value);
-        }
-        else {
-            text = new String(value).toString()
-        }
-
-        return text
-    }
-    //#endregion 【Functions】
-}
 
 /** “菜单项目”模型 */
 class MenuItemModel extends ConverterBase {
     //#region 【Fields】
-    /** 转换器 */
-    _id = nanoid()
+    /** ID */
+    readonly _id = nanoid()
+    /** 所属“选择框” */
+    readonly _select: SelectModel
     /** 点击事件 */
     _onClick?: MenuItemModelAction
-    /** 内部点击事件
-     * （由“SelectModel”内部传入） */
-    _onInternalClick: MenuItemModelAction
     //#endregion 【Fields】
 
     //#region 【Properties】
+    //#region [computed]
     /** 是否显示 */
-    IsShow = ref(true)
+    readonly IsShow = computed(() => {
+        return this.Value.value != this._select.Value.value
+            && this.IsFuzzyIncludes(this._select.SearchText.value)
+    })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(onInternalClick: MenuItemModelAction) {
+    constructor(select: SelectModel) {
         super()
-        this._onInternalClick = onInternalClick
+        this._select = select
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
     /** 点击事件 */
-    OnClick = () => {
-        this._onInternalClick(this)
+    readonly OnClick = () => {
+        this._select.IsOpen.value = false
+        this._select.Value.value = this.Value.value
 
         if (this._onClick) {
             this._onClick(this)
@@ -84,50 +59,51 @@ class SelectModel extends ConverterBase {
 
     //#region 【Properties】
     //#region [内部维护]
-    private left = ref(0)
-    private top = ref(0)
-    private bottom = ref(0)
-    private isTopOpen = ref(false)
+    private readonly left = ref(0)
+    private readonly top = ref(0)
+    private readonly bottom = ref(0)
+    private readonly isTopOpen = ref(false)
     readonly refRoot = ref<HTMLElement | undefined>()
     readonly refMenu = ref<HTMLElement | undefined>()
+    readonly refInput = ref<HTMLElement | undefined>()
     //#endregion [内部维护]
 
-    /** 占位文本 */
-    Placeholder = ref('Please select.')
-    /** 是否打开 */
-    IsOpen = ref(false)
-    /** 是否启用 */
-    IsEnabled = ref(true)
-    /** 项目集合 */
-    Items: ShallowReactive<Object[]> = shallowReactive([])
     /** 宽度 */
-    Width = ref(200)
+    readonly Width = ref(200)
     /** 菜单最大高度 */
-    MenuMaxHeight = ref(300)
+    readonly MenuMaxHeight = ref(300)
+    /** 是否“打开” */
+    readonly IsOpen = ref(false)
+    /** 是否“启用” */
+    readonly IsEnabled = ref(true)
+    /** 是否“允许搜索” */
+    readonly IsAllowSearch = ref(false)
+    /** 查询文本
+     * （由“MenuItemModel”维护） */
+    readonly SearchText = ref('')
+    /** 占位文本 */
+    readonly Placeholder = ref(Texts.PleaseSelect.value)
+    /** 项目集合 */
+    readonly Items: ShallowReactive<Object[]> = shallowReactive([])
 
     //#region [computed]
     /** 项目集合 */
-    ItemModels = computed(() => {
-        let itemModels: MenuItemModel[] = []
+    readonly ItemModels = computed(() => {
+        const itemModels: MenuItemModel[] = []
 
         this.Items.forEach(item => {
-            let itemModel = new MenuItemModel(this.OnInternalClick)
+            const itemModel = new MenuItemModel(this)
             itemModel._onClick = this._onSelect
-            itemModel._onInternalClick = this.OnInternalClick
             itemModel._converter = this._converter
             itemModel.Value.value = item
-            itemModel.IsShow.value = item != this.Value.value
             itemModels.push(itemModel)
         })
 
         return itemModels
     })
 
-    /** 是否未定义: */
-    isUndefined = computed(() => this.Value.value === undefined)
-
     /** 根类: */
-    rootClassObj = computed(() => {
+    readonly rootClass = computed(() => {
         return {
             open: this.IsOpen.value,
             disabled: !this.IsEnabled.value,
@@ -136,14 +112,14 @@ class SelectModel extends ConverterBase {
     })
 
     /** 根样式: */
-    rootStyleObj = computed(() => {
+    readonly widthStyle = computed(() => {
         return {
             width: `${this.Width.value}px`
         }
     })
 
     /** 箭头样式: */
-    arrowStyleObj = computed(() => {
+    readonly arrowStyleObj = computed(() => {
         const arrowAngle = this.IsOpen.value ? -90 : 90
         return {
             transform: `rotate(${arrowAngle}deg)`
@@ -151,8 +127,8 @@ class SelectModel extends ConverterBase {
     })
 
     /** 菜单样式: */
-    menuStyleObj = computed(() => {
-        let obj = {
+    readonly menuStyleObj = computed(() => {
+        const obj = {
             width: `${this.Width.value}px`,
             maxHeight: `${this.MenuMaxHeight.value}px`,
             left: '',
@@ -173,19 +149,29 @@ class SelectModel extends ConverterBase {
     //#endregion [computed]
     //#endregion 【Properties】
 
+    //#region 【Ctor】
+    constructor() {
+        super()
+
+        watch(this.IsOpen, isOpen => {
+            this.SearchText.value = ''
+
+            if (!isOpen) {
+                this.UpdateText()
+            }
+        })
+
+        watch(this.Text, text => {
+            if (this.IsOpen.value) {
+                this.SearchText.value = text
+            }
+        })
+    }
+    //#endregion 【Ctor】
+
     //#region 【Functions】
-    private InitWatch() {
-
-    }
-
-    /** 内部点击事件 */
-    OnInternalClick = (itemModel: MenuItemModel) => {
-        this.Value.value = itemModel.Value.value
-        this.IsOpen.value = false
-    }
-
     /** 更新菜单位置 */
-    UpdateMenuPosition = () => {
+    readonly UpdateMenuPosition = () => {
         if (!this.IsOpen.value) return
 
         if (!this.refRoot.value) {
@@ -199,10 +185,10 @@ class SelectModel extends ConverterBase {
         }
 
         // 基准矩形:
-        let rectRoot = this.refRoot.value.getBoundingClientRect()
+        const rectRoot = this.refRoot.value.getBoundingClientRect()
 
         // 菜单矩形:
-        let rectMenu = RectHelper.GetWithinWindowRect(rectRoot, this.refMenu.value.offsetWidth, this.refMenu.value.offsetHeight)
+        const rectMenu = RectHelper.GetWithinWindowRect(rectRoot, this.refMenu.value.offsetWidth, this.refMenu.value.offsetHeight)
 
         // 设置位置:
         this.isTopOpen.value = rectMenu.Position === RectPosition.Top

@@ -22,4 +22,10 @@ export class StringHelper {
     static IsNotEmpty(str: string): boolean {
         return str.trim() != ''
     }
+
+    /** 是否“模糊包含” */
+    static IsFuzzyIncludes(str: string, search: string): boolean {
+        if (search === '') return true
+        return str.toLowerCase().includes(search.toLowerCase())
+    }
 }

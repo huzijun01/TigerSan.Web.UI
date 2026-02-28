@@ -34,6 +34,7 @@ let { model } = defineProps({
 
     .button-panel {
         position: absolute;
+        top: 0px;
         right: 0px;
         height: 100%;
 

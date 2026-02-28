@@ -13,7 +13,7 @@
 import { Icons } from '../../base'
 import { TextBoxModel } from '../../models'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: TextBoxModel,
         default: () => new TextBoxModel()
@@ -33,6 +33,7 @@ let { model } = defineProps({
 
     .button-panel {
         position: absolute;
+        top: 0px;
         right: 0px;
         height: 100%;
 

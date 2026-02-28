@@ -21,11 +21,12 @@ operationTypeSelect.Items.push(...[
     '传感器',
 ])
 
-const productTypeSelect = new SelectModel()
-productTypeSelect.Width.value = 350
-productTypeSelect.Placeholder.value = '请选择'
-productTypeSelect.Value.value = undefined
-productTypeSelect.Items.push(...[
+const eqpTypeSelect = new SelectModel()
+eqpTypeSelect.Width.value = 350
+eqpTypeSelect.IsAllowSearch.value = true
+eqpTypeSelect.Placeholder.value = '请选择'
+eqpTypeSelect.Value.value = undefined
+eqpTypeSelect.Items.push(...[
     'MWC03 4G智能工牌',
     'MBT02 可连接资产标签',
     'MBT02 资产中继器',
@@ -47,6 +48,6 @@ date._onChange = value => {
 
 export default {
     operationTypeSelect,
-    productTypeSelect,
+    eqpTypeSelect,
     date,
 }

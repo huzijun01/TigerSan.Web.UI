@@ -5,6 +5,7 @@ searchMac.Placeholder.value = '请输入名称或MAC'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
+typeSelect.IsAllowSearch.value = true
 typeSelect.Placeholder.value = '请选择'
 typeSelect.Value.value = 'G1'
 typeSelect.Items.push(...[

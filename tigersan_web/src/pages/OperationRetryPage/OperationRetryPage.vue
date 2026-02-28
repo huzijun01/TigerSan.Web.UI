@@ -8,7 +8,7 @@
                         <span>操作类型:</span>
                         <Select :model="select.operationTypeSelect"></Select>
                         <span>设备类型：</span>
-                        <Select :model="select.productTypeSelect"></Select>
+                        <Select :model="select.eqpTypeSelect"></Select>
                     </div>
                     <div class="row-panel">
                         <Search :model="select.searchMac"></Search>

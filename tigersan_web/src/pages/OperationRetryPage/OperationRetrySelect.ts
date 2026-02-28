@@ -24,11 +24,12 @@ operationTypeSelect.Items.push(...[
     '传感器',
 ])
 
-const productTypeSelect = new SelectModel()
-productTypeSelect.Width.value = 350
-productTypeSelect.Placeholder.value = '请选择'
-productTypeSelect.Value.value = 'MBT02可连接资产标签'
-productTypeSelect.Items.push(...[
+const eqpTypeSelect = new SelectModel()
+eqpTypeSelect.Width.value = 350
+eqpTypeSelect.IsAllowSearch.value = true
+eqpTypeSelect.Placeholder.value = '请选择'
+eqpTypeSelect.Value.value = 'MBT02可连接资产标签'
+eqpTypeSelect.Items.push(...[
     'MBT02可连接资产标签',
     'MBT02资产中继器',
     'MST03 Light Sensor',
@@ -43,6 +44,6 @@ date._onChange = value => {
 export default {
     searchMac,
     operationTypeSelect,
-    productTypeSelect,
+    eqpTypeSelect,
     date,
 }

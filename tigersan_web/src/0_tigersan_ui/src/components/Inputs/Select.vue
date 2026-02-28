@@ -1,28 +1,31 @@
 <template>
-    <div class="select" ref="refRoot" :class="model.rootClassObj.value" :style="model.rootStyleObj.value"
-        @click="OnClick">
-        <div class="text" v-if="!model.isUndefined.value">{{ model.Text.value }}</div>
-        <div class="placeholder" v-if="model.isUndefined.value">{{ model.Placeholder }}</div>
-        <div class="arrow iconfont" :style="model.arrowStyleObj.value">{{ Icons.Arrow_Right }}</div>
+    <div class="select" ref="refRoot" :class="model.rootClass.value" @click="OnClick">
+        <input type="text" ref="refInput" v-model="model.Text.value" :placeholder="model.Placeholder.value"
+            :style="model.widthStyle.value" :disabled="!model.IsEnabled.value">
+        <div class="button-panel flex-center">
+            <div class="arrow iconfont" :style="model.arrowStyleObj.value">{{ Icons.Arrow_Right }}</div>
+        </div>
+        <div class="mask" v-if="!model.IsAllowSearch.value"></div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { watch, onMounted, onUnmounted } from 'vue'
 import { Icons } from '../../base'
 import { SelectModel } from '../../models'
 import { ComponentHelper } from '../../helpers'
 import SelectMenu from './SelectMenu.vue'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: SelectModel,
         default: () => new SelectModel()
     }
 })
 
-const refRoot = ref<HTMLElement | undefined>()
+const { refRoot, refInput } = model
+
 let panel: Element | undefined
 
 const watchIsOpen = watch(model.IsOpen, (isOpen) => {
@@ -41,7 +44,6 @@ const watchIsOpen = watch(model.IsOpen, (isOpen) => {
 
 // 过程:
 onMounted(() => {
-    model.refRoot.value = refRoot.value
 })
 
 onUnmounted(() => {
@@ -67,9 +69,18 @@ function AddPanel() {
 
 /** 点击后 */
 function OnClick() {
+    if (!refInput.value) {
+        console.warn('The refInput is undefined!')
+        return
+    }
+
     if (!model.IsEnabled.value) return
 
-    model.IsOpen.value = !model.IsOpen.value
+    if (!model.IsOpen.value) {
+        model.IsOpen.value = true
+    } else if (refInput.value != document.activeElement) {
+        model.IsOpen.value = false
+    }
 
     SetEventListener(model.IsOpen.value)
 }
@@ -106,55 +117,45 @@ function IsClickOutside(target: HTMLElement, panel: HTMLElement): boolean {
 </script>
 
 <style lang="less" scoped>
-@padding: 0 8px;
-@import '../../assets/styles/input.less';
+@size: 16px;
 
 .select {
-    /* 显示: */
-    display: grid;
-    grid-template-columns: 1fr auto;
-    .input-border();
-    /* 文本: */
-    cursor: pointer;
+    position: relative;
 
-    &.disabled {
-        cursor: default;
-        color: var(--theme-color-placeholder);
+    &.open input {
+        border-color: var(--color-brand);
     }
 
-    &.open {
-        border-color: var(--theme-border-active);
+    &>input {
+        padding-right: 31px;
     }
 
-    .text {
-        /* 显示: */
-        grid-column: 1/2;
-        /* 尺寸: */
-        padding: @padding;
-        /* 文本: */
-        .ellipsis();
+    .button-panel {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 100%;
+
+        .arrow {
+            width: @size;
+            height: @size;
+            font-size: @size;
+            line-height: 1;
+            cursor: pointer;
+            margin-right: 10px;
+            color: var(--color-placeholder-text);
+            /* 过渡: */
+            transition: var(--Global-Transition);
+        }
     }
 
-    .placeholder {
-        /* 显示: */
-        grid-column: 1/2;
-        /* 尺寸: */
-        padding: @padding;
-        /* 颜色: */
-        color: var(--theme-color-placeholder);
-        /* 文本: */
-        .ellipsis();
-    }
-
-    .arrow {
-        /* 显示: */
-        grid-column: 2/3;
-        /* 尺寸: */
-        margin-right: @padding;
-        /* 颜色: */
-        color: var(--theme-color-placeholder);
-        /* 过渡: */
-        transition: var(--Global-Transition);
+    .mask {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
     }
 }
 </style>
