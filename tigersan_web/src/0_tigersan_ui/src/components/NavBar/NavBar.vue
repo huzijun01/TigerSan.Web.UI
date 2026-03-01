@@ -35,9 +35,10 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted } from 'vue'
-import { NavButton, NavFolder } from '../../components'
-import { NavBarModel } from '../../models'
 import { Constants } from '../../base'
+import { DomHelper } from '../../helpers'
+import { NavBarModel } from '../../models'
+import { NavButton, NavFolder } from '../../components'
 
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
@@ -85,9 +86,9 @@ function AddHeightGetter() {
 
 function UpdateBodyClass() {
     if (model.IsOpen.value) {
-        document.body.classList.add(Constants.NavOpen)
+        DomHelper.AddClass(Constants.NavOpen)
     } else {
-        document.body.classList.remove(Constants.NavOpen)
+        DomHelper.RemoveClass(Constants.NavOpen)
     }
 }
 

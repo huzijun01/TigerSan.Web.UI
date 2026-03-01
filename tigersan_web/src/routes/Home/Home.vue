@@ -5,7 +5,7 @@
       <!-- 导航栏: -->
       <NavBar :model="navModel" :title="AppConfig.Title">
         <div class="footer-panel flex-center">
-          <span class="skin iconfont" @click="themeHelper.Toggle">{{ Icons.Skin }}</span>
+          <span class="skin iconfont" @click="ThemeHelper.Toggle">{{ Icons.Skin }}</span>
           <span class="version">版本：V{{ AppConfig.Version }}</span>
         </div>
       </NavBar>
@@ -45,8 +45,7 @@ import { useUserInfo } from '@/stores'
 import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, DomHelper } from '@/0_tigersan_ui/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
 import { navModel, navData } from '@/navs/navModel'
-import { themeHelper } from '@/helpers/ThemeHelper'
-
+import { ThemeHelper } from '@/helpers/ThemeHelper'
 
 // 字段:
 const userName = ref('')

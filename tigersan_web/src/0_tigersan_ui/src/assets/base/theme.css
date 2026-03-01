@@ -116,9 +116,9 @@
 * {
   /* 滚动条 */
   /* Firefox宽度: */
-  scrollbar-width: thin;
+  scrollbar-width: 4px;
   /* Firefox颜色: */
-  scrollbar-color: #4e4e4e #1e1e1e;
+  scrollbar-color: #ccc #f5f5f5;
   /* WebKit容器: */
   /* 轨道: */
   /* 滑块: */
@@ -130,13 +130,37 @@
 }
 *::-webkit-scrollbar-track {
   border-radius: 8px;
-  background: #1e1e1e;
+  background: #f5f5f5;
 }
 *::-webkit-scrollbar-thumb {
   border-radius: 2px;
-  background: linear-gradient(180deg, #444, #222);
+  background: #ccc;
 }
 *::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+body.dark * {
+  /* 滚动条 */
+  /* Firefox宽度: */
+  scrollbar-width: thin;
+  /* Firefox颜色: */
+  scrollbar-color: #4e4e4e #1e1e1e;
+  /* WebKit容器: */
+  /* 轨道: */
+  /* 滑块: */
+}
+body.dark *::-webkit-scrollbar {
+  width: 4px;
+}
+body.dark *::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background: #1e1e1e;
+}
+body.dark *::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: linear-gradient(180deg, #444, #222);
+}
+body.dark *::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #666, #333);
 }
 /* 【主题】 */
