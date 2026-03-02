@@ -1,4 +1,4 @@
-class DomHelper {
+export class DomHelper {
     /** 添加“样式” */
     static AddCss(url: string) {
         const exist = document.head.querySelector(`link[href="${url}"]`)
@@ -29,8 +29,4 @@ class DomHelper {
     static RemoveClass(name: string) {
         document.body.classList.remove(name)
     }
-}
-
-export {
-    DomHelper
 }

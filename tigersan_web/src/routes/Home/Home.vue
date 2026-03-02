@@ -42,10 +42,9 @@
 import AppConfig from '@/AppConfig'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
-import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, DomHelper } from '@/0_tigersan_ui/tigerui'
+import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, ThemeHelper } from '@/0_tigersan_ui/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
 import { navModel, navData } from '@/navs/navModel'
-import { ThemeHelper } from '@/helpers/ThemeHelper'
 
 // 字段:
 const userName = ref('')

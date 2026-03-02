@@ -30,9 +30,9 @@
   --theme-nav-color-hover: var(--theme-brand);
   --theme-nav-color-selected: var(--theme-brand);
   --theme-nav-background: var(--color-brand-25);
-  --theme-nav-item-background-hover: var(--color-white-25);
+  --theme-nav-item-background-hover: var(--color-black-25);
   --theme-nav-item-background-selected: var(--color-brand-25);
-  --theme-nav-line-background: var(--color-white-25);
+  --theme-nav-line-background: var(--color-black-25);
   --theme-nav-logo-border-padding: 5px;
   --theme-nav-logo-border-background: white;
   --theme-nav-logo-border-radius: 0 30px 30px 0;

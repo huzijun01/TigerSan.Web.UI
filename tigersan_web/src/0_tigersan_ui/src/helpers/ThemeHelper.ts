@@ -1,5 +1,6 @@
 import { ref, watch } from "vue"
-import { ConfigBase, DomHelper } from "@/0_tigersan_ui/tigerui"
+import { DomHelper } from "./DomHelper"
+import { ConfigBase } from "./ConfigBase"
 
 export class ThemeConfig {
     /** 是否为黑暗模式 */
