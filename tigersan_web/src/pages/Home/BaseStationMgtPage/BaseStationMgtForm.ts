@@ -6,13 +6,13 @@ import {
 
 /** “设备名称”项目配置 */
 const configName: FormItemConfig = {
-    _propName: 'Name',
+    _propName: 'EqpName',
     PropText: '设备名称',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
         var baseStation = source as BaseStationMgtModel
-        return Verify.IsNotUndefinedOrEmpty(baseStation.Name)
+        return Verify.IsNotUndefinedOrEmpty(baseStation.EqpName)
     }
 }
 
