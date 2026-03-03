@@ -1,3 +1,4 @@
 export enum Constants {
-    NavOpen = 'nav-open'
+    NavOpen = 'nav-open',
+    Dark = 'dark'
 }

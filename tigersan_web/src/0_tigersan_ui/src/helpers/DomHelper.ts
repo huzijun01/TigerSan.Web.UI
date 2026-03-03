@@ -1,3 +1,5 @@
+import { ClassObserver } from "./ClassObserver"
+
 export class DomHelper {
     /** 添加“样式” */
     static AddCss(url: string) {
@@ -21,12 +23,18 @@ export class DomHelper {
     }
 
     /** 添加“类” */
-    static AddClass(name: string) {
-        document.body.classList.add(name)
+    static AddClass(name: string, dom: HTMLElement = document.documentElement) {
+        dom.classList.add(name)
     }
 
     /** 移除“类” */
-    static RemoveClass(name: string) {
-        document.body.classList.remove(name)
+    static RemoveClass(name: string, dom: HTMLElement = document.documentElement) {
+        dom.classList.remove(name)
+    }
+
+    /** 是否“包含类” */
+    static IsIncludeClass(name: string, dom: HTMLElement = document.documentElement): boolean {
+        const classes = ClassObserver.GetClassList(dom)
+        return classes.includes(name)
     }
 }

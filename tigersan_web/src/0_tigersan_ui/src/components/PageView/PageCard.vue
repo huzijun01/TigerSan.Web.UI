@@ -8,8 +8,8 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
-import { ClassObserver } from '../../helpers'
 import { Constants, Theme } from '../../base'
+import { ClassObserver, DomHelper } from '../../helpers'
 
 // 字段:
 const isOpen = ref(false)
@@ -58,11 +58,11 @@ let styleObj = computed(() => {
     }
 })
 
-const bodyClassObserver = new ClassObserver(document.body, UpdateIsOpen)
+const bodyClassObserver = new ClassObserver(undefined, UpdateIsOpen)
 
 // 过程:
 onMounted(() => {
-    UpdateIsOpen(ClassObserver.GetClassList(document.body))
+    UpdateIsOpen()
     bodyClassObserver.Start()
 })
 
@@ -71,8 +71,8 @@ onBeforeUnmount(() => {
 })
 
 // 方法:
-function UpdateIsOpen(classes: string[]) {
-    isOpen.value = classes.includes(Constants.NavOpen)
+function UpdateIsOpen() {
+    isOpen.value = DomHelper.IsIncludeClass(Constants.NavOpen)
 }
 </script>
 

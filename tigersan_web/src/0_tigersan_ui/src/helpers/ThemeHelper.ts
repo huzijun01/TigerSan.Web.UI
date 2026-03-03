@@ -1,6 +1,7 @@
 import { ref, watch } from "vue"
 import { DomHelper } from "./DomHelper"
 import { ConfigBase } from "./ConfigBase"
+import { Constants } from "../base"
 
 export class ThemeConfig {
     /** 是否为黑暗模式 */
@@ -50,10 +51,10 @@ export class ThemeHelper {
     static readonly UpdateTheme = () => {
         this.Save()
         if (this.IsDark.value) {
-            DomHelper.AddClass('dark')
+            DomHelper.AddClass(Constants.Dark)
             DomHelper.RemoveCss(this.theme)
         } else {
-            DomHelper.RemoveClass('dark')
+            DomHelper.RemoveClass(Constants.Dark)
             DomHelper.AddCss(this.theme)
         }
     }

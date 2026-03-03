@@ -10,8 +10,10 @@ export class ClassObserver {
     //#endregion 【Fields】
 
     //#region 【Ctor】
-    constructor(element: HTMLElement, onClassChanged?: StringArrayFunc) {
-        this._element = element
+    /** 构造函数
+     * @param element 默认为html标签 */
+    constructor(element?: HTMLElement, onClassChanged?: StringArrayFunc) {
+        this._element = element ?? document.documentElement
         this._onClassChanged = onClassChanged
 
         this._observerConfig = {

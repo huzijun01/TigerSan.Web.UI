@@ -139,7 +139,7 @@
 *::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
-body.dark * {
+.dark * {
   /* 滚动条 */
   /* Firefox宽度: */
   scrollbar-width: thin;
@@ -149,18 +149,18 @@ body.dark * {
   /* 轨道: */
   /* 滑块: */
 }
-body.dark *::-webkit-scrollbar {
+.dark *::-webkit-scrollbar {
   width: 4px;
 }
-body.dark *::-webkit-scrollbar-track {
+.dark *::-webkit-scrollbar-track {
   border-radius: 8px;
   background: #1e1e1e;
 }
-body.dark *::-webkit-scrollbar-thumb {
+.dark *::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background: linear-gradient(180deg, #444, #222);
 }
-body.dark *::-webkit-scrollbar-thumb:hover {
+.dark *::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #666, #333);
 }
 /* 【主题】 */
