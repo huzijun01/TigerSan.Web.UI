@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { OnlineState } from '@/models'
+import { GetOnlineString, OnlineState, IsOnline } from '@/models'
 import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "环境传感器"模型 */
@@ -7,7 +7,7 @@ class EnvSensorModel {
     Index = 0
     MacAddr = ''
     Version = ''
-    State = OnlineState.Offline
+    OnlineState = OnlineState.Offline
     Battery = 0
     EqpTime = ''
     LastMsgTime = ''
@@ -43,10 +43,11 @@ const envSensorTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'State',
+        _propName: 'OnlineState',
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
+        _strGetter: GetOnlineString,
     },
     {
         _propName: 'Battery',
@@ -81,7 +82,7 @@ const arr: EnvSensorModel[] =
             Index: 1,
             MacAddr: 'EQP1',
             Version: '1.0.0',
-            State: OnlineState.Online,
+            OnlineState: OnlineState.Online,
             Battery: 100,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
@@ -91,7 +92,7 @@ const arr: EnvSensorModel[] =
             Index: 2,
             MacAddr: 'EQP2',
             Version: '1.0.0',
-            State: OnlineState.Online,
+            OnlineState: OnlineState.Online,
             Battery: 45,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
@@ -101,7 +102,7 @@ const arr: EnvSensorModel[] =
             Index: 3,
             MacAddr: 'EQP3',
             Version: '1.0.0',
-            State: OnlineState.Offline,
+            OnlineState: OnlineState.Offline,
             Battery: 20,
             EqpTime: '2026-01-21 17:33:56',
             LastMsgTime: '2026-01-21 17:33:56',
@@ -120,11 +121,11 @@ envSensorTable._initHeader = headerModel => {
 }
 
 envSensorTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'State') {
-        if (itemModel.Text.value === '在线') {
+    if (itemModel._headerModel._propName === 'OnlineState') {
+        if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.Text.value === '离线') {
+        } else if (itemModel.GetSource() === OnlineState.Offline) {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -144,8 +145,8 @@ envSensorTable._initItem = itemModel => {
 
 envSensorTable._onInitRowModel = rowDatas => {
     paginationModel.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
-    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
+    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
 }
 
 export {

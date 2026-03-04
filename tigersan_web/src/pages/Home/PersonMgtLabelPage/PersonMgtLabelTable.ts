@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { OnlineState } from '@/models'
+import { GetOnlineString, IsOnline, OnlineState } from '@/models'
 import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
@@ -8,7 +8,7 @@ class PersonMgtLabelModel {
     IMEI = ''
     EqpName = ''
     EqpType = ''
-    State = OnlineState.Offline
+    OnlineState = OnlineState.Offline
     BluetoothFirmware = ''
     KeyEvent = ''
     TriggerEvent = ''
@@ -45,10 +45,11 @@ const personMgtLabelTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'State',
+        _propName: 'OnlineState',
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
+        _strGetter: GetOnlineString,
     },
     {
         _propName: 'EqpType',
@@ -96,7 +97,7 @@ const arr: PersonMgtLabelModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP1',
             EqpType: 'g1-e-grapes',
-            State: OnlineState.Online,
+            OnlineState: OnlineState.Online,
             BluetoothFirmware: '固件1',
             KeyEvent: '事件1',
             TriggerEvent: '触发1',
@@ -108,7 +109,7 @@ const arr: PersonMgtLabelModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP2',
             EqpType: 'g1-e-grapes',
-            State: OnlineState.Online,
+            OnlineState: OnlineState.Online,
             BluetoothFirmware: '固件2',
             KeyEvent: '事件2',
             TriggerEvent: '触发2',
@@ -120,7 +121,7 @@ const arr: PersonMgtLabelModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP1',
             EqpType: 'g1-e-grapes',
-            State: OnlineState.Offline,
+            OnlineState: OnlineState.Offline,
             BluetoothFirmware: '固件3',
             KeyEvent: '事件3',
             TriggerEvent: '触发3',
@@ -140,11 +141,11 @@ personMgtLabelTable._initHeader = headerModel => {
 }
 
 personMgtLabelTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'State') {
-        if (itemModel.Text.value === '在线') {
+    if (itemModel._headerModel._propName === 'OnlineState') {
+        if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.Text.value === '离线') {
+        } else if (itemModel.GetSource() === OnlineState.Offline) {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -164,8 +165,8 @@ personMgtLabelTable._initItem = itemModel => {
 
 personMgtLabelTable._onInitRowModel = rowDatas => {
     paginationModel.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
-    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
+    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
 }
 
 

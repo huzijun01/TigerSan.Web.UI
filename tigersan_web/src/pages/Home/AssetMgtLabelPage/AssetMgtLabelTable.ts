@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { OnlineState } from '@/models'
+import { GetOnlineString, IsOnline, OnlineState } from '@/models'
 import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
@@ -8,7 +8,7 @@ class AssetMgtLabelModel {
     MacAddr = ''
     EqpType = ''
     Version = ''
-    State = OnlineState.Offline
+    OnlineState = OnlineState.Offline
     Battery = 0
     LastMsgTime = ''
     Operation = ''
@@ -49,10 +49,11 @@ const assetMgtLabelTable = new TableModel([
         IsAllowWrap: false,
     },
     {
-        _propName: 'State',
+        _propName: 'OnlineState',
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
+        _strGetter: GetOnlineString,
     },
     {
         _propName: 'Battery',
@@ -82,7 +83,7 @@ const arr: AssetMgtLabelModel[] =
             MacAddr: 'EQP1',
             EqpType: 'Type1',
             Version: '1.0.0',
-            State: OnlineState.Online,
+            OnlineState: OnlineState.Online,
             Battery: 100,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作1',
@@ -92,7 +93,7 @@ const arr: AssetMgtLabelModel[] =
             MacAddr: 'EQP2',
             EqpType: 'Type2',
             Version: '1.0.0',
-            State: OnlineState.Online,
+            OnlineState: OnlineState.Online,
             Battery: 45,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作2',
@@ -102,7 +103,7 @@ const arr: AssetMgtLabelModel[] =
             MacAddr: 'EQP3',
             EqpType: 'Type3',
             Version: '1.0.0',
-            State: OnlineState.Offline,
+            OnlineState: OnlineState.Offline,
             Battery: 20,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作3',
@@ -118,11 +119,11 @@ assetMgtLabelTable._initHeader = headerModel => {
 }
 
 assetMgtLabelTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'State') {
-        if (itemModel.Text.value === '在线') {
+    if (itemModel._headerModel._propName === 'OnlineState') {
+        if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.Text.value === '离线') {
+        } else if (itemModel.GetSource() === OnlineState.Offline) {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -142,8 +143,8 @@ assetMgtLabelTable._initItem = itemModel => {
 
 assetMgtLabelTable._onInitRowModel = rowDatas => {
     paginationModel.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Online)).length
-    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'State', OnlineState.Offline)).length
+    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
+    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
 }
 
 export {

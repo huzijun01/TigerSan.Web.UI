@@ -10,7 +10,7 @@ export class ObjectHelper {
         const proto = Object.getPrototypeOf(obj);
         const copy = Object.create(proto);
 
-        // 复制所有自身属性（包括不可枚举属性和 Symbol）
+        // 复制所有自身字段（包括不可枚举字段和 Symbol）
         const keys = Reflect.ownKeys(obj);
         for (const key of keys) {
             copy[key as keyof T] = obj[key as keyof T];
@@ -76,7 +76,7 @@ export class ObjectHelper {
             const objCopy = Object.create(proto);
             hash.set(obj, objCopy);
 
-            // 复制所有自身属性（包括不可枚举和 Symbol）
+            // 复制所有自身字段（包括不可枚举和 Symbol）
             const keys = Reflect.ownKeys(obj);
             for (const key of keys) {
                 objCopy[key] = _copy(obj[key]);
@@ -91,26 +91,37 @@ export class ObjectHelper {
     /** 默认“对象行为”  */
     static DefaultObjectAction() { return {} }
 
-    /** 从“对象”中获取“指定字段”，并转为字符串 */
+    /** 获取“字段文本”默认方法 */
     static DefaultStringGetter(obj: object, propName: string): string {
         const value = (obj as Record<string, unknown>)[propName];
-
-        // 处理 null/undefined 和其他类型的转换
         return value != null ? String(value) : ''
     }
 
-    /** 从“对象”中获取“指定字段” */
+    /** 获取“字段值”默认方法 */
+    static DefaultNumberGetter(obj: object, propName: string): number {
+        const value = (obj as Record<string, unknown>)[propName];
+
+        // 处理 null/undefined 和其他类型的转换
+        return value != null ? Number(value) : 0
+    }
+
+    /** 修改“字段值”默认方法 */
     static DefaultUnknownGetter(obj: object, propName: string): unknown {
         return (obj as Record<string, unknown>)[propName]
     }
 
-    /** 将“值”赋给“对象”中的“指定字段” */
+    /** 修改“字段值”默认方法 */
     static DefaultUnknownSetter(obj: object, propName: string, value: unknown): void {
         (obj as Record<string, unknown>)[propName] = value;
     }
 
-    /** 判断“属性值”是否等于“目标值”  */
-    static IsEqual(obj: object, propName: string, value: string): boolean {
+    /** 判断“字段文本”是否等于“目标值”  */
+    static IsTextEqual(obj: object, propName: string, value: unknown): boolean {
         return ObjectHelper.DefaultStringGetter(obj, propName) === value
+    }
+
+    /** 判断“字段值”是否等于“目标值”  */
+    static IsSourceEqual(obj: object, propName: string, value: unknown): boolean {
+        return ObjectHelper.DefaultUnknownGetter(obj, propName) === value
     }
 }

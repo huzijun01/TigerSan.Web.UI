@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { OnlineState } from '@/models'
+import { OnlineState, GetOnlineString, IsOnline } from '@/models'
 import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “基站管理”模型 */
@@ -7,8 +7,8 @@ class BaseStationMgtModel {
     Index = 0
     MacAddr = ''
     EqpName = ''
-    OnlineState = OnlineState.Offline
     EqpType = ''
+    OnlineState = OnlineState.Offline
     UpdateTime = ''
     Version = ''
 }
@@ -46,6 +46,7 @@ const baseStationMgtTable = new TableModel([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
+        _strGetter: GetOnlineString,
     },
     {
         _propName: 'EqpType',
@@ -147,10 +148,10 @@ baseStationMgtTable._initHeader = headerModel => {
 
 baseStationMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'OnlineState') {
-        if (itemModel.Text.value === OnlineState.Online) {
+        if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.Text.value === OnlineState.Offline) {
+        } else if (itemModel.GetSource() === OnlineState.Offline) {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -170,8 +171,8 @@ baseStationMgtTable._initItem = itemModel => {
 
 baseStationMgtTable._onInitRowModel = rowDatas => {
     paginationModel.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'OnlineState', OnlineState.Online)).length
-    offlineCount.value = rowDatas.filter(r => ObjectHelper.IsEqual(r, 'OnlineState', OnlineState.Offline)).length
+    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
+    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
 }
 
 export {
