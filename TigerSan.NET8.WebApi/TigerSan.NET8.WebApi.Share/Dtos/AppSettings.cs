@@ -2,6 +2,6 @@
 {
     public class AppSettings
     {
-        public string ConnectionStrings { get; set; } = string.Empty;
+        public string ConnectionString { get; set; } = string.Empty;
     }
 }

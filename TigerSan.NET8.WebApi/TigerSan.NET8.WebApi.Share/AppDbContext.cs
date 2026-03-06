@@ -25,7 +25,7 @@ namespace TigerSan.NET8.WebApi.Share
         #region 配置时
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql(_appSettings.ConnectionStrings, new MySqlServerVersion(new Version(8, 0, 45)));
+            optionsBuilder.UseMySql(_appSettings.ConnectionString, new MySqlServerVersion(new Version(8, 0, 45)));
         }
         #endregion
 
