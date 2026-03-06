@@ -30,4 +30,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Add ListenUrl:
+app.Urls.Add(SettingHelper.AppSettings.ListenUrl);
+
 app.Run();
