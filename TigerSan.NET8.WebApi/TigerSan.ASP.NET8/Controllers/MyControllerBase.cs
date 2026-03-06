@@ -33,7 +33,7 @@ namespace TigerSan.NET8.WebApi.Controllers
                 return MyResults.ResourceNotFound;
             }
 
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
             res.Data = entity;
             return res;
         }
@@ -43,7 +43,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“总数”</summary>
         public async Task<MyActionResult> GetCount()
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
             res.Data = await _service.GetCount();
             return res;
         }
@@ -52,7 +52,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所有数据”</summary>
         public async Task<MyActionResult> GetList()
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
             res.Data = await _service.GetList();
             return res;
         }
@@ -62,7 +62,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“单页数据”</summary>
         public async Task<MyActionResult> GetList(int pageSize, int pageNumber)
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
             res.Data = await _service.GetList(pageSize, pageNumber);
             return res;
         }
@@ -70,17 +70,16 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region [增]
         [HttpPost]
-        [Route("{entity}")]
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult> Add(T entity)
+        public async Task<MyActionResult> Add([FromBody] T entity)
         {
             return await _service.Add(entity);
         }
 
         [HttpPost]
-        [Route("Range/{entities}")]
+        [Route("Range")]
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult> Add(IList<T> entities)
+        public async Task<MyActionResult> Add([FromBody] IList<T> entities)
         {
             return await _service.Add(entities);
         }
@@ -88,9 +87,8 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region [改]
         [HttpPut]
-        [Route("{entity}")]
         /// <summary>修改“单条数据”</summary>
-        public async Task<MyActionResult> Edit(T entity)
+        public async Task<MyActionResult> Edit([FromBody] T entity)
         {
             return await _service.Edit(entity);
         }
@@ -106,9 +104,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("Range/{indexes}")]
+        [Route("Range")]
         /// <summary>删除“多条数据”</summary>
-        public async Task<MyActionResult> Remove(IList<int> indexes)
+        public async Task<MyActionResult> Remove([FromBody] IList<int> indexes)
         {
             return await _service.Remove(indexes);
         }

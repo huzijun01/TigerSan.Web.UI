@@ -12,12 +12,18 @@
     #region 结果类
     public class MyResults
     {
-        public static MyActionResult Error(Exception e) { return new MyActionResult(ActionResultCode.Error, e.Message); }
-        public static MyActionResult Success { get => new MyActionResult(ActionResultCode.Success, "Operation successful!"); }
+        public static MyActionResult OperationSuccess { get => new MyActionResult(ActionResultCode.Success, "Operation successful!"); }
         public static MyActionResult ResourceNotFound { get => new MyActionResult(ActionResultCode.Warning, "The resource not found!"); }
         public static MyActionResult ResourceExists { get => new MyActionResult(ActionResultCode.Warning, "The resource already exist!"); }
         public static MyActionResult ResourceNotExist { get => new MyActionResult(ActionResultCode.Warning, "The resources do not exist!"); }
         public static MyActionResult SomeResourceNotExist { get => new MyActionResult(ActionResultCode.Warning, "Some resources do not exist!"); }
+
+        #region 【Functions】
+        public static MyActionResult Success(string msg) { return new MyActionResult(ActionResultCode.Success, msg); }
+        public static MyActionResult Warning(string msg) { return new MyActionResult(ActionResultCode.Warning, msg); }
+        public static MyActionResult Error(string msg) { return new MyActionResult(ActionResultCode.Error, msg); }
+        public static MyActionResult Error(Exception e) { return new MyActionResult(ActionResultCode.Error, e.Message); }
+        #endregion 【Functions】
     }
     #endregion
 

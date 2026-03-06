@@ -77,7 +77,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>添加“单条数据”</summary>
         public async Task<MyActionResult> Add(T entity)
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
 
             try
             {
@@ -102,7 +102,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>添加“多条数据”</summary>
         public async Task<MyActionResult> Add(IList<T> entities)
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
 
             try
             {
@@ -130,7 +130,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“单条数据”</summary>
         public async Task<MyActionResult> Edit(T entity)
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
 
             try
             {
@@ -159,7 +159,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“单条数据”</summary>
         public async Task<MyActionResult> Remove(int index)
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
 
             try
             {
@@ -185,7 +185,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“多条数据”</summary>
         public async Task<MyActionResult> Remove(IList<int> indexes)
         {
-            var res = MyResults.Success;
+            var res = MyResults.OperationSuccess;
 
             try
             {
