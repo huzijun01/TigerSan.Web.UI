@@ -28,7 +28,7 @@ else
     app.Urls.Add(SettingHelper.AppSettings.ListenUrl);
 }
 
-BluetoothTagHelper.StartListening();
+SseInstance.StartListening();
 
 app.UseHttpsRedirection();
 
