@@ -23,14 +23,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.Urls.Add(SettingHelper.AppSettings.ListenUrl);
+}
+
+BluetoothTagHelper.StartListening();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Add ListenUrl:
-app.Urls.Add(SettingHelper.AppSettings.ListenUrl);
 
 app.Run();

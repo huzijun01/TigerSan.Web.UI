@@ -10,8 +10,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
     public class ServiceBase<T> : IServiceBase<T> where T : IndexEntity
     {
         #region 【Fields】
-        protected readonly AppDbContext _db;
-        protected readonly DbSet<T> _dbSet;
+        public AppDbContext _db;
+        public DbSet<T> _dbSet;
         #endregion 【Fields】
 
         #region 【Ctor】
