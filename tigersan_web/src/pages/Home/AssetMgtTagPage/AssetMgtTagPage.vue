@@ -31,11 +31,11 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="assetMgtLabelTable"></Table>
+            <Table :model="assetMgtTagTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="assetMgtLabelTable.SelectedRowCount.value">
+                <Pagination :model="paginationModel" :selectedRowCount="assetMgtTagTable.SelectedRowCount.value">
                     <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
                     <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
@@ -44,7 +44,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.assetMgtLabelForm">
+    <PopForm :model="form.assetMgtTagForm">
         <FormRow>
             <FormItem :model="form.configMacAddr.ItemModel">
                 <input type="text" v-model="form.configMacAddr.Target.value">
@@ -54,14 +54,14 @@
 </template>
 
 <script lang="ts" setup>
-import form from './AssetMgtLabelForm'
-import select from './AssetMgtLabelSelect'
-import { assetMgtLabelTable, paginationModel, onlineCount, offlineCount } from './AssetMgtLabelTable'
+import form from './AssetMgtTagForm'
+import select from './AssetMgtTagSelect'
+import { assetMgtTagTable, paginationModel, onlineCount, offlineCount } from './AssetMgtTagTable'
 import { dialog, Table, Select, Search, KeyValue, PageCard, Pagination, PopForm, FormRow, FormItem, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = assetMgtLabelTable
+const { IsOnlySelected } = assetMgtTagTable
 
 // 【方法】:
 function BatchOperation() {

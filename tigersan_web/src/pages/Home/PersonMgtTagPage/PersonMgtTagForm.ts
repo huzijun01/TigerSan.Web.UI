@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { PersonMgtLabelModel, personMgtLabelTable } from './PersonMgtLabelTable'
+import { PersonMgtTagModel, personMgtTagTable } from './PersonMgtTagTable'
 import {
     Colors, dialog, Verify, ObjectHelper,
     DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
@@ -12,8 +12,8 @@ const configIMEI: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var personMgtLabel = source as PersonMgtLabelModel
-        return Verify.IsNotUndefinedOrEmpty(personMgtLabel.IMEI)
+        var personMgtTag = source as PersonMgtTagModel
+        return Verify.IsNotUndefinedOrEmpty(personMgtTag.IMEI)
     }
 }
 
@@ -24,18 +24,18 @@ const configEqpName: FormItemConfig = {
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var personMgtLabel = source as PersonMgtLabelModel
-        return Verify.IsNotUndefinedOrEmpty(personMgtLabel.EqpName)
+        var personMgtTag = source as PersonMgtTagModel
+        return Verify.IsNotUndefinedOrEmpty(personMgtTag.EqpName)
     }
 }
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new PersonMgtLabelModel()
+    return new PersonMgtTagModel()
 }
 
 /** “人员管理标签”表单配置 */
-let configPersonMgtLabelForm: FormConfig = {
+let configPersonMgtTagForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -46,52 +46,52 @@ let configPersonMgtLabelForm: FormConfig = {
 }
 
 /** “人员管理标签”表单模型 */
-const personMgtLabelForm = new FormModel(configPersonMgtLabelForm)
+const personMgtTagForm = new FormModel(configPersonMgtTagForm)
 
 /** 查 */
 function Refresh() {
-    personMgtLabelTable.Refresh()
+    personMgtTagTable.Refresh()
 }
 
 /** 增 */
 function Add() {
-    personMgtLabelForm.Title.value = '新增标签'
+    personMgtTagForm.Title.value = '新增标签'
 
-    personMgtLabelForm._getSource = AddGetSource
+    personMgtTagForm._getSource = AddGetSource
 
-    personMgtLabelForm._onSubmit = source => {
-        personMgtLabelTable.RowDatas.push(source)
-        personMgtLabelTable.Refresh()
+    personMgtTagForm._onSubmit = source => {
+        personMgtTagTable.RowDatas.push(source)
+        personMgtTagTable.Refresh()
 
         return new SubmitResult('添加成功')
     }
 
-    personMgtLabelForm.Show()
+    personMgtTagForm.Show()
 }
 
 /** 改 */
 function Edit() {
-    personMgtLabelForm.Title.value = '修改标签'
+    personMgtTagForm.Title.value = '修改标签'
 
     let iRow = 0
 
-    personMgtLabelForm._getSource = () => {
-        const rowData = personMgtLabelTable.SelectedRowDatas.value[0]
+    personMgtTagForm._getSource = () => {
+        const rowData = personMgtTagTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return {}
         }
 
-        iRow = personMgtLabelTable.RowDatas.indexOf(rowData)
+        iRow = personMgtTagTable.RowDatas.indexOf(rowData)
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    personMgtLabelForm._onSubmit = source => {
-        personMgtLabelTable.RowDatas[iRow] = source
+    personMgtTagForm._onSubmit = source => {
+        personMgtTagTable.RowDatas[iRow] = source
         return new SubmitResult('修改成功')
     }
 
-    personMgtLabelForm.Show()
+    personMgtTagForm.Show()
 }
 
 /** 删 */
@@ -107,13 +107,13 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const rowData = personMgtLabelTable.SelectedRowDatas.value[0]
+    const rowData = personMgtTagTable.SelectedRowDatas.value[0]
     if (!rowData) {
         console.warn('The rowData is undefined!')
         return {}
     }
 
-    personMgtLabelTable.DeleteRowData(rowData)
+    personMgtTagTable.DeleteRowData(rowData)
 
     dialog.ShowSuccess('删除成功')
 }
@@ -121,7 +121,7 @@ function DeleteRowData(state: DialogState) {
 export default {
     configEqpName,
     configIMEI,
-    personMgtLabelForm,
+    personMgtTagForm,
     Refresh,
     Add,
     Edit,

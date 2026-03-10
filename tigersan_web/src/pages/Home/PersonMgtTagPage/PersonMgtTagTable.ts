@@ -3,7 +3,7 @@ import { GetOnlineString, IsOnline, OnlineState } from '@/models'
 import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
-class PersonMgtLabelModel {
+class PersonMgtTagModel {
     Index = 0
     IMEI = ''
     EqpName = ''
@@ -25,7 +25,7 @@ const paginationModel = new PaginationModel()
 paginationModel.IsShowSelectedRowCount.value = true
 
 // 列头:
-const personMgtLabelTable = new TableModel([
+const personMgtTagTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -90,7 +90,7 @@ const personMgtLabelTable = new TableModel([
 ])
 
 // 数据:
-const arr: PersonMgtLabelModel[] =
+const arr: PersonMgtTagModel[] =
     [
         {
             Index: 1,
@@ -129,18 +129,18 @@ const arr: PersonMgtLabelModel[] =
             LastMsgTime: '2026-01-21 17:33:56',
         },
     ]
-personMgtLabelTable.RowDatas.push(...arr)
+personMgtTagTable.RowDatas.push(...arr)
 
 // 初始化:
-personMgtLabelTable.IsAllowMultiSelect.value = false
+personMgtTagTable.IsAllowMultiSelect.value = false
 
-personMgtLabelTable._initHeader = headerModel => {
+personMgtTagTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
     }
 }
 
-personMgtLabelTable._initItem = itemModel => {
+personMgtTagTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'OnlineState') {
         if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
@@ -163,7 +163,7 @@ personMgtLabelTable._initItem = itemModel => {
     }
 }
 
-personMgtLabelTable._onInitRowModel = rowDatas => {
+personMgtTagTable._onInitRowModel = rowDatas => {
     paginationModel.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
@@ -174,6 +174,6 @@ export {
     onlineCount,
     offlineCount,
     paginationModel,
-    PersonMgtLabelModel,
-    personMgtLabelTable,
+    PersonMgtTagModel,
+    personMgtTagTable,
 }

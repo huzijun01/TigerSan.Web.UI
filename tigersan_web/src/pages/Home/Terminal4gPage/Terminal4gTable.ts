@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { GetOnlineString, IsOnline, OnlineState } from '@/models'
-import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
 class Terminal4gModel {
@@ -45,6 +45,12 @@ const terminal4gTable = new TableModel([
         IsAllowWrap: false,
     },
     {
+        _propName: 'EqpType',
+        Text: '设备型号',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
         _propName: 'OnlineState',
         Text: '在线状态',
         IsReadonly: true,
@@ -52,14 +58,20 @@ const terminal4gTable = new TableModel([
         _strGetter: GetOnlineString,
     },
     {
-        _propName: 'EqpType',
-        Text: '设备型号',
+        _propName: 'Battery',
+        Text: '电量（%）',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
         _propName: 'BluetoothFirmware',
         Text: '蓝牙固件',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
+        _propName: 'LastMsgTime',
+        Text: '最近通讯时间',
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -72,18 +84,6 @@ const terminal4gTable = new TableModel([
     {
         _propName: 'TriggerEvent',
         Text: '触发事件',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'Battery',
-        Text: '电量（%）',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'LastMsgTime',
-        Text: '最近通讯时间',
         IsReadonly: true,
         IsAllowWrap: false,
     },

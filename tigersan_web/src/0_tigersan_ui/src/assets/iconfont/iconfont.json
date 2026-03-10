@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "35171253",
+      "name": "Building_1",
+      "font_class": "Building_1",
+      "unicode": "e85c",
+      "unicode_decimal": 59484
+    },
+    {
+      "icon_id": "35171267",
+      "name": "Building_2",
+      "font_class": "Building_2",
+      "unicode": "e85d",
+      "unicode_decimal": 59485
+    },
+    {
+      "icon_id": "11437932",
+      "name": "Bell",
+      "font_class": "Bell",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
       "icon_id": "35505185",
       "name": "Key_Vertical",
       "font_class": "Key_Vertical",

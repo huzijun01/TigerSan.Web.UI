@@ -42,7 +42,7 @@ onMounted(() => {
   const userInfo = useUserInfo()
   userInfo.Clear()
   form.loginForm.Init()
-  navData.GoCompanyMgt()
+  navData.GoBaseSetting()
 })
 </script>
 

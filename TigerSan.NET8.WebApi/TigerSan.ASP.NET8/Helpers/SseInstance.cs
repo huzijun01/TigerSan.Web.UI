@@ -7,7 +7,7 @@ namespace TigerSan.NET8.WebApi.Helpers
     public static class SseInstance
     {
         #region 【Fields】
-        private static SseHelper _sseHelper = new SseHelper(new ConnectInfo("192.168.0.202:5012", "1", "dyroot", "dy88889999"));
+        private static SseHelper _sseHelper = new SseHelper(new ConnectInfo(SettingHelper.AppSettings.MqttConnection));
         #endregion 【Fields】
 
         #region 【Functions】

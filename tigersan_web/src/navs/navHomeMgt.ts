@@ -1,7 +1,7 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import BaseStationMgtPage from '@/pages/Home/BaseStationMgtPage/BaseStationMgtPage.vue'
-import PersonMgtLabelPage from '@/pages/Home/PersonMgtLabelPage/PersonMgtLabelPage.vue'
-import AssetMgtLabelPage from '@/pages/Home/AssetMgtLabelPage/AssetMgtLabelPage.vue'
+import PersonMgtTagPage from '@/pages/Home/PersonMgtTagPage/PersonMgtTagPage.vue'
+import AssetMgtTagPage from '@/pages/Home/AssetMgtTagPage/AssetMgtTagPage.vue'
 import EnvSensorPage from '@/pages/Home/EnvSensorPage/EnvSensorPage.vue'
 import Terminal4gPage from '@/pages/Home/Terminal4gPage/Terminal4gPage.vue'
 import OperationRecordPage from '@/pages/Home/OperationRecordPage/OperationRecordPage.vue'
@@ -32,12 +32,12 @@ const navHomeMgt: NavFolderConfig = {
                 {
                     Title: "人员管理标签",
                     Icon: Icons.Person,
-                    _component: PersonMgtLabelPage,
+                    _component: PersonMgtTagPage,
                 },
                 {
                     Title: "资产管理标签",
                     Icon: Icons.Asset,
-                    _component: AssetMgtLabelPage,
+                    _component: AssetMgtTagPage,
                 },
                 {
                     Title: "传感器标签",

@@ -1,7 +1,7 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
-import CompanyMgtPage from '@/pages/Company/CompanyMgtPage/CompanyMgtPage.vue'
+import CompanyMgtPage from '@/pages/BaseSetting/CompanyMgtPage/CompanyMgtPage.vue'
 
-const navCompanyMgt: NavFolderConfig = {
+const navBaseSetting: NavFolderConfig = {
     Folders: [
     ],
     Buttons: [
@@ -30,9 +30,21 @@ const navCompanyMgt: NavFolderConfig = {
             IsSelected: false,
             _component: undefined
         },
+        {
+            Title: "场地管理",
+            Icon: Icons.Building_1,
+            IsSelected: false,
+            _component: undefined
+        },
+        {
+            Title: "报警管理",
+            Icon: Icons.Bell,
+            IsSelected: false,
+            _component: undefined
+        },
     ]
 }
 
 export {
-    navCompanyMgt
+    navBaseSetting
 }

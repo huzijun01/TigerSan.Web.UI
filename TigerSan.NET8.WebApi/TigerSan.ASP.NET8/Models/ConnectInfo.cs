@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using TigerSan.NET8.WebApi.Share.Dtos;
 
 namespace TigerSan.NET8.WebApi.Models
 {
@@ -36,6 +37,13 @@ namespace TigerSan.NET8.WebApi.Models
         public string Authorization { get => "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Username}:{Password}")); }
 
         #region 【Ctor】
+        public ConnectInfo(MqttConnection connection)
+        {
+            ServerUrl = connection.ServerUrl;
+            ClientId = connection.ClientId;
+            Username = connection.Username;
+            Password = connection.Password;
+        }
         public ConnectInfo(string serverUrl, string clientId, string username, string password)
         {
             ServerUrl = serverUrl;

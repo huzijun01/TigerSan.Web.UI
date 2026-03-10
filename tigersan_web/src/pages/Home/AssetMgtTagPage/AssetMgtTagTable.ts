@@ -3,7 +3,7 @@ import { GetOnlineString, IsOnline, OnlineState } from '@/models'
 import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
-class AssetMgtLabelModel {
+class AssetMgtTagModel {
     Index = 0
     MacAddr = ''
     EqpType = ''
@@ -23,7 +23,7 @@ const paginationModel = new PaginationModel()
 paginationModel.IsShowSelectedRowCount.value = true
 
 // 列头:
-const assetMgtLabelTable = new TableModel([
+const assetMgtTagTable = new TableModel([
     {
         _propName: 'Index',
         Text: '序号',
@@ -76,7 +76,7 @@ const assetMgtLabelTable = new TableModel([
 ])
 
 // 数据:
-const arr: AssetMgtLabelModel[] =
+const arr: AssetMgtTagModel[] =
     [
         {
             Index: 1,
@@ -109,16 +109,16 @@ const arr: AssetMgtLabelModel[] =
             Operation: '操作3',
         },
     ]
-assetMgtLabelTable.RowDatas.push(...arr)
+assetMgtTagTable.RowDatas.push(...arr)
 
 // 初始化:
-assetMgtLabelTable._initHeader = headerModel => {
+assetMgtTagTable._initHeader = headerModel => {
     if (headerModel._propName === 'Index') {
         headerModel.Width.value = 50
     }
 }
 
-assetMgtLabelTable._initItem = itemModel => {
+assetMgtTagTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'OnlineState') {
         if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
@@ -141,7 +141,7 @@ assetMgtLabelTable._initItem = itemModel => {
     }
 }
 
-assetMgtLabelTable._onInitRowModel = rowDatas => {
+assetMgtTagTable._onInitRowModel = rowDatas => {
     paginationModel.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
@@ -151,6 +151,6 @@ export {
     onlineCount,
     offlineCount,
     paginationModel,
-    AssetMgtLabelModel,
-    assetMgtLabelTable,
+    AssetMgtTagModel,
+    assetMgtTagTable,
 }

@@ -19,7 +19,10 @@ export class Icons {
     static Arrow_Right_Bold = ""
 
     // B:
+    static Bell = ""
     static Bilibili = ""
+    static Building_1 = ""
+    static Building_2 = ""
 
     // C:
     static Copy = ""

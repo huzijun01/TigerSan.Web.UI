@@ -22,7 +22,7 @@
         <PageBar :model="navModel" :offsetX="offsetX" />
 
         <div class="info-panel flex-center" ref="refInfoPanel">
-          <IconButton :icon="Icons.Monitor" text="公司管理" :click="navData.GoCompanyMgt"></IconButton>
+          <IconButton :icon="Icons.Setting_Linear" text="基础设置" :click="navData.GoBaseSetting"></IconButton>
           <IconButton :icon="Icons.Question" text="帮助"></IconButton>
           <IconButton :icon="Icons.Refresh" text="进度"></IconButton>
           <IconButton :icon="Icons.User" :text="userName"></IconButton>

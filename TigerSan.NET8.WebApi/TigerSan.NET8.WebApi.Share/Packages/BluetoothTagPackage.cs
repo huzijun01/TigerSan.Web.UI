@@ -39,7 +39,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
 
         /// <summary>状态</summary>
         [JsonProperty("w")]
-        public int Status { get; set; }
+        public double Status { get; set; }
 
         /// <summary>上报类型</summary>
         [JsonProperty("h")]

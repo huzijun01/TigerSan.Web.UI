@@ -44,6 +44,8 @@ namespace TigerSan.NET8.WebApi.Helpers
         /// </summary>
         public async Task StartListeningAsync(Action<string> onDataReceived)
         {
+            Console.WriteLine("Connected to SSE stream. Listening for events...");
+
             while (true)
             {
                 try
