@@ -22,6 +22,10 @@ export class MyActionResult {
         this.data = data
     }
 
+    static GetError(msg: any) {
+        return new MyActionResult(ActionResultCode.Error, msg)
+    }
+
     static ShowResult(res: MyActionResult, success: string = '操作成功') {
         if (res.code === ActionResultCode.Error) {
             dialog.ShowError(res.message)
