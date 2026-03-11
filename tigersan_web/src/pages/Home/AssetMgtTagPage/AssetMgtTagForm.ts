@@ -56,6 +56,7 @@ function Delete() {
     dialog.ShowDialog(
         '确认',
         '是否确定删除？',
+        undefined,
         DeleteRowData,
         DialogMode.YesOrNo,
         Colors.Warning)

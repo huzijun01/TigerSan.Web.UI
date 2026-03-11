@@ -1,8 +1,8 @@
 <template>
     <div class="company">
         <img :src="img" @click="OnClick" />
-        <div class="text">公司名称: {{ model.Name }}</div>
-        <div class="text">公司地址: {{ model.Addr }}</div>
+        <div class="text">公司名称: {{ model.name }}</div>
+        <div class="text">公司地址: {{ model.addr }}</div>
         <div class="button-panel flex-right">
             <span class="btn iconfont" @click="OnDelete">{{ Icons.Delete_Linear }}</span>
             <span class="btn iconfont" @click="OnEdit">{{ Icons.Edit }}</span>
@@ -11,18 +11,19 @@
 </template>
 
 <script lang="ts" setup>
+import type { PropType } from 'vue';
 import { Icons, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { CompanyMgtModel } from '@/pages/BaseSetting/CompanyMgtPage/CompanyMgtTable'
 
 //字段:
 const { model } = defineProps({
     model: {
-        type: Object,
+        type: Object as PropType<CompanyMgtModel>,
         default: () => new CompanyMgtModel()
     },
 })
 
-const img = StringHelper.IsNotEmpty(model.Image) ? model.Image : 'http://www.tigersan.cn/0_file/image/company.png'
+const img = StringHelper.IsNotEmpty(model.image) ? model.image : 'http://www.tigersan.cn/0_file/image/company.png'
 
 //方法:
 function OnClick() {

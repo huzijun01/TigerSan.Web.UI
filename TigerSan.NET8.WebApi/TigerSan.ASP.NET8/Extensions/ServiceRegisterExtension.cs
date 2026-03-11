@@ -31,10 +31,37 @@ namespace TigerSan.NET8.WebApi.Extensions
         }
         #endregion
 
+        #region 添加“CORS服务”
+        public static void AddAllowAllCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()       // 允许任何来源
+                        .AllowAnyMethod()       // 允许任何HTTP方法
+                        .AllowAnyHeader();      // 允许任何头信息
+                });
+            });
+        }
+        #endregion
+
+        #region 使用“CORS服务”
+        public static void UseAllowAllCors(this WebApplication app)
+        {
+            app.UseCors("AllowAll");
+        }
+        #endregion
+
         #region 注册“服务”
         public static void RegisterServices(this IServiceCollection services)
         {
+            services.AddTransient<IAuthorityMgtService, AuthorityMgtService>();
             services.AddTransient<IBaseStationMgtService, BaseStationMgtService>();
+            services.AddTransient<ICompanyMgtService, CompanyMgtService>();
+            services.AddTransient<IPersonMgtService, PersonMgtService>();
+            services.AddTransient<IRoleMgtService, RoleMgtService>();
         }
         #endregion
     }

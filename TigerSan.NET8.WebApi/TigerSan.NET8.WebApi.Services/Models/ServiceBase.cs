@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -38,36 +39,68 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
-        public Task<T?> Get(int index)
+        public async Task<T?> Get(int index)
         {
-            return _dbSet.FirstOrDefaultAsync(i => i.Index == index);
+            try
+            {
+                return await _dbSet.FirstOrDefaultAsync(i => i.Index == index);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return null;
+            }
         }
         #endregion
 
         #region 获取“总数”
         /// <summary>获取“总数”</summary>
-        public Task<int> GetCount()
+        public async Task<int> GetCount()
         {
-            return _dbSet.CountAsync();
+            try
+            {
+                return await _dbSet.CountAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return 0;
+            }
         }
         #endregion
 
         #region 获取“所有数据”
         /// <summary>获取“所有数据”</summary>
-        public Task<List<T>> GetList()
+        public async Task<List<T>> GetList()
         {
-            return _dbSet.ToListAsync();
+            try
+            {
+                return await _dbSet.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<T>();
+            }
         }
         #endregion
 
         #region 获取“单页数据”
         /// <summary>获取“单页数据”</summary>
-        public Task<List<T>> GetList(int pageSize, int pageNumber)
+        public async Task<List<T>> GetList(int pageSize, int pageNumber)
         {
-            return _dbSet
+            try
+            {
+                return await _dbSet
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<T>();
+            }
         }
         #endregion
         #endregion [查]

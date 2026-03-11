@@ -3,10 +3,10 @@ using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
-    public class BaseStationMgtController : MyControllerBase<BaseStationMgtEntity>
+    public class PersonMgtController : MyControllerBase<PersonMgtEntity>
     {
         #region 【Ctor】
-        public BaseStationMgtController(IBaseStationMgtService service) : base(service)
+        public PersonMgtController(IPersonMgtService service) : base(service)
         {
         }
         #endregion 【Ctor】

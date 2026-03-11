@@ -19,8 +19,8 @@ export class StringHelper {
             .replace(/ {2}/g, '&nbsp;&nbsp;')
     }
 
-    static IsNotEmpty(str: string): boolean {
-        return str.trim() != ''
+    static IsNotEmpty(str?: string): boolean {
+        return str != undefined && (str.trim() != '')
     }
 
     /** 是否“模糊包含” */

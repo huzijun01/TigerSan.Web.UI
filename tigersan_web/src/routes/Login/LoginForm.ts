@@ -1,8 +1,7 @@
 import { UserInfo } from '@/models'
 import { useUserInfo } from '@/stores'
 import {
-    Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, FormResult,
-    useRouter,
+    Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter,
 } from '@/0_tigersan_ui/tigerui'
 
 // 组件模型:
@@ -56,7 +55,7 @@ const configCaptcha: FormItemConfig = {
 
 /** “增”源数据获取方法 */
 const GetSource = () => {
-    return new UserInfo('uname', 'pwd', '1234')
+    return new UserInfo('admin', 'admin', '1234')
 }
 
 /** 提交 */

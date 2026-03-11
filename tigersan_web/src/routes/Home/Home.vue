@@ -18,16 +18,18 @@
         <!-- 按钮: -->
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
-        <!-- 页标签栏: -->
-        <PageBar :model="navModel" :offsetX="offsetX" />
-
-        <div class="info-panel flex-center" ref="refInfoPanel">
+        <div class="info-panel flex-right" ref="refInfoPanel">
           <IconButton :icon="Icons.Setting_Linear" text="基础设置" :click="navData.GoBaseSetting"></IconButton>
           <IconButton :icon="Icons.Question" text="帮助"></IconButton>
           <IconButton :icon="Icons.Refresh" text="进度"></IconButton>
           <IconButton :icon="Icons.User" :text="userName"></IconButton>
           <IconButton :icon="Icons.Output" text="" :click="OnExit"></IconButton>
         </div>
+      </div>
+
+      <div class="page-bar-panel">
+        <!-- 页标签栏: -->
+        <PageBar :model="navModel" />
       </div>
 
       <!-- 页面: -->
@@ -48,8 +50,6 @@ import { navModel, navData } from '@/navs/navModel'
 
 // 字段:
 const userName = ref('')
-const offsetX = ref(0)
-const refInfoPanel = ref<HTMLElement | undefined>()
 const userInfo = useUserInfo()
 
 // 过程:
@@ -61,12 +61,6 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-  if (!refInfoPanel.value) {
-    console.log('The refInfoPanel is undefined!')
-    return
-  }
-
-  offsetX.value = 35 + (refInfoPanel.value?.offsetWidth ?? 0)
   userName.value = userInfo.UserName
 })
 
@@ -75,6 +69,7 @@ function OnExit() {
   dialog.ShowDialog(
     '确认',
     '是否要退出登录？',
+    undefined,
     Login,
     DialogMode.YesOrNo,
     Colors.Warning)
@@ -95,19 +90,16 @@ function Login(state: DialogState) {
   overflow: hidden;
 
   .left-panel {
-    grid-column: 1/2;
     height: 100%;
   }
 
   .right-panel {
-    grid-column: 2/3;
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
 
     .top-panel {
-      grid-row: 1/2;
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto 1fr;
       background: var(--theme-card-background);
 
       .nav-button {
@@ -123,10 +115,13 @@ function Login(state: DialogState) {
       }
     }
 
+    .page-bar-panel {
+      background: var(--theme-card-background);
+    }
+
     .page-panel {
-      grid-row: 2/3;
-      background: var(--theme-panel-background);
       overflow: hidden;
+      background: var(--theme-panel-background);
     }
   }
 }

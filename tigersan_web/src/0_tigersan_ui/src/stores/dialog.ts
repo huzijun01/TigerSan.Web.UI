@@ -15,12 +15,13 @@ const useDialogStore = defineStore(StoreIDs.dialog, () => {
 function ShowDialog(
   title: string,
   msg: string,
+  data?: any,
   callback?: DialogCallback,
   mode: DialogMode = DialogMode.NoButton,
   background: string = Colors.Brand) {
   let { dialogModels } = useDialogStore()
 
-  dialogModels.push(new DialogModel(title, msg, callback, mode, background))
+  dialogModels.push(new DialogModel(title, msg, data, callback, mode, background))
 }
 
 function ShowInformation(msg: string) {
@@ -28,15 +29,15 @@ function ShowInformation(msg: string) {
 }
 
 function ShowSuccess(msg: string) {
-  ShowDialog('Success', msg, undefined, DialogMode.NoButton, Colors.Success)
+  ShowDialog('Success', msg, undefined, undefined, DialogMode.NoButton, Colors.Success)
 }
 
 function ShowWarning(msg: string) {
-  ShowDialog('Warning', msg, undefined, DialogMode.NoButton, Colors.Warning)
+  ShowDialog('Warning', msg, undefined, undefined, DialogMode.NoButton, Colors.Warning)
 }
 
 function ShowError(msg: string) {
-  ShowDialog('Error', msg, undefined, DialogMode.NoButton, Colors.Danger)
+  ShowDialog('Error', msg, undefined, undefined, DialogMode.NoButton, Colors.Danger)
 }
 
 const dialog = {

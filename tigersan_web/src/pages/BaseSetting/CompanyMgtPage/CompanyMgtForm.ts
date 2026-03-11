@@ -1,10 +1,14 @@
 import { ref } from 'vue'
-import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
+import { AxiosHelper } from '@/helpers'
+import { CompanyMgtModel, companyMgtTable, paginationModel } from './CompanyMgtTable'
 import {
-    Colors, dialog, Verify, ObjectHelper,
-    DialogMode, DialogState, FormModel, SearchModel,
-    SubmitResult, FormConfig, FormItemConfig
+    Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState,
+    FormModel, SearchModel, FormConfig, FormItemConfig
 } from '@/0_tigersan_ui/tigerui'
+import { GetSubmitResult, MyActionResult } from '@/models'
+import { navData } from '@/navs/navModel'
+
+const action = 'CompanyMgt'
 
 /** 查找框 */
 const searchCompany = new SearchModel()
@@ -12,25 +16,25 @@ searchCompany.Placeholder.value = '请输入公司名称'
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig = {
-    _propName: 'Name',
+    _propName: 'name',
     PropText: '公司名称',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var station = source as CompanyMgtModel
-        return Verify.IsNotUndefinedOrEmpty(station.Name)
+        var company = source as CompanyMgtModel
+        return Verify.IsNotUndefinedOrEmpty(company.name)
     }
 }
 
 /** “公司地址”项目配置 */
 const configAddr: FormItemConfig = {
-    _propName: 'Addr',
+    _propName: 'addr',
     PropText: '公司地址',
     IsEquired: true,
     Target: ref<unknown>(),
     _isVerifyOk: (source) => {
-        var station = source as CompanyMgtModel
-        return Verify.IsNotUndefinedOrEmpty(station.Addr)
+        var company = source as CompanyMgtModel
+        return Verify.IsNotUndefinedOrEmpty(company.addr)
     }
 }
 
@@ -51,83 +55,95 @@ let configCompanyForm: FormConfig = {
 }
 
 /** “公司管理”表单模型 */
-const stationForm = new FormModel(configCompanyForm)
+const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
-function Refresh() {
-    companyMgtTable.Refresh()
+async function Refresh() {
+    await AxiosHelper.GetCount(action)
+        .then(count => {
+            paginationModel.Count.value = count
+        })
+
+    await AxiosHelper.GetList<CompanyMgtModel>(
+        action,
+        paginationModel.PageSize.value,
+        1)
+        .then(arr => {
+            companyMgtTable.RowDatas.splice(0)
+            companyMgtTable.RowDatas.push(...arr)
+        })
+
+    InitEvents()
 }
 
 /** 增 */
 function Add() {
-    stationForm.Title.value = '新增基站'
+    companyForm.Title.value = '新增基站'
 
-    stationForm._getSource = AddGetSource
+    companyForm._getSource = AddGetSource
 
-    stationForm._onSubmit = source => {
-        companyMgtTable.RowDatas.push(source)
-        return new SubmitResult('添加成功')
+    companyForm._onSubmitAsync = async source => {
+        const res = await AxiosHelper.Post(action, source)
+        await Refresh()
+        return GetSubmitResult(res, '添加成功')
     }
 
-    stationForm.Show()
+    companyForm.Show()
 }
 
 /** 改 */
-function Edit() {
-    stationForm.Title.value = '修改基站'
+function Edit(model: CompanyMgtModel) {
+    companyForm.Title.value = '修改基站'
 
-    let iRow = 0
-
-    stationForm._getSource = () => {
-        const rowData = companyMgtTable.SelectedRowDatas.value[0]
-        if (!rowData) {
-            console.warn('The rowData is undefined!')
-            return {}
-        }
-
-        iRow = companyMgtTable.RowDatas.indexOf(rowData)
-        return ObjectHelper.ObjectShallowCopy(rowData)
+    companyForm._getSource = () => {
+        return ObjectHelper.ObjectShallowCopy(model)
     }
 
-    stationForm._onSubmit = source => {
-        companyMgtTable.RowDatas[iRow] = source
-        companyMgtTable.Refresh()
-
-        return new SubmitResult('修改成功')
+    companyForm._onSubmitAsync = async source => {
+        const res = await AxiosHelper.Put(action, source)
+        await Refresh()
+        return GetSubmitResult(res, '修改成功')
     }
 
-    stationForm.Show()
+    companyForm.Show()
 }
 
 /** 删 */
-function Delete() {
+function Delete(model: CompanyMgtModel) {
     dialog.ShowDialog(
         '确认',
         '是否确定删除？',
+        model,
         DeleteRowData,
         DialogMode.YesOrNo,
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+function DeleteRowData(state: DialogState, model: CompanyMgtModel) {
     if (state != DialogState.Yes) return
 
-    const rowData = companyMgtTable.SelectedRowDatas.value[0]
-    if (!rowData) {
-        console.warn('The rowData is undefined!')
-        return {}
-    }
+    AxiosHelper.Delete(action, model.index)
+        .then(res => {
+            Refresh()
+            MyActionResult.ShowResult(res, '删除成功')
+        })
+}
 
-    companyMgtTable.DeleteRowData(rowData)
-
-    dialog.ShowSuccess('删除成功')
+/** 初始化事件 */
+function InitEvents() {
+    companyMgtTable.RowDatas.forEach(r => {
+        const company = r as CompanyMgtModel
+        company.onDelete = Delete
+        company.onEdit = Edit
+        company.onClick = () => { navData.GoHome() }
+    })
 }
 
 export default {
     searchCompany,
     configName,
     configAddr,
-    stationForm,
+    companyForm,
     Refresh,
     Add,
     Edit,

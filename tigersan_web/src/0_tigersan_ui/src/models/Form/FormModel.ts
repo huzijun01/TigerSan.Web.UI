@@ -7,6 +7,7 @@ import { ObjectHelper } from "../../helpers"
 
 type FormVerify = (source: object) => VerifyResult
 type FormSubmit = (source: object) => SubmitResult
+type FormSubmitAsync = (source: object) => Promise<SubmitResult>
 
 /** 表单结果 */
 enum FormResult {
@@ -53,23 +54,26 @@ class FormModel {
     /** 源数据
      * （由“FormModel”内部维护） */
     _source: object
-    /** “表单项目模型”集合 */
+    /** “表单项目模型”集合
+     * （由“FormModel”内部维护） */
     _itemModels = new Array<FormItemModel>()
     /** 获取“源数据”  */
     _getSource: ObjectAction
     /** 提交时 */
     _onSubmit?: FormSubmit
+    /** 提交时（异步） */
+    _onSubmitAsync?: FormSubmitAsync
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 是否“显示” */
-    IsShow = ref(false)
+    readonly IsShow = ref(false)
     /** 标题 */
-    Title = ref('Title')
+    readonly Title = ref('Title')
     /** “提交”文本 */
-    CancelText = ref('Cancel')
+    readonly CancelText = ref('Cancel')
     /** “提交”文本 */
-    SubmitText = ref('Submit')
+    readonly SubmitText = ref('Submit')
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -91,6 +95,7 @@ class FormModel {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    //#region [private]
     /** 遍历“项目模型”集合 */
     private ForEachItemModels(fn: (itemModel: FormItemModel) => void) {
         for (let index = 0; index < this._itemModels.length; index++) {
@@ -104,6 +109,43 @@ class FormModel {
             fn(itemModel)
         }
     }
+
+    /** 显示结果 */
+    private ShowResult(res: SubmitResult) {
+        if (this._isShowResult) {
+            switch (res.Result) {
+                case FormResult.Error:
+                    dialog.ShowError(res.Msg)
+                    return
+                case FormResult.Warning:
+                    dialog.ShowWarning(res.Msg)
+                    break
+                default:
+                    if (this._isShowSuccessResult) {
+                        dialog.ShowSuccess(res.Msg)
+                    }
+                    break
+            }
+        }
+    }
+
+    /** 显示多个结果 */
+    private ShowResultRange(arr: SubmitResult[]) {
+        const res = new SubmitResult()
+
+        if (arr.some(r => r.Result === FormResult.Error)) {
+            res.Result = FormResult.Error
+        } else if (arr.some(r => r.Result === FormResult.Warning)) {
+            res.Result = FormResult.Warning
+        }
+
+        arr.forEach(r => {
+            res.Msg += r.Msg + '\r\n'
+        })
+
+        this.ShowResult(res)
+    }
+    //#endregion [private]
 
     /** 初始化 */
     Init() {
@@ -130,51 +172,6 @@ class FormModel {
         this.UpdateTargets()
     }
 
-    /** 显示 */
-    Show = () => {
-        this.IsShow.value = true
-    }
-
-    /** 关闭 */
-    Close = () => {
-        this.IsShow.value = false
-    }
-
-    /** 提交 */
-    OnSubmit = () => {
-        // 验证有误:
-        if (!this.IsVerifyOk()) return
-
-        // 无操作:
-        if (!this._onSubmit) {
-            this.Close()
-            return
-        }
-
-        // 提交:
-        const res = this._onSubmit(this._source)
-
-        // 显示结果:
-        if (this._isShowResult) {
-            switch (res.Result) {
-                case FormResult.Error:
-                    dialog.ShowError(res.Msg)
-                    return
-                case FormResult.Warning:
-                    dialog.ShowWarning(res.Msg)
-                    break
-                default:
-                    if (this._isShowSuccessResult) {
-                        dialog.ShowSuccess(res.Msg)
-                    }
-                    break
-            }
-        }
-
-        // 关闭:
-        this.Close()
-    }
-
     /** 更新“目标数据”集合 */
     UpdateTargets() {
         this.ForEachItemModels(itemModel => {
@@ -182,9 +179,48 @@ class FormModel {
         })
     }
 
+    /** 显示 */
+    readonly Show = () => {
+        this.IsShow.value = true
+    }
+
+    /** 关闭 */
+    readonly Close = () => {
+        this.IsShow.value = false
+    }
+
+    /** 提交 */
+    readonly OnSubmit = async () => {
+        // 验证有误:
+        if (!this.IsVerifyOk()) return
+
+        // 无操作:
+        if (!this._onSubmit && !this._onSubmitAsync) {
+            this.Close()
+            return
+        }
+
+        // 提交:
+        const results = new Array<SubmitResult>()
+
+        if (this._onSubmit) {
+            results.push(this._onSubmit(this._source))
+        }
+
+        if (this._onSubmitAsync) {
+            results.push(await this._onSubmitAsync(this._source))
+        }
+
+        // 显示结果:
+        this.ShowResultRange(results)
+
+        // 关闭:
+        this.Close()
+    }
+
     /** 是否验证成功
      * （“Form”提交时会自动调用） */
-    IsVerifyOk = () => {
+    readonly IsVerifyOk = () => {
         let isOk = true
 
         this.ForEachItemModels(itemModel => {
@@ -234,30 +270,30 @@ class FormItemModel {
     readonly Target: Ref<unknown>
     /** 验证结果
      * （由“FormItemModel”维护） */
-    VerifyResult = ref(FormResult.OK)
+    readonly VerifyResult = ref(FormResult.OK)
     /** 验证文本
      * （由“FormItemModel”维护） */
-    VerifyText = ref('')
+    readonly VerifyText = ref('')
     //#endregion [内部维护]
 
     /** 属性文本 */
-    PropText = ref('')
+    readonly PropText = ref('')
     /** 是否“必填” */
-    IsEquired = ref(false)
+    readonly IsEquired = ref(false)
 
     //#region [computed]
     /** 是否显示“属性名” */
-    IsShowPropName = computed(() => {
+    readonly IsShowPropName = computed(() => {
         return this.PropText.value.trim() != ''
     })
 
     /** 是否显示“验证文本” */
-    IsShowVerify = computed(() => {
+    readonly IsShowVerify = computed(() => {
         return this.VerifyText.value.trim() != ''
     })
 
     /** “验证文本”颜色 */
-    VerifyColor = computed(() => {
+    readonly VerifyColor = computed(() => {
         let color = ''
         switch (this.VerifyResult.value) {
             case FormResult.Error:
@@ -274,14 +310,14 @@ class FormItemModel {
     })
 
     /** “属性名”样式对象 */
-    propNameStyleObj = computed(() => {
+    readonly propNameStyleObj = computed(() => {
         return {
             verticalAlign: this._propNameVerticalAlign
         }
     })
 
     /** “验证文本”样式对象 */
-    verifyStyleObj = computed(() => {
+    readonly verifyStyleObj = computed(() => {
         return {
             color: this.VerifyColor.value
         }
@@ -305,9 +341,14 @@ class FormItemModel {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    /** 更新“目标数据” */
+    UpdateTarget() {
+        this.Target.value = this._getValue(this._formModel._source, this._propName)
+    }
+
     /** 修改“源数据”
      * （“Target”改变时，会自动调用） */
-    OnChange = (value: unknown, oldValue: unknown) => {
+    readonly OnChange = (value: unknown, oldValue: unknown) => {
         if (!this._setValue) return
         // 修改“源数据”:
         this._setValue(this._formModel._source, this._propName, value)
@@ -319,14 +360,9 @@ class FormItemModel {
         this.IsVerifyOk()
     }
 
-    /** 更新“目标数据” */
-    UpdateTarget() {
-        this.Target.value = this._getValue(this._formModel._source, this._propName)
-    }
-
     /** 是否验证成功
      * （“FormItem”修改“源数据”时会自动调用） */
-    IsVerifyOk = (): boolean => {
+    readonly IsVerifyOk = (): boolean => {
         if (!this._isVerifyOk) return true
 
         var res = this._isVerifyOk(this._formModel._source)

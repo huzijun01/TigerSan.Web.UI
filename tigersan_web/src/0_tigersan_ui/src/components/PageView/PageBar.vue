@@ -19,7 +19,7 @@ let { model, offsetX } = defineProps({
     },
     offsetX: {
         type: Number,
-        default: 35
+        default: 0
     },
 })
 

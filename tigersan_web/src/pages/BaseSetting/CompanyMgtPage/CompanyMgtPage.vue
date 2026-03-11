@@ -18,7 +18,7 @@
 
             <!-- 表格: -->
             <div class="company-panel">
-                <Company v-for="c in companyMgtTable.RowDatas" :key="(c as CompanyMgtModel).id"
+                <Company v-for="c in companyMgtTable.RowDatas" :key="(c as CompanyMgtModel).index"
                     :model="(c as CompanyMgtModel)"></Company>
             </div>
 
@@ -31,7 +31,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.stationForm">
+    <PopForm :model="form.companyForm">
         <FormRow>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">
@@ -47,22 +47,21 @@
 
 <script lang="ts" setup>
 import {
-    Search, PageCard, Pagination, PopForm, FormRow, FormItem, PaginationModel
+    Search, PageCard, Pagination, PopForm, FormRow, FormItem
 } from '@/0_tigersan_ui/tigerui'
-import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
+import { CompanyMgtModel, companyMgtTable, paginationModel } from './CompanyMgtTable'
 import form from './CompanyMgtForm'
 import Company from '@/components/Company.vue'
+import { onMounted } from 'vue'
 
 // 【字段】:
 
 // 【过程】:
 // 表格:
-companyMgtTable.IsAllowMultiSelect.value = false
+onMounted(() => {
+    form.Refresh()
+})
 
-// 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
-paginationModel.Count.value = companyMgtTable.Count.value
 </script>
 
 <style lang="less" scoped>

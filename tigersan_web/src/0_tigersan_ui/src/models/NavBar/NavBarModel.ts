@@ -1,7 +1,7 @@
 import { ref, shallowRef, shallowReactive, type ShallowReactive } from 'vue'
+import type { NumberAction } from '../../types'
 import { NavButtonModel } from './NavButtonModel'
 import { NavFolderModel } from './NavFolderModel'
-import type { NumberAction } from '../../types'
 import { type NavFolderConfig, CreateNavFolderModel } from './NavConfig'
 
 type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void

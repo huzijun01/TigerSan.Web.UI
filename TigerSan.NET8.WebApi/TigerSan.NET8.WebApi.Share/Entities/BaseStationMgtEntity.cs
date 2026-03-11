@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TigerSan.NET8.WebApi.Share.Attributes;
+﻿using TigerSan.NET8.WebApi.Share.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("base_station_mgt")]
-    [PrimaryKey(nameof(Index), nameof(MacAddr))]
     public class BaseStationMgtEntity : IndexEntity
     {
         [SnakeColumn]

@@ -1,6 +1,6 @@
 import { computed, ref, type Component } from 'vue'
 import { nanoid } from 'nanoid'
-import { Icons } from '../../base';
+import { Icons } from '../../base'
 import { NavBarModel } from './NavBarModel'
 import { NavFolderModel } from './NavFolderModel'
 

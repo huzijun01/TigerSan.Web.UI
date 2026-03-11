@@ -33,7 +33,7 @@ let { margin, padding, borderRadius, navWidth, topPanelHeight, background } = de
     },
     topPanelHeight: {
         type: Number,
-        default: 36
+        default: 71
     },
     background: {
         type: String,

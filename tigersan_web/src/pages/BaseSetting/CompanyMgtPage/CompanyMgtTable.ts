@@ -1,17 +1,20 @@
-import { nanoid } from "nanoid"
-import { navData } from '@/navs/navModel'
-import { TableModel } from '@/0_tigersan_ui/tigerui'
+import { PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 type CompanyEvent = (model: CompanyMgtModel) => void
 
-/** "操作记录"模型 */
+// 分页器:
+let paginationModel = new PaginationModel()
+paginationModel.IsShowSelectedRowCount.value = true
+
+/** "公司管理"模型 */
 class CompanyMgtModel {
-    id = nanoid()
-    Name = ''
-    Addr = ''
-    Image = ''
+    index = 0
+    name = ''
+    addr = ''
+    image = ''
+    parent_company?: string
     onClick?: CompanyEvent
-    onDeconste?: CompanyEvent
+    onDelete?: CompanyEvent
     onEdit?: CompanyEvent
 }
 
@@ -30,23 +33,11 @@ const companyMgtTable = new TableModel([
         IsAllowWrap: false,
     },
 ])
-
-// 数据:
-const arr: CompanyMgtModel[] =
-    [
-        {
-            id: nanoid(),
-            Name: '深圳市乾道数字科技有',
-            Addr: '深圳',
-            Image: '',
-            onClick: () => { navData.GoHome() }
-        },
-    ]
-companyMgtTable.RowDatas.push(...arr)
+companyMgtTable.IsAllowMultiSelect.value = false
 
 // 初始化:
 companyMgtTable._initHeader = headerModel => {
-    if (headerModel._propName === 'Index') {
+    if (headerModel._propName === 'index') {
         headerModel.Width.value = 50
     }
 }
@@ -58,4 +49,5 @@ export {
     type CompanyEvent,
     CompanyMgtModel,
     companyMgtTable,
+    paginationModel,
 }

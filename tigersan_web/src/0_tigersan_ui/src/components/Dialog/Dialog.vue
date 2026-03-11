@@ -40,7 +40,7 @@ function Close(id: string, state: DialogState) {
     }
 
     if (model.callback) {
-        model.callback(state)
+        model.callback(state, model.data)
     }
 
     const index = dialogModels.indexOf(model);

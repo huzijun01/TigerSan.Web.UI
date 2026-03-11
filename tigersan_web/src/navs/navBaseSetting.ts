@@ -13,20 +13,20 @@ const navBaseSetting: NavFolderConfig = {
             _component: CompanyMgtPage
         },
         {
-            Title: "部门管理",
+            Title: "角色管理",
             Icon: Icons.Group,
-            IsSelected: false,
-            _component: undefined
-        },
-        {
-            Title: "人员管理",
-            Icon: Icons.Person,
             IsSelected: false,
             _component: undefined
         },
         {
             Title: "权限管理",
             Icon: Icons.Key_Tilted,
+            IsSelected: false,
+            _component: undefined
+        },
+        {
+            Title: "人员管理",
+            Icon: Icons.Person,
             IsSelected: false,
             _component: undefined
         },
