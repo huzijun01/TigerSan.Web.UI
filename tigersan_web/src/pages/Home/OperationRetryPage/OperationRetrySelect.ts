@@ -5,7 +5,6 @@ searchMac.Placeholder.value = '请输入名称或MAC'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150
-operationTypeSelect.Placeholder.value = '请选择'
 operationTypeSelect.Value.value = '全部'
 operationTypeSelect.Items.push(...[
     '全部',
@@ -27,7 +26,6 @@ operationTypeSelect.Items.push(...[
 const eqpTypeSelect = new SelectModel()
 eqpTypeSelect.Width.value = 350
 eqpTypeSelect.IsAllowSearch.value = true
-eqpTypeSelect.Placeholder.value = '请选择'
 eqpTypeSelect.Value.value = 'MBT02可连接资产标签'
 eqpTypeSelect.Items.push(...[
     'MBT02可连接资产标签',

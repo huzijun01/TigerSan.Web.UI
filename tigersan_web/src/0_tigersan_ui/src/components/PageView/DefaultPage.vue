@@ -1,10 +1,12 @@
 <template>
     <div class="default-page flex-center">
-        <span class="flex-center">No Content</span>
+        <span class="flex-center">{{ Texts.NoContent.value }}</span>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { Texts } from '../../texts';
+
 </script>
 
 <style lang="less" scoped>

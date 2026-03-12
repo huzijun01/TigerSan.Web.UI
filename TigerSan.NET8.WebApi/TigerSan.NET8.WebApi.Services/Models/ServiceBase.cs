@@ -71,7 +71,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所有数据”
         /// <summary>获取“所有数据”</summary>
-        public async Task<List<T>> GetList()
+        public async Task<List<T>> GetAllList()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult> Add(IList<T> entities)
+        public async Task<MyActionResult> AddRange(IList<T> entities)
         {
             var res = MyResults.OperationSuccess;
 
@@ -216,7 +216,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public async Task<MyActionResult> Remove(IList<int> indexes)
+        public async Task<MyActionResult> RemoveRange(IList<int> indexes)
         {
             var res = MyResults.OperationSuccess;
 

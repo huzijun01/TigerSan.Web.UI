@@ -1,6 +1,6 @@
 import { NavBarModel } from '@/0_tigersan_ui/tigerui'
 import { navHomeMgt } from "@/navs/navHomeMgt"
-import { navBaseSetting } from "@/navs/navBaseSetting"
+import { navBasicSettings } from "@/navs/navBasicSettings"
 
 let navModel = new NavBarModel()
 
@@ -9,9 +9,9 @@ class NavData {
         navModel.IsOpen.value = true
         navModel.Init(navHomeMgt)
     }
-    GoBaseSetting = () => {
+    GoBasicSettings = () => {
         navModel.IsOpen.value = true
-        navModel.Init(navBaseSetting)
+        navModel.Init(navBasicSettings)
     }
 }
 

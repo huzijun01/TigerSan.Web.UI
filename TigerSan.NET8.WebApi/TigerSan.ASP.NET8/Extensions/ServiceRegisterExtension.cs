@@ -57,7 +57,7 @@ namespace TigerSan.NET8.WebApi.Extensions
         #region 注册“服务”
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddTransient<IAuthorityMgtService, AuthorityMgtService>();
+            services.AddTransient<IAdminMgtService, AdminMgtService>();
             services.AddTransient<IBaseStationMgtService, BaseStationMgtService>();
             services.AddTransient<ICompanyMgtService, CompanyMgtService>();
             services.AddTransient<IPersonMgtService, PersonMgtService>();

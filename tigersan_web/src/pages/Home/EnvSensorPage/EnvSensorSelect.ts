@@ -1,4 +1,4 @@
-import { SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
+import { Texts, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
 const searchMac = new SearchModel()
 searchMac.Placeholder.value = '请输入名称或MAC'
@@ -6,7 +6,6 @@ searchMac.Placeholder.value = '请输入名称或MAC'
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.IsAllowSearch.value = true
-typeSelect.Placeholder.value = '请选择'
 typeSelect.Value.value = 'MST03 资产测温标签'
 typeSelect.Items.push(...[
     '资产测温标签',

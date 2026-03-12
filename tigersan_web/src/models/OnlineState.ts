@@ -1,3 +1,4 @@
+import { Texts } from "@/0_tigersan_ui/src/texts"
 import { ObjectHelper } from "@/0_tigersan_ui/tigerui"
 
 enum OnlineState {
@@ -10,7 +11,7 @@ function IsOnline(obj: object, propName: string = 'OnlineState'): boolean {
 }
 
 function GetOnlineString(obj: object, propName: string = 'OnlineState'): string {
-    return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineState.Online ? '在线' : '离线'
+    return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineState.Online ? Texts.Online.value : Texts.Offline.value
 }
 
 export {

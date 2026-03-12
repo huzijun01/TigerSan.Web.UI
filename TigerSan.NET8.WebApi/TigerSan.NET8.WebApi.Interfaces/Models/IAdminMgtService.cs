@@ -2,7 +2,7 @@
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
-    public interface IAuthorityMgtService : IServiceBase<AuthorityMgtEntity>
+    public interface IAdminMgtService : IServiceBase<AdminMgtEntity>
     {
     }
 }

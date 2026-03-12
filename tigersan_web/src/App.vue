@@ -13,11 +13,11 @@ import Login from "@/routes/Login/Login.vue"
 createRouter([
   {
     path: '/',
-    component: Home
+    component: Login
   },
   {
-    path: 'Login',
-    component: Login
+    path: 'Home',
+    component: Home
   },
 ])
 </script>

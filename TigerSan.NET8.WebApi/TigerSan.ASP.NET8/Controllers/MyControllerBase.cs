@@ -50,10 +50,10 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         [HttpGet]
         /// <summary>获取“所有数据”</summary>
-        public async Task<MyActionResult> GetList()
+        public async Task<MyActionResult> GetAllList()
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetList();
+            res.Data = await _service.GetAllList();
             return res;
         }
 
@@ -79,9 +79,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Range")]
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult> Add([FromBody] IList<T> entities)
+        public async Task<MyActionResult> AddRange([FromBody] IList<T> entities)
         {
-            return await _service.Add(entities);
+            return await _service.AddRange(entities);
         }
         #endregion [增]
 
@@ -106,9 +106,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpDelete]
         [Route("Range")]
         /// <summary>删除“多条数据”</summary>
-        public async Task<MyActionResult> Remove([FromBody] IList<int> indexes)
+        public async Task<MyActionResult> RemoveRange([FromBody] IList<int> indexes)
         {
-            return await _service.Remove(indexes);
+            return await _service.RemoveRange(indexes);
         }
         #endregion [删]
         #endregion 【Functions】

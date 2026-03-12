@@ -8,18 +8,18 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         // 查:
         public Task<T?> Get(int index);
         public Task<int> GetCount();
-        public Task<List<T>> GetList();
+        public Task<List<T>> GetAllList();
         public Task<List<T>> GetList(int pageSize, int pageNumber);
 
         // 增:
         public Task<MyActionResult> Add(T entity);
-        public Task<MyActionResult> Add(IList<T> entities);
+        public Task<MyActionResult> AddRange(IList<T> entities);
 
         // 改:
         public Task<MyActionResult> Edit(T entity);
 
         // 删:
         public Task<MyActionResult> Remove(int index);
-        Task<MyActionResult> Remove(IList<int> indexes);
+        Task<MyActionResult> RemoveRange(IList<int> indexes);
     }
 }

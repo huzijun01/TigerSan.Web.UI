@@ -2,7 +2,6 @@ import { DatePickerModel, DateType, SelectModel } from '@/0_tigersan_ui/tigerui'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150
-operationTypeSelect.Placeholder.value = '请选择'
 operationTypeSelect.Value.value = '全部'
 operationTypeSelect.Items.push(...[
     '全部',
@@ -24,7 +23,6 @@ operationTypeSelect.Items.push(...[
 const eqpTypeSelect = new SelectModel()
 eqpTypeSelect.Width.value = 350
 eqpTypeSelect.IsAllowSearch.value = true
-eqpTypeSelect.Placeholder.value = '请选择'
 eqpTypeSelect.Value.value = undefined
 eqpTypeSelect.Items.push(...[
     'MWC03 4G智能工牌',

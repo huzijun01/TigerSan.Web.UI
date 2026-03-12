@@ -24,8 +24,8 @@
       </Form>
     </div>
     <div class="button-panel flex-stretch">
-      <button @click="form.loginForm.OnSubmit">登录</button>
-      <div class="code-login link flex-right">验证码登录</div>
+      <button @click="form.loginForm.OnSubmit">{{ Texts.Login.value }}</button>
+      <div class="code-login link flex-right">{{ Texts.VerificationCodeLogin.value }}</div>
     </div>
   </div>
 </template>
@@ -36,13 +36,13 @@ import AppConfig from '@/AppConfig'
 import { onMounted } from 'vue'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
-import { Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
+import { Texts, Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
 
 onMounted(() => {
   const userInfo = useUserInfo()
   userInfo.Clear()
   form.loginForm.Init()
-  navData.GoBaseSetting()
+  navData.GoBasicSettings()
 })
 </script>
 

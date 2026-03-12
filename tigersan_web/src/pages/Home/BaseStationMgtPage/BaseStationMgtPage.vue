@@ -10,7 +10,7 @@
                     </div>
                     <div class="row-panel">
                         <span>状态:</span>
-                        <Select :model="select.stateSelectModel"></Select>
+                        <Select :model="select.stateSelect"></Select>
                         <Search :model="select.searchMac"></Search>
                     </div>
                 </div>
@@ -36,8 +36,10 @@
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
                 <Pagination :model="paginationModel" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
-                    <KeyValue propName="在线" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
-                    <KeyValue propName="离线" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
+                    <KeyValue :propName="Texts.Online.value" :propValue="onlineCount" :color="Colors.Success">
+                    </KeyValue>
+                    <KeyValue :propName="Texts.Offline.value" :propValue="offlineCount" :color="Colors.Danger">
+                    </KeyValue>
                 </Pagination>
             </div>
         </div>
@@ -62,7 +64,7 @@
 import form from './BaseStationMgtForm'
 import select from './BaseStationMgtSelect'
 import { baseStationMgtTable, onlineCount, offlineCount, paginationModel } from './BaseStationMgtTable'
-import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

@@ -26,7 +26,7 @@ class ConfigModel {
 
     //#region 【Functions】
     /** 切换“地区” */
-    ToggleLocale() {
+    readonly ToggleLocale = () => {
         this.Locale.value = this.Locale.value == Language.en ? Language.zhCn : Language.en
     }
     //#endregion 【Functions】

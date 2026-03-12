@@ -1,7 +1,7 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
-import CompanyMgtPage from '@/pages/BaseSetting/CompanyMgtPage/CompanyMgtPage.vue'
+import CompanyMgtPage from '@/pages/BasicSettings/CompanyMgtPage/CompanyMgtPage.vue'
 
-const navBaseSetting: NavFolderConfig = {
+const navBasicSettings: NavFolderConfig = {
     Folders: [
     ],
     Buttons: [
@@ -46,5 +46,5 @@ const navBaseSetting: NavFolderConfig = {
 }
 
 export {
-    navBaseSetting
+    navBasicSettings
 }

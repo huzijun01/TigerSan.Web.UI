@@ -3,7 +3,6 @@ import { SelectModel } from '@/0_tigersan_ui/tigerui'
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
 typeSelect.IsAllowSearch.value = true
-typeSelect.Placeholder.value = '请选择'
 typeSelect.Value.value = undefined
 typeSelect.Items.push(...[
     'MBT02可连接资产标签',
@@ -12,7 +11,6 @@ typeSelect.Items.push(...[
 
 const firmwareSelect = new SelectModel()
 firmwareSelect.Width.value = 120
-firmwareSelect.Placeholder.value = '请选择'
 firmwareSelect.Value.value = undefined
 firmwareSelect.Items.push(...[
 ])

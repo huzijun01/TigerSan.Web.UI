@@ -6,7 +6,7 @@
       <NavBar :model="navModel" :title="AppConfig.Title">
         <div class="footer-panel flex-center">
           <span class="skin iconfont" @click="ThemeHelper.Toggle">{{ Icons.Skin }}</span>
-          <span class="version">版本：V{{ AppConfig.Version }}</span>
+          <span class="version">{{ Texts.Version.value }}{{ AppConfig.Version }}</span>
         </div>
       </NavBar>
     </div>
@@ -19,9 +19,12 @@
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <div class="info-panel flex-right" ref="refInfoPanel">
-          <IconButton :icon="Icons.Setting_Linear" text="基础设置" :click="navData.GoBaseSetting"></IconButton>
-          <IconButton :icon="Icons.Question" text="帮助"></IconButton>
-          <IconButton :icon="Icons.Refresh" text="进度"></IconButton>
+          <IconButton :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value" :click="navData.GoBasicSettings">
+          </IconButton>
+          <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale">
+          </IconButton>
+          <IconButton :icon="Icons.Question" :text="Texts.Help.value"></IconButton>
+          <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value"></IconButton>
           <IconButton :icon="Icons.User" :text="userName"></IconButton>
           <IconButton :icon="Icons.Output" text="" :click="OnExit"></IconButton>
         </div>
@@ -44,9 +47,9 @@
 import AppConfig from '@/AppConfig'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
-import { Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, ThemeHelper } from '@/0_tigersan_ui/tigerui'
 import { IsUserInfoVerifyOk } from '@/models'
 import { navModel, navData } from '@/navs/navModel'
+import { Texts, Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, ThemeHelper, config } from '@/0_tigersan_ui/tigerui'
 
 // 字段:
 const userName = ref('')
@@ -55,7 +58,7 @@ const userInfo = useUserInfo()
 // 过程:
 onBeforeMount(() => {
   if (!IsUserInfoVerifyOk(userInfo)) {
-    useRouter().GoTo('Login')
+    useRouter().GoTo('/')
     return
   }
 })
@@ -77,7 +80,7 @@ function OnExit() {
 
 function Login(state: DialogState) {
   if (state != DialogState.Yes) return
-  useRouter().GoTo('Login')
+  useRouter().GoTo('/')
 }
 </script>
 

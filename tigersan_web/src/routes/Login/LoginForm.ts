@@ -65,7 +65,7 @@ const OnSubmit = (source: object) => {
     userInfo.UserName = newUserInfo.UserName
     userInfo.Password = newUserInfo.Password
     userInfo.Captcha = newUserInfo.Captcha
-    useRouter().GoTo('/')
+    useRouter().GoTo('Home')
 
     return new SubmitResult('登录成功')
 }
