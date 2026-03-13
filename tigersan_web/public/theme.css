@@ -40,6 +40,8 @@
   --theme-table-line-background: var(--color-black-25);
   --theme-table-header-background: #fafafc;
   --theme-table-row-background-selected: var(--color-brand-10);
+  /* [树] */
+  --theme-tree-node-background-active: var(--color-brand-25);
   /* [弹窗] */
   --theme-dialog-title-color: var(--color-primary-text);
 }

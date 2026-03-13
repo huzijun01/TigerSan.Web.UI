@@ -3,12 +3,48 @@ import { AxiosHelper } from '@/helpers'
 import { CompanyMgtModel, companyMgtTable, paginationModel } from './CompanyMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState,
-    FormModel, SearchModel, FormConfig, FormItemConfig
+    FormModel, SearchModel, FormConfig, FormItemConfig,
+    TreeModel
 } from '@/0_tigersan_ui/tigerui'
 import { GetSubmitResult, MyActionResult } from '@/models'
 import { navData } from '@/navs/navModel'
 
 const action = 'CompanyMgt'
+
+/** 树 */
+const tree = new TreeModel([
+    {
+        Text: '一级节点 1',
+        Childs: [
+            {
+                Text: '二级节点 1',
+            },
+            {
+                Text: '二级节点 2',
+                Childs: [
+                    {
+                        Text: '三级节点 1',
+                    },
+                    {
+                        Text: '三级节点 2',
+                    }
+                ]
+            },
+            {
+                Text: '二级节点 3',
+                Childs: [
+                    {
+                        Text: '三级节点 3',
+                    },
+                    {
+                        Text: '三级节点 4',
+                    }
+                ]
+            }
+        ]
+    }
+])
+tree.IsShowCheckbox.value = false
 
 /** 查找框 */
 const searchCompany = new SearchModel()
@@ -140,6 +176,7 @@ function InitEvents() {
 }
 
 export default {
+    tree,
     searchCompany,
     configName,
     configAddr,

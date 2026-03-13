@@ -31,5 +31,8 @@ export * from './models/Pagination/PaginationButtonModel'
 /* Table: */
 export * from './models/TableModels/TableModel'
 
+/* Tree: */
+export * from './models/Tree/TreeModel'
+
 /* Dialog: */
 export * from './models/DialogModel'

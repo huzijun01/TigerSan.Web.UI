@@ -40,6 +40,10 @@ import PaginationButton from "./components/Pagination/PaginationButton.vue"
 // Table:
 import Table from "./components/Table/Table.vue"
 import TableItem from "./components/Table/TableItem.vue"
+// Tree:
+import Arrow from "./components/Tree/Arrow.vue"
+import Tree from "./components/Tree/Tree.vue"
+import TreeNode from "./components/Tree/TreeNode.vue"
 
 export {
     // Button:
@@ -84,4 +88,8 @@ export {
     // Table:
     Table,
     TableItem,
+    // Tree:
+    Arrow,
+    Tree,
+    TreeNode,
 }

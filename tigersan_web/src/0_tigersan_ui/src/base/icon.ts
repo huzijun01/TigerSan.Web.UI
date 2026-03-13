@@ -17,6 +17,10 @@ export class Icons {
     static Arrow_Left_Small = ""
     static Arrow_Right_Small = ""
     static Arrow_Right_Bold = ""
+    static Arrow_Planar_Up = "";
+    static Arrow_Planar_Left = "";
+    static Arrow_Planar_Down = "";
+    static Arrow_Planar_Right = "";
 
     // B:
     static Bell = ""

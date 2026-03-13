@@ -5,7 +5,7 @@
             <div class="title">{{ model.Title.value }}</div>
         </div>
         <div class="content-panel" :style="model.ContentPanelStyleObj.value">
-            <div class="content-size" ref="refContentSize">
+            <div class="size-panel" ref="refSizePanel">
                 <slot></slot>
             </div>
         </div>
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue'
 import { Icons } from '../../base'
 import { DrawerBoxModel } from '../../models'
 
@@ -25,21 +25,11 @@ let { model } = defineProps({
     }
 })
 
-const refContentSize = ref<HTMLElement | undefined>()
+const { refSizePanel } = model
 
 onMounted(() => {
-    if (!refContentSize.value) {
-        console.warn('The refContentSize is undefined!')
-        return
-    }
-
-    new ResizeObserver(UpdateContentHeight)
-        .observe(refContentSize.value)
+    model.ObserverSizePanel()
 })
-
-function UpdateContentHeight() {
-    model.ContentHeight.value = refContentSize.value?.offsetHeight ?? 0
-}
 </script>
 
 <style lang="less" scoped>
@@ -51,10 +41,6 @@ function UpdateContentHeight() {
             .arrow {
                 transform: rotate(90deg);
             }
-        }
-
-        .content-panel {
-            overflow: auto;
         }
     }
 
@@ -69,11 +55,6 @@ function UpdateContentHeight() {
             margin-right: 10px;
             transition: var(--Global-Transition);
         }
-    }
-
-    .content-panel {
-        overflow: hidden;
-        transition: var(--Global-Transition);
     }
 }
 </style>

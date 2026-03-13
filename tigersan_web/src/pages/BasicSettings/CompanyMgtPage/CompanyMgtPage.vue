@@ -18,14 +18,7 @@
 
             <!-- 表格: -->
             <div class="company-panel">
-                <Company v-for="c in companyMgtTable.RowDatas" :key="(c as CompanyMgtModel).index"
-                    :model="(c as CompanyMgtModel)"></Company>
-            </div>
-
-            <!-- 底部: -->
-            <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="companyMgtTable.SelectedRowCount.value">
-                </Pagination>
+                <Tree :model="form.tree"></Tree>
             </div>
         </div>
     </PageCard>
@@ -47,11 +40,10 @@
 
 <script lang="ts" setup>
 import {
-    Search, PageCard, Pagination, PopForm, FormRow, FormItem
+    Search, PageCard, PopForm, FormRow, FormItem, Tree
 } from '@/0_tigersan_ui/tigerui'
-import { CompanyMgtModel, companyMgtTable, paginationModel } from './CompanyMgtTable'
+import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
 import form from './CompanyMgtForm'
-import Company from '@/components/Company.vue'
 import { onMounted } from 'vue'
 
 // 【字段】:

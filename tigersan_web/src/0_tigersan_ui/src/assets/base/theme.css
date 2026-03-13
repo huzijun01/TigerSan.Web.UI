@@ -205,6 +205,8 @@
   --theme-table-line-background: var(--color-basic-white);
   --theme-table-header-background: var(--theme-card-background);
   --theme-table-row-background-selected: var(--color-brand-10);
+  /* [树] */
+  --theme-tree-node-background-active: var(--color-brand-25);
   /* [弹窗] */
   --theme-dialog-title-color: var(--theme-color);
 }

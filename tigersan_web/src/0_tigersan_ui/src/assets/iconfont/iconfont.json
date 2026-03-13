@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "47069848",
+      "name": "Arrow_Planar_Right",
+      "font_class": "Arrow_Planar_Right",
+      "unicode": "f07b",
+      "unicode_decimal": 61563
+    },
+    {
+      "icon_id": "47069852",
+      "name": "Arrow_Planar_Left",
+      "font_class": "Arrow_Planar_Left",
+      "unicode": "f07c",
+      "unicode_decimal": 61564
+    },
+    {
+      "icon_id": "47069866",
+      "name": "Arrow_Planar_Down",
+      "font_class": "Arrow_Planar_Down",
+      "unicode": "f07d",
+      "unicode_decimal": 61565
+    },
+    {
+      "icon_id": "35104157",
+      "name": "Arrow_Planar_Up",
+      "font_class": "Arrow_Planar_Up",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
       "icon_id": "35171253",
       "name": "Building_1",
       "font_class": "Building_1",

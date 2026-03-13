@@ -13,6 +13,7 @@ export type ObjectArrayFunc = (arr: object[]) => void
 export type Object2StringFunc = (obj?: object) => string
 export type StringFunc = (str: string) => void
 export type StringArrayFunc = (arr: string[]) => void
+export type AnyFunc = (value: any) => void
 export type AnyArrayFunc = (arr: any[]) => void
 export type UnknownFunc = (value: unknown, oldValue?: unknown) => void
 export type UnknownArrayFunc = (arr: unknown[]) => void
