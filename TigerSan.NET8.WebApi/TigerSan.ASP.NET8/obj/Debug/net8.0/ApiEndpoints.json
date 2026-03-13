@@ -1,0 +1,1137 @@
+[
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetAllList",
+    "RelativePath": "AdminMgt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Add",
+    "RelativePath": "AdminMgt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Edit",
+    "RelativePath": "AdminMgt",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Get",
+    "RelativePath": "AdminMgt/{index}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Remove",
+    "RelativePath": "AdminMgt/{index}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetList",
+    "RelativePath": "AdminMgt/{pageSize}/{pageNumber}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetCount",
+    "RelativePath": "AdminMgt/Count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "AddRange",
+    "RelativePath": "AdminMgt/Range",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entities",
+        "Type": "System.Collections.Generic.IList\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.AdminMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "RemoveRange",
+    "RelativePath": "AdminMgt/Range",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "indexes",
+        "Type": "System.Collections.Generic.IList\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetAllList",
+    "RelativePath": "BaseStationMgt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Add",
+    "RelativePath": "BaseStationMgt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Edit",
+    "RelativePath": "BaseStationMgt",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Get",
+    "RelativePath": "BaseStationMgt/{index}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Remove",
+    "RelativePath": "BaseStationMgt/{index}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetList",
+    "RelativePath": "BaseStationMgt/{pageSize}/{pageNumber}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetCount",
+    "RelativePath": "BaseStationMgt/Count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "AddRange",
+    "RelativePath": "BaseStationMgt/Range",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entities",
+        "Type": "System.Collections.Generic.IList\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.BaseStationMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "RemoveRange",
+    "RelativePath": "BaseStationMgt/Range",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "indexes",
+        "Type": "System.Collections.Generic.IList\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetAllList",
+    "RelativePath": "CompanyMgt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Add",
+    "RelativePath": "CompanyMgt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Edit",
+    "RelativePath": "CompanyMgt",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Get",
+    "RelativePath": "CompanyMgt/{index}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Remove",
+    "RelativePath": "CompanyMgt/{index}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetList",
+    "RelativePath": "CompanyMgt/{pageSize}/{pageNumber}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetCount",
+    "RelativePath": "CompanyMgt/Count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "AddRange",
+    "RelativePath": "CompanyMgt/Range",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entities",
+        "Type": "System.Collections.Generic.IList\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.CompanyMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "RemoveRange",
+    "RelativePath": "CompanyMgt/Range",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "indexes",
+        "Type": "System.Collections.Generic.IList\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetAllList",
+    "RelativePath": "PersonMgt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Add",
+    "RelativePath": "PersonMgt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Edit",
+    "RelativePath": "PersonMgt",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Get",
+    "RelativePath": "PersonMgt/{index}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Remove",
+    "RelativePath": "PersonMgt/{index}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetList",
+    "RelativePath": "PersonMgt/{pageSize}/{pageNumber}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetCount",
+    "RelativePath": "PersonMgt/Count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "AddRange",
+    "RelativePath": "PersonMgt/Range",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entities",
+        "Type": "System.Collections.Generic.IList\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.PersonMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "RemoveRange",
+    "RelativePath": "PersonMgt/Range",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "indexes",
+        "Type": "System.Collections.Generic.IList\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetAllList",
+    "RelativePath": "RoleMgt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Add",
+    "RelativePath": "RoleMgt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Edit",
+    "RelativePath": "RoleMgt",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Get",
+    "RelativePath": "RoleMgt/{index}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "Remove",
+    "RelativePath": "RoleMgt/{index}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "index",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetList",
+    "RelativePath": "RoleMgt/{pageSize}/{pageNumber}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "GetCount",
+    "RelativePath": "RoleMgt/Count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "AddRange",
+    "RelativePath": "RoleMgt/Range",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entities",
+        "Type": "System.Collections.Generic.IList\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "TigerSan.NET8.WebApi.Controllers.MyControllerBase\u00601[[TigerSan.NET8.WebApi.Share.Entities.RoleMgtEntity, TigerSan.NET8.WebApi.Share, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+    "Method": "RemoveRange",
+    "RelativePath": "RoleMgt/Range",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "indexes",
+        "Type": "System.Collections.Generic.IList\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "TigerSan.NET8.WebApi.Share.Dtos.MyActionResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]

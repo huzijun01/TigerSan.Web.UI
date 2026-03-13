@@ -35,7 +35,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="terminal4gTable.SelectedRowCount.value">
+                <Pagination :model="pagination" :selectedRowCount="terminal4gTable.SelectedRowCount.value">
                     <KeyValue :propName="Texts.Online.value" :propValue="onlineCount" :color="Colors.Success"></KeyValue>
                     <KeyValue :propName="Texts.Offline.value" :propValue="offlineCount" :color="Colors.Danger"></KeyValue>
                 </Pagination>
@@ -61,7 +61,7 @@
 <script lang="ts" setup>
 import form from './Terminal4gForm'
 import select from './Terminal4gSelect'
-import { terminal4gTable, onlineCount, offlineCount, paginationModel } from './Terminal4gTable'
+import { terminal4gTable, onlineCount, offlineCount, pagination } from './Terminal4gTable'
 import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

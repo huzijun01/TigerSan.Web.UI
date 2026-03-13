@@ -8,7 +8,7 @@ export class ArrayHelper {
     /** 删除元素 */
     static DeleteItem<T>(arr: T[], item: T) {
         const index = arr.findIndex(i => i === item);
-        if (index !== -1) {
+        if (index != -1) {
             arr.splice(index, 1)
         }
     }

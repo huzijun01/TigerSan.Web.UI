@@ -17,7 +17,7 @@ export class ConfigBase<T extends object> {
     /** 安全解析 */
     static SafeParse<T>(str: string): T {
         const parsed = JSON.parse(str);
-        if (typeof parsed !== 'object' || parsed === null) {
+        if (typeof parsed != 'object' || parsed === null) {
             throw new Error('Invalid JSON structure')
         }
 

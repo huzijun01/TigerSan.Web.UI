@@ -2,7 +2,7 @@ import { nanoid } from "nanoid"
 import { ref, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
 import { Texts } from "../../texts"
 import { ConverterBase } from "./ConverterBase"
-import { RectPosition, RectHelper } from '../../helpers'
+import { RectPosition, RectHelper, StringHelper } from '../../helpers'
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void
 
@@ -70,6 +70,8 @@ class SelectModel extends ConverterBase {
 
     /** 宽度 */
     readonly Width = ref(200)
+    /** 是否“充满父容器” */
+    readonly IsFull = ref(false)
     /** 菜单最大高度 */
     readonly MenuMaxHeight = ref(300)
     /** 是否“打开” */
@@ -82,11 +84,16 @@ class SelectModel extends ConverterBase {
      * （由“MenuItemModel”维护） */
     readonly SearchText = ref('')
     /** 占位文本 */
-    readonly Placeholder = ref(Texts.PleaseSelect.value)
+    readonly Placeholder = ref('')
     /** 项目集合 */
     readonly Items: ShallowReactive<Object[]> = shallowReactive([])
 
     //#region [computed]
+    /** 使用的占位文本 */
+    readonly UsedPlaceholder = computed(() => {
+        return StringHelper.IsNotEmpty(this.Placeholder.value) ? this.Placeholder.value : Texts.PleaseSelect.value
+    })
+
     /** 项目集合 */
     readonly ItemModels = computed(() => {
         const itemModels: MenuItemModel[] = []
@@ -102,7 +109,7 @@ class SelectModel extends ConverterBase {
         return itemModels
     })
 
-    /** 根类: */
+    /** 根类 */
     readonly rootClass = computed(() => {
         return {
             open: this.IsOpen.value,
@@ -111,14 +118,14 @@ class SelectModel extends ConverterBase {
         }
     })
 
-    /** 根样式: */
+    /** 根样式 */
     readonly widthStyle = computed(() => {
         return {
-            width: `${this.Width.value}px`
+            width: this.IsFull.value ? '100%' : `${this.Width.value}px`
         }
     })
 
-    /** 箭头样式: */
+    /** 箭头样式 */
     readonly arrowStyleObj = computed(() => {
         const arrowAngle = this.IsOpen.value ? -90 : 90
         return {
@@ -126,7 +133,7 @@ class SelectModel extends ConverterBase {
         }
     })
 
-    /** 菜单样式: */
+    /** 菜单样式 */
     readonly menuStyleObj = computed(() => {
         const obj = {
             width: `${this.Width.value}px`,

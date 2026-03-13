@@ -35,12 +35,17 @@
                 <input type="text" v-model="form.configAddr.Target.value">
             </FormItem>
         </FormRow>
+        <FormRow>
+            <FormItem :model="form.configParentCompany.ItemModel">
+                <Select :model="form.selectParentCompany"></Select>
+            </FormItem>
+        </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
 import {
-    Search, PageCard, PopForm, FormRow, FormItem, Tree
+    Search, PageCard, PopForm, FormRow, FormItem, Tree, Select
 } from '@/0_tigersan_ui/tigerui'
 import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
 import form from './CompanyMgtForm'

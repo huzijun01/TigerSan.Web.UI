@@ -9,7 +9,7 @@ class PaginationButtonModel {
     _id = nanoid()
     /** 获取“所选数字”
      * （由“PaginationModel”传入） */
-    _paginationModel: PaginationModel
+    _pagination: PaginationModel
     /** “选中后”内部回调
      * （由“PaginationModel”传入） */
     _onCheckedInternal?: Action
@@ -46,8 +46,8 @@ class PaginationButtonModel {
     //#endregion 【Events】
 
     //#region 【Ctor】
-    constructor(paginationModel: PaginationModel) {
-        this._paginationModel = paginationModel
+    constructor(pagination: PaginationModel) {
+        this._pagination = pagination
         this._onCheckedInternal = this.NormalButton_OnCheckedInternal
     }
     //#endregion 【Ctor】
@@ -55,7 +55,7 @@ class PaginationButtonModel {
     //#region 【回调】
     /** “普通按钮”被选中 */
     private NormalButton_OnCheckedInternal = () => {
-        this._paginationModel.SelectedNum.value = this.Num
+        this._pagination.SelectedNum.value = this.Num
     }
     //#endregion 【回调】
 }

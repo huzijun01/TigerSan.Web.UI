@@ -97,7 +97,6 @@ class TreeNodeModel extends ContentSizeBehavior {
     static readonly GetArrayRange = (nodes: TreeNodeModel[]) => {
         const arr: TreeNodeModel[] = []
         nodes.forEach(node => {
-            arr.push(node)
             arr.push(...node.GetArray())
         })
         return arr

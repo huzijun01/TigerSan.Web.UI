@@ -19,8 +19,8 @@ const onlineCount = ref(0)
 const offlineCount = ref(0)
 
 // 分页器:
-const paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
+const pagination = new PaginationModel()
+pagination.IsShowSelectedRowCount.value = true
 
 // 列头:
 const assetMgtTagTable = new TableModel([
@@ -142,7 +142,7 @@ assetMgtTagTable._initItem = itemModel => {
 }
 
 assetMgtTagTable._onInitRowModel = rowDatas => {
-    paginationModel.Count.value = rowDatas.length
+    pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
 }
@@ -150,7 +150,7 @@ assetMgtTagTable._onInitRowModel = rowDatas => {
 export {
     onlineCount,
     offlineCount,
-    paginationModel,
+    pagination,
     AssetMgtTagModel,
     assetMgtTagTable,
 }

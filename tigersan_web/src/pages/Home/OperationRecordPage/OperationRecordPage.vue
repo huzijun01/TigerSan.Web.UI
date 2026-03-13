@@ -26,7 +26,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="operationRecordTable.SelectedRowCount.value">
+                <Pagination :model="pagination" :selectedRowCount="operationRecordTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
@@ -44,12 +44,12 @@ import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker } from
 // 表格:
 operationRecordTable.IsAllowMultiSelect.value = false
 operationRecordTable._onInitRowModel = () => {
-    paginationModel.Count.value = operationRecordTable.Count.value
+    pagination.Count.value = operationRecordTable.Count.value
 }
 
 // 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
+let pagination = new PaginationModel()
+pagination.IsShowSelectedRowCount.value = true
 
 // 【方法】:
 function Refresh() {

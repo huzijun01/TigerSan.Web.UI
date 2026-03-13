@@ -33,7 +33,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="envSensorTable.SelectedRowCount.value">
+                <Pagination :model="pagination" :selectedRowCount="envSensorTable.SelectedRowCount.value">
                     <KeyValue :propName="Texts.Online.value" :propValue="onlineCount" :color="Colors.Success">
                     </KeyValue>
                     <KeyValue :propName="Texts.Offline.value" :propValue="offlineCount" :color="Colors.Danger">
@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import form from './EnvSensorForm'
 import select from './EnvSensorSelect'
-import { envSensorTable, paginationModel, onlineCount, offlineCount } from './EnvSensorTable'
+import { envSensorTable, pagination, onlineCount, offlineCount } from './EnvSensorTable'
 import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

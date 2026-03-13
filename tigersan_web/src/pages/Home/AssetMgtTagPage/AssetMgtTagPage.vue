@@ -35,7 +35,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="assetMgtTagTable.SelectedRowCount.value">
+                <Pagination :model="pagination" :selectedRowCount="assetMgtTagTable.SelectedRowCount.value">
                     <KeyValue :propName="Texts.Online.value" :propValue="onlineCount" :color="Colors.Success">
                     </KeyValue>
                     <KeyValue :propName="Texts.Offline.value" :propValue="offlineCount" :color="Colors.Danger">
@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import form from './AssetMgtTagForm'
 import select from './AssetMgtTagSelect'
-import { assetMgtTagTable, paginationModel, onlineCount, offlineCount } from './AssetMgtTagTable'
+import { assetMgtTagTable, pagination, onlineCount, offlineCount } from './AssetMgtTagTable'
 import { Texts, dialog, Table, Select, Search, KeyValue, PageCard, Pagination, PopForm, FormRow, FormItem, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

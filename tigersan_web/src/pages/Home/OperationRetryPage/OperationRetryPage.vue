@@ -27,7 +27,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="operationRetryTable.SelectedRowCount.value">
+                <Pagination :model="pagination" :selectedRowCount="operationRetryTable.SelectedRowCount.value">
                 </Pagination>
             </div>
         </div>
@@ -46,12 +46,12 @@ const { IsOnlySelected } = operationRetryTable
 // 表格:
 operationRetryTable.IsAllowMultiSelect.value = false
 operationRetryTable._onInitRowModel = () => {
-    paginationModel.Count.value = operationRetryTable.Count.value
+    pagination.Count.value = operationRetryTable.Count.value
 }
 
 // 分页器:
-let paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
+let pagination = new PaginationModel()
+pagination.IsShowSelectedRowCount.value = true
 
 // 【方法】:
 function Refresh() {

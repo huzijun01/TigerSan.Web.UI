@@ -21,8 +21,8 @@ const onlineCount = ref(0)
 const offlineCount = ref(0)
 
 // 分页器:
-const paginationModel = new PaginationModel()
-paginationModel.IsShowSelectedRowCount.value = true
+const pagination = new PaginationModel()
+pagination.IsShowSelectedRowCount.value = true
 
 // 列头:
 const terminal4gTable = new TableModel([
@@ -164,7 +164,7 @@ terminal4gTable._initItem = itemModel => {
 }
 
 terminal4gTable._onInitRowModel = rowDatas => {
-    paginationModel.Count.value = rowDatas.length
+    pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
 }
@@ -173,6 +173,6 @@ export {
     Terminal4gModel,
     onlineCount,
     offlineCount,
-    paginationModel,
+    pagination,
     terminal4gTable,
 }

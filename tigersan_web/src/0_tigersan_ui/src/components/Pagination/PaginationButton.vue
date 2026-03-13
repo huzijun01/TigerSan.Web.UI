@@ -38,7 +38,7 @@ function OnClick() {
     }
 
     if (model.Checked) {
-        model.Checked(model._paginationModel.SelectedNum.value)
+        model.Checked(model._pagination.SelectedNum.value)
     }
 }
 </script>

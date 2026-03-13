@@ -35,7 +35,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="paginationModel" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
+                <Pagination :model="pagination" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
                     <KeyValue :propName="Texts.Online.value" :propValue="onlineCount" :color="Colors.Success">
                     </KeyValue>
                     <KeyValue :propName="Texts.Offline.value" :propValue="offlineCount" :color="Colors.Danger">
@@ -63,7 +63,7 @@
 <script lang="ts" setup>
 import form from './BaseStationMgtForm'
 import select from './BaseStationMgtSelect'
-import { baseStationMgtTable, onlineCount, offlineCount, paginationModel } from './BaseStationMgtTable'
+import { baseStationMgtTable, onlineCount, offlineCount, pagination } from './BaseStationMgtTable'
 import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

@@ -1,54 +1,22 @@
 import { ref } from 'vue'
 import { AxiosHelper } from '@/helpers'
-import { CompanyMgtModel, companyMgtTable, paginationModel } from './CompanyMgtTable'
+import { tree, CompanyMgtModel, companyMgtTable, pagination, Companies2Tree as Companies2Nodes } from './CompanyMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState,
-    FormModel, SearchModel, FormConfig, FormItemConfig,
-    TreeModel
+    FormModel, SearchModel, FormConfig, FormItemConfig, SelectModel
 } from '@/0_tigersan_ui/tigerui'
 import { GetSubmitResult, MyActionResult } from '@/models'
 import { navData } from '@/navs/navModel'
 
 const action = 'CompanyMgt'
 
-/** 树 */
-const tree = new TreeModel([
-    {
-        Text: '一级节点 1',
-        Childs: [
-            {
-                Text: '二级节点 1',
-            },
-            {
-                Text: '二级节点 2',
-                Childs: [
-                    {
-                        Text: '三级节点 1',
-                    },
-                    {
-                        Text: '三级节点 2',
-                    }
-                ]
-            },
-            {
-                Text: '二级节点 3',
-                Childs: [
-                    {
-                        Text: '三级节点 3',
-                    },
-                    {
-                        Text: '三级节点 4',
-                    }
-                ]
-            }
-        ]
-    }
-])
-tree.IsShowCheckbox.value = false
-
 /** 查找框 */
 const searchCompany = new SearchModel()
 searchCompany.Placeholder.value = '请输入公司名称'
+
+/** 选择框 */
+const selectParentCompany = new SelectModel()
+selectParentCompany.Width.value = 208
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig = {
@@ -74,6 +42,14 @@ const configAddr: FormItemConfig = {
     }
 }
 
+/** “父公司”项目配置 */
+const configParentCompany: FormItemConfig = {
+    _propName: 'parent_company',
+    PropText: '父公司',
+    IsEquired: false,
+    Target: selectParentCompany.Value
+}
+
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
     return new CompanyMgtModel()
@@ -87,6 +63,7 @@ let configCompanyForm: FormConfig = {
     _itemConfigs: [
         configName,
         configAddr,
+        configParentCompany,
     ]
 }
 
@@ -97,16 +74,16 @@ const companyForm = new FormModel(configCompanyForm)
 async function Refresh() {
     await AxiosHelper.GetCount(action)
         .then(count => {
-            paginationModel.Count.value = count
+            pagination.Count.value = count
         })
 
     await AxiosHelper.GetList<CompanyMgtModel>(
         action,
-        paginationModel.PageSize.value,
+        pagination.PageSize.value,
         1)
         .then(arr => {
-            companyMgtTable.RowDatas.splice(0)
-            companyMgtTable.RowDatas.push(...arr)
+            tree.Nodes.splice(0)
+            tree.Init(Companies2Nodes(arr))
         })
 
     InitEvents()
@@ -123,6 +100,9 @@ function Add() {
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
+
+    selectParentCompany.Items.splice(0)
+    selectParentCompany.Items.push(...tree.NodeArray.value.map(n => n.Text.value))
 
     companyForm.Show()
 }
@@ -178,8 +158,10 @@ function InitEvents() {
 export default {
     tree,
     searchCompany,
+    selectParentCompany,
     configName,
     configAddr,
+    configParentCompany,
     companyForm,
     Refresh,
     Add,

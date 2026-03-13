@@ -2,7 +2,7 @@ export class ObjectHelper {
     /** “对象”浅复制 */
     static ObjectShallowCopy<T extends object>(obj: T): T {
         // 处理基本类型直接返回
-        if (obj === null || typeof obj !== 'object') {
+        if (obj === null || typeof obj != 'object') {
             return obj as T;
         }
 
@@ -26,7 +26,7 @@ export class ObjectHelper {
 
         function _copy(obj: any): any {
             // 处理基本类型和函数
-            if (obj === null || typeof obj !== 'object') {
+            if (obj === null || typeof obj != 'object') {
                 return obj;
             }
 

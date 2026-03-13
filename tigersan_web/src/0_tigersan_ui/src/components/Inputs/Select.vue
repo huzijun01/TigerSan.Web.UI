@@ -1,6 +1,6 @@
 <template>
     <div class="select" ref="refRoot" :class="model.rootClass.value" :style="model.widthStyle.value" @click="OnClick">
-        <input type="text" ref="refInput" v-model="model.Text.value" :placeholder="model.Placeholder.value"
+        <input type="text" ref="refInput" v-model="model.Text.value" :placeholder="model.UsedPlaceholder.value"
             :disabled="!model.IsEnabled.value">
         <div class="button-panel flex-center">
             <div class="arrow iconfont" :style="model.arrowStyleObj.value">{{ Icons.Arrow_Right }}</div>
@@ -112,7 +112,7 @@ function window_OnClick(event: MouseEvent) {
 
 /** 是否点击外部 */
 function IsClickOutside(target: HTMLElement, panel: HTMLElement): boolean {
-    return !panel.contains(target) && target !== panel;
+    return !panel.contains(target) && target != panel;
 }
 </script>
 
