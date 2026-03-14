@@ -103,7 +103,7 @@ function Add() {
 
 /** 改 */
 function Edit() {
-    const model = tree.GetActiveData()
+    const model = tree.ActiveData.value
     if (!model) {
         console.log('The model is undefined!')
         return
@@ -130,7 +130,7 @@ function Edit() {
 
 /** 删 */
 function Delete() {
-    const model = tree.GetActiveData()
+    const model = tree.ActiveData.value
     if (!model) {
         console.log('The model is undefined!')
         return

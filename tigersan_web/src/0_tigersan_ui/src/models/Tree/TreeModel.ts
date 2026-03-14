@@ -202,6 +202,11 @@ class TreeModel<T> {
     readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange(this.Nodes))
     /** “选中节点”数组（无嵌套） */
     readonly CheckedNodeArray = computed(() => this.NodeArray.value.filter(n => n.IsChecked.value))
+    /** “激活节点”的数据 */
+    readonly ActiveData = computed(() => {
+        if (!this.ActiveNode.value) return
+        return this.ActiveNode.value._data
+    })
     //#endregion [computed]
     //#endregion 【Properties】
 
@@ -232,12 +237,6 @@ class TreeModel<T> {
             const node = GetNodeModel(this, config)
             this.Nodes.push(node)
         })
-    }
-
-    /** 获取“激活节点”的数据 */
-    GetActiveData(): T | undefined {
-        if (!this.ActiveNode.value || !this.ActiveNode.value._data) return
-        return this.ActiveNode.value._data
     }
 
     /** 获取“文本”集合 */

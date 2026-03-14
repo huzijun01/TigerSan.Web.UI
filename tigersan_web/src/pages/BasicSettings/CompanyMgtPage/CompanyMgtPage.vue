@@ -24,7 +24,7 @@
                     <Tree :model="form.tree"></Tree>
                 </div>
                 <div class="right-panel">
-                    <CompanyInfo></CompanyInfo>
+                    <CompanyInfo :model="tree.ActiveData.value"></CompanyInfo>
                 </div>
             </div>
         </div>
