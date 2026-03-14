@@ -1,12 +1,12 @@
 import { ref, watch } from "vue"
 import { StringHelper } from "../../helpers"
-import type { Object2StringFunc } from "../../types"
+import type { Any2StringFunc } from "../../types"
 
 /** “值转换控件”基类 */
 class ConverterBase {
     //#region 【Fields】
     /** 转换器 */
-    _converter?: Object2StringFunc
+    _converter?: Any2StringFunc
     //#endregion 【Fields】
 
     //#region 【Properties】

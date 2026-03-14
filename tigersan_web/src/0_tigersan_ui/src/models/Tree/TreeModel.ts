@@ -230,6 +230,7 @@ class TreeModel<T> {
     /** 初始化 */
     readonly Init = (configs?: TreeNodeConfig<T>[]) => {
         this.Nodes.splice(0)
+        this.ActiveNode.value = undefined
 
         if (!configs) return
 
@@ -242,6 +243,11 @@ class TreeModel<T> {
     /** 获取“文本”集合 */
     GetTexts(): string[] {
         return this.NodeArray.value.map(n => n.Text.value)
+    }
+
+    /** 获取“数据”集合 */
+    GetDatas(): T[] {
+        return this.NodeArray.value.map(n => (n._data as T))
     }
     //#endregion 【Functions】
 }

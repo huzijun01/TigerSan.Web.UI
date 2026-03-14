@@ -6,9 +6,10 @@ export class TreeHelper {
     static Array2Tree<T extends object>(
         items: T[],
         getName: (item: T) => string,
-        getParent: (item: T) => string | undefined): TreeNodeConfig<T>[] {
+        getIndex: (item: T) => number,
+        getParent: (item: T) => number): TreeNodeConfig<T>[] {
 
-        /** 获取“节点” */
+        /** “节点”数组 */
         function GetNode(item: T): TreeNodeConfig<T> {
             const node = new TreeNodeConfig<T>()
             node._data = item
@@ -44,14 +45,14 @@ export class TreeHelper {
             // 添加“根项目”:
             rootItems.forEach(rootItem => {
                 /** 根节点 */
-                const rootNode = nodeArray.find(n => n.Text === getName(rootItem))
+                const rootNode = nodeArray.find(n => getIndex(n._data) === getIndex(rootItem))
                 if (!rootNode) {
                     console.warn('The rootNode is undefined!')
                     return
                 }
 
                 /** “孙项目”数组 */
-                const subItems = remainingItems.filter(i => getParent(i) === getName(rootItem))
+                const subItems = remainingItems.filter(i => getParent(i) === getIndex(rootItem))
                 newRootItems.push(...subItems)
 
                 // 添加“根节点”:

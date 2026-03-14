@@ -3,21 +3,30 @@ import { AxiosHelper } from '@/helpers'
 import { tree, CompanyMgtModel, companyMgtTable, Companies2Tree as Companies2Nodes } from './CompanyMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState,
-    FormModel, SearchModel, FormConfig, FormItemConfig, SelectModel
+    FormModel, FormConfig, FormItemConfig, SelectModel
 } from '@/0_tigersan_ui/tigerui'
 import { GetSubmitResult, MyActionResult } from '@/models'
 import { navData } from '@/navs/navModel'
 
 const action = 'CompanyMgt'
 
-/** 查找框 */
-const searchCompany = new SearchModel()
-searchCompany.Placeholder.value = '请输入公司名称'
-
 /** 选择框 */
 const selectParentCompany = new SelectModel()
 selectParentCompany.Width.value = 208
 selectParentCompany.IsAllowSearch.value = true
+selectParentCompany.Placeholder.value = '请选择公司名称'
+
+/** 选择框（表单） */
+const selectFormParentCompany = new SelectModel()
+selectFormParentCompany.Width.value = 208
+selectFormParentCompany.IsAllowSearch.value = true
+selectFormParentCompany.Placeholder.value = '请选择公司名称'
+selectFormParentCompany._converter = (obj: any) => {
+    if (!obj) return ''
+    const index = obj as number
+    const company = tree.GetDatas().find(d => d.index === index)
+    return company ? company.name : ''
+}
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig = {
@@ -48,7 +57,7 @@ const configParentCompany: FormItemConfig = {
     _propName: 'parentCompany',
     PropText: '父公司',
     IsEquired: false,
-    Target: selectParentCompany.Value
+    Target: selectFormParentCompany.Value
 }
 
 /** “增”源数据获取方法 */
@@ -79,6 +88,10 @@ async function Refresh() {
             tree.Init(Companies2Nodes(arr))
         })
 
+    selectParentCompany.Items.splice(0)
+    const names = tree.GetTexts()
+    selectParentCompany.Items.push(...names)
+
     InitEvents()
 }
 
@@ -94,9 +107,9 @@ function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    selectParentCompany.Items.splice(0)
-    const names = tree.GetTexts()
-    selectParentCompany.Items.push(...names)
+    selectFormParentCompany.Items.splice(0)
+    const indexes = tree.GetDatas().map(d => d.index)
+    selectFormParentCompany.Items.push(...indexes)
 
     companyForm.Show()
 }
@@ -121,9 +134,9 @@ function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    selectParentCompany.Items.splice(0)
-    const names = tree.GetTexts().filter(n => n != model.name)
-    selectParentCompany.Items.push(...names)
+    selectFormParentCompany.Items.splice(0)
+    const indexes = tree.GetDatas().map(d => d.index).filter(i => i != model.index)
+    selectFormParentCompany.Items.push(...indexes)
 
     companyForm.Show()
 }
@@ -167,8 +180,8 @@ function InitEvents() {
 
 export default {
     tree,
-    searchCompany,
     selectParentCompany,
+    selectFormParentCompany,
     configName,
     configAddr,
     configParentCompany,

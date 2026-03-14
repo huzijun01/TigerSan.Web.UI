@@ -94,7 +94,8 @@ export class ObjectHelper {
     /** 获取“字段文本”默认方法 */
     static DefaultStringGetter(obj: object, propName: string): string {
         const value = (obj as Record<string, unknown>)[propName];
-        return value != null ? String(value) : ''
+        if (value === undefined || value === null) return ''
+        return String(value)
     }
 
     /** 获取“字段值”默认方法 */

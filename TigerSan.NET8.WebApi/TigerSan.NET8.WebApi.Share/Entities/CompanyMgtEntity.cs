@@ -11,6 +11,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string Addr { get; set; } = string.Empty;
         [SnakeColumn]
-        public string? ParentCompany { get; set; }
+        public int? ParentCompany { get; set; }
     }
 }

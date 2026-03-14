@@ -13,6 +13,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public bool IsRoot { get; set; } = false;
         [SnakeColumn]
-        public string? Company { get; set; }
+        public int? Company { get; set; }
     }
 }

@@ -11,7 +11,7 @@ class CompanyMgtModel {
     index = 0
     name = ''
     addr = ''
-    parentCompany?: string
+    parentCompany?: number
     onClick?: CompanyEvent
     onDelete?: CompanyEvent
     onEdit?: CompanyEvent
@@ -49,6 +49,7 @@ function Companies2Tree(companies: CompanyMgtModel[]): TreeNodeConfig<CompanyMgt
     return TreeHelper.Array2Tree<CompanyMgtModel>(
         companies,
         item => item.name,
+        item => item.index,
         item => item.parentCompany)
 }
 

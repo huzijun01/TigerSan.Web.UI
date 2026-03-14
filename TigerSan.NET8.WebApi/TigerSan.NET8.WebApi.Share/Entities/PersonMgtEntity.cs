@@ -7,11 +7,11 @@ namespace TigerSan.NET8.WebApi.Share.Entities
     public class PersonMgtEntity : IndexEntity
     {
         [SnakeColumn]
+        public int Company { get; set; }
+        [SnakeColumn]
+        public int Role { get; set; }
+        [SnakeColumn]
         public string Username { get; set; } = string.Empty;
-        [SnakeColumn]
-        public string Company { get; set; } = string.Empty;
-        [SnakeColumn]
-        public string RoleName { get; set; } = string.Empty;
         [SnakeColumn]
         public string Nickname { get; set; } = string.Empty;
         [SnakeColumn]
