@@ -1,4 +1,4 @@
-import { ArrayHelper, TableModel, TreeModel, TreeNodeConfig } from '@/0_tigersan_ui/tigerui'
+import { TableModel, TreeHelper, TreeModel, TreeNodeConfig } from '@/0_tigersan_ui/tigerui'
 
 type CompanyEvent = (model: CompanyMgtModel) => void
 
@@ -44,74 +44,12 @@ companyMgtTable._initHeader = headerModel => {
 companyMgtTable._initItem = itemModel => {
 }
 
-function GetNode(company: CompanyMgtModel): TreeNodeConfig<CompanyMgtModel> {
-    const node = new TreeNodeConfig<CompanyMgtModel>()
-    node._data = company
-    node.Text = company.name
-    return node
-}
-
+/** “公司数组”转“树配置” */
 function Companies2Tree(companies: CompanyMgtModel[]): TreeNodeConfig<CompanyMgtModel>[] {
-    const nodes: TreeNodeConfig<CompanyMgtModel>[] = []
-    const nodeArray: TreeNodeConfig<CompanyMgtModel>[] = []
-
-    /** “根公司”集合 */
-    let rootCompanies = companies.filter(c => c.parentCompany === null)
-    /** “剩余公司”集合 */
-    const remainingCompanies = companies.filter(c => c.parentCompany != null)
-    /** “新根公司”集合 */
-    const newRootCompanies: CompanyMgtModel[] = []
-
-    // 添加“根公司”:
-    rootCompanies.forEach(rootCompany => {
-        /** 根节点 */
-        const rootNode = GetNode(rootCompany)
-        rootNode.Childs = []
-        nodes.push(rootNode)
-        nodeArray.push(rootNode)
-    })
-
-    // 添加“后代公司”:
-    while (rootCompanies.length > 0) {
-        newRootCompanies.splice(0)
-
-        // 添加“根公司”:
-        rootCompanies.forEach(rootCompany => {
-            /** 根节点 */
-            const rootNode = nodeArray.find(n => n.Text === rootCompany.name)
-            if (!rootNode) {
-                console.warn('The rootNode is undefined!')
-                return
-            }
-
-            /** “孙公司”集合 */
-            const subCompanies = remainingCompanies.filter(c => c.parentCompany === rootCompany.name)
-            newRootCompanies.push(...subCompanies)
-
-            // 添加“根节点”:
-            subCompanies.forEach(subCompany => {
-                // 添加“孙节点”:
-                const subNode = GetNode(subCompany)
-                if (!rootNode.Childs) {
-                    rootNode.Childs = []
-                }
-                rootNode.Childs.push(subNode)
-                nodeArray.push(subNode)
-
-                // 删除“孙公司”:
-                ArrayHelper.DeleteItem(remainingCompanies, subCompany)
-            })
-        })
-
-        rootCompanies.splice(0)
-        rootCompanies.push(...newRootCompanies)
-    }
-
-    if (remainingCompanies.length > 0) {
-        console.warn('There are unused companies!')
-    }
-
-    return nodes
+    return TreeHelper.Array2Tree<CompanyMgtModel>(
+        companies,
+        item => item.name,
+        item => item.parentCompany)
 }
 
 export {

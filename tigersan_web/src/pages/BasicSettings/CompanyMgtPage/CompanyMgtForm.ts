@@ -17,6 +17,7 @@ searchCompany.Placeholder.value = '请输入公司名称'
 /** 选择框 */
 const selectParentCompany = new SelectModel()
 selectParentCompany.Width.value = 208
+selectParentCompany.IsAllowSearch.value = true
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig = {
