@@ -1,21 +1,16 @@
-import { ArrayHelper, PaginationModel, TableModel, TreeModel, TreeNodeConfig, TreeNodeModel } from '@/0_tigersan_ui/tigerui'
+import { ArrayHelper, TableModel, TreeModel, TreeNodeConfig } from '@/0_tigersan_ui/tigerui'
 
 type CompanyEvent = (model: CompanyMgtModel) => void
 
-// 分页器:
-let pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
-
 // 树:
-const tree = new TreeModel()
+const tree = new TreeModel<CompanyMgtModel>()
 tree.IsShowCheckbox.value = false
 
-/** "公司管理"模型 */
+/** "组织机构"模型 */
 class CompanyMgtModel {
     index = 0
     name = ''
     addr = ''
-    image = ''
     parentCompany?: string
     onClick?: CompanyEvent
     onDelete?: CompanyEvent
@@ -49,16 +44,16 @@ companyMgtTable._initHeader = headerModel => {
 companyMgtTable._initItem = itemModel => {
 }
 
-function GetNode(company: CompanyMgtModel): TreeNodeConfig {
-    const node = new TreeNodeConfig()
+function GetNode(company: CompanyMgtModel): TreeNodeConfig<CompanyMgtModel> {
+    const node = new TreeNodeConfig<CompanyMgtModel>()
     node._data = company
     node.Text = company.name
     return node
 }
 
-function Companies2Tree(companies: CompanyMgtModel[]): TreeNodeConfig[] {
-    const nodes: TreeNodeConfig[] = []
-    const nodeArray: TreeNodeConfig[] = []
+function Companies2Tree(companies: CompanyMgtModel[]): TreeNodeConfig<CompanyMgtModel>[] {
+    const nodes: TreeNodeConfig<CompanyMgtModel>[] = []
+    const nodeArray: TreeNodeConfig<CompanyMgtModel>[] = []
 
     /** “根公司”集合 */
     let rootCompanies = companies.filter(c => c.parentCompany === null)
@@ -124,6 +119,5 @@ export {
     type CompanyEvent,
     CompanyMgtModel,
     companyMgtTable,
-    pagination,
     Companies2Tree,
 }

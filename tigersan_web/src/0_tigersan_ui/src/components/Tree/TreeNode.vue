@@ -53,7 +53,7 @@ onMounted(() => {
 
     .back-panel {
         align-items: center;
-        border-radius: 2px;
+        border-radius: 5px;
         cursor: pointer;
         transition: var(--Global-Transition);
 

@@ -12,13 +12,20 @@
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 新增</button>
+                        <button class="bg-warning" :disabled="!tree.IsActive.value" @click="form.Edit">修改</button>
+                        <button class="bg-danger" :disabled="!tree.IsActive.value" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 表格: -->
-            <div class="company-panel">
-                <Tree :model="form.tree"></Tree>
+            <!-- 内容: -->
+            <div class="content-panel">
+                <div class="left-panel">
+                    <Tree :model="form.tree"></Tree>
+                </div>
+                <div class="right-panel">
+                    <CompanyInfo></CompanyInfo>
+                </div>
             </div>
         </div>
     </PageCard>
@@ -44,12 +51,11 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    Search, PageCard, PopForm, FormRow, FormItem, Tree, Select
-} from '@/0_tigersan_ui/tigerui'
-import { CompanyMgtModel, companyMgtTable } from './CompanyMgtTable'
 import form from './CompanyMgtForm'
+import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
+import { tree } from './CompanyMgtTable'
+import { Search, PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 
@@ -64,7 +70,21 @@ onMounted(() => {
 <style lang="less" scoped>
 @import '@/assets/page.less';
 
-.company-panel {
-    flex-grow: 1;
+
+.content-panel {
+    height: calc(100% - 40px);
+    display: grid;
+    grid-template-columns: auto 1fr;
+
+    .left-panel {
+        width: 250px;
+        margin-right: 15px;
+        overflow: auto;
+    }
+
+    .right-panel {
+        overflow: auto;
+        background: var(--theme-input-background);
+    }
 }
 </style>

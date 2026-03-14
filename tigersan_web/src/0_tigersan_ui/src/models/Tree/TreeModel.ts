@@ -3,21 +3,21 @@ import { computed, ref, shallowReactive } from "vue"
 import type { AnyFunc } from "../../types"
 import { ContentSizeBehavior } from "../../helpers"
 
-type TreeNodeModelFunc = (node: TreeNodeModel) => void
+type TreeNodeModelFunc<T> = (node: TreeNodeModel<T>) => void
 
 /** “树节点”模型 */
-class TreeNodeModel extends ContentSizeBehavior {
+class TreeNodeModel<T> extends ContentSizeBehavior {
     //#region 【Fields】
     /** 是否“自动更新”选中状态 */
     private _isAutoUpdate = true
     /** ID */
     readonly _id = nanoid()
     /** 所属树 */
-    _tree: TreeModel
+    _tree: TreeModel<T>
     /** 数据 */
-    _data?: any
+    _data?: T
     /** 父项 */
-    _parent?: TreeNodeModel
+    _parent?: TreeNodeModel<T>
     /** 激活后 */
     _onActive?: AnyFunc
     /** 选中后 */
@@ -30,7 +30,7 @@ class TreeNodeModel extends ContentSizeBehavior {
     /** 是否“选中” */
     readonly IsChecked = ref(false)
     /** “子项”集合 */
-    readonly Childs = shallowReactive<TreeNodeModel[]>([])
+    readonly Childs = shallowReactive<TreeNodeModel<T>[]>([])
 
     //#region [computed]
     /** 是否“激活” */
@@ -56,10 +56,10 @@ class TreeNodeModel extends ContentSizeBehavior {
 
     //#region 【Ctor】
     constructor(
-        tree: TreeModel,
-        data?: any,
-        parent?: TreeNodeModel,
-        childs?: TreeNodeModel[]) {
+        tree: TreeModel<T>,
+        data?: T,
+        parent?: TreeNodeModel<T>,
+        childs?: TreeNodeModel<T>[]) {
         super()
         this._tree = tree
         this._data = data
@@ -70,32 +70,14 @@ class TreeNodeModel extends ContentSizeBehavior {
 
     //#region 【Functions】
     //#region [static]
-    /** 遍历 */
-    static readonly Traverse = (node: TreeNodeModel, callback: TreeNodeModelFunc) => {
-        callback(node)
-
-        if (node.Childs) {
-            node.Childs.forEach(child => this.Traverse(child, callback))
-        }
-    }
-
     /** 遍历集合 */
-    static readonly TraverseRange = (nodes: TreeNodeModel[], callback: TreeNodeModelFunc) => {
-        nodes.forEach(node => this.Traverse(node, callback))
-    }
-
-    /** 向上遍历 */
-    static readonly UpTraverse = (node: TreeNodeModel, callback: TreeNodeModelFunc) => {
-        callback(node)
-
-        if (node._parent) {
-            this.UpTraverse(node._parent, callback)
-        }
+    static readonly TraverseRange = (nodes: TreeNodeModel<unknown>[], callback: TreeNodeModelFunc<unknown>) => {
+        nodes.forEach(node => node.Traverse(callback))
     }
 
     /** 获取数组（无嵌套） */
-    static readonly GetArrayRange = (nodes: TreeNodeModel[]) => {
-        const arr: TreeNodeModel[] = []
+    static readonly GetArrayRange = (nodes: TreeNodeModel<unknown>[]) => {
+        const arr: TreeNodeModel<unknown>[] = []
         nodes.forEach(node => {
             arr.push(...node.GetArray())
         })
@@ -110,7 +92,7 @@ class TreeNodeModel extends ContentSizeBehavior {
 
         this._isAutoUpdate = false
 
-        TreeNodeModel.UpTraverse(this, node => {
+        this.UpTraverse(node => {
             if (this._id === node._id) return
             node.IsChecked.value = node.Childs.every(n => n.IsChecked.value)
         })
@@ -124,7 +106,7 @@ class TreeNodeModel extends ContentSizeBehavior {
 
         this._isAutoUpdate = false
 
-        TreeNodeModel.Traverse(this, node => {
+        this.Traverse(node => {
             if (this._id === node._id) return
             node.IsChecked.value = this.IsChecked.value
         })
@@ -133,10 +115,28 @@ class TreeNodeModel extends ContentSizeBehavior {
     }
     //#endregion [private]
 
+    /** 遍历 */
+    readonly Traverse = (callback: TreeNodeModelFunc<T>) => {
+        callback(this)
+
+        if (this.Childs) {
+            this.Childs.forEach(child => child.Traverse(callback))
+        }
+    }
+
+    /** 向上遍历 */
+    readonly UpTraverse = (callback: TreeNodeModelFunc<T>) => {
+        callback(this)
+
+        if (this._parent) {
+            this._parent.UpTraverse(callback)
+        }
+    }
+
     /** 获取数组（无嵌套） */
-    readonly GetArray = (): TreeNodeModel[] => {
-        const arr: TreeNodeModel[] = []
-        TreeNodeModel.Traverse(this, node => { arr.push(node) })
+    readonly GetArray = (): TreeNodeModel<T>[] => {
+        const arr: TreeNodeModel<T>[] = []
+        this.Traverse(node => { arr.push(node) })
         return arr
     }
 
@@ -165,10 +165,10 @@ class TreeNodeModel extends ContentSizeBehavior {
 }
 
 /** “树节点”配置 */
-class TreeNodeConfig {
+class TreeNodeConfig<T> {
     // Fields:
     /** 数据 */
-    _data?: any
+    _data?: T
     /** 激活后 */
     _onActive?: AnyFunc
     /** 选中后 */
@@ -182,20 +182,22 @@ class TreeNodeConfig {
     /** 是否“选中” */
     IsChecked?: boolean
     /** “子项”集合 */
-    Childs?: TreeNodeConfig[]
+    Childs?: TreeNodeConfig<T>[]
 }
 
 /** “树”模型 */
-class TreeModel {
+class TreeModel<T> {
     //#region 【Properties】
     /** 是否“显示复选框” */
     readonly IsShowCheckbox = ref(true)
     /** 被激活的节点 */
-    readonly ActiveNode = ref<TreeNodeModel | undefined>()
+    readonly ActiveNode = ref<TreeNodeModel<T> | undefined>()
     /** “节点”集合 */
-    readonly Nodes = shallowReactive<TreeNodeModel[]>([])
+    readonly Nodes = shallowReactive<TreeNodeModel<T>[]>([])
 
     //#region [computed]
+    /** 是否“已激活” */
+    readonly IsActive = computed(() => this.ActiveNode.value != undefined)
     /** “节点”数组（无嵌套） */
     readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange(this.Nodes))
     /** “选中节点”数组（无嵌套） */
@@ -204,14 +206,14 @@ class TreeModel {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(configs?: TreeNodeConfig[]) {
+    constructor(configs?: TreeNodeConfig<T>[]) {
         this.Init(configs)
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
     /** 点击后（内部方法） */
-    readonly OnClickInternal = (node: TreeNodeModel) => {
+    readonly OnClickInternal = (node: TreeNodeModel<T>) => {
         if (node.IsActive.value) {
             this.ActiveNode.value = undefined
         } else {
@@ -221,7 +223,7 @@ class TreeModel {
     }
 
     /** 初始化 */
-    readonly Init = (configs?: TreeNodeConfig[]) => {
+    readonly Init = (configs?: TreeNodeConfig<T>[]) => {
         this.Nodes.splice(0)
 
         if (!configs) return
@@ -231,12 +233,23 @@ class TreeModel {
             this.Nodes.push(node)
         })
     }
+
+    /** 获取“激活节点”的数据 */
+    GetActiveData(): T | undefined {
+        if (!this.ActiveNode.value || !this.ActiveNode.value._data) return
+        return this.ActiveNode.value._data
+    }
+
+    /** 获取“文本”集合 */
+    GetTexts(): string[] {
+        return this.NodeArray.value.map(n => n.Text.value)
+    }
     //#endregion 【Functions】
 }
 
 /** 获取“节点模型” */
-function GetNodeModel(tree: TreeModel, config: TreeNodeConfig, parent?: TreeNodeModel): TreeNodeModel {
-    const node = new TreeNodeModel(tree, config._data, parent)
+function GetNodeModel<T>(tree: TreeModel<T>, config: TreeNodeConfig<T>, parent?: TreeNodeModel<T>): TreeNodeModel<T> {
+    const node = new TreeNodeModel<T>(tree, config._data, parent)
     InitNodeModel(config, node)
 
     if (config.Childs) {
@@ -249,7 +262,7 @@ function GetNodeModel(tree: TreeModel, config: TreeNodeConfig, parent?: TreeNode
 }
 
 /** 初始化“节点模型” */
-function InitNodeModel(config: TreeNodeConfig, node: TreeNodeModel) {
+function InitNodeModel<T>(config: TreeNodeConfig<T>, node: TreeNodeModel<T>) {
     // Fields:
     if (config._data != undefined) node._data = config._data
     if (config._onActive != undefined) node._onActive = config._onActive

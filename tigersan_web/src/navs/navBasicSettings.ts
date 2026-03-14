@@ -6,7 +6,7 @@ const navBasicSettings: NavFolderConfig = {
     ],
     Buttons: [
         {
-            Title: "公司管理",
+            Title: "组织机构",
             Icon: Icons.Monitor,
             IsSelected: true,
             IsShowCloseButton: false,

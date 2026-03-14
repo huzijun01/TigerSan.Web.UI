@@ -11,8 +11,8 @@ import { TreeModel } from '../../models'
 // 字段:
 const { model } = defineProps({
     model: {
-        type: TreeModel,
-        default: () => new TreeModel()
+        type: TreeModel<any>,
+        default: () => new TreeModel<any>()
     }
 })
 

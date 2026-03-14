@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { AxiosHelper } from '@/helpers'
-import { tree, CompanyMgtModel, companyMgtTable, pagination, Companies2Tree as Companies2Nodes } from './CompanyMgtTable'
+import { tree, CompanyMgtModel, companyMgtTable, Companies2Tree as Companies2Nodes } from './CompanyMgtTable'
 import {
     Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState,
     FormModel, SearchModel, FormConfig, FormItemConfig, SelectModel
@@ -44,7 +44,7 @@ const configAddr: FormItemConfig = {
 
 /** “父公司”项目配置 */
 const configParentCompany: FormItemConfig = {
-    _propName: 'parent_company',
+    _propName: 'parentCompany',
     PropText: '父公司',
     IsEquired: false,
     Target: selectParentCompany.Value
@@ -55,7 +55,7 @@ const AddGetSource = () => {
     return new CompanyMgtModel()
 }
 
-/** “公司管理”表单配置 */
+/** “组织机构”表单配置 */
 let configCompanyForm: FormConfig = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -67,20 +67,12 @@ let configCompanyForm: FormConfig = {
     ]
 }
 
-/** “公司管理”表单模型 */
+/** “组织机构”表单模型 */
 const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
 async function Refresh() {
-    await AxiosHelper.GetCount(action)
-        .then(count => {
-            pagination.Count.value = count
-        })
-
-    await AxiosHelper.GetList<CompanyMgtModel>(
-        action,
-        pagination.PageSize.value,
-        1)
+    await AxiosHelper.GetAllList<CompanyMgtModel>(action)
         .then(arr => {
             tree.Nodes.splice(0)
             tree.Init(Companies2Nodes(arr))
@@ -102,13 +94,20 @@ function Add() {
     }
 
     selectParentCompany.Items.splice(0)
-    selectParentCompany.Items.push(...tree.NodeArray.value.map(n => n.Text.value))
+    const names = tree.GetTexts()
+    selectParentCompany.Items.push(...names)
 
     companyForm.Show()
 }
 
 /** 改 */
-function Edit(model: CompanyMgtModel) {
+function Edit() {
+    const model = tree.GetActiveData()
+    if (!model) {
+        console.log('The model is undefined!')
+        return
+    }
+
     companyForm.Title.value = '修改基站'
 
     companyForm._getSource = () => {
@@ -121,11 +120,21 @@ function Edit(model: CompanyMgtModel) {
         return GetSubmitResult(res, '修改成功')
     }
 
+    selectParentCompany.Items.splice(0)
+    const names = tree.GetTexts().filter(n => n != model.name)
+    selectParentCompany.Items.push(...names)
+
     companyForm.Show()
 }
 
 /** 删 */
-function Delete(model: CompanyMgtModel) {
+function Delete() {
+    const model = tree.GetActiveData()
+    if (!model) {
+        console.log('The model is undefined!')
+        return
+    }
+
     dialog.ShowDialog(
         '确认',
         '是否确定删除？',

@@ -23,7 +23,8 @@ const { model } = defineProps({
     },
 })
 
-const img = StringHelper.IsNotEmpty(model.image) ? model.image : 'http://www.tigersan.cn/0_file/image/company.png'
+const img = 'http://www.tigersan.cn/0_file/image/company.png'
+// const img = StringHelper.IsNotEmpty(model.image) ? model.image : 'http://www.tigersan.cn/0_file/image/company.png'
 
 //方法:
 function OnClick() {
