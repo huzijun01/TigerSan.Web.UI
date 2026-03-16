@@ -37,7 +37,7 @@ import { onMounted } from 'vue';
 // 字段:
 let { model } = defineProps({
     model: {
-        type: TableModel,
+        type: TableModel<any>,
         default: () => new TableModel([])
     }
 })
@@ -57,7 +57,7 @@ function OnIsSelectAllChanged() {
     model.RiseOnSelectStateChange()
 }
 
-function OnIsCheckedChanged(rowModel: TableRowModel) {
+function OnIsCheckedChanged(rowModel: TableRowModel<any>) {
     let source = rowModel.IsChecked.value ? rowModel : undefined
     model._checkboxBehavior.onIsCheckedChanged(source)
     model.RiseOnSelectStateChange()

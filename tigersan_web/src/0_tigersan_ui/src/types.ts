@@ -4,6 +4,7 @@ export type BooleanAction = () => boolean
 export type NumberAction = () => number
 export type ObjectAction = () => object
 export type StringAction = () => string
+export type TObjectAction<T extends object> = () => T
 
 // Func:
 export type BooleanFunc = (bool: boolean) => void

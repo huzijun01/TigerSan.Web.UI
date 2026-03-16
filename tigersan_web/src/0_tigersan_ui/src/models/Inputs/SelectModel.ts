@@ -5,17 +5,17 @@ import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
 import { RectPosition, RectHelper } from '../../helpers'
 
-type MenuItemModelAction = (itemModel: MenuItemModel) => void
+type MenuItemModelAction<T> = (itemModel: MenuItemModel<T>) => void
 
 /** “菜单项目”模型 */
-class MenuItemModel extends ConverterBase {
+class MenuItemModel<T> extends ConverterBase<T> {
     //#region 【Fields】
     /** ID */
     readonly _id = nanoid()
     /** 所属“选择框” */
-    readonly _select: SelectModel
+    readonly _select: SelectModel<T>
     /** 点击事件 */
-    _onClick?: MenuItemModelAction
+    _onClick?: MenuItemModelAction<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -29,7 +29,7 @@ class MenuItemModel extends ConverterBase {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(select: SelectModel) {
+    constructor(select: SelectModel<T>) {
         super()
         this._select = select
     }
@@ -49,13 +49,13 @@ class MenuItemModel extends ConverterBase {
 }
 
 /** “选择框”模型 */
-class SelectModel extends ConverterBase {
+class SelectModel<T> extends ConverterBase<T> {
     //#region 【Fields】
     /** 菜单实例
      * （由“Select”内部维护） */
     static _appMenu?: App
     /** 选择后 */
-    _onSelect?: MenuItemModelAction
+    _onSelect?: MenuItemModelAction<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -87,7 +87,7 @@ class SelectModel extends ConverterBase {
     /** 占位文本 */
     readonly Placeholder = ref('')
     /** 项目集合 */
-    readonly Items: ShallowReactive<Object[]> = shallowReactive([])
+    readonly Items: ShallowReactive<T[]> = shallowReactive([])
 
     //#region [computed]
     /** 显示的“占位文本” */
@@ -95,10 +95,10 @@ class SelectModel extends ConverterBase {
 
     /** 项目集合 */
     readonly ItemModels = computed(() => {
-        const itemModels: MenuItemModel[] = []
+        const itemModels: MenuItemModel<T>[] = []
 
         this.Items.forEach(item => {
-            const itemModel = new MenuItemModel(this)
+            const itemModel = new MenuItemModel<T>(this)
             itemModel._onClick = this._onSelect
             itemModel._converter = this._converter
             itemModel.Value.value = item

@@ -3,7 +3,7 @@ import { StringHelper } from "../../helpers"
 import type { Any2StringFunc } from "../../types"
 
 /** “值转换控件”基类 */
-class ConverterBase {
+class ConverterBase<T> {
     //#region 【Fields】
     /** 转换器 */
     _converter?: Any2StringFunc
@@ -11,7 +11,7 @@ class ConverterBase {
 
     //#region 【Properties】
     /** 值 */
-    readonly Value = ref<Object | undefined>()
+    readonly Value = ref<T | undefined>()
     /** 文本 */
     readonly Text = ref('')
     //#endregion 【Properties】

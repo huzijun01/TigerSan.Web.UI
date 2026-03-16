@@ -7,7 +7,7 @@ export class TreeHelper {
         items: T[],
         getName: (item: T) => string,
         getIndex: (item: T) => number,
-        getParent: (item: T) => number): TreeNodeConfig<T>[] {
+        getParent: (item: T) => number | undefined): TreeNodeConfig<T>[] {
 
         /** “节点”数组 */
         function GetNode(item: T): TreeNodeConfig<T> {
@@ -45,7 +45,7 @@ export class TreeHelper {
             // 添加“根项目”:
             rootItems.forEach(rootItem => {
                 /** 根节点 */
-                const rootNode = nodeArray.find(n => getIndex(n._data) === getIndex(rootItem))
+                const rootNode = nodeArray.find(n => n._data != undefined && getIndex(n._data) === getIndex(rootItem))
                 if (!rootNode) {
                     console.warn('The rootNode is undefined!')
                     return
@@ -75,7 +75,7 @@ export class TreeHelper {
         }
 
         if (remainingItems.length > 0) {
-            console.warn('There are unused items!')
+            console.warn('There are unused items!\r\n', remainingItems)
         }
 
         return nodes

@@ -1,6 +1,5 @@
 import { nanoid } from "nanoid"
 import { computed, ref, shallowRef, shallowReactive } from "vue"
-import type { AnyFunc } from "../../types"
 import { ContentSizeBehavior } from "../../helpers"
 
 type TreeNodeModelFunc<T> = (node: TreeNodeModel<T>) => void
@@ -19,11 +18,11 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     /** 父项 */
     _parent?: TreeNodeModel<T>
     /** 激活后 */
-    _onActive?: AnyFunc
+    _onActive?: TreeNodeModelFunc<T>
     /** 失活后 */
-    _onUnactive?: AnyFunc
+    _onUnactive?: TreeNodeModelFunc<T>
     /** 选中后 */
-    _onChecked?: AnyFunc
+    _onChecked?: TreeNodeModelFunc<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -157,8 +156,8 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     /** 改变后 */
     readonly OnChange = () => {
         if (this.IsChecked.value) {
-            this._onChecked?.(this._data)
-            this._tree._onChecked?.(this._data)
+            this._onChecked?.(this)
+            this._tree._onChecked?.(this)
         }
 
         this.UpdateParentNodesIsChecked()
@@ -173,11 +172,11 @@ class TreeNodeConfig<T> {
     /** 数据 */
     _data?: T
     /** 激活后 */
-    _onActive?: AnyFunc
+    _onActive?: TreeNodeModelFunc<T>
     /** 选中后 */
-    _onChecked?: AnyFunc
+    _onChecked?: TreeNodeModelFunc<T>
     /** 失活后 */
-    _onUnactive?: AnyFunc
+    _onUnactive?: TreeNodeModelFunc<T>
 
     // Properties:
     /** 文本 */
@@ -194,11 +193,11 @@ class TreeNodeConfig<T> {
 class TreeModel<T> {
     //#region 【Fields】
     /** 激活后 */
-    _onActive?: AnyFunc
+    _onActive?: TreeNodeModelFunc<T>
     /** 选中后 */
-    _onChecked?: AnyFunc
+    _onChecked?: TreeNodeModelFunc<T>
     /** 失活后 */
-    _onUnactive?: AnyFunc
+    _onUnactive?: TreeNodeModelFunc<T>
     /** 初始化后 */
     _onInited?: Function
     //#endregion 【Fields】
@@ -237,12 +236,12 @@ class TreeModel<T> {
     readonly OnClickInternal = (node: TreeNodeModel<T>) => {
         if (node.IsActive.value) {
             this.ActiveNode.value = undefined
-            this._onUnactive?.(node._data)
-            node._onUnactive?.(node._data)
+            this._onUnactive?.(node)
+            node._onUnactive?.(node)
         } else {
             this.ActiveNode.value = node
-            this._onActive?.(node._data)
-            node._onActive?.(node._data)
+            this._onActive?.(node)
+            node._onActive?.(node)
         }
     }
 
@@ -265,7 +264,6 @@ class TreeModel<T> {
 
     /** 设置“激活节点” */
     SetActiveNode(text: string) {
-        debugger
         const node = this.NodeArray.value.find(n => n.Text.value === text)
         if (!node) return
         this.ActiveNode.value = node

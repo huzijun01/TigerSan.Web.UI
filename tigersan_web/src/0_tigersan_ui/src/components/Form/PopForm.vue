@@ -29,7 +29,7 @@ import { FormConfig, FormModel } from '../../models'
 // 字段:
 let { model } = defineProps({
     model: {
-        type: FormModel,
+        type: FormModel<any>,
         default: () => new FormModel(new FormConfig(ObjectHelper.DefaultObjectAction))
     }
 })

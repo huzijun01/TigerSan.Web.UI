@@ -19,7 +19,7 @@ import SelectMenu from './SelectMenu.vue'
 // 字段:
 const { model } = defineProps({
     model: {
-        type: SelectModel,
+        type: SelectModel<any>,
         default: () => new SelectModel()
     }
 })

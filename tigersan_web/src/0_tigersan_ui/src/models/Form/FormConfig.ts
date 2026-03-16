@@ -1,16 +1,16 @@
 import { ref, type Ref } from "vue"
-import type { ObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
+import type { TObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
 import { type FormVerify, type FormSubmit, FormModel, FormItemModel } from "./FormModel"
 
 /** 表单配置 */
-class FormConfig {
+class FormConfig<T extends object> {
     //#region 【Fields】
     /** “表单项目配置”集合 */
-    _itemConfigs?: FormItemConfig[]
+    _itemConfigs?: FormItemConfig<T>[]
     /** “源数据获取”方法  */
-    _getSource: ObjectAction
+    _getSource: TObjectAction<T>
     /** 提交时 */
-    _onSubmit?: FormSubmit
+    _onSubmit?: FormSubmit<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -25,14 +25,14 @@ class FormConfig {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(getSource: ObjectAction) {
+    constructor(getSource: TObjectAction<T>) {
         this._getSource = getSource
     }
     //#endregion 【Ctor】
 }
 
 /** 表单项目配置 */
-class FormItemConfig {
+class FormItemConfig<T extends object> {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
@@ -44,17 +44,17 @@ class FormItemConfig {
     /** 改变后 */
     _onChange?: UnknownFunc
     /** 是否“验证无误” */
-    _isVerifyOk?: FormVerify
+    _isVerifyOk?: FormVerify<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
     //#region [需手动绑定]
     /** 目标数据
      * （需手动绑定到“表单元素”上） */
-    Target: Ref<unknown> = ref<unknown>()
+    Target: Ref<unknown | undefined> = ref<unknown>()
     /** 表单项目模型
      * （由“FormItemModel”传入，需手动绑定到“表单元素”上） */
-    ItemModel?: FormItemModel
+    ItemModel?: FormItemModel<T>
     //#endregion [需手动绑定]
 
     /** 属性文本 */
@@ -72,7 +72,7 @@ class FormItemConfig {
 }
 
 /** 设置“表单模型” */
-function SetFormModel(formModel: FormModel, formConfig: FormConfig) {
+function SetFormModel<T extends object>(formModel: FormModel<T>, formConfig: FormConfig<T>) {
     // Fields:
     formModel._itemModels = GetItemModels(formModel, formConfig)
     formModel._onSubmit = formConfig._onSubmit
@@ -85,10 +85,10 @@ function SetFormModel(formModel: FormModel, formConfig: FormConfig) {
 }
 
 /** 获取“表单项目模型”集合 */
-function GetItemModels(formModel: FormModel, formConfig: FormConfig): FormItemModel[] {
+function GetItemModels<T extends object>(formModel: FormModel<T>, formConfig: FormConfig<T>): FormItemModel<T>[] {
     if (!formConfig._itemConfigs) return []
 
-    let itemModels = new Array<FormItemModel>()
+    let itemModels = new Array<FormItemModel<T>>()
 
     formConfig._itemConfigs.forEach(itemConfig => {
         // create:

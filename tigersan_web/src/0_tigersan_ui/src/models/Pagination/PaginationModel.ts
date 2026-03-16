@@ -17,51 +17,51 @@ class PaginationModel {
     //#region 【Properties】
     //#region [private]
     /** 上一页“按钮模型” */
-    private PrePageButtonModel = new PaginationButtonModel(this)
+    private readonly PrePageButtonModel = new PaginationButtonModel(this)
     /** 下一页“按钮模型” */
-    private NextPageButtonModel = new PaginationButtonModel(this)
+    private readonly NextPageButtonModel = new PaginationButtonModel(this)
     /** 最小值“按钮模型” */
-    private MinButtonModel = new PaginationButtonModel(this)
+    private readonly MinButtonModel = new PaginationButtonModel(this)
     /** 最大值“按钮模型” */
-    private MaxButtonModel = new PaginationButtonModel(this)
+    private readonly MaxButtonModel = new PaginationButtonModel(this)
     /** 上一行“按钮模型” */
-    private PreRowButtonModel = new PaginationButtonModel(this)
+    private readonly PreRowButtonModel = new PaginationButtonModel(this)
     /** 下一行“按钮模型” */
-    private NextRowButtonModel = new PaginationButtonModel(this)
+    private readonly NextRowButtonModel = new PaginationButtonModel(this)
     //#endregion [private]
 
     //#region [初始化]
     /** 总数（非负） */
-    Count = new Int(0)
+    readonly Count = new Int(0)
     /** 页大小 */
-    PageSize = new Int(PaginationModel.Default_Page_Size)
+    readonly PageSize = new Int(PaginationModel.Default_Page_Size)
     /** 所选数字 */
-    SelectedNum = new Int(1)
+    readonly SelectedNum = new Int(1)
     /** 最大显示个数（非负） */
-    MaxShowPageCount = new Int(0)
+    readonly MaxShowPageCount = new Int(0)
     //#endregion [初始化]
 
     /** 页文本 */
-    PageText = ref('')
+    readonly PageText = ref('')
     /** “页文本”宽度 */
-    PageTextWidth = ref(60)
+    readonly PageTextWidth = ref(60)
     /** “页大小”集合
      * （不为空，大于0） */
-    PageSizes = shallowReactive(new Array<Int>())
+    readonly PageSizes = shallowReactive(new Array<Int>())
     /** 是否显示“总数” */
-    IsShowCount = ref(true)
+    readonly IsShowCount = ref(true)
     /** 是否显示“页大小” */
-    IsShowPageSize = ref(true)
+    readonly IsShowPageSize = ref(true)
     /** 是否显示“页文本框” */
-    IsShowPageTextBox = ref(true)
+    readonly IsShowPageTextBox = ref(true)
     /** 是否显示“被选行”个数 */
-    IsShowSelectedRowCount = ref(false)
+    readonly IsShowSelectedRowCount = ref(false)
     /** “按钮模型”集合
      * （由“PaginationModel”维护） */
-    ButtonModels = shallowReactive(new Array<PaginationButtonModel>())
+    readonly ButtonModels = shallowReactive(new Array<PaginationButtonModel>())
     /** “页大小”的“选择框”模型
      * （由“PaginationModel”维护） */
-    PageSizeSelectModel = new SelectModel()
+    readonly PageSizeSelectModel = new SelectModel()
 
     //#region [引用]
     /** 总行数 */
@@ -352,23 +352,23 @@ class PaginationModel {
 
     //#region 【回调】
     /** 初始化“按钮模型”集合 */
-    private OnSet = () => {
+    private readonly OnSet = () => {
         if (!this._isInit) return
         this.Init()
     }
 
     /** “上一页按钮”被选中 */
-    private PrePageButton_OnChecked = () => {
+    private readonly PrePageButton_OnChecked = () => {
         --this.SelectedNum.value
     }
 
     /** “下一页按钮”被选中 */
-    private NextPageButton_OnChecked = () => {
+    private readonly NextPageButton_OnChecked = () => {
         ++this.SelectedNum.value
     }
 
     /** “下一行按钮”被选中 */
-    private PreRowButton_OnChecked = () => {
+    private readonly PreRowButton_OnChecked = () => {
         let currentRow = this.GetCurrentRow()
         --currentRow.value
         // 起始、结束：
@@ -379,7 +379,7 @@ class PaginationModel {
     }
 
     /** “下一行按钮”被选中 */
-    private NextRowButton_OnChecked = () => {
+    private readonly NextRowButton_OnChecked = () => {
         let currentRow = this.GetCurrentRow()
         ++currentRow.value
         // 起始、结束：
@@ -390,7 +390,7 @@ class PaginationModel {
     }
 
     /** “页大小集合”改变后 */
-    private PageSizes_Changed = () => {
+    private readonly PageSizes_Changed = () => {
         this.PageSizeSelectModel.Items.splice(0)
 
         this.PageSizes.forEach(size => {

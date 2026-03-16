@@ -14,6 +14,18 @@ export class Verify {
     }
 
     /** 是否定义且非空 */
+    static IsNotUndefined(obj?: object): VerifyResult {
+        var res = new VerifyResult()
+
+        if (obj === undefined || obj === null) {
+            res.VerifyText = '不能为空'
+            res.VerifyState = FormResult.Error
+        }
+
+        return res
+    }
+
+    /** 是否定义且非空 */
     static IsNotUndefinedOrEmpty(str?: string): VerifyResult {
         var res = new VerifyResult()
 

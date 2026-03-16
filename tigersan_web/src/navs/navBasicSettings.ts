@@ -1,19 +1,26 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
-import CompanyMgtPage from '@/pages/BasicSettings/CompanyMgtPage/CompanyMgtPage.vue'
-import BaseStationMgtPage from '@/pages/Home/BaseStationMgtPage/BaseStationMgtPage.vue'
-import PersonMgtTagPage from '@/pages/Home/PersonMgtTagPage/PersonMgtTagPage.vue'
-import AssetMgtTagPage from '@/pages/Home/AssetMgtTagPage/AssetMgtTagPage.vue'
-import EnvSensorPage from '@/pages/Home/EnvSensorPage/EnvSensorPage.vue'
-import Terminal4gPage from '@/pages/Home/Terminal4gPage/Terminal4gPage.vue'
-import OperationRecordPage from '@/pages/Home/OperationRecordPage/OperationRecordPage.vue'
-import OperationRetryPage from '@/pages/Home/OperationRetryPage/OperationRetryPage.vue'
-import SystemSettingsPage from '@/pages/Home/SystemSettingsPage/SystemSettingsPage.vue'
+// BasicSettings:
+import CompanyMgtPage from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPage.vue'
+import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/PersonMgtPage.vue'
+// BaseStationMgt:
+import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
+// TagMgt:
+import PersonMgtTagPage from '@/pages/BasicSettings/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
+import AssetMgtTagPage from '@/pages/BasicSettings/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
+import EnvSensorPage from '@/pages/BasicSettings/TagMgt/EnvSensorPage/EnvSensorPage.vue'
+// TerminalMgt:
+import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
+// OperationMgt:
+import OperationRecordPage from '@/pages/BasicSettings/OperationMgt/OperationRecordPage/OperationRecordPage.vue'
+import OperationRetryPage from '@/pages/BasicSettings/OperationMgt/OperationRetryPage/OperationRetryPage.vue'
+// SystemSettings:
+import SystemSettingsPage from '@/pages/BasicSettings/SystemSettings/SystemSettingsPage/SystemSettingsPage.vue'
 
 const navBasicSettings: NavFolderConfig = {
     Folders: [
         {
             Title: "基础设置",
-            Icon: Icons.Router,
+            Icon: Icons.Setting_Linear,
             IsOpen: true,
             Buttons: [
                 {
@@ -30,14 +37,14 @@ const navBasicSettings: NavFolderConfig = {
                     _component: undefined
                 },
                 {
-                    Title: "权限管理",
-                    Icon: Icons.Key_Tilted,
-                    IsSelected: false,
-                    _component: undefined
-                },
-                {
                     Title: "人员管理",
                     Icon: Icons.Person,
+                    IsSelected: false,
+                    _component: PersonMgtPage
+                },
+                {
+                    Title: "权限管理",
+                    Icon: Icons.Key_Tilted,
                     IsSelected: false,
                     _component: undefined
                 },

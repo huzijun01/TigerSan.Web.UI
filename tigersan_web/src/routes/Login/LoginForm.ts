@@ -1,8 +1,6 @@
 import { UserInfo } from '@/models'
 import { useUserInfo } from '@/stores'
-import {
-    Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter,
-} from '@/0_tigersan_ui/tigerui'
+import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter } from '@/0_tigersan_ui/tigerui'
 
 // 组件模型:
 const uname = new TextBoxModel()
@@ -18,38 +16,35 @@ captcha.Placeholder.value = "验证码"
 
 // 配置:
 /** “用户名”项目配置 */
-const configUserName: FormItemConfig = {
+const configUserName: FormItemConfig<UserInfo> = {
     _propName: 'UserName',
     PropText: '',
     IsEquired: true,
     Target: uname.Value,
-    _isVerifyOk: (source) => {
-        var login = source as UserInfo
-        return Verify.IsNotUndefinedOrEmpty(login.UserName)
+    _isVerifyOk: source => {
+        return Verify.IsNotUndefinedOrEmpty(source.UserName)
     }
 }
 
 /** “密码”项目配置 */
-const configPassword: FormItemConfig = {
+const configPassword: FormItemConfig<UserInfo> = {
     _propName: 'Password',
     PropText: '',
     IsEquired: true,
     Target: pwd.Value,
-    _isVerifyOk: (source) => {
-        var login = source as UserInfo
-        return Verify.IsNotUndefinedOrEmpty(login.Password)
+    _isVerifyOk: source => {
+        return Verify.IsNotUndefinedOrEmpty(source.Password)
     }
 }
 
 /** “验证码”项目配置 */
-const configCaptcha: FormItemConfig = {
+const configCaptcha: FormItemConfig<UserInfo> = {
     _propName: 'Captcha',
     PropText: '',
     IsEquired: true,
     Target: captcha.Value,
-    _isVerifyOk: (source) => {
-        var login = source as UserInfo
-        return Verify.IsNotUndefinedOrEmpty(login.Captcha)
+    _isVerifyOk: source => {
+        return Verify.IsNotUndefinedOrEmpty(source.Captcha)
     }
 }
 
@@ -71,7 +66,7 @@ const OnSubmit = (source: object) => {
 }
 
 /** “登录”表单配置 */
-let configLoginForm: FormConfig = {
+let configLoginForm: FormConfig<UserInfo> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: GetSource,

@@ -2,12 +2,12 @@ import { ref, type Ref, computed, watch } from "vue"
 import { Colors } from "../../base"
 import { dialog } from '../../stores'
 import { FormConfig, SetFormModel } from './FormConfig'
-import type { ObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
+import type { TObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
 import { ObjectHelper } from "../../helpers"
 
-type FormVerify = (source: object) => VerifyResult
-type FormSubmit = (source: object) => SubmitResult
-type FormSubmitAsync = (source: object) => Promise<SubmitResult>
+type FormVerify<T extends object> = (source: T) => VerifyResult
+type FormSubmit<T extends object> = (source: T) => SubmitResult
+type FormSubmitAsync<T extends object> = (source: T) => Promise<SubmitResult>
 
 /** 表单结果 */
 enum FormResult {
@@ -45,7 +45,7 @@ class SubmitResult {
 }
 
 /** 表单模型 */
-class FormModel {
+class FormModel<T extends object> {
     //#region 【Fields】
     /** 是否“显示结果” */
     _isShowResult = true
@@ -53,16 +53,16 @@ class FormModel {
     _isShowSuccessResult = true
     /** 源数据
      * （由“FormModel”内部维护） */
-    _source: object
+    _source: T
     /** “表单项目模型”集合
      * （由“FormModel”内部维护） */
-    _itemModels = new Array<FormItemModel>()
+    _itemModels = new Array<FormItemModel<T>>()
     /** 获取“源数据”  */
-    _getSource: ObjectAction
+    _getSource: TObjectAction<T>
     /** 提交时 */
-    _onSubmit?: FormSubmit
+    _onSubmit?: FormSubmit<T>
     /** 提交时（异步） */
-    _onSubmitAsync?: FormSubmitAsync
+    _onSubmitAsync?: FormSubmitAsync<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -77,7 +77,7 @@ class FormModel {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(config: FormConfig) {
+    constructor(config: FormConfig<T>) {
         // 初始化“字段”:
         this._getSource = config._getSource
         this._source = this._getSource()
@@ -97,7 +97,7 @@ class FormModel {
     //#region 【Functions】
     //#region [private]
     /** 遍历“项目模型”集合 */
-    private ForEachItemModels(fn: (itemModel: FormItemModel) => void) {
+    private ForEachItemModels(fn: (itemModel: FormItemModel<T>) => void) {
         for (let index = 0; index < this._itemModels.length; index++) {
             const itemModel = this._itemModels[index]
 
@@ -245,14 +245,14 @@ class FormModel {
 }
 
 /** 表单项目模型 */
-class FormItemModel {
+class FormItemModel<T extends object> {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
     /** “属性名”垂直对齐 */
     _propNameVerticalAlign = 'middle'
     /** 所属“表单模型” */
-    _formModel: FormModel
+    _formModel: FormModel<T>
     /** “源数据”getter */
     _getValue: UnknownGetter = ObjectHelper.DefaultUnknownGetter
     /** “源数据”setter */
@@ -260,7 +260,7 @@ class FormItemModel {
     /** 改变后 */
     _onChange?: UnknownFunc
     /** 是否“验证无误” */
-    _isVerifyOk?: FormVerify
+    _isVerifyOk?: FormVerify<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -327,7 +327,7 @@ class FormItemModel {
 
     //#region 【Ctor】
     constructor(
-        formModel: FormModel,
+        formModel: FormModel<T>,
         propName: string,
         target: Ref<unknown>
     ) {

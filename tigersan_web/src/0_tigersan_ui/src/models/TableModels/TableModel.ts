@@ -1,13 +1,13 @@
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 import { Colors, Theme } from '../../base'
-import type { StringGetter, UnknownSetter, ObjectArrayFunc, Action } from '../../types'
+import type { StringGetter, UnknownSetter, ObjectArrayFunc } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
 
-type TableItemFunc = (itemModel: TableItemModel) => void
-type TryTableItemFunc = TableItemFunc | undefined
-type TableHeaderFunc = (itemModel: TableHeaderModel) => void
-type TryTableHeaderFunc = TableHeaderFunc | undefined
+type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
+type TryTableItemFunc<T extends object> = TableItemFunc<T> | undefined
+type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
+type TryTableHeaderFunc<T extends object> = TableHeaderFunc<T> | undefined
 
 /** 文本对齐 */
 enum TextAlign {
@@ -18,7 +18,7 @@ enum TextAlign {
 }
 
 /** “表格”配置 */
-class TableModel {
+class TableModel<T extends object> {
     //#region 【Fields】
     /** 是否“自动刷新” */
     _isAutoRefresh = true
@@ -31,28 +31,28 @@ class TableModel {
      * （由“TableModel”维护） */
     _checkboxBehavior: CheckboxBehavior
     /** 初始化“项目” */
-    _initItem: TryTableItemFunc
+    _initItem: TryTableItemFunc<T>
     /** 初始化“列头” */
-    _initHeader: TryTableHeaderFunc
+    _initHeader: TryTableHeaderFunc<T>
     /** 初始化“行模型”后 */
-    _onInitRowModel?: (rowDatas: ShallowReactive<object[]>) => void
+    _onInitRowModel?: (rowDatas: ShallowReactive<T[]>) => void
     /** “项目文本”输入 */
-    _onItemTextInput: TryTableItemFunc
+    _onItemTextInput: TryTableItemFunc<T>
     /** “项目文本”改变 */
-    _onItemTextChange: TryTableItemFunc
+    _onItemTextChange: TryTableItemFunc<T>
     /** “选中状态”改变 */
     _onSelectStateChange?: ObjectArrayFunc
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** “行数据”集合 */
-    readonly RowDatas: ShallowReactive<object[]> = shallowReactive([])
+    readonly RowDatas: ShallowReactive<T[]> = shallowReactive([])
 
     /** “列头模型”集合 */
-    HeaderModels: ShallowReactive<TableHeaderModel[]> = shallowReactive([])
+    HeaderModels: ShallowReactive<TableHeaderModel<T>[]> = shallowReactive([])
 
     /** “行模型”集合 */
-    RowModels: ShallowReactive<TableRowModel[]> = shallowReactive([])
+    RowModels: ShallowReactive<TableRowModel<T>[]> = shallowReactive([])
 
     /** 是否“填充父容器” */
     IsFill = ref(true)
@@ -101,7 +101,7 @@ class TableModel {
 
     /** “被选中”的“行数据”集合 */
     SelectedRowDatas = computed(() => {
-        let list = new Array<object>()
+        let list = new Array<T>()
 
         this.RowModels.forEach(rowModel => {
             if (rowModel.IsChecked.value) {
@@ -134,8 +134,8 @@ class TableModel {
                 this.RowModels.forEach(rowModel => {
                     let checkboxModel = new CheckboxBehaviorModel(
                         rowModel,
-                        rowModel => (rowModel as TableRowModel).IsChecked.value,
-                        (rowModel, bool) => { (rowModel as TableRowModel).IsChecked.value = bool }
+                        rowModel => (rowModel as TableRowModel<T>).IsChecked.value,
+                        (rowModel, bool) => { (rowModel as TableRowModel<T>).IsChecked.value = bool }
                     )
                     CheckboxModels.push(checkboxModel)
                 })
@@ -199,25 +199,26 @@ class TableModel {
     }
 
     /** 设置“行数据”集合 */
-    SetRowDatas(rowDatas: object[]) {
-        ArrayHelper.DeleteItem(this.RowDatas, rowDatas)
+    SetRowDatas(rowDatas: T[]) {
+        this.RowDatas.splice(0)
+        this.RowDatas.push(...rowDatas)
     }
 
     /** 删除“行数据” */
-    DeleteRowData(rowData: object) {
+    DeleteRowData(rowData: T) {
         ArrayHelper.DeleteItem(this.RowDatas, rowData)
     }
     //#endregion 【Functions】
 }
 
 /** “行”配置 */
-class TableRowModel {
+class TableRowModel<T extends object> {
     //#region 【Fields】
     _id = nanoid()
     /** 行数据 */
-    _rowData: object
+    _rowData: T
     /** 所属“表格”配置 */
-    _tableModel: TableModel
+    _tableModel: TableModel<T>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -225,11 +226,11 @@ class TableRowModel {
     IsChecked = ref(false)
 
     /** “项目模型”集合 */
-    ItemModels: ShallowReactive<TableItemModel[]> = shallowReactive([])
+    ItemModels: ShallowReactive<TableItemModel<T>[]> = shallowReactive([])
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(tableModel: TableModel, rowData: object) {
+    constructor(tableModel: TableModel<T>, rowData: T) {
         this._rowData = rowData
         this._tableModel = tableModel
     }
@@ -237,12 +238,12 @@ class TableRowModel {
 }
 
 /** “项目”配置 */
-class TableItemModel {
+class TableItemModel<T extends object> {
     //#region 【Fields】
     _id = nanoid()
-    _headerModel: TableHeaderModel
-    _rowModel: TableRowModel
-    get _tableModel(): TableModel {
+    _headerModel: TableHeaderModel<T>
+    _rowModel: TableRowModel<T>
+    get _tableModel(): TableModel<T> {
         return this._headerModel._tableModel
     }
     //#endregion 【Fields】
@@ -268,7 +269,7 @@ class TableItemModel {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(headerModel: TableHeaderModel, rowModel: TableRowModel) {
+    constructor(headerModel: TableHeaderModel<T>, rowModel: TableRowModel<T>) {
         this._headerModel = headerModel
         this._rowModel = rowModel
         this.UpdateText()
@@ -313,13 +314,13 @@ class TableItemModel {
 }
 
 /** “列头”模型 */
-class TableHeaderModel {
+class TableHeaderModel<T extends object> {
     //#region 【Fields】
     _id = nanoid()
     /** 属性名 */
     _propName = ''
     /** 所属“表格”配置 */
-    _tableModel: TableModel
+    _tableModel: TableModel<T>
     /** 文本获取方法 */
     _strGetter: StringGetter = ObjectHelper.DefaultStringGetter
     /** 对象修改方法 */
@@ -349,7 +350,7 @@ class TableHeaderModel {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(tableModel: TableModel, propName: string) {
+    constructor(tableModel: TableModel<T>, propName: string) {
         this._propName = propName
         this._tableModel = tableModel
     }
@@ -366,6 +367,8 @@ class TableHeaderConfig {
     _objSetter?: UnknownSetter
     /** 文本 */
     Text?: string
+    /** 宽度 */
+    Width?: number
     /** 文本对齐 */
     TextAlign?: TextAlign
     /** 是否只读 */
@@ -381,11 +384,12 @@ class TableHeaderConfig {
 }
 
 /** 将“配置”设置到“模型” */
-function SetTableHeaderModel(model: TableHeaderModel, config: TableHeaderConfig) {
+function SetTableHeaderModel<T extends object>(model: TableHeaderModel<T>, config: TableHeaderConfig) {
     model._propName = config._propName
     if (config._strGetter) model._strGetter = config._strGetter
     if (config._objSetter) model._objSetter = config._objSetter
     if (config.Text != undefined) model.Text.value = config.Text
+    if (config.Width != undefined) model.Width.value = config.Width
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
     if (config.IsAllowWrap != undefined) model.IsAllowWrap.value = config.IsAllowWrap

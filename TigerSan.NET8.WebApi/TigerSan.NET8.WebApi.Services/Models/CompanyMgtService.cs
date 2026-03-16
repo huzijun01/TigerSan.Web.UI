@@ -21,7 +21,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“后代数据”</summary>
         private void RemoveChilds(int index)
         {
-            var entities = _dbSet.Where(i => i.ParentCompany == index);
+            var entities = _dbSet.Where(i => i.Parent == index);
             _dbSet.RemoveRange(entities);
         }
         #endregion
