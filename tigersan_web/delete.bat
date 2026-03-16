@@ -15,4 +15,6 @@ if exist "dist" (
 
 endlocal
 
-pause
+echo Operation completed!
+echo The window will automatically close in 5 seconds.
+timeout /t 5 /nobreak >nul

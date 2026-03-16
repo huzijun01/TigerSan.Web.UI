@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { computed, ref, shallowReactive } from "vue"
+import { computed, ref, shallowRef, shallowReactive } from "vue"
 import type { AnyFunc } from "../../types"
 import { ContentSizeBehavior } from "../../helpers"
 
@@ -20,6 +20,8 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     _parent?: TreeNodeModel<T>
     /** 激活后 */
     _onActive?: AnyFunc
+    /** 失活后 */
+    _onUnactive?: AnyFunc
     /** 选中后 */
     _onChecked?: AnyFunc
     //#endregion 【Fields】
@@ -71,13 +73,13 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     //#region 【Functions】
     //#region [static]
     /** 遍历集合 */
-    static readonly TraverseRange = (nodes: TreeNodeModel<unknown>[], callback: TreeNodeModelFunc<unknown>) => {
+    static TraverseRange<T>(nodes: TreeNodeModel<T>[], callback: TreeNodeModelFunc<T>) {
         nodes.forEach(node => node.Traverse(callback))
     }
 
     /** 获取数组（无嵌套） */
-    static readonly GetArrayRange = (nodes: TreeNodeModel<unknown>[]) => {
-        const arr: TreeNodeModel<unknown>[] = []
+    static GetArrayRange<T>(nodes: TreeNodeModel<T>[]) {
+        const arr: TreeNodeModel<T>[] = []
         nodes.forEach(node => {
             arr.push(...node.GetArray())
         })
@@ -156,6 +158,7 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     readonly OnChange = () => {
         if (this.IsChecked.value) {
             this._onChecked?.(this._data)
+            this._tree._onChecked?.(this._data)
         }
 
         this.UpdateParentNodesIsChecked()
@@ -173,6 +176,8 @@ class TreeNodeConfig<T> {
     _onActive?: AnyFunc
     /** 选中后 */
     _onChecked?: AnyFunc
+    /** 失活后 */
+    _onUnactive?: AnyFunc
 
     // Properties:
     /** 文本 */
@@ -187,11 +192,22 @@ class TreeNodeConfig<T> {
 
 /** “树”模型 */
 class TreeModel<T> {
+    //#region 【Fields】
+    /** 激活后 */
+    _onActive?: AnyFunc
+    /** 选中后 */
+    _onChecked?: AnyFunc
+    /** 失活后 */
+    _onUnactive?: AnyFunc
+    /** 初始化后 */
+    _onInited?: Function
+    //#endregion 【Fields】
+
     //#region 【Properties】
     /** 是否“显示复选框” */
     readonly IsShowCheckbox = ref(true)
-    /** 被激活的节点 */
-    readonly ActiveNode = ref<TreeNodeModel<T> | undefined>()
+    /** 激活节点 */
+    readonly ActiveNode = shallowRef<TreeNodeModel<T> | undefined>()
     /** “节点”集合 */
     readonly Nodes = shallowReactive<TreeNodeModel<T>[]>([])
 
@@ -199,7 +215,7 @@ class TreeModel<T> {
     /** 是否“已激活” */
     readonly IsActive = computed(() => this.ActiveNode.value != undefined)
     /** “节点”数组（无嵌套） */
-    readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange(this.Nodes))
+    readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange<T>(this.Nodes))
     /** “选中节点”数组（无嵌套） */
     readonly CheckedNodeArray = computed(() => this.NodeArray.value.filter(n => n.IsChecked.value))
     /** “激活节点”的数据 */
@@ -221,23 +237,38 @@ class TreeModel<T> {
     readonly OnClickInternal = (node: TreeNodeModel<T>) => {
         if (node.IsActive.value) {
             this.ActiveNode.value = undefined
+            this._onUnactive?.(node._data)
+            node._onUnactive?.(node._data)
         } else {
             this.ActiveNode.value = node
+            this._onActive?.(node._data)
             node._onActive?.(node._data)
         }
     }
 
     /** 初始化 */
     readonly Init = (configs?: TreeNodeConfig<T>[]) => {
-        this.Nodes.splice(0)
-        this.ActiveNode.value = undefined
+        try {
+            this.Nodes.splice(0)
+            this.ActiveNode.value = undefined
 
-        if (!configs) return
+            if (!configs) return
 
-        configs.forEach(config => {
-            const node = GetNodeModel(this, config)
-            this.Nodes.push(node)
-        })
+            configs.forEach(config => {
+                const node = GetNodeModel(this, config)
+                this.Nodes.push(node)
+            })
+        } finally {
+            this._onInited?.()
+        }
+    }
+
+    /** 设置“激活节点” */
+    SetActiveNode(text: string) {
+        debugger
+        const node = this.NodeArray.value.find(n => n.Text.value === text)
+        if (!node) return
+        this.ActiveNode.value = node
     }
 
     /** 获取“文本”集合 */
@@ -272,6 +303,7 @@ function InitNodeModel<T>(config: TreeNodeConfig<T>, node: TreeNodeModel<T>) {
     if (config._data != undefined) node._data = config._data
     if (config._onActive != undefined) node._onActive = config._onActive
     if (config._onChecked != undefined) node._onChecked = config._onChecked
+    if (config._onUnactive != undefined) node._onUnactive = config._onUnactive
 
     // Properties:
     if (config.Text != undefined) node.Text.value = config.Text

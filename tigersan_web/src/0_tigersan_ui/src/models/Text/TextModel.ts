@@ -1,5 +1,5 @@
-import { computed, type ComputedRef } from "vue"
-import { Language, config } from "../helpers"
+import { computed, type Ref, type ComputedRef } from "vue"
+import { Language, config } from "../../helpers"
 
 /** 文本模型 */
 class TextModel {
@@ -35,6 +35,11 @@ class TextModel {
     /** 获取“计算属性” */
     static Computed(en: string, zhCn: string): ComputedRef<string> {
         return new TextModel(en, zhCn).Value
+    }
+
+    /** 获取“默认值计算属性” */
+    static DefaultComputed(ref: Ref<string>, cmpDefault: ComputedRef<string>): ComputedRef<string> {
+        return computed(() => ref.value.trim() != '' ? ref.value : cmpDefault.value)
     }
     //#endregion 【Functions】
 }

@@ -1,8 +1,9 @@
 import { nanoid } from "nanoid"
 import { ref, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
 import { Texts } from "../../texts"
+import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
-import { RectPosition, RectHelper, StringHelper } from '../../helpers'
+import { RectPosition, RectHelper } from '../../helpers'
 
 type MenuItemModelAction = (itemModel: MenuItemModel) => void
 
@@ -89,10 +90,8 @@ class SelectModel extends ConverterBase {
     readonly Items: ShallowReactive<Object[]> = shallowReactive([])
 
     //#region [computed]
-    /** 使用的占位文本 */
-    readonly UsedPlaceholder = computed(() => {
-        return StringHelper.IsNotEmpty(this.Placeholder.value) ? this.Placeholder.value : Texts.PleaseSelect.value
-    })
+    /** 显示的“占位文本” */
+    readonly ShowPlaceholder = TextModel.DefaultComputed(this.Placeholder, Texts.PleaseSelect)
 
     /** 项目集合 */
     readonly ItemModels = computed(() => {

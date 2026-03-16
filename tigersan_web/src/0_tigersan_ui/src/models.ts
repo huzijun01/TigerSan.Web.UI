@@ -31,6 +31,9 @@ export * from './models/Pagination/PaginationButtonModel'
 /* Table: */
 export * from './models/TableModels/TableModel'
 
+/* Text: */
+export * from './models/Text/TextModel'
+
 /* Tree: */
 export * from './models/Tree/TreeModel'
 

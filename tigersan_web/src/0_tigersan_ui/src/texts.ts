@@ -1,7 +1,10 @@
-import { TextModel } from "./text/TextModel"
+import { TextModel } from "./models/Text/TextModel"
 
 /** 文本集合 */
 class Texts {
+    static readonly Yes = TextModel.Computed('Yes', '是')
+    static readonly No = TextModel.Computed('No', '否')
+    static readonly Cancel = TextModel.Computed('Cancel', '取消')
     static readonly Count = TextModel.Computed('Count', '总数')
     static readonly To = TextModel.Computed('To', '到')
     static readonly page = TextModel.Computed('page', '页')

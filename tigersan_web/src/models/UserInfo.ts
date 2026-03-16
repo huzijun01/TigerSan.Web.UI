@@ -1,7 +1,10 @@
 import { StringHelper } from '@/0_tigersan_ui/tigerui'
 
 class UserInfo {
+    Company = ''
+    Role = ''
     UserName = ''
+    Nickame = ''
     Password = ''
     Captcha = ''
 

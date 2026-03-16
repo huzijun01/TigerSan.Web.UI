@@ -1,32 +1,11 @@
 import { ref } from 'vue'
 import { AxiosHelper } from '@/helpers'
-import { tree, CompanyMgtModel, companyMgtTable, Companies2Tree as Companies2Nodes } from './CompanyMgtTable'
-import {
-    Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState,
-    FormModel, FormConfig, FormItemConfig, SelectModel
-} from '@/0_tigersan_ui/tigerui'
-import { GetSubmitResult, MyActionResult } from '@/models'
 import { navData } from '@/navs/navModel'
+import { GetSubmitResult, MyActionResult } from '@/models'
+import { tree, CompanyMgtModel, companyMgtTable, Companies2Tree, selectParentCompany, selectFormParentCompany } from './CompanyMgtTable'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 const action = 'CompanyMgt'
-
-/** 选择框 */
-const selectParentCompany = new SelectModel()
-selectParentCompany.Width.value = 208
-selectParentCompany.IsAllowSearch.value = true
-selectParentCompany.Placeholder.value = '请选择公司名称'
-
-/** 选择框（表单） */
-const selectFormParentCompany = new SelectModel()
-selectFormParentCompany.Width.value = 208
-selectFormParentCompany.IsAllowSearch.value = true
-selectFormParentCompany.Placeholder.value = '请选择公司名称'
-selectFormParentCompany._converter = (obj: any) => {
-    if (!obj) return ''
-    const index = obj as number
-    const company = tree.GetDatas().find(d => d.index === index)
-    return company ? company.name : ''
-}
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig = {
@@ -85,7 +64,7 @@ async function Refresh() {
     await AxiosHelper.GetAllList<CompanyMgtModel>(action)
         .then(arr => {
             tree.Nodes.splice(0)
-            tree.Init(Companies2Nodes(arr))
+            tree.Init(Companies2Tree(arr))
         })
 
     selectParentCompany.Items.splice(0)
@@ -151,7 +130,7 @@ function Delete() {
 
     dialog.ShowDialog(
         '确认',
-        '是否确定删除？',
+        '是否确定删除该公司及其下级公司？',
         model,
         DeleteRowData,
         DialogMode.YesOrNo,
@@ -178,10 +157,13 @@ function InitEvents() {
     })
 }
 
+/** 进入主页 */
+function GoHome() {
+    navData.GoHome()
+}
+
 export default {
     tree,
-    selectParentCompany,
-    selectFormParentCompany,
     configName,
     configAddr,
     configParentCompany,
@@ -190,4 +172,5 @@ export default {
     Add,
     Edit,
     Delete,
+    GoHome,
 }

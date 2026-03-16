@@ -1,5 +1,5 @@
 <template>
-    <div class="key-value" :style="marginRightStyle">
+    <div v-if="!(isAutoHidden && propValue === '')" class="key-value" :style="marginRightStyle">
         <span>{{ propName }}</span>
         <span>{{ Texts.Colon.value }}</span>
         <span :style="colorStyle">{{ propValue }}</span>
@@ -29,6 +29,10 @@ let { propName, propValue, color, marginRight } = defineProps({
     marginRight: {
         type: Number,
         default: 15
+    },
+    isAutoHidden: {
+        type: Boolean,
+        default: false
     }
 })
 

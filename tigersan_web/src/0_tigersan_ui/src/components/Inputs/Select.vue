@@ -1,6 +1,6 @@
 <template>
     <div class="select" ref="refRoot" :class="model.rootClass.value" :style="model.widthStyle.value" @click="OnClick">
-        <input type="text" ref="refInput" v-model="model.Text.value" :placeholder="model.UsedPlaceholder.value"
+        <input type="text" ref="refInput" v-model="model.Text.value" :placeholder="model.ShowPlaceholder.value"
             :disabled="!model.IsEnabled.value">
         <div class="button-panel flex-center">
             <div class="arrow iconfont" :style="model.arrowStyleObj.value">{{ Icons.Arrow_Right }}</div>

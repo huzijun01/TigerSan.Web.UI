@@ -5,11 +5,12 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectParentCompany"></Select>
+                        <Select :model="selectParentCompany"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
+                        <button :disabled="!tree.IsActive.value" @click="form.GoHome">进入</button>
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 新增</button>
                         <button class="bg-warning" :disabled="!tree.IsActive.value" @click="form.Edit">修改</button>
@@ -44,7 +45,7 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configParentCompany.ItemModel">
-                <Select :model="form.selectFormParentCompany"></Select>
+                <Select :model="selectFormParentCompany"></Select>
             </FormItem>
         </FormRow>
     </PopForm>
@@ -54,8 +55,8 @@
 import form from './CompanyMgtForm'
 import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
-import { tree } from './CompanyMgtTable'
-import { Search, PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
+import { tree, selectParentCompany, selectFormParentCompany } from './CompanyMgtTable'
+import { PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 

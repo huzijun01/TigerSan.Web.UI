@@ -19,6 +19,7 @@
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <div class="info-panel flex-right" ref="refInfoPanel">
+          <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.Company"></KeyValue>
           <IconButton :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value" :click="navData.GoBasicSettings">
           </IconButton>
           <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale">
@@ -49,7 +50,7 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import { useUserInfo } from '@/stores'
 import { IsUserInfoVerifyOk } from '@/models'
 import { navModel, navData } from '@/navs/navModel'
-import { Texts, Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, ThemeHelper, config } from '@/0_tigersan_ui/tigerui'
+import { Texts, Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, ThemeHelper, config, KeyValue } from '@/0_tigersan_ui/tigerui'
 
 // 字段:
 const userName = ref('')

@@ -9,9 +9,10 @@
                 </div>
                 <div class="content">{{ m.Msg }}</div>
                 <div class="button-panel flex-stretch" v-if="m.IsShowButtonPanel.value">
-                    <button class="yes bg-success" @click="Close(m.id, DialogState.Yes)">{{ m.YesText.value }}</button>
+                    <button class="yes bg-success" @click="Close(m.id, DialogState.Yes)">{{ m.ShowYesText.value
+                        }}</button>
                     <button class="no bg-danger" v-if="m.IsShowNoButton.value" @click="Close(m.id, DialogState.No)">{{
-                        m.NoText.value }}</button>
+                        m.ShowNoText.value }}</button>
                 </div>
             </div>
         </div>
@@ -19,8 +20,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Teleport, computed, type ShallowReactive } from 'vue';
-import { useDialogStore } from '../../stores/dialog';
+import { Teleport, computed, type ShallowReactive } from 'vue'
+import { useDialogStore } from '../../stores/dialog'
 import { DialogState, type DialogModel } from '../../models'
 
 // 全局数据：
@@ -40,7 +41,7 @@ function Close(id: string, state: DialogState) {
     }
 
     if (model.callback) {
-        model.callback(state, model.data)
+        model.callback(state, model._data)
     }
 
     const index = dialogModels.indexOf(model);
