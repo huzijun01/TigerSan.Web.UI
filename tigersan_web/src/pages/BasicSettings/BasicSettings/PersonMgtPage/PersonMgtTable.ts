@@ -5,7 +5,8 @@ import { PaginationModel, SearchModel, SelectModel, TableModel } from '@/0_tiger
 const selectRole = new SelectModel<RoleMgtModel>()
 selectRole.Width.value = 208
 selectRole.IsAllowSearch.value = true
-selectRole.Placeholder.value = '请选择角色'
+selectRole.PlaceholderCN.value = '请选择角色'
+selectRole.PlaceholderEN.value = 'Please select a role'
 selectRole._converter = (role: RoleMgtModel): string => role.Name
 
 /** 搜索“名称” */
@@ -15,7 +16,7 @@ searchName.Placeholder.value = '请输人员名称'
 /** “人员管理”模型 */
 class PersonMgtModel {
     index = 0
-    role = ''
+    role = 0
     username = ''
     nickname = ''
     password = ''

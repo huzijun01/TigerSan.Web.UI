@@ -40,7 +40,7 @@ ringingSetting.ProductType = undefined
 ringingSetting.FirmwareVersion = undefined
 
 /** “设备类型”项目配置 */
-const configProductType: FormItemConfig<RingingSettingModel> = {
+const configProductType: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'ProductType',
     PropText: '设备类型',
     IsEquired: true,
@@ -51,7 +51,7 @@ const configProductType: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “固件版本”项目配置 */
-const configFirmwareVersion: FormItemConfig<RingingSettingModel> = {
+const configFirmwareVersion: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'FirmwareVersion',
     PropText: '固件版本',
     IsEquired: true,
@@ -62,7 +62,7 @@ const configFirmwareVersion: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “是否启用”项目配置 */
-const configEnable: FormItemConfig<RingingSettingModel> = {
+const configEnable: FormItemConfig<RingingSettingModel, boolean> = {
     _propName: 'Enable',
     PropText: '响铃设置',
     IsEquired: true,
@@ -70,7 +70,7 @@ const configEnable: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “单次响铃时长”项目配置 */
-const configringingTime: FormItemConfig<RingingSettingModel> = {
+const configringingTime: FormItemConfig<RingingSettingModel, boolean> = {
     _propName: 'ringingTime',
     _propNameVerticalAlign: 'top',
     PropText: '单次响铃时长',
@@ -79,7 +79,7 @@ const configringingTime: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “快、响铃”项目配置 */
-const configRinging_Fast_On: FormItemConfig<RingingSettingModel> = {
+const configRinging_Fast_On: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Fast_On',
     PropText: '响铃',
     Target: ref(),
@@ -89,7 +89,7 @@ const configRinging_Fast_On: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “快、空闲”项目配置 */
-const configRinging_Fast_Off: FormItemConfig<RingingSettingModel> = {
+const configRinging_Fast_Off: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Fast_Off',
     PropText: '空闲',
     Target: ref(),
@@ -99,7 +99,7 @@ const configRinging_Fast_Off: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “较快、响铃”项目配置 */
-const configRinging_Faster_On: FormItemConfig<RingingSettingModel> = {
+const configRinging_Faster_On: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Faster_On',
     PropText: '响铃',
     Target: ref(),
@@ -109,7 +109,7 @@ const configRinging_Faster_On: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “较快、空闲”项目配置 */
-const configRinging_Faster_Off: FormItemConfig<RingingSettingModel> = {
+const configRinging_Faster_Off: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Faster_Off',
     PropText: '空闲',
     Target: ref(),
@@ -119,7 +119,7 @@ const configRinging_Faster_Off: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “中、响铃”项目配置 */
-const configRinging_Medium_On: FormItemConfig<RingingSettingModel> = {
+const configRinging_Medium_On: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Medium_On',
     PropText: '响铃',
     Target: ref(),
@@ -129,7 +129,7 @@ const configRinging_Medium_On: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “中、空闲”项目配置 */
-const configRinging_Medium_Off: FormItemConfig<RingingSettingModel> = {
+const configRinging_Medium_Off: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Medium_Off',
     PropText: '空闲',
     Target: ref(),
@@ -139,7 +139,7 @@ const configRinging_Medium_Off: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “较慢、响铃”项目配置 */
-const configRinging_Slower_On: FormItemConfig<RingingSettingModel> = {
+const configRinging_Slower_On: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Slower_On',
     PropText: '响铃',
     Target: ref(),
@@ -149,7 +149,7 @@ const configRinging_Slower_On: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “较慢、空闲”项目配置 */
-const configRinging_Slower_Off: FormItemConfig<RingingSettingModel> = {
+const configRinging_Slower_Off: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Slower_Off',
     PropText: '空闲',
     Target: ref(),
@@ -164,7 +164,7 @@ const GetSource = () => {
 }
 
 /** “慢、响铃”项目配置 */
-const configRinging_Slow_On: FormItemConfig<RingingSettingModel> = {
+const configRinging_Slow_On: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Slow_On',
     PropText: '响铃',
     Target: ref(),
@@ -174,7 +174,7 @@ const configRinging_Slow_On: FormItemConfig<RingingSettingModel> = {
 }
 
 /** “慢、空闲”项目配置 */
-const configRinging_Slow_Off: FormItemConfig<RingingSettingModel> = {
+const configRinging_Slow_Off: FormItemConfig<RingingSettingModel, string> = {
     _propName: 'Ringing_Slow_Off',
     PropText: '空闲',
     Target: ref(),

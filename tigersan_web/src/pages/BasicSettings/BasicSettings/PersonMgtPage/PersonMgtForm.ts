@@ -8,19 +8,21 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 const action = 'PersonMgt'
 
 /** “角色”项目配置 */
-const configRole: FormItemConfig<PersonMgtModel> = {
-    _propName: 'Role',
+const configRole: FormItemConfig<PersonMgtModel, RoleMgtModel> = {
+    _propName: 'role',
     PropText: '角色',
     IsEquired: true,
     Target: selectRole.Value,
+    _getValue: source => selectRole.Items.find(i => i.Index === source.index),
+    _setValue: (source, propName, value) => value ? source.index = value.Index : -1,
     _isVerifyOk: source => {
-        return Verify.IsNotUndefined(source)
+        return Verify.IsGreaterThan(source.index, 0)
     }
 }
 
 /** “用户名”项目配置 */
-const configUsername: FormItemConfig<PersonMgtModel> = {
-    _propName: 'Username',
+const configUsername: FormItemConfig<PersonMgtModel, string> = {
+    _propName: 'username',
     PropText: '用户名',
     IsEquired: true,
     Target: ref(),
@@ -30,8 +32,8 @@ const configUsername: FormItemConfig<PersonMgtModel> = {
 }
 
 /** “昵称”项目配置 */
-const configNickname: FormItemConfig<PersonMgtModel> = {
-    _propName: 'Nickname',
+const configNickname: FormItemConfig<PersonMgtModel, string> = {
+    _propName: 'nickname',
     PropText: '昵称',
     IsEquired: true,
     Target: ref(),

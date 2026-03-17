@@ -5,17 +5,17 @@ import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
 import { RectPosition, RectHelper } from '../../helpers'
 
-type MenuItemModelAction<T> = (itemModel: MenuItemModel<T>) => void
+type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
 
 /** “菜单项目”模型 */
-class MenuItemModel<T> extends ConverterBase<T> {
+class MenuItemModel<TSource> extends ConverterBase<TSource> {
     //#region 【Fields】
     /** ID */
     readonly _id = nanoid()
     /** 所属“选择框” */
-    readonly _select: SelectModel<T>
+    readonly _select: SelectModel<TSource>
     /** 点击事件 */
-    _onClick?: MenuItemModelAction<T>
+    _onClick?: MenuItemModelAction<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -29,7 +29,7 @@ class MenuItemModel<T> extends ConverterBase<T> {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(select: SelectModel<T>) {
+    constructor(select: SelectModel<TSource>) {
         super()
         this._select = select
     }
@@ -49,13 +49,13 @@ class MenuItemModel<T> extends ConverterBase<T> {
 }
 
 /** “选择框”模型 */
-class SelectModel<T> extends ConverterBase<T> {
+class SelectModel<TSource> extends ConverterBase<TSource> {
     //#region 【Fields】
     /** 菜单实例
      * （由“Select”内部维护） */
     static _appMenu?: App
     /** 选择后 */
-    _onSelect?: MenuItemModelAction<T>
+    _onSelect?: MenuItemModelAction<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -84,21 +84,26 @@ class SelectModel<T> extends ConverterBase<T> {
     /** 搜索文本
      * （由“MenuItemModel”维护） */
     readonly SearchText = ref('')
-    /** 占位文本 */
-    readonly Placeholder = ref('')
+    /** 占位文本（英文） */
+    readonly PlaceholderEN = ref('')
+    /** 占位文本（中文） */
+    readonly PlaceholderCN = ref('')
     /** 项目集合 */
-    readonly Items: ShallowReactive<T[]> = shallowReactive([])
+    readonly Items: ShallowReactive<TSource[]> = shallowReactive([])
 
     //#region [computed]
     /** 显示的“占位文本” */
-    readonly ShowPlaceholder = TextModel.DefaultComputed(this.Placeholder, Texts.PleaseSelect)
+    readonly ShowPlaceholder = TextModel.DefaultComputed(this.PlaceholderEN, this.PlaceholderCN, Texts.PleaseSelect)
+
+    /** 是否“无内容” */
+    readonly IsNoContent = computed(() => this.Items.length < 1)
 
     /** 项目集合 */
     readonly ItemModels = computed(() => {
-        const itemModels: MenuItemModel<T>[] = []
+        const itemModels: MenuItemModel<TSource>[] = []
 
         this.Items.forEach(item => {
-            const itemModel = new MenuItemModel<T>(this)
+            const itemModel = new MenuItemModel<TSource>(this)
             itemModel._onClick = this._onSelect
             itemModel._converter = this._converter
             itemModel.Value.value = item
@@ -170,6 +175,10 @@ class SelectModel<T> extends ConverterBase<T> {
         watch(this.Text, text => {
             if (this.IsOpen.value) {
                 this.SearchText.value = text
+            }
+
+            if (this.Text.value === '') {
+                this.Value.value = undefined
             }
         })
     }

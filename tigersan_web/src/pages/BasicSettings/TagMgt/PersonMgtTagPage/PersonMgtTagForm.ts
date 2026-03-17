@@ -6,7 +6,7 @@ import {
 } from '@/0_tigersan_ui/tigerui'
 
 /** “IMEI”项目配置 */
-const configIMEI: FormItemConfig<PersonMgtTagModel> = {
+const configIMEI: FormItemConfig<PersonMgtTagModel, string> = {
     _propName: 'IMEI',
     PropText: 'IMEI',
     IsEquired: true,
@@ -17,7 +17,7 @@ const configIMEI: FormItemConfig<PersonMgtTagModel> = {
 }
 
 /** “设备名称”项目配置 */
-const configEqpName: FormItemConfig<PersonMgtTagModel> = {
+const configEqpName: FormItemConfig<PersonMgtTagModel, string> = {
     _propName: 'EqpName',
     PropText: '设备名称',
     IsEquired: true,

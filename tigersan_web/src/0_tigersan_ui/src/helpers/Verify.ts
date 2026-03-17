@@ -1,7 +1,7 @@
 import { FormResult, VerifyResult } from "../models/Form/FormModel"
 
 export class Verify {
-    /** 是否非空 */
+    /** 是否“非空” */
     static IsNotEmpty(str: string): VerifyResult {
         var res = new VerifyResult()
 
@@ -13,8 +13,8 @@ export class Verify {
         return res
     }
 
-    /** 是否定义且非空 */
-    static IsNotUndefined(obj?: object): VerifyResult {
+    /** 是否“定义且非空” */
+    static IsNotUndefined(obj?: object | number | Array<any>): VerifyResult {
         var res = new VerifyResult()
 
         if (obj === undefined || obj === null) {
@@ -25,7 +25,7 @@ export class Verify {
         return res
     }
 
-    /** 是否定义且非空 */
+    /** 是否“定义且非空” */
     static IsNotUndefinedOrEmpty(str?: string): VerifyResult {
         var res = new VerifyResult()
 
@@ -37,7 +37,39 @@ export class Verify {
         return res
     }
 
-    /** 是否在范围内 */
+    /** 是否“大于” */
+    static IsGreaterThan(num: number, min: number): VerifyResult {
+        var res = new VerifyResult()
+
+        if (isNaN(num)) {
+            res.VerifyText = '必须为数字'
+            res.VerifyState = FormResult.Error
+        }
+        else if (num < min) {
+            res.VerifyText = `不可小于${min}`
+            res.VerifyState = FormResult.Error
+        }
+
+        return res
+    }
+
+    /** 是否“小于” */
+    static IsLessThan(num: number, max: number): VerifyResult {
+        var res = new VerifyResult()
+
+        if (isNaN(num)) {
+            res.VerifyText = '必须为数字'
+            res.VerifyState = FormResult.Error
+        }
+        else if (num > max) {
+            res.VerifyText = `不可大于${max}`
+            res.VerifyState = FormResult.Error
+        }
+
+        return res
+    }
+
+    /** 是否“在范围内” */
     static IsWithinRange(num: number, min: number, max: number): VerifyResult {
         var res = new VerifyResult()
 

@@ -1,9 +1,9 @@
 export class ObjectHelper {
     /** “对象”浅复制 */
-    static ObjectShallowCopy<T extends object>(obj: T): T {
+    static ObjectShallowCopy<TSource extends object>(obj: TSource): TSource {
         // 处理基本类型直接返回
         if (obj === null || typeof obj != 'object') {
-            return obj as T;
+            return obj as TSource;
         }
 
         // 获取原型并创建新对象
@@ -13,7 +13,7 @@ export class ObjectHelper {
         // 复制所有自身字段（包括不可枚举字段和 Symbol）
         const keys = Reflect.ownKeys(obj);
         for (const key of keys) {
-            copy[key as keyof T] = obj[key as keyof T];
+            copy[key as keyof TSource] = obj[key as keyof TSource];
         }
 
         return copy;
@@ -21,7 +21,7 @@ export class ObjectHelper {
 
 
     /** “对象”深复制 */
-    static ObjectDeepCopy<T extends object>(obj: T): T {
+    static ObjectDeepCopy<TSource extends object>(obj: TSource): TSource {
         const hash = new WeakMap<object, any>();
 
         function _copy(obj: any): any {
@@ -93,36 +93,36 @@ export class ObjectHelper {
 
     /** 获取“字段文本”默认方法 */
     static DefaultStringGetter(obj: object, propName: string): string {
-        const value = (obj as Record<string, unknown>)[propName];
+        const value = (obj as Record<string, unknown>)[propName]
         if (value === undefined || value === null) return ''
         return String(value)
     }
 
     /** 获取“字段值”默认方法 */
     static DefaultNumberGetter(obj: object, propName: string): number {
-        const value = (obj as Record<string, unknown>)[propName];
+        const value = (obj as Record<string, unknown>)[propName]
 
         // 处理 null/undefined 和其他类型的转换
         return value != null ? Number(value) : 0
     }
 
     /** 修改“字段值”默认方法 */
-    static DefaultUnknownGetter(obj: object, propName: string): unknown {
-        return (obj as Record<string, unknown>)[propName]
+    static DefaultTGetter<TValue>(obj: object, propName: string, defaultValue: TValue): TValue {
+        return (obj as Record<string, TValue>)[propName] ?? defaultValue
     }
 
     /** 修改“字段值”默认方法 */
-    static DefaultUnknownSetter(obj: object, propName: string, value: unknown): void {
-        (obj as Record<string, unknown>)[propName] = value;
+    static DefaultTSetter<TValue>(obj: object, propName: string, value: TValue): void {
+        (obj as Record<string, TValue>)[propName] = value;
     }
 
     /** 判断“字段文本”是否等于“目标值”  */
-    static IsTextEqual(obj: object, propName: string, value: unknown): boolean {
+    static IsTextEqual<TValue>(obj: object, propName: string, value: TValue): boolean {
         return ObjectHelper.DefaultStringGetter(obj, propName) === value
     }
 
     /** 判断“字段值”是否等于“目标值”  */
-    static IsSourceEqual(obj: object, propName: string, value: unknown): boolean {
-        return ObjectHelper.DefaultUnknownGetter(obj, propName) === value
+    static IsSourceEqual<TValue>(obj: object, propName: string, value: TValue, defaultValue?: unknown): boolean {
+        return ObjectHelper.DefaultTGetter(obj, propName, defaultValue) === value
     }
 }

@@ -8,7 +8,7 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 const action = 'CompanyMgt'
 
 /** “公司名称”项目配置 */
-const configName: FormItemConfig<CompanyMgtModel> = {
+const configName: FormItemConfig<CompanyMgtModel, string> = {
     _propName: 'name',
     PropText: '公司名称',
     IsEquired: true,
@@ -19,7 +19,7 @@ const configName: FormItemConfig<CompanyMgtModel> = {
 }
 
 /** “公司地址”项目配置 */
-const configAddr: FormItemConfig<CompanyMgtModel> = {
+const configAddr: FormItemConfig<CompanyMgtModel, string> = {
     _propName: 'addr',
     PropText: '公司地址',
     IsEquired: true,
@@ -30,7 +30,7 @@ const configAddr: FormItemConfig<CompanyMgtModel> = {
 }
 
 /** “父公司”项目配置 */
-const configParent: FormItemConfig<CompanyMgtModel> = {
+const configParent: FormItemConfig<CompanyMgtModel, number | undefined> = {
     _propName: 'parent',
     PropText: '父公司',
     IsEquired: false,

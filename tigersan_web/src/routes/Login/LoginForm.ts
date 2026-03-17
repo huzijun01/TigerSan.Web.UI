@@ -16,7 +16,7 @@ captcha.Placeholder.value = "验证码"
 
 // 配置:
 /** “用户名”项目配置 */
-const configUserName: FormItemConfig<UserInfo> = {
+const configUserName: FormItemConfig<UserInfo, string> = {
     _propName: 'UserName',
     PropText: '',
     IsEquired: true,
@@ -27,7 +27,7 @@ const configUserName: FormItemConfig<UserInfo> = {
 }
 
 /** “密码”项目配置 */
-const configPassword: FormItemConfig<UserInfo> = {
+const configPassword: FormItemConfig<UserInfo, string> = {
     _propName: 'Password',
     PropText: '',
     IsEquired: true,
@@ -38,7 +38,7 @@ const configPassword: FormItemConfig<UserInfo> = {
 }
 
 /** “验证码”项目配置 */
-const configCaptcha: FormItemConfig<UserInfo> = {
+const configCaptcha: FormItemConfig<UserInfo, string> = {
     _propName: 'Captcha',
     PropText: '',
     IsEquired: true,

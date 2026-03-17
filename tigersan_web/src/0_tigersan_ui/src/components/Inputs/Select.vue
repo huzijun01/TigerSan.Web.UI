@@ -49,6 +49,7 @@ onMounted(() => {
 onUnmounted(() => {
     watchIsOpen.stop()
     SetEventListener(false)
+    model.IsOpen.value = false
 })
 
 // 方法:

@@ -1,13 +1,13 @@
 import { ref, type Ref, computed, watch } from "vue"
 import { Colors } from "../../base"
 import { dialog } from '../../stores'
-import { FormConfig, SetFormModel } from './FormConfig'
-import type { TObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
 import { ObjectHelper } from "../../helpers"
+import { FormConfig, SetFormModel } from './FormConfig'
+import type { TObjectAction, TGetter, TSetter, UnknownFunc } from "../../types"
 
-type FormVerify<T extends object> = (source: T) => VerifyResult
-type FormSubmit<T extends object> = (source: T) => SubmitResult
-type FormSubmitAsync<T extends object> = (source: T) => Promise<SubmitResult>
+type FormVerify<TSource extends object> = (source: TSource) => VerifyResult
+type FormSubmit<TSource extends object> = (source: TSource) => SubmitResult
+type FormSubmitAsync<TSource extends object> = (source: TSource) => Promise<SubmitResult>
 
 /** 表单结果 */
 enum FormResult {
@@ -45,7 +45,7 @@ class SubmitResult {
 }
 
 /** 表单模型 */
-class FormModel<T extends object> {
+class FormModel<TSource extends object> {
     //#region 【Fields】
     /** 是否“显示结果” */
     _isShowResult = true
@@ -53,16 +53,16 @@ class FormModel<T extends object> {
     _isShowSuccessResult = true
     /** 源数据
      * （由“FormModel”内部维护） */
-    _source: T
+    _source: TSource
     /** “表单项目模型”集合
      * （由“FormModel”内部维护） */
-    _itemModels = new Array<FormItemModel<T>>()
+    _itemModels = new Array<FormItemModel<TSource, any>>()
     /** 获取“源数据”  */
-    _getSource: TObjectAction<T>
+    _getSource: TObjectAction<TSource>
     /** 提交时 */
-    _onSubmit?: FormSubmit<T>
+    _onSubmit?: FormSubmit<TSource>
     /** 提交时（异步） */
-    _onSubmitAsync?: FormSubmitAsync<T>
+    _onSubmitAsync?: FormSubmitAsync<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -77,7 +77,7 @@ class FormModel<T extends object> {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(config: FormConfig<T>) {
+    constructor(config: FormConfig<TSource>) {
         // 初始化“字段”:
         this._getSource = config._getSource
         this._source = this._getSource()
@@ -97,7 +97,7 @@ class FormModel<T extends object> {
     //#region 【Functions】
     //#region [private]
     /** 遍历“项目模型”集合 */
-    private ForEachItemModels(fn: (itemModel: FormItemModel<T>) => void) {
+    private ForEachItemModels<TTarget>(fn: (itemModel: FormItemModel<TSource, TTarget>) => void) {
         for (let index = 0; index < this._itemModels.length; index++) {
             const itemModel = this._itemModels[index]
 
@@ -245,29 +245,29 @@ class FormModel<T extends object> {
 }
 
 /** 表单项目模型 */
-class FormItemModel<T extends object> {
+class FormItemModel<TSource extends object, TTarget> {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
     /** “属性名”垂直对齐 */
     _propNameVerticalAlign = 'middle'
     /** 所属“表单模型” */
-    _formModel: FormModel<T>
+    _formModel: FormModel<TSource>
     /** “源数据”getter */
-    _getValue: UnknownGetter = ObjectHelper.DefaultUnknownGetter
+    _getValue: TGetter<TSource, TTarget | undefined> = ObjectHelper.DefaultTGetter<TTarget | undefined>
     /** “源数据”setter */
-    _setValue: UnknownSetter = ObjectHelper.DefaultUnknownSetter
+    _setValue: TSetter<TSource, TTarget | undefined> = ObjectHelper.DefaultTSetter<TTarget | undefined>
     /** 改变后 */
     _onChange?: UnknownFunc
     /** 是否“验证无误” */
-    _isVerifyOk?: FormVerify<T>
+    _isVerifyOk?: FormVerify<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
     //#region [内部维护]
     /** 目标数据
      * （值改变时，会执行“OnChange”） */
-    readonly Target: Ref<unknown>
+    readonly Target: Ref<TTarget | undefined>
     /** 验证结果
      * （由“FormItemModel”维护） */
     readonly VerifyResult = ref(FormResult.OK)
@@ -327,9 +327,9 @@ class FormItemModel<T extends object> {
 
     //#region 【Ctor】
     constructor(
-        formModel: FormModel<T>,
+        formModel: FormModel<TSource>,
         propName: string,
-        target: Ref<unknown>
+        target: Ref<TTarget | undefined>
     ) {
         this._formModel = formModel
         this._propName = propName
@@ -348,7 +348,7 @@ class FormItemModel<T extends object> {
 
     /** 修改“源数据”
      * （“Target”改变时，会自动调用） */
-    readonly OnChange = (value: unknown, oldValue: unknown) => {
+    readonly OnChange = (value: TTarget | undefined, oldValue: TTarget | undefined) => {
         if (!this._setValue) return
         // 修改“源数据”:
         this._setValue(this._formModel._source, this._propName, value)

@@ -5,7 +5,7 @@ import {
 } from '@/0_tigersan_ui/tigerui'
 
 /** “设备名称”项目配置 */
-const configName: FormItemConfig<BaseStationMgtModel> = {
+const configName: FormItemConfig<BaseStationMgtModel, string> = {
     _propName: 'EqpName',
     PropText: '设备名称',
     IsEquired: true,
@@ -16,7 +16,7 @@ const configName: FormItemConfig<BaseStationMgtModel> = {
 }
 
 /** “MAC地址”项目配置 */
-const configMacAddr: FormItemConfig<BaseStationMgtModel> = {
+const configMacAddr: FormItemConfig<BaseStationMgtModel, string> = {
     _propName: 'MacAddr',
     PropText: 'MAC地址',
     IsEquired: true,

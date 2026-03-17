@@ -6,8 +6,8 @@ searchName.Placeholder.value = '请输角色名称'
 
 /** “角色管理”模型 */
 class RoleMgtModel {
-    Index = 0
-    Company = 0
+    Index = -1
+    Company = -1
     Name = ''
     NavFolders = ''
     NavButtons = ''

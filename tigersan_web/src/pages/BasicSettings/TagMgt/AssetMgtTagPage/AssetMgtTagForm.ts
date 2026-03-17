@@ -3,7 +3,7 @@ import { AssetMgtTagModel, assetMgtTagTable } from './AssetMgtTagTable'
 import { Verify, dialog, Colors, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 /** “MAC地址”项目配置 */
-const configMacAddr: FormItemConfig<AssetMgtTagModel> = {
+const configMacAddr: FormItemConfig<AssetMgtTagModel, string> = {
     _propName: 'MacAddr',
     PropText: 'MAC地址',
     IsEquired: true,

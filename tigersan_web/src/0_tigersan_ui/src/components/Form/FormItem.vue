@@ -18,7 +18,7 @@ import { FormModel, FormItemModel } from '../../models/Form/FormModel'
 
 let { model } = defineProps({
     model: {
-        type: FormItemModel<any>,
+        type: FormItemModel<any, any>,
         default: () => new FormItemModel(new FormModel(new FormConfig(ObjectHelper.DefaultObjectAction)), '', ref())
     }
 })

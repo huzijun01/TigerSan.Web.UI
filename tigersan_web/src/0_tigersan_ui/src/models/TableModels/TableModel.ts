@@ -308,7 +308,7 @@ class TableItemModel<T extends object> {
 
     /** 获取“源数据” */
     GetSource(): unknown {
-        return ObjectHelper.DefaultUnknownGetter(this._rowModel._rowData, this._headerModel._propName)
+        return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName)
     }
     //#endregion 【Functions】
 }
@@ -324,7 +324,7 @@ class TableHeaderModel<T extends object> {
     /** 文本获取方法 */
     _strGetter: StringGetter = ObjectHelper.DefaultStringGetter
     /** 对象修改方法 */
-    _objSetter: UnknownSetter = ObjectHelper.DefaultUnknownSetter
+    _objSetter: UnknownSetter = ObjectHelper.DefaultTSetter
     //#endregion 【Fields】
 
     //#region 【Properties】

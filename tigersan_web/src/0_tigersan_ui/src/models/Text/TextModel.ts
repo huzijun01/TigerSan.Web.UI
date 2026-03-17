@@ -38,8 +38,11 @@ class TextModel {
     }
 
     /** 获取“默认值计算属性” */
-    static DefaultComputed(ref: Ref<string>, cmpDefault: ComputedRef<string>): ComputedRef<string> {
-        return computed(() => ref.value.trim() != '' ? ref.value : cmpDefault.value)
+    static DefaultComputed(refEN: Ref<string>, refCH: Ref<string>, cmpDefault: ComputedRef<string>): ComputedRef<string> {
+        return computed(() => {
+            const cmpText = new TextModel(refEN.value, refCH.value).Value
+            return cmpText.value.trim() != '' ? cmpText.value : cmpDefault.value
+        })
     }
     //#endregion 【Functions】
 }

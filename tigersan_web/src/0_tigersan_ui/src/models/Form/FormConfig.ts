@@ -1,16 +1,16 @@
 import { ref, type Ref } from "vue"
-import type { TObjectAction, UnknownGetter, UnknownSetter, UnknownFunc } from "../../types"
+import type { TObjectAction, TGetter, TSetter, UnknownFunc } from "../../types"
 import { type FormVerify, type FormSubmit, FormModel, FormItemModel } from "./FormModel"
 
 /** 表单配置 */
-class FormConfig<T extends object> {
+class FormConfig<TSource extends object> {
     //#region 【Fields】
     /** “表单项目配置”集合 */
-    _itemConfigs?: FormItemConfig<T>[]
+    _itemConfigs?: FormItemConfig<TSource, any>[]
     /** “源数据获取”方法  */
-    _getSource: TObjectAction<T>
+    _getSource: TObjectAction<TSource>
     /** 提交时 */
-    _onSubmit?: FormSubmit<T>
+    _onSubmit?: FormSubmit<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -25,36 +25,37 @@ class FormConfig<T extends object> {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(getSource: TObjectAction<T>) {
+    constructor(getSource: TObjectAction<TSource>) {
         this._getSource = getSource
     }
     //#endregion 【Ctor】
 }
 
 /** 表单项目配置 */
-class FormItemConfig<T extends object> {
+class FormItemConfig<TSource extends object, TTarget> {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
     /** “属性名”垂直对齐 */
     _propNameVerticalAlign?: string
-    /** Getter */
-    _getValue?: UnknownGetter
-    _setValue?: UnknownSetter
+    /** “源数据”getter */
+    _getValue?: TGetter<TSource, TTarget | undefined>
+    /** “源数据”setter */
+    _setValue?: TSetter<TSource, TTarget | undefined>
     /** 改变后 */
     _onChange?: UnknownFunc
     /** 是否“验证无误” */
-    _isVerifyOk?: FormVerify<T>
+    _isVerifyOk?: FormVerify<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
     //#region [需手动绑定]
     /** 目标数据
      * （需手动绑定到“表单元素”上） */
-    Target: Ref<unknown | undefined> = ref<unknown>()
+    Target: Ref<TTarget | undefined> = ref<TTarget>()
     /** 表单项目模型
      * （由“FormItemModel”传入，需手动绑定到“表单元素”上） */
-    ItemModel?: FormItemModel<T>
+    ItemModel?: FormItemModel<TSource, TTarget>
     //#endregion [需手动绑定]
 
     /** 属性文本 */
@@ -64,7 +65,7 @@ class FormItemConfig<T extends object> {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(propName: string, target?: Ref<unknown>) {
+    constructor(propName: string, target?: Ref<TTarget>) {
         this._propName = propName
         if (target != undefined) this.Target = target
     }
@@ -72,7 +73,7 @@ class FormItemConfig<T extends object> {
 }
 
 /** 设置“表单模型” */
-function SetFormModel<T extends object>(formModel: FormModel<T>, formConfig: FormConfig<T>) {
+function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>) {
     // Fields:
     formModel._itemModels = GetItemModels(formModel, formConfig)
     formModel._onSubmit = formConfig._onSubmit
@@ -85,14 +86,14 @@ function SetFormModel<T extends object>(formModel: FormModel<T>, formConfig: For
 }
 
 /** 获取“表单项目模型”集合 */
-function GetItemModels<T extends object>(formModel: FormModel<T>, formConfig: FormConfig<T>): FormItemModel<T>[] {
+function GetItemModels<TSource extends object, TTarget>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>): FormItemModel<TSource, TTarget>[] {
     if (!formConfig._itemConfigs) return []
 
-    let itemModels = new Array<FormItemModel<T>>()
+    let itemModels = new Array<FormItemModel<TSource, TTarget>>()
 
     formConfig._itemConfigs.forEach(itemConfig => {
         // create:
-        const itemModel = new FormItemModel(formModel, itemConfig._propName, itemConfig.Target)
+        const itemModel = new FormItemModel<TSource, TTarget>(formModel, itemConfig._propName, itemConfig.Target)
 
         // Fields:
         if (itemConfig._propNameVerticalAlign != undefined) itemModel._propNameVerticalAlign = itemConfig._propNameVerticalAlign

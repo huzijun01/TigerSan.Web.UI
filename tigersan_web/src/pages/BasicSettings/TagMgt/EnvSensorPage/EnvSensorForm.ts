@@ -5,7 +5,7 @@ import {
 } from '@/0_tigersan_ui/tigerui'
 
 /** “MAC地址”项目配置 */
-const configMacAddr: FormItemConfig<EnvSensorModel> = {
+const configMacAddr: FormItemConfig<EnvSensorModel, string> = {
     _propName: 'MacAddr',
     PropText: 'MAC地址',
     IsEquired: true,

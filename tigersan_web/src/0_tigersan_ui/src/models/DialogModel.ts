@@ -25,13 +25,15 @@ class DialogModel {
 
     readonly Title = ref('')
     readonly Msg = ref('')
-    readonly NoText = ref('')
-    readonly YesText = ref('')
+    readonly NoTextEN = ref('')
+    readonly YesTextEN = ref('')
+    readonly NoTextCH = ref('')
+    readonly YesTextCH = ref('')
     readonly Color = ref('')
     readonly Mode = ref(DialogMode.NoButton)
 
-    readonly ShowNoText = TextModel.DefaultComputed(this.NoText, Texts.No)
-    readonly ShowYesText = TextModel.DefaultComputed(this.YesText, Texts.Yes)
+    readonly ShowNoText = TextModel.DefaultComputed(this.NoTextEN, this.NoTextCH, Texts.No)
+    readonly ShowYesText = TextModel.DefaultComputed(this.YesTextEN, this.YesTextCH, Texts.Yes)
     readonly IsShowButtonPanel = computed(() => this.Mode.value != DialogMode.NoButton)
     readonly IsShowNoButton = computed(() => this.Mode.value === DialogMode.YesOrNo)
 

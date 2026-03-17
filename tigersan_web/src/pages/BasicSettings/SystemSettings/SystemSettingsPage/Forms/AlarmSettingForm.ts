@@ -21,7 +21,7 @@ alarmSetting.EqpOfflineMinutes = 0
 alarmSetting.EqpOfflineSeconds = 20
 
 /** “电量预警值”项目配置 */
-const configBatteryAlarmRate: FormItemConfig<AlarmSettingModel> = {
+const configBatteryAlarmRate: FormItemConfig<AlarmSettingModel, string> = {
     _propName: 'BatteryAlarmRate',
     PropText: '电量预警值',
     IsEquired: true,
@@ -32,7 +32,7 @@ const configBatteryAlarmRate: FormItemConfig<AlarmSettingModel> = {
 }
 
 /** “设备离线时间（分钟）”项目配置 */
-const configEqpOfflineMinutes: FormItemConfig<AlarmSettingModel> = {
+const configEqpOfflineMinutes: FormItemConfig<AlarmSettingModel, string> = {
     _propName: 'EqpOfflineMinutes',
     PropText: '设备离线时间',
     IsEquired: true,
@@ -43,7 +43,7 @@ const configEqpOfflineMinutes: FormItemConfig<AlarmSettingModel> = {
 }
 
 /** “设备离线时间（秒）”项目配置 */
-const configEqpOfflineSeconds: FormItemConfig<AlarmSettingModel> = {
+const configEqpOfflineSeconds: FormItemConfig<AlarmSettingModel, string> = {
     _propName: 'EqpOfflineSeconds',
     PropText: '',
     Target: ref(),

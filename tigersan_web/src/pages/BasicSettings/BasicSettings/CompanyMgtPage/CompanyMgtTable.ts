@@ -20,10 +20,11 @@ tree._onUnactive = () => {
 tree._onInited = () => tree.SetActiveNode(selectParent.Text.value)
 
 /** 选择框 */
-const selectParent = new SelectModel()
+const selectParent = new SelectModel<string>()
 selectParent.Width.value = 208
 selectParent.IsAllowSearch.value = true
-selectParent.Placeholder.value = '请选择公司名称'
+selectParent.PlaceholderCN.value = '请选择公司名称'
+selectParent.PlaceholderEN.value = 'Please select a company'
 selectParent._onSelect = () => {
     tree.ActiveNode.value = tree.NodeArray.value.find(n => n.Text.value === selectParent.Value.value)
 }
@@ -38,10 +39,11 @@ watch(tree.ActiveData, data => {
 })
 
 /** 选择框（表单） */
-const selectFormParent = new SelectModel()
+const selectFormParent = new SelectModel<number>()
 selectFormParent.Width.value = 208
 selectFormParent.IsAllowSearch.value = true
-selectFormParent.Placeholder.value = '请选择公司名称'
+selectFormParent.PlaceholderCN.value = '请选择公司名称'
+selectFormParent.PlaceholderEN.value = 'Please select a company'
 selectFormParent._converter = (obj: any) => {
     if (!obj) return ''
     const index = obj as number

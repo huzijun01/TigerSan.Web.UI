@@ -59,7 +59,7 @@ lightSetting.ProductType = undefined
 lightSetting.FirmwareVersion = undefined
 
 /** “设备类型”项目配置 */
-const configProductType: FormItemConfig<LightSettingModel> = {
+const configProductType: FormItemConfig<LightSettingModel, string> = {
     _propName: 'ProductType',
     PropText: '设备类型',
     IsEquired: true,
@@ -70,7 +70,7 @@ const configProductType: FormItemConfig<LightSettingModel> = {
 }
 
 /** “固件版本”项目配置 */
-const configFirmwareVersion: FormItemConfig<LightSettingModel> = {
+const configFirmwareVersion: FormItemConfig<LightSettingModel, string> = {
     _propName: 'FirmwareVersion',
     PropText: '固件版本',
     IsEquired: true,
@@ -81,7 +81,7 @@ const configFirmwareVersion: FormItemConfig<LightSettingModel> = {
 }
 
 /** “是否启用”项目配置 */
-const configEnable: FormItemConfig<LightSettingModel> = {
+const configEnable: FormItemConfig<LightSettingModel, boolean> = {
     _propName: 'Enable',
     PropText: '灯光设置',
     IsEquired: true,
@@ -89,7 +89,7 @@ const configEnable: FormItemConfig<LightSettingModel> = {
 }
 
 /** “灯色”项目配置 */
-const configLightColor: FormItemConfig<LightSettingModel> = {
+const configLightColor: FormItemConfig<LightSettingModel, string[]> = {
     _propName: 'LightColor',
     PropText: '灯色',
     IsEquired: true,
@@ -100,7 +100,7 @@ const configLightColor: FormItemConfig<LightSettingModel> = {
 }
 
 /** “单次亮灯时长”项目配置 */
-const configLightTime: FormItemConfig<LightSettingModel> = {
+const configLightTime: FormItemConfig<LightSettingModel, boolean> = {
     _propName: 'LightTime',
     _propNameVerticalAlign: 'top',
     PropText: '单次亮灯时长',
@@ -109,7 +109,7 @@ const configLightTime: FormItemConfig<LightSettingModel> = {
 }
 
 /** “快、亮灯”项目配置 */
-const configFlash_Fast_On: FormItemConfig<LightSettingModel> = {
+const configFlash_Fast_On: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Fast_On',
     PropText: '亮灯',
     Target: ref(),
@@ -119,7 +119,7 @@ const configFlash_Fast_On: FormItemConfig<LightSettingModel> = {
 }
 
 /** “快、灭灯”项目配置 */
-const configFlash_Fast_Off: FormItemConfig<LightSettingModel> = {
+const configFlash_Fast_Off: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Fast_Off',
     PropText: '灭灯',
     Target: ref(),
@@ -129,7 +129,7 @@ const configFlash_Fast_Off: FormItemConfig<LightSettingModel> = {
 }
 
 /** “较快、亮灯”项目配置 */
-const configFlash_Faster_On: FormItemConfig<LightSettingModel> = {
+const configFlash_Faster_On: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Faster_On',
     PropText: '亮灯',
     Target: ref(),
@@ -139,7 +139,7 @@ const configFlash_Faster_On: FormItemConfig<LightSettingModel> = {
 }
 
 /** “较快、灭灯”项目配置 */
-const configFlash_Faster_Off: FormItemConfig<LightSettingModel> = {
+const configFlash_Faster_Off: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Faster_Off',
     PropText: '灭灯',
     Target: ref(),
@@ -149,7 +149,7 @@ const configFlash_Faster_Off: FormItemConfig<LightSettingModel> = {
 }
 
 /** “中、亮灯”项目配置 */
-const configFlash_Medium_On: FormItemConfig<LightSettingModel> = {
+const configFlash_Medium_On: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Medium_On',
     PropText: '亮灯',
     Target: ref(),
@@ -159,7 +159,7 @@ const configFlash_Medium_On: FormItemConfig<LightSettingModel> = {
 }
 
 /** “中、灭灯”项目配置 */
-const configFlash_Medium_Off: FormItemConfig<LightSettingModel> = {
+const configFlash_Medium_Off: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Medium_Off',
     PropText: '灭灯',
     Target: ref(),
@@ -169,7 +169,7 @@ const configFlash_Medium_Off: FormItemConfig<LightSettingModel> = {
 }
 
 /** “较慢、亮灯”项目配置 */
-const configFlash_Slower_On: FormItemConfig<LightSettingModel> = {
+const configFlash_Slower_On: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Slower_On',
     PropText: '亮灯',
     Target: ref(),
@@ -179,7 +179,7 @@ const configFlash_Slower_On: FormItemConfig<LightSettingModel> = {
 }
 
 /** “较慢、灭灯”项目配置 */
-const configFlash_Slower_Off: FormItemConfig<LightSettingModel> = {
+const configFlash_Slower_Off: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Slower_Off',
     PropText: '灭灯',
     Target: ref(),
@@ -194,7 +194,7 @@ const GetSource = () => {
 }
 
 /** “慢、亮灯”项目配置 */
-const configFlash_Slow_On: FormItemConfig<LightSettingModel> = {
+const configFlash_Slow_On: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Slow_On',
     PropText: '亮灯',
     Target: ref(),
@@ -204,7 +204,7 @@ const configFlash_Slow_On: FormItemConfig<LightSettingModel> = {
 }
 
 /** “慢、灭灯”项目配置 */
-const configFlash_Slow_Off: FormItemConfig<LightSettingModel> = {
+const configFlash_Slow_Off: FormItemConfig<LightSettingModel, string> = {
     _propName: 'Flash_Slow_Off',
     PropText: '灭灯',
     Target: ref(),

@@ -4,11 +4,13 @@
         <div v-for="i in model.ItemModels.value" :key="i._id">
             <div class="menu-item" v-if="i.IsShow.value" @click="i.OnClick">{{ i.Text.value }}</div>
         </div>
+        <div v-if="model.IsNoContent.value" class="placeholder flex-center">{{ Texts.NoContent.value }}</div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { onUnmounted, ref, watch } from 'vue';
+import { Texts } from '../../texts'
 import { SelectModel } from '../../models'
 
 // 字段:
@@ -71,6 +73,11 @@ onUnmounted(() => {
         &:hover {
             background: var(--theme-mask-hover);
         }
+    }
+
+    .placeholder {
+        padding: 5px;
+        color: var(--theme-color-placeholder);
     }
 }
 </style>

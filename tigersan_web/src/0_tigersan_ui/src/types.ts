@@ -19,6 +19,8 @@ export type AnyArrayFunc = (arr: any[]) => void
 export type Any2StringFunc = (value: any) => string
 export type UnknownFunc = (value: unknown, oldValue?: unknown) => void
 export type UnknownArrayFunc = (arr: unknown[]) => void
+export type TFunc<T> = (value: T, oldValue?: T) => void
+export type TArrayFunc<T> = (arr: T[]) => void
 
 // getter\setter:
 export type BooleanGetter = (obj: object) => boolean
@@ -26,6 +28,8 @@ export type BooleanSetter = (obj: object, bool: boolean) => void
 export type StringGetter = (obj: object, propName: string) => string
 export type UnknownGetter = (obj: object, propName: string) => unknown
 export type UnknownSetter = (obj: object, propName: string, value: unknown) => void
+export type TGetter<TSource extends object, TTarget> = (obj: TSource, propName: string) => TTarget
+export type TSetter<TSource extends object, TTarget> = (obj: TSource, propName: string, value: TTarget) => void
 
 // Other:
 export const AnyTypes = [String, Number, Boolean, Object, Array, Symbol, Function, Date, null, undefined]
