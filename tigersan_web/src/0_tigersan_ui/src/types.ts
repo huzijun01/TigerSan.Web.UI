@@ -28,9 +28,9 @@ export type BooleanSetter = (obj: object, bool: boolean) => void
 export type StringGetter = (obj: object, propName: string) => string
 export type UnknownGetter = (obj: object, propName: string) => unknown
 export type UnknownSetter = (obj: object, propName: string, value: unknown) => void
-export type TGetter<TSource extends object, TTarget> = (obj: TSource, propName: string) => TTarget
-export type TSetter<TSource extends object, TTarget> = (obj: TSource, propName: string, value: TTarget) => void
 export type TStringGetter<TSource extends object> = (obj: TSource, propName: string) => string
+export type TGetter<TSource extends object, TTarget> = (obj: TSource, propName: string) => TTarget | undefined
+export type TSetter<TSource extends object, TTarget> = (obj: TSource, propName: string, value: TTarget) => void
 
 // Other:
 export const AnyTypes = [String, Number, Boolean, Object, Array, Symbol, Function, Date, null, undefined]

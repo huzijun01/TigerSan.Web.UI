@@ -307,8 +307,8 @@ class TableItemModel<TSource extends object> {
     }
 
     /** 获取“源数据” */
-    GetSource(): TSource {
-        return ObjectHelper.DefaultTGetter<TSource>(this._rowModel._rowData, this._headerModel._propName, {} as TSource)
+    GetSource(): unknown {
+        return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName)
     }
     //#endregion 【Functions】
 }

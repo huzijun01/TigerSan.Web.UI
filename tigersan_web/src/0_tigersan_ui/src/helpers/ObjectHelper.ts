@@ -107,8 +107,8 @@ export class ObjectHelper {
     }
 
     /** 修改“字段值”默认方法 */
-    static DefaultTGetter<TValue>(obj: object, propName: string, defaultValue: TValue): TValue {
-        return (obj as Record<string, TValue>)[propName] ?? defaultValue
+    static DefaultTGetter<TValue>(obj: object, propName: string): TValue | undefined {
+        return (obj as Record<string, TValue>)[propName]
     }
 
     /** 修改“字段值”默认方法 */
@@ -122,7 +122,7 @@ export class ObjectHelper {
     }
 
     /** 判断“字段值”是否等于“目标值”  */
-    static IsSourceEqual<TValue>(obj: object, propName: string, value: TValue, defaultValue?: unknown): boolean {
-        return ObjectHelper.DefaultTGetter(obj, propName, defaultValue) === value
+    static IsSourceEqual<TValue>(obj: object, propName: string, value: TValue): boolean {
+        return ObjectHelper.DefaultTGetter(obj, propName) === value
     }
 }
