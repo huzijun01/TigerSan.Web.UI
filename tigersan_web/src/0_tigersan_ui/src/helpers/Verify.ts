@@ -1,6 +1,30 @@
 import { FormResult, VerifyResult } from "../models/Form/FormModel"
 
 export class Verify {
+    /** 获取“OK” */
+    static GetOK(msg: string) {
+        const res = new VerifyResult()
+        res.VerifyText = msg
+        res.VerifyState = FormResult.OK
+        return res;
+    }
+
+    /** 获取“警告” */
+    static GetWarning(msg: string) {
+        const res = new VerifyResult()
+        res.VerifyText = msg
+        res.VerifyState = FormResult.Warning
+        return res;
+    }
+
+    /** 获取“错误” */
+    static GetError(msg: string) {
+        const res = new VerifyResult()
+        res.VerifyText = msg
+        res.VerifyState = FormResult.Error
+        return res;
+    }
+
     /** 是否“为合法用户名” */
     static IsValidUsername(str: string, min: number = 3, max: number = 15): VerifyResult {
         const res = new VerifyResult()
@@ -59,7 +83,7 @@ export class Verify {
     }
 
     /** 是否“大于” */
-    static IsGreaterThan(num: number, min: number): VerifyResult {
+    static IsGreaterThan(num: number, min: number, error?: string): VerifyResult {
         var res = new VerifyResult()
 
         if (isNaN(num)) {
@@ -67,7 +91,7 @@ export class Verify {
             res.VerifyState = FormResult.Error
         }
         else if (num < min) {
-            res.VerifyText = `不可小于${min}`
+            res.VerifyText = error ?? `不可小于${min}`
             res.VerifyState = FormResult.Error
         }
 
@@ -75,7 +99,7 @@ export class Verify {
     }
 
     /** 是否“小于” */
-    static IsLessThan(num: number, max: number): VerifyResult {
+    static IsLessThan(num: number, max: number, error?: string): VerifyResult {
         var res = new VerifyResult()
 
         if (isNaN(num)) {
@@ -83,7 +107,7 @@ export class Verify {
             res.VerifyState = FormResult.Error
         }
         else if (num > max) {
-            res.VerifyText = `不可大于${max}`
+            res.VerifyText = error ?? `不可大于${max}`
             res.VerifyState = FormResult.Error
         }
 

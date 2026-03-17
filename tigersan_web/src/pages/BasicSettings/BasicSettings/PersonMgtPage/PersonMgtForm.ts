@@ -16,8 +16,7 @@ const configRole: FormItemConfig<PersonMgtModel, RoleMgtModel> = {
     _getValue: source => selectRole.Items.find(i => i.index === source.role),
     _setValue: (source, propName, value) => source.role = value ? value.index : -1,
     _isVerifyOk: source => {
-        debugger
-        return Verify.IsGreaterThan(source.role, 0)
+        return Verify.IsGreaterThan(source.role, 0, '不可为空')
     }
 }
 

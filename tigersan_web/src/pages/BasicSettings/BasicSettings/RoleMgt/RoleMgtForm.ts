@@ -16,7 +16,7 @@ const configCompany: FormItemConfig<RoleMgtModel, CompanyMgtModel> = {
     _getValue: source => selectCompany.Items.find(i => i.index === source.index),
     _setValue: (source, propName, value) => source.company = value ? value.index : -1,
     _isVerifyOk: source => {
-        return Verify.IsGreaterThan(source.company, 0)
+        return Verify.IsGreaterThan(source.company, 0, '不可为空')
     }
 }
 
@@ -38,7 +38,7 @@ const configAuthority: FormItemConfig<RoleMgtModel, number> = {
     IsEquired: true,
     Target: ref(),
     // _isVerifyOk: source => {
-    //     return Verify.IsGreaterThan(source.company, 0)
+    //     return Verify.IsNotUndefinedOrEmpty(source.company, 0)
     // }
 }
 
@@ -85,7 +85,6 @@ async function Add() {
     roleMgtForm._getSource = AddGetSource
 
     roleMgtForm._onSubmitAsync = async source => {
-        debugger
         const res = await AxiosHelper.Post(action, source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
