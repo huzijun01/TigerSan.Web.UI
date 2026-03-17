@@ -53,7 +53,7 @@ onUnmounted(() => {
     /* 颜色: */
     background: var(--theme-input-background);
     /* 其它: */
-    z-index: 999;
+    z-index: 9999;
     /* 动画配置 */
     animation: top-scaleY-animation var(--Global-Animation);
 

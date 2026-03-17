@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { AxiosHelper } from '@/helpers'
+import { RoleMgtModel } from '../RoleMgt/RoleMgtTable'
 import { GetSubmitResult, MyActionResult } from '@/models'
-import type { RoleMgtModel } from '../RoleMgt/RoleMgtTable'
 import { selectRole, PersonMgtModel, personMgtTable, pagination } from './PersonMgtTable'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
@@ -13,10 +13,11 @@ const configRole: FormItemConfig<PersonMgtModel, RoleMgtModel> = {
     PropText: '角色',
     IsEquired: true,
     Target: selectRole.Value,
-    _getValue: source => selectRole.Items.find(i => i.Index === source.index),
-    _setValue: (source, propName, value) => value ? source.index = value.Index : -1,
+    _getValue: source => selectRole.Items.find(i => i.index === source.role),
+    _setValue: (source, propName, value) => source.role = value ? value.index : -1,
     _isVerifyOk: source => {
-        return Verify.IsGreaterThan(source.index, 0)
+        debugger
+        return Verify.IsGreaterThan(source.role, 0)
     }
 }
 
@@ -27,7 +28,7 @@ const configUsername: FormItemConfig<PersonMgtModel, string> = {
     IsEquired: true,
     Target: ref(),
     _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.username)
+        return Verify.IsValidUsername(source.username)
     }
 }
 
@@ -43,24 +44,22 @@ const configNickname: FormItemConfig<PersonMgtModel, string> = {
 }
 
 /** “增”源数据获取方法 */
-const AddGetSource = () => {
-    return new PersonMgtModel()
-}
+const AddGetSource = () => new PersonMgtModel()
 
 /** “人员管理”表单配置 */
-let configBaseStationForm: FormConfig<PersonMgtModel> = {
+let configPersonMgtForm: FormConfig<PersonMgtModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
     _itemConfigs: [
         configRole,
-        configNickname,
         configUsername,
+        configNickname,
     ]
 }
 
 /** “人员管理”表单模型 */
-const baseStationForm = new FormModel(configBaseStationForm)
+const personMgtForm = new FormModel(configPersonMgtForm)
 
 async function UpdateRoles() {
     selectRole.Items.splice(0)
@@ -70,6 +69,7 @@ async function UpdateRoles() {
 
 /** 查 */
 async function Refresh() {
+    await UpdateRoles()
     const arr = await AxiosHelper.GetAllList<PersonMgtModel>(action)
     personMgtTable.RowDatas.splice(0)
     personMgtTable.RowDatas.push(...arr)
@@ -79,26 +79,26 @@ async function Refresh() {
 
 /** 增 */
 async function Add() {
-    baseStationForm.Title.value = '新增人员'
+    personMgtForm.Title.value = '新增人员'
 
-    baseStationForm._getSource = AddGetSource
+    personMgtForm._getSource = AddGetSource
 
-    baseStationForm._onSubmitAsync = async source => {
+    personMgtForm._onSubmitAsync = async source => {
         const res = await AxiosHelper.Post(action, source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    UpdateRoles()
+    await UpdateRoles()
 
-    baseStationForm.Show()
+    personMgtForm.Show()
 }
 
 /** 改 */
-function Edit() {
-    baseStationForm.Title.value = '修改人员'
+async function Edit() {
+    personMgtForm.Title.value = '修改人员'
 
-    baseStationForm._getSource = () => {
+    personMgtForm._getSource = () => {
         const rowData = personMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
@@ -108,15 +108,15 @@ function Edit() {
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    baseStationForm._onSubmitAsync = async source => {
+    personMgtForm._onSubmitAsync = async source => {
         const res = await AxiosHelper.Put(action, source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    UpdateRoles()
+    await UpdateRoles()
 
-    baseStationForm.Show()
+    personMgtForm.Show()
 }
 
 /** 删 */
@@ -150,7 +150,7 @@ export default {
     configRole,
     configNickname,
     configUsername,
-    baseStationForm,
+    baseStationForm: personMgtForm,
     Refresh,
     Add,
     Edit,

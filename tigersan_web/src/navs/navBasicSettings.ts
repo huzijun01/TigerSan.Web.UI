@@ -2,6 +2,7 @@ import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 // BasicSettings:
 import CompanyMgtPage from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPage.vue'
 import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/PersonMgtPage.vue'
+import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgt/RoleMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
 // TagMgt:
@@ -34,7 +35,7 @@ const navBasicSettings: NavFolderConfig = {
                     Title: "角色管理",
                     Icon: Icons.Group,
                     IsSelected: false,
-                    _component: undefined
+                    _component: RoleMgtPage
                 },
                 {
                     Title: "人员管理",

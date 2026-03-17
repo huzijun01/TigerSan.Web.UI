@@ -1,15 +1,36 @@
 import { FormResult, VerifyResult } from "../models/Form/FormModel"
 
 export class Verify {
-    /** 是否“非空” */
-    static IsNotEmpty(str: string): VerifyResult {
-        var res = new VerifyResult()
+    /** 是否“为合法用户名” */
+    static IsValidUsername(str: string, min: number = 3, max: number = 15): VerifyResult {
+        const res = new VerifyResult()
 
-        if (str && str.trim() === '') {
-            res.VerifyText = '不能为空'
+        // 长度校验:
+        if (str === undefined || str === null) {
+            res.VerifyText = '输入不能为空'
             res.VerifyState = FormResult.Error
+            return res;
         }
 
+        // 动态构建正则:
+        const pattern = `^[a-zA-Z_][a-zA-Z0-9_-]{${min - 1},${max - 1}}$`
+        const regex = new RegExp(pattern);
+
+        // 字符集、首字符、特殊符号校验:
+        if (!regex.test(str)) {
+            // 细化错误提示
+            if (str.length < min) {
+                res.VerifyText = `长度不能少于${min}字符`
+            } else if (str.length > max) {
+                res.VerifyText = `长度不能超过${max}字符`
+            } else {
+                res.VerifyText = '包含非法字符或格式错误'
+            }
+            res.VerifyState = FormResult.Error
+            return res
+        }
+
+        // 通过所有校验:
         return res
     }
 

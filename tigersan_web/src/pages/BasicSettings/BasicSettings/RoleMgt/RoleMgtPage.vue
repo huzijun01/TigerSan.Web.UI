@@ -19,44 +19,44 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="personMgtTable"></Table>
+            <Table :model="roleMgtTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="personMgtTable.SelectedRowCount.value" />
+                <Pagination :model="pagination" :selectedRowCount="roleMgtTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.baseStationForm">
+    <PopForm :model="form.roleMgtForm">
         <FormRow>
-            <FormItem :model="form.configRole.ItemModel">
-                <Select :model="selectRole"></Select>
+            <FormItem :model="form.configCompany.ItemModel">
+                <Select :model="selectCompany"></Select>
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configUsername.ItemModel">
-                <input type="text" v-model="form.configUsername.Target.value">
+            <FormItem :model="form.configName.ItemModel">
+                <input type="text" v-model="form.configName.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configNickname.ItemModel">
-                <input type="text" v-model="form.configNickname.Target.value">
+            <FormItem :model="form.configAuthority.ItemModel">
+                <Tree />
             </FormItem>
         </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
-import form from './PersonMgtForm'
+import form from './RoleMgtForm'
 import { onMounted } from 'vue'
-import { selectRole, searchName, personMgtTable, pagination } from './PersonMgtTable'
-import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
+import { selectCompany, searchName, roleMgtTable, pagination } from './RoleMgtTable'
+import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem, Tree } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = personMgtTable
+const { IsOnlySelected } = roleMgtTable
 
 // 【过程】:
 onMounted(() => {

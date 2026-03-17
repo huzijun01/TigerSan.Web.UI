@@ -8,7 +8,29 @@ namespace TigerSan.NET8.WebApi.Filters
 {
     public class MyAsyncActionFilterAttribute : Attribute, IAsyncActionFilter
     {
-        #region 获取“结果字符串”
+        #region 获取“请求体”字符串
+        public static async Task<string> GetRequestBodyAsync(HttpRequest request)
+        {
+            // 重要：启用缓冲区重用
+            request.EnableBuffering();
+
+            using var reader = new StreamReader(
+                request.Body,
+                encoding: Encoding.UTF8,
+                detectEncodingFromByteOrderMarks: false,
+                bufferSize: 1024,
+                leaveOpen: true);
+
+            var body = await reader.ReadToEndAsync();
+
+            // 重置请求流位置，确保后续中间件可读取
+            request.Body.Position = 0;
+
+            return body;
+        }
+        #endregion
+
+        #region 获取“结果”字符串
         public static string GetResultString(ActionExecutedContext context)
         {
             string strRes;
@@ -42,10 +64,14 @@ namespace TigerSan.NET8.WebApi.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            var body = await GetRequestBodyAsync(context.HttpContext.Request);
+
             var sb = new StringBuilder();
             sb.AppendLine($"[Begin]");
             sb.AppendLine($"Controller: {context.RouteData.Values["controller"]}");
             sb.AppendLine($"Action: {context.RouteData.Values["action"]}");
+            sb.AppendLine($"Body: ");
+            sb.AppendLine(body);
             Console.WriteLine(sb.ToString());
 
             var res = await next();
