@@ -1,11 +1,14 @@
 import { ref } from 'vue'
-import { AxiosHelper } from '@/helpers'
+import { AuthorityHelper, AxiosHelper } from '@/helpers'
 import { GetSubmitResult, MyActionResult } from '@/models'
 import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
 import { selectCompany, RoleMgtModel, roleMgtTable, pagination, GetCompany } from './RoleMgtTable'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 const action = 'RoleMgt'
+
+/** “权限”树模型 */
+const treeAuthority = AuthorityHelper.GetTreeModel()
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<RoleMgtModel, CompanyMgtModel> = {
@@ -151,6 +154,7 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
+    treeAuthority,
     configCompany,
     configName,
     configAuthority,

@@ -52,6 +52,7 @@ table {
 .form-panel {
     display: flex;
     flex-direction: column;
+    max-height: 95vh;
     border-radius: 10px;
     background-color: var(--theme-card-background);
 
@@ -71,6 +72,7 @@ table {
     .content-panel {
         flex-grow: 1;
         padding: 24px;
+        overflow: hidden;
     }
 
     .button-panel {

@@ -42,7 +42,9 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configAuthority.ItemModel">
-                <Tree />
+                <div class="tree-box">
+                    <Tree :model="form.treeAuthority" />
+                </div>
             </FormItem>
         </FormRow>
     </PopForm>
@@ -68,4 +70,9 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
+
+.tree-box {
+    max-height: 500px;
+    overflow: auto;
+}
 </style>

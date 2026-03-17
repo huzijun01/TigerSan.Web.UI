@@ -17,6 +17,8 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     _data?: T
     /** 父项 */
     _parent?: TreeNodeModel<T>
+    /** 配置（内部维护） */
+    _config?: TreeNodeConfig<T>
     /** 激活后 */
     _onActive?: TreeNodeModelFunc<T>
     /** 失活后 */
@@ -192,6 +194,8 @@ class TreeNodeConfig<T> {
 /** “树”模型 */
 class TreeModel<T> {
     //#region 【Fields】
+    /** 默认“选中状态” */
+    _defaultIsChecked: boolean
     /** 激活后 */
     _onActive?: TreeNodeModelFunc<T>
     /** 选中后 */
@@ -226,7 +230,8 @@ class TreeModel<T> {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(configs?: TreeNodeConfig<T>[]) {
+    constructor(configs?: TreeNodeConfig<T>[], defaultIsChecked: boolean = false) {
+        this._defaultIsChecked = defaultIsChecked
         this.Init(configs)
     }
     //#endregion 【Ctor】
@@ -257,6 +262,11 @@ class TreeModel<T> {
                 const node = GetNodeModel(this, config)
                 this.Nodes.push(node)
             })
+
+            this.NodeArray.value.forEach(node => {
+                if (node._config && node._config.IsChecked != undefined) return
+                node.IsChecked.value = this._defaultIsChecked
+            })
         } finally {
             this._onInited?.()
         }
@@ -284,6 +294,7 @@ class TreeModel<T> {
 /** 获取“节点模型” */
 function GetNodeModel<T>(tree: TreeModel<T>, config: TreeNodeConfig<T>, parent?: TreeNodeModel<T>): TreeNodeModel<T> {
     const node = new TreeNodeModel<T>(tree, config._data, parent)
+    node._config = config
     InitNodeModel(config, node)
 
     if (config.Childs) {
