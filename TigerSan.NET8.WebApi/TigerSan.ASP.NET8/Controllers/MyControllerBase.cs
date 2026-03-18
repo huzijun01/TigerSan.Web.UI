@@ -66,6 +66,29 @@ namespace TigerSan.NET8.WebApi.Controllers
             res.Data = await _service.GetList(pageSize, pageNumber);
             return res;
         }
+
+        [HttpGet]
+        [Route("Select/{field}/{isDistinct}")]
+        /// <summary>获取“字段”集合</summary>
+        public async Task<MyActionResult> Select(string field, bool isDistinct = false)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.Select(field, isDistinct);
+            return res;
+        }
+
+        [HttpPost]
+        [Route("Where")]
+        /// <summary>筛选集合</summary>
+        public async Task<MyActionResult> Where(
+            [FromBody] List<FilterModel> filters,
+            [FromQuery] int? pageSize,
+            [FromQuery] int? pageNumber)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.Where(filters, pageSize, pageNumber);
+            return res;
+        }
         #endregion [查]
 
         #region [增]

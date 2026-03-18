@@ -35,6 +35,14 @@ export class MyActionResult {
             dialog.ShowSuccess(success)
         }
     }
+
+    static IsSuccess(res: MyActionResult): boolean {
+        return res.code == ActionResultCode.Success
+    }
+
+    static IsSuccessNoData(res: MyActionResult): boolean {
+        return res.code == ActionResultCode.Success && res.data === undefined
+    }
 }
 
 export function GetSubmitResult(res: MyActionResult, success?: string): SubmitResult {

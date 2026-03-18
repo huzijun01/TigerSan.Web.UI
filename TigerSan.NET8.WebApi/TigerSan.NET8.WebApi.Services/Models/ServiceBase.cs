@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TigerSan.CsvLog;
+﻿using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -24,18 +25,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
-        #region 是否存在
-        public async Task<bool> IsExists(int index)
-        {
-            return await _dbSet.AnyAsync(i => i.Index == index);
-        }
-
-        public async Task<bool> IsExists(IList<int> indexes)
-        {
-            return await _dbSet.AnyAsync(i => indexes.Contains(i.Index));
-        }
-        #endregion
-
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
@@ -43,7 +32,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                return await _dbSet.FirstOrDefaultAsync(i => i.Index == index);
+                return await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Index == index);
             }
             catch (Exception e)
             {
@@ -59,7 +48,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                return await _dbSet.CountAsync();
+                return await _dbSet.AsNoTracking().CountAsync();
             }
             catch (Exception e)
             {
@@ -75,7 +64,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                return await _dbSet.ToListAsync();
+                return await _dbSet.AsNoTracking().ToListAsync();
             }
             catch (Exception e)
             {
@@ -92,15 +81,142 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 return await _dbSet
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .AsNoTracking()
+                    .ToListAsync();
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.Message);
                 return new List<T>();
             }
+        }
+        #endregion
+
+        #region 获取“字段”集合
+        /// <summary>获取“字段”集合</summary>
+        public async Task<List<object>> Select(string field, bool isDistinct = false)
+        {
+            try
+            {
+                // 1. 验证字段有效性
+                var entityType = _dbSet.EntityType; // 获取实体类型
+                var property = entityType.FindProperty(field);
+                if (property == null) throw new ArgumentException($"Invalid field: {field}");
+
+                // 2. 构建动态选择表达式
+                var parameter = Expression.Parameter(entityType.ClrType, "x");
+                var propertyExpression = Expression.Property(parameter, field);
+                var selector = Expression.Lambda<Func<object, object>>(
+                    Expression.Convert(propertyExpression, typeof(object)),
+                    parameter
+                );
+
+                // 3. 执行动态查询
+                var query = _dbSet.AsNoTracking().Select(selector);
+
+                if (isDistinct)
+                {
+                    query = query.Distinct();
+                }
+
+                return await query.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<object>();
+            }
+        }
+        #endregion
+
+        #region 筛选集合
+        /// <summary>筛选集合</summary>
+        public async Task<List<object>> Where(List<FilterModel> filters, int? pageSize = null, int? pageNumber = null)
+        {
+            if (filters == null || !filters.Any())
+                return await _dbSet.AsNoTracking().Select(x => (object)x).ToListAsync();
+
+            try
+            {
+                var entityType = _dbSet.EntityType;
+                var parameter = Expression.Parameter(entityType.ClrType, "x");
+                var conditions = new List<Expression>();
+
+                foreach (var filter in filters)
+                {
+                    // 字段存在性检查（不校验类型）
+                    if (entityType.FindProperty(filter.Field) == null)
+                        continue; // 跳过无效字段
+
+                    // 构建Contains表达式
+                    var propertyExpression = Expression.Property(parameter, filter.Field);
+                    var containsMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(typeof(object));
+
+                    var containsExpression = Expression.Call(
+                        containsMethod,
+                        Expression.Constant(filter.Values),
+                        Expression.Convert(propertyExpression, typeof(object)) // 处理值类型
+                    );
+
+                    conditions.Add(containsExpression);
+                }
+
+                // 构建组合表达式（AND逻辑）
+                var combinedExpression = conditions.FirstOrDefault();
+                if (combinedExpression != null && conditions.Count > 1)
+                {
+                    combinedExpression = conditions.Skip(1)
+                        .Aggregate(combinedExpression, Expression.AndAlso);
+                }
+
+                // 构建Lambda表达式
+                var lambda = Expression.Lambda<Func<object, bool>>(
+                    combinedExpression ?? Expression.Constant(true),
+                    parameter
+                );
+
+                // 构建基础查询
+                var query = _dbSet
+                    .AsNoTracking()
+                    .Select(x => new { Entity = x, Match = lambda.Compile()(x) })
+                    .Where(x => x.Match)
+                    .Select(x => (object)x.Entity);
+
+                // 应用分页逻辑
+                if (pageSize.HasValue && pageSize > 0 && pageNumber.HasValue && pageNumber > 0)
+                {
+                    var skip = (pageNumber.Value - 1) * pageSize.Value;
+                    query = query.Skip(skip).Take(pageSize.Value);
+                }
+
+                return await query.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error($"Filter error: {e.Message}");
+                return new List<object>();
+            }
+        }
+
+        #endregion
+
+        #region “单条数据”是否存在
+        /// <summary>“单条数据”是否存在</summary>
+        public async Task<bool> IsExists(int index)
+        {
+            return await _dbSet.AsNoTracking().AnyAsync(i => i.Index == index);
+        }
+        #endregion
+
+        #region “多条数据”是否存在
+        /// <summary>“多条数据”是否存在</summary>
+        public async Task<bool> IsExistsRange(IList<int> indexes)
+        {
+            return await _dbSet.AsNoTracking().AnyAsync(i => indexes.Contains(i.Index));
         }
         #endregion
         #endregion [查]
@@ -140,7 +256,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 var indexes = entities.Select(i => i.Index).ToList();
-                if (await IsExists(indexes))
+                if (await IsExistsRange(indexes))
                 {
                     return MyResults.ResourceExists;
                 }

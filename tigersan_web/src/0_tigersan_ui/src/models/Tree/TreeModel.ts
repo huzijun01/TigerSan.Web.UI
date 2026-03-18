@@ -11,6 +11,8 @@ class TreeNodeModel<TData> extends ContentSizeBehavior {
     private _isAutoUpdate = true
     /** ID */
     readonly _id = nanoid()
+    /** 分隔符 */
+    _separator = '>'
     /** 所属树 */
     _tree: TreeModel<TData>
     /** 数据 */
@@ -41,6 +43,18 @@ class TreeNodeModel<TData> extends ContentSizeBehavior {
     /** 是否“激活” */
     readonly IsActive = computed(() => {
         return this._tree.ActiveNode.value?._id === this._id
+    })
+
+    /** 路径 */
+    readonly Path = computed(() => {
+        this._tree.NodeArray
+        let path = ''
+
+        this.UpTraverse(node => {
+            path = path === '' ? node.Text.value : `${node.Text.value}${this._separator}${path}`
+        })
+
+        return path
     })
 
     /** 根类 */
@@ -300,7 +314,6 @@ class TreeModel<TData> {
         } finally {
             this._onInited?.()
         }
-        debugger
     }
 
     /** 设置“激活节点” */

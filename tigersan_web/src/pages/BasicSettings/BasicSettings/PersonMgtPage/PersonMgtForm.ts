@@ -83,7 +83,7 @@ async function Add() {
     personMgtForm._getSource = AddGetSource
 
     personMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Post(action, source)
+        const res = await AxiosHelper.Add(action, source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }

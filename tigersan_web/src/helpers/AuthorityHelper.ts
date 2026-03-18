@@ -1,80 +1,106 @@
-import { TreeModel, TreeNodeConfig } from "@/0_tigersan_ui/tigerui"
+import { ref } from 'vue'
+import { configs } from './configs'
+import { MyActionResult } from '@/models'
+import { AxiosHelper, FilterModel } from './AxiosHelper'
+import { Colors, TreeModel, TreeNodeModel } from "@/0_tigersan_ui/tigerui"
 
-export class AuthorityHelper {
-    static GetTreeModel() {
-        const tree = new TreeModel<boolean>(configs, false, true)
-        return tree
-    }
+/** “权限”模型 */
+export class AuthorityModel {
+    readonly index = 0
+    role = -1
+    path = ''
+    isReadonly = false
 }
 
-const configs: TreeNodeConfig<boolean>[] = [
-    {
-        Text: '基础设置',
-        Childs: [
-            {
-                Text: '组织机构'
-            },
-            {
-                Text: '角色管理'
-            },
-            {
-                Text: '人员管理'
-            },
-            {
-                Text: '场地管理'
-            },
-        ]
-    },
-    {
-        Text: '基站管理',
-        Childs: [
-            {
-                Text: '基站管理'
-            },
-        ]
-    },
-    {
-        Text: '标签管理',
-        Childs: [
-            {
-                Text: '人员管理标签'
-            },
-            {
-                Text: '资产管理标签'
-            },
-            {
-                Text: '传感器标签'
-            },
-        ]
-    },
-    {
-        Text: '设备管理',
-        Childs: [
-            {
-                Text: '4G定位终端'
-            },
-        ]
-    },
-    {
-        Text: '操作管理',
-        Childs: [
-            {
-                Text: '操作记录'
-            },
-            {
-                Text: '操作重试'
-            },
-        ]
-    },
-    {
-        Text: '系统设置',
-        Childs: [
-            {
-                Text: '设备设置'
-            },
-            {
-                Text: '报警设置'
-            },
-        ]
-    },
-]
+/** “权限助手”模型 */
+export class AuthorityHelper {
+    //#region 【Fields】
+    static readonly _action = 'AuthorityMgt'
+    /** “权限”树模型 */
+    readonly _tree = new TreeModel<boolean>(configs, false, true)
+    //#endregion 【Fields】
+
+    //#region 【Properties】
+    /** 是否“只读” */
+    readonly IsReadonly = ref(false)
+    //#endregion 【Properties】
+
+    //#region 【Ctor】
+    constructor() {
+        this._tree._onInit = node => {
+            if (node._data) {
+                node.Color.value = Colors.Warning
+            }
+        }
+        this._tree._onActive = node => {
+            if (node._data === undefined) {
+                console.warn('The _data is undefined!')
+                return
+            }
+            this.IsReadonly.value = node._data
+        }
+    }
+    //#endregion 【Ctor】
+
+    //#region 【Functions】
+    //#region [private]
+    /** 设置“是否只读” */
+    private readonly SetIsReadonly = (node: TreeNodeModel<boolean>, isReadonly: boolean) => {
+        node._data = this.IsReadonly.value
+        node.Color.value = isReadonly ? Colors.Warning : ''
+    }
+    //#endregion [private]
+
+    /** 初始化 */
+    readonly Init = () => {
+        this._tree.Init()
+    }
+
+    /** 设置“是否只读” */
+    readonly SetIsReadonlyRange = () => {
+        const node = this._tree.ActiveNode.value
+        if (node) {
+            node.Traverse(n => this.SetIsReadonly(n, this.IsReadonly.value))
+        }
+    }
+
+    /** 获取“权限模型”集合 */
+    readonly GetModels = (): AuthorityModel[] => {
+        const models: AuthorityModel[] = []
+
+        this._tree.NodeArray.value.forEach(node => {
+            if (!node.IsChecked.value) return
+
+            const model = new AuthorityModel()
+            model.path = node.Path.value
+
+            if (node._data === undefined) {
+                console.warn('The _data is undefined!')
+                return
+            }
+            model.isReadonly = node._data
+
+            models.push(model)
+        })
+
+        return models
+    }
+
+    /** 获取“权限模型”集合 */
+    readonly SaveModels = async (role: number): Promise<MyActionResult> => {
+        const models = this.GetModels()
+        models.forEach(m => m.role = role)
+        return await AxiosHelper.Add(AuthorityHelper._action, models, true)
+    }
+
+    /** 加载 */
+    readonly Update = async (role: number) => {
+        const filter = new FilterModel('role', [role])
+        const arr = await AxiosHelper.Where(AuthorityHelper._action, [filter])
+        console.log(arr)
+    }
+    //#endregion 【Functions】
+}
+
+/** “权限助手”实例 */
+export const authorityHelper = new AuthorityHelper()

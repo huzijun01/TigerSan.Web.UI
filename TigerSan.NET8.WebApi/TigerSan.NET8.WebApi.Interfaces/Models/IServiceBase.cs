@@ -10,6 +10,9 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<int> GetCount();
         public Task<List<T>> GetAllList();
         public Task<List<T>> GetList(int pageSize, int pageNumber);
+        public Task<List<object>> Select(string field, bool isDistinct = false);
+        public Task<List<object>> Where(List<FilterModel> filters, int? pageSize = null, int? pageNumber = null);
+        public Task<bool> IsExists(int index);
 
         // 增:
         public Task<MyActionResult> Add(T entity);

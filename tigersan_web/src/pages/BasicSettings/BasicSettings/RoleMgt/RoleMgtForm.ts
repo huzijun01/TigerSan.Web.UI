@@ -1,6 +1,5 @@
-import formAuthority from './AuthorityMgtForm'
 import { ref } from 'vue'
-import { AxiosHelper } from '@/helpers'
+import { authorityHelper, AxiosHelper } from '@/helpers'
 import { GetSubmitResult, MyActionResult } from '@/models'
 import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
 import { selectCompany, RoleMgtModel, roleMgtTable, pagination, GetCompany } from './RoleMgtTable'
@@ -81,14 +80,15 @@ async function Refresh() {
 
 /** 增 */
 async function Add() {
-    formAuthority.treeAuthority.Init()
+    authorityHelper.Init()
 
     roleMgtForm.Title.value = '新增角色'
 
     roleMgtForm._getSource = AddGetSource
 
     roleMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Post(action, source)
+        const res = await AxiosHelper.Add(action, source)
+        await authorityHelper.SaveModels(source.index)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -100,7 +100,7 @@ async function Add() {
 
 /** 改 */
 async function Edit() {
-    formAuthority.treeAuthority.Init()
+    authorityHelper.Init()
 
     roleMgtForm.Title.value = '修改角色'
 
@@ -108,9 +108,11 @@ async function Edit() {
         const rowData = roleMgtTable.SelectedRowDatas.value[0]
 
         if (!rowData) {
+            debugger
             console.warn('The rowData is undefined!')
             return new RoleMgtModel()
         }
+        authorityHelper.Update(rowData.index)
 
         selectCompany.Value.value = GetCompany(rowData)
 
@@ -118,7 +120,9 @@ async function Edit() {
     }
 
     roleMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Put(action, source)
+        const res = await AxiosHelper.Put(action, source).then(() => {
+            return authorityHelper.SaveModels(source.index)
+        })
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
