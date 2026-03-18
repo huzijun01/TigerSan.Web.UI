@@ -42,8 +42,13 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configAuthority.ItemModel">
+                <div class="readonly-panel flex-left" v-show="formAuthority.treeAuthority.IsActive.value">
+                    <span class="text">{{ Texts.IsReadonly.value }}</span>
+                    <input type="checkbox" v-model="formAuthority.isReadonly.value"
+                        @change="formAuthority.SetIsReadonly">
+                </div>
                 <div class="tree-box">
-                    <Tree :model="form.treeAuthority" />
+                    <Tree :model="formAuthority.treeAuthority" />
                 </div>
             </FormItem>
         </FormRow>
@@ -52,9 +57,10 @@
 
 <script lang="ts" setup>
 import form from './RoleMgtForm'
+import formAuthority from './AuthorityMgtForm'
 import { onMounted } from 'vue'
 import { selectCompany, searchName, roleMgtTable, pagination } from './RoleMgtTable'
-import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem, Tree } from '@/0_tigersan_ui/tigerui'
+import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
@@ -70,6 +76,14 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
+
+.readonly-panel {
+    margin: 0px 5px 15px 5px;
+
+    .text {
+        color: var(--color-warning);
+    }
+}
 
 .tree-box {
     max-height: 500px;

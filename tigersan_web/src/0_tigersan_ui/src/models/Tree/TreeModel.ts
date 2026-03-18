@@ -2,38 +2,40 @@ import { nanoid } from "nanoid"
 import { computed, ref, shallowRef, shallowReactive } from "vue"
 import { ContentSizeBehavior } from "../../helpers"
 
-type TreeNodeModelFunc<T> = (node: TreeNodeModel<T>) => void
+type TreeNodeModelFunc<TData> = (node: TreeNodeModel<TData>) => void
 
 /** “树节点”模型 */
-class TreeNodeModel<T> extends ContentSizeBehavior {
+class TreeNodeModel<TData> extends ContentSizeBehavior {
     //#region 【Fields】
     /** 是否“自动更新”选中状态 */
     private _isAutoUpdate = true
     /** ID */
     readonly _id = nanoid()
     /** 所属树 */
-    _tree: TreeModel<T>
+    _tree: TreeModel<TData>
     /** 数据 */
-    _data?: T
+    _data?: TData
     /** 父项 */
-    _parent?: TreeNodeModel<T>
+    _parent?: TreeNodeModel<TData>
     /** 配置（内部维护） */
-    _config?: TreeNodeConfig<T>
+    _config?: TreeNodeConfig<TData>
     /** 激活后 */
-    _onActive?: TreeNodeModelFunc<T>
+    _onActive?: TreeNodeModelFunc<TData>
     /** 失活后 */
-    _onUnactive?: TreeNodeModelFunc<T>
+    _onUnactive?: TreeNodeModelFunc<TData>
     /** 选中后 */
-    _onChecked?: TreeNodeModelFunc<T>
+    _onChecked?: TreeNodeModelFunc<TData>
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 文本 */
     readonly Text = ref('null')
+    /** 颜色 */
+    readonly Color = ref('')
     /** 是否“选中” */
     readonly IsChecked = ref(false)
     /** “子项”集合 */
-    readonly Childs = shallowReactive<TreeNodeModel<T>[]>([])
+    readonly Childs = shallowReactive<TreeNodeModel<TData>[]>([])
 
     //#region [computed]
     /** 是否“激活” */
@@ -42,11 +44,18 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     })
 
     /** 根类 */
-    readonly rootClass = computed(() => {
+    readonly RootClass = computed(() => {
         return {
             open: this.IsOpen.value,
             active: this.IsActive.value,
             checked: this.IsChecked.value,
+        }
+    })
+
+    /** 颜色样式 */
+    readonly ColorStyle = computed(() => {
+        return {
+            color: this.Color.value,
         }
     })
 
@@ -59,10 +68,10 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
 
     //#region 【Ctor】
     constructor(
-        tree: TreeModel<T>,
-        data?: T,
-        parent?: TreeNodeModel<T>,
-        childs?: TreeNodeModel<T>[]) {
+        tree: TreeModel<TData>,
+        data?: TData,
+        parent?: TreeNodeModel<TData>,
+        childs?: TreeNodeModel<TData>[]) {
         super()
         this._tree = tree
         this._data = data
@@ -119,7 +128,7 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     //#endregion [private]
 
     /** 遍历 */
-    readonly Traverse = (callback: TreeNodeModelFunc<T>) => {
+    readonly Traverse = (callback: TreeNodeModelFunc<TData>) => {
         callback(this)
 
         if (this.Childs) {
@@ -128,7 +137,7 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     }
 
     /** 向上遍历 */
-    readonly UpTraverse = (callback: TreeNodeModelFunc<T>) => {
+    readonly UpTraverse = (callback: TreeNodeModelFunc<TData>) => {
         callback(this)
 
         if (this._parent) {
@@ -137,8 +146,8 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
     }
 
     /** 获取数组（无嵌套） */
-    readonly GetArray = (): TreeNodeModel<T>[] => {
-        const arr: TreeNodeModel<T>[] = []
+    readonly GetArray = (): TreeNodeModel<TData>[] => {
+        const arr: TreeNodeModel<TData>[] = []
         this.Traverse(node => { arr.push(node) })
         return arr
     }
@@ -169,39 +178,47 @@ class TreeNodeModel<T> extends ContentSizeBehavior {
 }
 
 /** “树节点”配置 */
-class TreeNodeConfig<T> {
+class TreeNodeConfig<TData> {
     // Fields:
     /** 数据 */
-    _data?: T
+    _data?: TData
     /** 激活后 */
-    _onActive?: TreeNodeModelFunc<T>
+    _onActive?: TreeNodeModelFunc<TData>
     /** 选中后 */
-    _onChecked?: TreeNodeModelFunc<T>
+    _onChecked?: TreeNodeModelFunc<TData>
     /** 失活后 */
-    _onUnactive?: TreeNodeModelFunc<T>
+    _onUnactive?: TreeNodeModelFunc<TData>
 
     // Properties:
     /** 文本 */
     Text?: string
+    /** 颜色 */
+    Color?: string
     /** 是否“激活” */
     IsActive?: boolean
     /** 是否“选中” */
     IsChecked?: boolean
     /** “子项”集合 */
-    Childs?: TreeNodeConfig<T>[]
+    Childs?: TreeNodeConfig<TData>[]
 }
 
 /** “树”模型 */
-class TreeModel<T> {
+class TreeModel<TData> {
     //#region 【Fields】
+    /** “配置”集合 */
+    private _configs?: TreeNodeConfig<TData>[]
+    /** 默认“数据” */
+    _defaultData?: TData
     /** 默认“选中状态” */
     _defaultIsChecked: boolean
+    /** 初始化后 */
+    _onInit?: TreeNodeModelFunc<TData>
     /** 激活后 */
-    _onActive?: TreeNodeModelFunc<T>
+    _onActive?: TreeNodeModelFunc<TData>
     /** 选中后 */
-    _onChecked?: TreeNodeModelFunc<T>
+    _onChecked?: TreeNodeModelFunc<TData>
     /** 失活后 */
-    _onUnactive?: TreeNodeModelFunc<T>
+    _onUnactive?: TreeNodeModelFunc<TData>
     /** 初始化后 */
     _onInited?: Function
     //#endregion 【Fields】
@@ -210,15 +227,15 @@ class TreeModel<T> {
     /** 是否“显示复选框” */
     readonly IsShowCheckbox = ref(true)
     /** 激活节点 */
-    readonly ActiveNode = shallowRef<TreeNodeModel<T> | undefined>()
+    readonly ActiveNode = shallowRef<TreeNodeModel<TData> | undefined>()
     /** “节点”集合 */
-    readonly Nodes = shallowReactive<TreeNodeModel<T>[]>([])
+    readonly Nodes = shallowReactive<TreeNodeModel<TData>[]>([])
 
     //#region [computed]
     /** 是否“已激活” */
     readonly IsActive = computed(() => this.ActiveNode.value != undefined)
     /** “节点”数组（无嵌套） */
-    readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange<T>(this.Nodes))
+    readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange<TData>(this.Nodes))
     /** “选中节点”数组（无嵌套） */
     readonly CheckedNodeArray = computed(() => this.NodeArray.value.filter(n => n.IsChecked.value))
     /** “激活节点”的数据 */
@@ -230,7 +247,11 @@ class TreeModel<T> {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(configs?: TreeNodeConfig<T>[], defaultIsChecked: boolean = false) {
+    constructor(
+        configs?: TreeNodeConfig<TData>[],
+        defaultData?: TData,
+        defaultIsChecked: boolean = false) {
+        this._defaultData = defaultData
         this._defaultIsChecked = defaultIsChecked
         this.Init(configs)
     }
@@ -238,7 +259,7 @@ class TreeModel<T> {
 
     //#region 【Functions】
     /** 点击后（内部方法） */
-    readonly OnClickInternal = (node: TreeNodeModel<T>) => {
+    readonly OnClickInternal = (node: TreeNodeModel<TData>) => {
         if (node.IsActive.value) {
             this.ActiveNode.value = undefined
             this._onUnactive?.(node)
@@ -251,25 +272,35 @@ class TreeModel<T> {
     }
 
     /** 初始化 */
-    readonly Init = (configs?: TreeNodeConfig<T>[]) => {
+    readonly Init = (configs?: TreeNodeConfig<TData>[]) => {
+        if (configs) this._configs = configs
+
         try {
             this.Nodes.splice(0)
             this.ActiveNode.value = undefined
 
-            if (!configs) return
+            if (!this._configs) return
 
-            configs.forEach(config => {
+            this._configs.forEach(config => {
                 const node = GetNodeModel(this, config)
                 this.Nodes.push(node)
             })
 
             this.NodeArray.value.forEach(node => {
-                if (node._config && node._config.IsChecked != undefined) return
-                node.IsChecked.value = this._defaultIsChecked
+                if (!(node._config && node._config._data != undefined)) {
+                    node._data = this._defaultData
+                }
+
+                if (!(node._config && node._config.IsChecked != undefined)) {
+                    node.IsChecked.value = this._defaultIsChecked
+                }
+
+                this._onInit?.(node)
             })
         } finally {
             this._onInited?.()
         }
+        debugger
     }
 
     /** 设置“激活节点” */
@@ -285,15 +316,15 @@ class TreeModel<T> {
     }
 
     /** 获取“数据”集合 */
-    GetDatas(): T[] {
-        return this.NodeArray.value.map(n => (n._data as T))
+    GetDatas(): TData[] {
+        return this.NodeArray.value.map(n => (n._data as TData))
     }
     //#endregion 【Functions】
 }
 
 /** 获取“节点模型” */
-function GetNodeModel<T>(tree: TreeModel<T>, config: TreeNodeConfig<T>, parent?: TreeNodeModel<T>): TreeNodeModel<T> {
-    const node = new TreeNodeModel<T>(tree, config._data, parent)
+function GetNodeModel<TData>(tree: TreeModel<TData>, config: TreeNodeConfig<TData>, parent?: TreeNodeModel<TData>): TreeNodeModel<TData> {
+    const node = new TreeNodeModel<TData>(tree, config._data, parent)
     node._config = config
     InitNodeModel(config, node)
 
@@ -307,7 +338,7 @@ function GetNodeModel<T>(tree: TreeModel<T>, config: TreeNodeConfig<T>, parent?:
 }
 
 /** 初始化“节点模型” */
-function InitNodeModel<T>(config: TreeNodeConfig<T>, node: TreeNodeModel<T>) {
+function InitNodeModel<TData>(config: TreeNodeConfig<TData>, node: TreeNodeModel<TData>) {
     // Fields:
     if (config._data != undefined) node._data = config._data
     if (config._onActive != undefined) node._onActive = config._onActive
@@ -316,6 +347,7 @@ function InitNodeModel<T>(config: TreeNodeConfig<T>, node: TreeNodeModel<T>) {
 
     // Properties:
     if (config.Text != undefined) node.Text.value = config.Text
+    if (config.Color != undefined) node.Color.value = config.Color
     if (config.IsChecked != undefined) node.IsChecked.value = config.IsChecked
 }
 

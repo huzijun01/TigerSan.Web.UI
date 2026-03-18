@@ -11,7 +11,8 @@ namespace TigerSan.NET8.WebApi.Share
         #endregion 【Fields】
 
         #region 【Properties】
-        public DbSet<AdminMgtEntity> AuthorityMgts { get; set; }
+        public DbSet<AdminMgtEntity> AdminMgts { get; set; }
+        public DbSet<AuthorityMgtEntity> AuthorityMgts { get; set; }
         public DbSet<BaseStationMgtEntity> BaseStationMgts { get; set; }
         public DbSet<CompanyMgtEntity> CompanyMgts { get; set; }
         public DbSet<PersonMgtEntity> PersonMgts { get; set; }

@@ -15,12 +15,9 @@ selectCompany._converter = (company: CompanyMgtModel): string => company.name
 
 /** “角色管理”模型 */
 class RoleMgtModel {
-    index = 0
+    readonly index = 0
     company = -1
     name = ''
-    navFolders = ''
-    navButtons = ''
-    readonlyButtons = ''
 }
 
 // 字段:
@@ -47,24 +44,6 @@ const roleMgtTable = new TableModel<RoleMgtModel>([
     {
         _propName: 'name',
         Text: '名称',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'navFolders',
-        Text: '导航目录',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'navButtons',
-        Text: '导航按钮',
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
-    {
-        _propName: 'readonlyButtons',
-        Text: '只读按钮',
         IsReadonly: true,
         IsAllowWrap: false,
     },

@@ -23,6 +23,7 @@ class Texts {
     static readonly Online = TextModel.Computed('Online', '在线')
     static readonly Offline = TextModel.Computed('Offline', '离线')
     static readonly Version = TextModel.Computed('Version: V', '版本：V')
+    static readonly IsReadonly = TextModel.Computed('IsReadonly: ', '是否只读：')
 }
 
 export {

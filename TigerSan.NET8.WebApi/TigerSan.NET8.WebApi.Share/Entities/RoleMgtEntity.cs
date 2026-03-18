@@ -10,11 +10,5 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public int Company { get; set; }
         [SnakeColumn]
         public string Name { get; set; } = string.Empty;
-        [SnakeColumn]
-        public string? NavFolders { get; set; }
-        [SnakeColumn]
-        public string? NavButtons { get; set; }
-        [SnakeColumn]
-        public string? ReadonlyButtons { get; set; }
     }
 }

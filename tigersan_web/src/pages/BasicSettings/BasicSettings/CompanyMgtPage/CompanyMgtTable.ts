@@ -53,7 +53,7 @@ selectFormParent._converter = (obj: any) => {
 
 /** "组织机构"模型 */
 class CompanyMgtModel {
-    index = 0
+    readonly index = 0
     name = ''
     addr = ''
     parent?: number

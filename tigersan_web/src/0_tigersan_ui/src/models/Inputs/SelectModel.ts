@@ -114,7 +114,7 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     })
 
     /** 根类 */
-    readonly rootClass = computed(() => {
+    readonly RootClass = computed(() => {
         return {
             open: this.IsOpen.value,
             disabled: !this.IsEnabled.value,

@@ -1,5 +1,5 @@
 <template>
-    <div class="select-menu" ref="refMenu" v-if="model.IsOpen.value" :class="model.rootClass.value"
+    <div class="select-menu" ref="refMenu" v-if="model.IsOpen.value" :class="model.RootClass.value"
         :style="model.menuStyleObj.value">
         <div v-for="i in model.ItemModels.value" :key="i._id">
             <div class="menu-item" v-if="i.IsShow.value" @click="i.OnClick">{{ i.Text.value }}</div>

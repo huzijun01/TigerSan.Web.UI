@@ -15,7 +15,7 @@ searchName.Placeholder.value = '请输人员名称'
 
 /** “人员管理”模型 */
 class PersonMgtModel {
-    index = 0
+    readonly index = 0
     role = -1
     username = ''
     nickname = ''

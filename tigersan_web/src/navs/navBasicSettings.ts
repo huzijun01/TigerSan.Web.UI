@@ -44,12 +44,6 @@ const navBasicSettings: NavFolderConfig = {
                     _component: PersonMgtPage
                 },
                 {
-                    Title: "权限管理",
-                    Icon: Icons.Key_Tilted,
-                    IsSelected: false,
-                    _component: undefined
-                },
-                {
                     Title: "场地管理",
                     Icon: Icons.Building_1,
                     IsSelected: false,

@@ -1,10 +1,10 @@
 <template>
-    <div class="tree-node-panel" :class="model.rootClass.value">
+    <div class="tree-node-panel" :class="model.RootClass.value">
         <div class="back-panel flex-center">
             <Arrow :isShow="model.IsHaveChild.value" :style="model.arrowStyleObj.value" :click="model.OnClickArrow" />
             <input type="checkbox" class="checkbox" v-if="model._tree.IsShowCheckbox.value"
                 v-model="model.IsChecked.value" @change="model.OnChange">
-            <div class="text" @click="model.OnClick">{{ model.Text.value }}</div>
+            <div class="text" :style="model.ColorStyle.value" @click="model.OnClick">{{ model.Text.value }}</div>
         </div>
         <div class="content-panel flex-center drawer" :style="model.ContentPanelStyleObj.value">
             <Arrow v-if="model.IsHaveChild.value" :opacity="0" />

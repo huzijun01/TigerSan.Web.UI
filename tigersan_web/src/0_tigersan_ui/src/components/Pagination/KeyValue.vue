@@ -2,7 +2,7 @@
     <div v-if="!(isAutoHidden && propValue === '')" class="key-value" :style="marginRightStyle">
         <span>{{ propName }}</span>
         <span>{{ Texts.Colon.value }}</span>
-        <span :style="colorStyle">{{ propValue }}</span>
+        <span :style="ColorStyle">{{ propValue }}</span>
     </div>
 </template>
 
@@ -36,7 +36,7 @@ let { propName, propValue, color, marginRight } = defineProps({
     }
 })
 
-const colorStyle = {
+const ColorStyle = {
     'color': color,
 }
 

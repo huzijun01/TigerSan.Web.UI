@@ -1,28 +1,40 @@
-import formAuthority from './AuthorityMgtForm'
 import { ref } from 'vue'
-import { AxiosHelper } from '@/helpers'
+import { AuthorityHelper, AxiosHelper } from '@/helpers'
 import { GetSubmitResult, MyActionResult } from '@/models'
-import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
-import { selectCompany, RoleMgtModel, roleMgtTable, pagination, GetCompany } from './RoleMgtTable'
+import { AuthorityMgtModel, authorityMgtTable, pagination } from './AuthorityMgtTable'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
-const action = 'RoleMgt'
+const action = 'AuthorityMgt'
 
-/** “公司”项目配置 */
-const configCompany: FormItemConfig<RoleMgtModel, CompanyMgtModel> = {
-    _propName: 'company',
-    PropText: '公司',
-    IsEquired: true,
-    Target: selectCompany.Value,
-    _getValue: source => selectCompany.Items.find(i => i.index === source.company),
-    _setValue: (source, propName, value) => source.company = value ? value.index : -1,
-    _isVerifyOk: source => {
-        return Verify.IsGreaterThan(source.company, 0, '不可为空')
+/** 是否“只读” */
+const isReadonly = ref(false)
+
+/** “权限”树模型 */
+const treeAuthority = AuthorityHelper.GetTreeModel()
+treeAuthority._onInit = node => {
+    if (node._data) {
+        node.Color.value = Colors.Warning
+    }
+}
+treeAuthority._onActive = node => {
+    if (node._data === undefined) {
+        console.warn('The _data is undefined!')
+        return
+    }
+    isReadonly.value = node._data
+}
+
+/** 设置“是否只读” */
+function SetIsReadonly() {
+    const node = treeAuthority.ActiveNode.value
+    if (node) {
+        node._data = isReadonly.value
+        node.Color.value = isReadonly.value ? Colors.Warning : ''
     }
 }
 
 /** “名称”项目配置 */
-const configName: FormItemConfig<RoleMgtModel, string> = {
+const configName: FormItemConfig<AuthorityMgtModel, string> = {
     _propName: 'name',
     PropText: '名称',
     IsEquired: true,
@@ -33,7 +45,7 @@ const configName: FormItemConfig<RoleMgtModel, string> = {
 }
 
 /** “权限”项目配置 */
-const configAuthority: FormItemConfig<RoleMgtModel, number> = {
+const configAuthority: FormItemConfig<AuthorityMgtModel, number> = {
     _propName: 'authority',
     PropText: '权限',
     IsEquired: true,
@@ -45,87 +57,69 @@ const configAuthority: FormItemConfig<RoleMgtModel, number> = {
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new RoleMgtModel()
+    return new AuthorityMgtModel()
 }
 
-/** “角色管理”表单配置 */
-let configRoleMgtForm: FormConfig<RoleMgtModel> = {
+/** “权限管理”表单配置 */
+let configAuthorityMgtForm: FormConfig<AuthorityMgtModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
     _itemConfigs: [
-        configCompany,
         configName,
         configAuthority,
     ]
 }
 
-/** “角色管理”表单模型 */
-const roleMgtForm = new FormModel(configRoleMgtForm)
-
-async function UpdateCompanies() {
-    selectCompany.Items.splice(0)
-    const roles = await AxiosHelper.GetAllList<CompanyMgtModel>('CompanyMgt')
-    selectCompany.Items.push(...roles)
-}
+/** “权限管理”表单模型 */
+const authorityMgtForm = new FormModel(configAuthorityMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await UpdateCompanies()
-    const arr = await AxiosHelper.GetAllList<RoleMgtModel>(action)
-    roleMgtTable.RowDatas.splice(0)
-    roleMgtTable.RowDatas.push(...arr)
+    const arr = await AxiosHelper.GetAllList<AuthorityMgtModel>(action)
+    authorityMgtTable.RowDatas.splice(0)
+    authorityMgtTable.RowDatas.push(...arr)
     const count = await AxiosHelper.GetCount(action)
     pagination.Count.value = count
 }
 
 /** 增 */
 async function Add() {
-    formAuthority.treeAuthority.Init()
+    authorityMgtForm.Title.value = '新增权限'
 
-    roleMgtForm.Title.value = '新增角色'
+    authorityMgtForm._getSource = AddGetSource
 
-    roleMgtForm._getSource = AddGetSource
-
-    roleMgtForm._onSubmitAsync = async source => {
+    authorityMgtForm._onSubmitAsync = async source => {
         const res = await AxiosHelper.Post(action, source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    await UpdateCompanies()
-
-    roleMgtForm.Show()
+    authorityMgtForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    formAuthority.treeAuthority.Init()
+    authorityMgtForm.Title.value = '修改权限'
 
-    roleMgtForm.Title.value = '修改角色'
-
-    roleMgtForm._getSource = () => {
-        const rowData = roleMgtTable.SelectedRowDatas.value[0]
+    authorityMgtForm._getSource = () => {
+        const rowData = authorityMgtTable.SelectedRowDatas.value[0]
 
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new RoleMgtModel()
+            return new AuthorityMgtModel()
         }
-
-        selectCompany.Value.value = GetCompany(rowData)
 
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
-    roleMgtForm._onSubmitAsync = async source => {
+    authorityMgtForm._onSubmitAsync = async source => {
         const res = await AxiosHelper.Put(action, source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    await UpdateCompanies()
-
-    roleMgtForm.Show()
+    authorityMgtForm.Show()
 }
 
 /** 删 */
@@ -142,7 +136,7 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const model = roleMgtTable.SelectedRowDatas.value[0]
+    const model = authorityMgtTable.SelectedRowDatas.value[0]
     if (!model) {
         console.warn('The model is undefined!')
         return {}
@@ -156,12 +150,14 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
-    configCompany,
+    isReadonly,
+    treeAuthority,
     configName,
     configAuthority,
-    roleMgtForm,
+    authorityMgtForm,
     Refresh,
     Add,
     Edit,
     Delete,
+    SetIsReadonly,
 }
