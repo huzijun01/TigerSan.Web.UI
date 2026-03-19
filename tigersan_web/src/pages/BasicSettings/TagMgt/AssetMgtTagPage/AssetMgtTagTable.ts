@@ -53,7 +53,7 @@ const assetMgtTagTable = new TableModel<AssetMgtTagModel>([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        _strGetter: GetOnlineString,
+        _getString: GetOnlineString,
     },
     {
         _propName: 'Battery',

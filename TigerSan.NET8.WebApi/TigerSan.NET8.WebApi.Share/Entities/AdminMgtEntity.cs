@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("admin_mgt")]
-    public class AdminMgtEntity : IndexEntity
+    public class AdminMgtEntity : IdEntity
     {
         [SnakeColumn]
         public string Name { get; set; } = string.Empty;
@@ -13,6 +13,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public bool IsRoot { get; set; } = false;
         [SnakeColumn]
-        public int? Company { get; set; }
+        public long? Company { get; set; }
     }
 }

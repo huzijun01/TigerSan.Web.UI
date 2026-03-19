@@ -18,9 +18,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [private]
         #region 删除“后代数据”
         /// <summary>删除“后代数据”</summary>
-        private void RemoveChilds(int index)
+        private void RemoveChilds(long id)
         {
-            var entities = _dbSet.Where(i => i.Parent == index);
+            var entities = _dbSet.Where(i => i.Parent == id);
             _dbSet.RemoveRange(entities);
         }
         #endregion
@@ -29,20 +29,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public new async Task<MyActionResult> Remove(int index)
+        public new async Task<MyActionResult> Remove(long id)
         {
             var res = MyResults.OperationSuccess;
 
             try
             {
-                var entity = _dbSet.FirstOrDefault(i => i.Index == index);
+                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
                 if (entity == null)
                 {
                     return MyResults.ResourceNotExist;
                 }
 
                 _dbSet.Remove(entity);
-                RemoveChilds(index);
+                RemoveChilds(id);
 
                 await _db.SaveChangesAsync();
             }
@@ -57,22 +57,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public new async Task<MyActionResult> RemoveRange(IList<int> indexes)
+        public new async Task<MyActionResult> RemoveRange(IList<long> ids)
         {
             var res = MyResults.OperationSuccess;
 
             try
             {
-                if (indexes.Count < 1) return res;
+                if (ids.Count < 1) return res;
 
-                var entities = _dbSet.Where(i => indexes.Contains(i.Index));
+                var entities = _dbSet.Where(i => ids.Contains(i.Id));
 
                 var count = await entities.CountAsync();
                 if (count < 1)
                 {
                     return MyResults.ResourceNotExist;
                 }
-                else if (count < indexes.Count)
+                else if (count < ids.Count)
                 {
                     res = MyResults.SomeResourceNotExist;
                 }
@@ -82,7 +82,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 foreach (var item in entities)
                 {
-                    RemoveChilds(item.Index);
+                    RemoveChilds(item.Id);
                 }
 
                 await _db.SaveChangesAsync();

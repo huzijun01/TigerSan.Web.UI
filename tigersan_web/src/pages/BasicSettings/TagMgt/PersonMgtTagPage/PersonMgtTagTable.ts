@@ -49,7 +49,7 @@ const personMgtTagTable = new TableModel<PersonMgtTagModel>([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        _strGetter: GetOnlineString,
+        _getString: GetOnlineString,
     },
     {
         _propName: 'EqpType',

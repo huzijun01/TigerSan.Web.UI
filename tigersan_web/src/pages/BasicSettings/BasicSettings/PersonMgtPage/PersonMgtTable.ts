@@ -1,4 +1,4 @@
-import { RoleMgtModel } from '../RoleMgt/RoleMgtTable'
+import { PersonMgtModel, RoleMgtModel } from '@/models'
 import { PaginationModel, SearchModel, SelectModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 选择框 */
@@ -13,16 +13,6 @@ selectRole._converter = (role: RoleMgtModel): string => role.name
 const searchName = new SearchModel()
 searchName.Placeholder.value = '请输人员名称'
 
-/** “人员管理”模型 */
-class PersonMgtModel {
-    readonly index = 0
-    role = -1
-    username = ''
-    nickname = ''
-    password = ''
-    photo = ''
-}
-
 // 字段:
 /** 分页器 */
 const pagination = new PaginationModel()
@@ -31,7 +21,7 @@ pagination.IsShowSelectedRowCount.value = true
 /** 列头 */
 const personMgtTable = new TableModel<PersonMgtModel>([
     {
-        _propName: 'index',
+        _propName: 'id',
         Text: '序号',
         Width: 50,
         IsReadonly: true,
@@ -42,7 +32,7 @@ const personMgtTable = new TableModel<PersonMgtModel>([
         Text: '角色',
         IsReadonly: true,
         IsAllowWrap: false,
-        _strGetter: source => GetRoleName(source.role)
+        _getString: source => GetRoleName(source.role)
     },
     {
         _propName: 'username',
@@ -63,7 +53,7 @@ personMgtTable.IsAllowMultiSelect.value = false
 
 // 方法:
 function GetRoleName(index: number): string {
-    const company = selectRole.Items.find(i => i.index === index)
+    const company = selectRole.Items.find(i => i.id === index)
     return company ? company.name : ''
 }
 

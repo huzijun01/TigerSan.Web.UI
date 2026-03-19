@@ -1,8 +1,7 @@
 import { watch } from 'vue'
 import { useUserInfo } from '@/stores'
-import { SelectModel, TableModel, TreeHelper, TreeModel, TreeNodeConfig } from '@/0_tigersan_ui/tigerui'
-
-type CompanyEvent = (model: CompanyMgtModel) => void
+import { CompanyMgtModel } from '@/models'
+import { SelectModel, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
 
 /** 树 */
 const tree = new TreeModel<CompanyMgtModel>()
@@ -47,19 +46,8 @@ selectFormParent.PlaceholderEN.value = 'Please select a company'
 selectFormParent._converter = (obj: any) => {
     if (!obj) return ''
     const index = obj as number
-    const company = tree.GetDatas().find(d => d.index === index)
+    const company = tree.GetDatas().find(d => d.id === index)
     return company ? company.name : ''
-}
-
-/** "组织机构"模型 */
-class CompanyMgtModel {
-    readonly index = 0
-    name = ''
-    addr = ''
-    parent?: number
-    onClick?: CompanyEvent
-    onDelete?: CompanyEvent
-    onEdit?: CompanyEvent
 }
 
 // 列头:
@@ -81,29 +69,18 @@ companyMgtTable.IsAllowMultiSelect.value = false
 
 // 初始化:
 companyMgtTable._initHeader = headerModel => {
-    if (headerModel._propName === 'index') {
-        headerModel.Width.value = 50
+    if (headerModel._propName === 'id') {
+        headerModel.Width.value = 100
     }
 }
 
 companyMgtTable._initItem = itemModel => {
 }
 
-/** “公司数组”转“树配置” */
-function Companies2Tree(companies: CompanyMgtModel[]): TreeNodeConfig<CompanyMgtModel>[] {
-    return TreeHelper.Array2Tree<CompanyMgtModel>(
-        companies,
-        item => item.name,
-        item => item.index,
-        item => item.parent)
-}
-
 export {
     tree,
-    type CompanyEvent,
     CompanyMgtModel,
     companyMgtTable,
     selectParent,
     selectFormParent,
-    Companies2Tree,
 }

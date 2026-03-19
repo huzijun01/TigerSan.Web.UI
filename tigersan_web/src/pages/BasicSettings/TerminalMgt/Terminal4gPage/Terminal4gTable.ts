@@ -55,7 +55,7 @@ const terminal4gTable = new TableModel<Terminal4gModel>([
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
-        _strGetter: GetOnlineString,
+        _getString: GetOnlineString,
     },
     {
         _propName: 'Battery',

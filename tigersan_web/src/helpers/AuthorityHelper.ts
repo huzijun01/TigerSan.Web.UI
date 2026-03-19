@@ -6,8 +6,8 @@ import { Colors, TreeModel, TreeNodeModel } from "@/0_tigersan_ui/tigerui"
 
 /** “权限”模型 */
 export class AuthorityModel {
-    readonly index = 0
-    role = -1
+    readonly id?: number = undefined
+    role: number = 0
     path = ''
     isReadonly = false
 }
@@ -87,9 +87,8 @@ export class AuthorityHelper {
     }
 
     /** 获取“权限模型”集合 */
-    readonly SaveModels = async (role: number): Promise<MyActionResult> => {
+    readonly SaveModels = async (): Promise<MyActionResult> => {
         const models = this.GetModels()
-        models.forEach(m => m.role = role)
         return await AxiosHelper.Add(AuthorityHelper._action, models, true)
     }
 

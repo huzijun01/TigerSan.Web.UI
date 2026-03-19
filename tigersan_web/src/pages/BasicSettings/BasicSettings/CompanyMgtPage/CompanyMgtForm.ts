@@ -1,11 +1,8 @@
 import { ref } from 'vue'
-import { AxiosHelper } from '@/helpers'
 import { navData } from '@/navs/navModel'
-import { GetSubmitResult, MyActionResult } from '@/models'
-import { tree, CompanyMgtModel, companyMgtTable, Companies2Tree, selectParent, selectFormParent } from './CompanyMgtTable'
+import { tree, CompanyMgtModel, selectParent, selectFormParent } from './CompanyMgtTable'
+import { CompanyMgtHelper, companyMgtHelper, GetSubmitResult, MyActionResult } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
-
-const action = 'CompanyMgt'
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig<CompanyMgtModel, string> = {
@@ -59,17 +56,15 @@ const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
 async function Refresh() {
-    await AxiosHelper.GetAllList<CompanyMgtModel>(action)
+    await companyMgtHelper.GetAllList()
         .then(arr => {
             tree.Nodes.splice(0)
-            tree.Init(Companies2Tree(arr))
+            tree.Init(CompanyMgtHelper.Companies2Tree(arr))
         })
 
     selectParent.Items.splice(0)
     const names = tree.GetTexts()
     selectParent.Items.push(...names)
-
-    InitEvents()
 }
 
 /** 增 */
@@ -79,13 +74,13 @@ function Add() {
     companyForm._getSource = AddGetSource
 
     companyForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Add(action, source)
+        const res = await companyMgtHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
     selectFormParent.Items.splice(0)
-    const indexes = tree.GetDatas().map(d => d.index)
+    const indexes = tree.GetDatas().map(d => d.id).filter(i => i != undefined)
     selectFormParent.Items.push(...indexes)
 
     companyForm.Show()
@@ -106,13 +101,13 @@ function Edit() {
     }
 
     companyForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Put(action, source)
+        const res = await companyMgtHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
     selectFormParent.Items.splice(0)
-    const indexes = tree.GetDatas().map(d => d.index).filter(i => i != model.index)
+    const indexes = tree.GetDatas().map(d => d.id).filter(i => i != undefined).filter(i => i != model.id)
     selectFormParent.Items.push(...indexes)
 
     companyForm.Show()
@@ -138,21 +133,11 @@ function DeleteRowData(state: DialogState) {
         return
     }
 
-    AxiosHelper.Delete(action, model.index)
+    companyMgtHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
-}
-
-/** 初始化事件 */
-function InitEvents() {
-    companyMgtTable.RowDatas.forEach(r => {
-        const company = r as CompanyMgtModel
-        company.onDelete = Delete
-        company.onEdit = Edit
-        company.onClick = () => { navData.GoHome() }
-    })
 }
 
 /** 进入主页 */

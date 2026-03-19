@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("base_station_mgt")]
-    public class BaseStationMgtEntity : IndexEntity
+    public class BaseStationMgtEntity : IdEntity
     {
         [SnakeColumn]
         public string MacAddr { get; set; } = string.Empty;

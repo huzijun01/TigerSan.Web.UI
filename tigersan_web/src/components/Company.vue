@@ -28,21 +28,12 @@ const img = 'http://www.tigersan.cn/0_file/image/company.png'
 
 //方法:
 function OnClick() {
-    if (model.onClick) {
-        model.onClick(model)
-    }
 }
 
 function OnDelete() {
-    if (model.onDelete) {
-        model.onDelete(model)
-    }
 }
 
 function OnEdit() {
-    if (model.onEdit) {
-        model.onEdit(model)
-    }
 }
 </script>
 

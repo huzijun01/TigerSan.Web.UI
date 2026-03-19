@@ -7,7 +7,7 @@ namespace TigerSan.NET8.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public abstract class MyControllerBase<T> : ControllerBase where T : IndexEntity
+    public abstract class MyControllerBase<T> : ControllerBase where T : IdEntity
     {
         #region 【Fields】
         protected IServiceBase<T> _service;
@@ -23,11 +23,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         [HttpGet]
-        [Route("{index}")]
+        [Route("{id}")]
         /// <summary>获取“单条数据”</summary>
-        public async Task<MyActionResult> Get(int index)
+        public async Task<MyActionResult> Get(long id)
         {
-            var entity = await _service.Get(index);
+            var entity = await _service.Get(id);
             if (entity == null)
             {
                 return MyResults.ResourceNotFound;
@@ -119,19 +119,19 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region [删]
         [HttpDelete]
-        [Route("{index}")]
+        [Route("{id}")]
         /// <summary>删除“单条数据”</summary>
-        public async Task<MyActionResult> Remove(int index)
+        public async Task<MyActionResult> Remove(long id)
         {
-            return await _service.Remove(index);
+            return await _service.Remove(id);
         }
 
         [HttpDelete]
         [Route("Range")]
         /// <summary>删除“多条数据”</summary>
-        public async Task<MyActionResult> RemoveRange([FromBody] IList<int> indexes)
+        public async Task<MyActionResult> RemoveRange([FromBody] IList<long> ids)
         {
-            return await _service.RemoveRange(indexes);
+            return await _service.RemoveRange(ids);
         }
         #endregion [删]
         #endregion 【Functions】

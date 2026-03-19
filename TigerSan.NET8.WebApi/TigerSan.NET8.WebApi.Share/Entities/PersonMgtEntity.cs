@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("person_mgt")]
-    public class PersonMgtEntity : IndexEntity
+    public class PersonMgtEntity : RoleEntity
     {
-        [SnakeColumn]
-        public int Role { get; set; }
         [SnakeColumn]
         public string Username { get; set; } = string.Empty;
         [SnakeColumn]

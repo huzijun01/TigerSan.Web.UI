@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
-    public class ServiceBase<T> : IServiceBase<T> where T : IndexEntity
+    public class ServiceBase<T> : IServiceBase<T> where T : IdEntity
     {
         #region 【Fields】
         public AppDbContext _db;
@@ -28,11 +28,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
-        public async Task<T?> Get(int index)
+        public async Task<T?> Get(long id)
         {
             try
             {
-                return await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Index == index);
+                return await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
             }
             catch (Exception e)
             {
@@ -206,17 +206,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region “单条数据”是否存在
         /// <summary>“单条数据”是否存在</summary>
-        public async Task<bool> IsExists(int index)
+        public async Task<bool> IsExists(long id)
         {
-            return await _dbSet.AsNoTracking().AnyAsync(i => i.Index == index);
+            return await _dbSet.AsNoTracking().AnyAsync(i => i.Id == id);
         }
         #endregion
 
         #region “多条数据”是否存在
         /// <summary>“多条数据”是否存在</summary>
-        public async Task<bool> IsExistsRange(IList<int> indexes)
+        public async Task<bool> IsExistsRange(IList<long> ids)
         {
-            return await _dbSet.AsNoTracking().AnyAsync(i => indexes.Contains(i.Index));
+            return await _dbSet.AsNoTracking().AnyAsync(i => ids.Contains(i.Id));
         }
         #endregion
         #endregion [查]
@@ -230,7 +230,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                if (await IsExists(entity.Index))
+                if (await IsExists(entity.Id))
                 {
                     return MyResults.ResourceExists;
                 }
@@ -255,8 +255,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                var indexes = entities.Select(i => i.Index).ToList();
-                if (await IsExistsRange(indexes))
+                var ids = entities.Select(i => i.Id).ToList();
+                if (await IsExistsRange(ids))
                 {
                     return MyResults.ResourceExists;
                 }
@@ -283,7 +283,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                var find = _dbSet.FirstOrDefault(i => i.Index == entity.Index);
+                var find = _dbSet.FirstOrDefault(i => i.Id == entity.Id);
                 if (find == null)
                 {
                     return MyResults.ResourceNotExist;
@@ -306,13 +306,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public async Task<MyActionResult> Remove(int index)
+        public async Task<MyActionResult> Remove(long id)
         {
             var res = MyResults.OperationSuccess;
 
             try
             {
-                var entity = _dbSet.FirstOrDefault(i => i.Index == index);
+                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
                 if (entity == null)
                 {
                     return MyResults.ResourceNotExist;
@@ -332,22 +332,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public async Task<MyActionResult> RemoveRange(IList<int> indexes)
+        public async Task<MyActionResult> RemoveRange(IList<long> ids)
         {
             var res = MyResults.OperationSuccess;
 
             try
             {
-                if (indexes.Count < 1) return res;
+                if (ids.Count < 1) return res;
 
-                var entities = _dbSet.Where(i => indexes.Contains(i.Index));
+                var entities = _dbSet.Where(i => ids.Contains(i.Id));
 
                 var count = await entities.CountAsync();
                 if (count < 1)
                 {
                     return MyResults.ResourceNotExist;
                 }
-                else if (count < indexes.Count)
+                else if (count < ids.Count)
                 {
                     res = MyResults.SomeResourceNotExist;
                 }

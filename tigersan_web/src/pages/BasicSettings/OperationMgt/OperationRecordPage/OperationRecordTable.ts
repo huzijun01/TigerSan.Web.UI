@@ -75,7 +75,7 @@ const operationRecordTable = new TableModel<OperationRecordModel>([
         Text: '成功率',
         IsReadonly: true,
         IsAllowWrap: false,
-        _strGetter: (obj: object, propName: string) => {
+        _getString: (obj: object, propName: string) => {
             const record = obj as OperationRecordModel
             return `${record.SuccessRate.toFixed(2)}%`
         }

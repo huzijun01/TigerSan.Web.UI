@@ -1,11 +1,7 @@
 import { ref } from 'vue'
-import { AxiosHelper } from '@/helpers'
-import { RoleMgtModel } from '../RoleMgt/RoleMgtTable'
-import { GetSubmitResult, MyActionResult } from '@/models'
 import { selectRole, PersonMgtModel, personMgtTable, pagination } from './PersonMgtTable'
+import { GetSubmitResult, MyActionResult, RoleMgtModel, personMgtHelper, roleMgtHelper } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
-
-const action = 'PersonMgt'
 
 /** “角色”项目配置 */
 const configRole: FormItemConfig<PersonMgtModel, RoleMgtModel> = {
@@ -13,8 +9,8 @@ const configRole: FormItemConfig<PersonMgtModel, RoleMgtModel> = {
     PropText: '角色',
     IsEquired: true,
     Target: selectRole.Value,
-    _getValue: source => selectRole.Items.find(i => i.index === source.role),
-    _setValue: (source, propName, value) => source.role = value ? value.index : -1,
+    _getValue: source => selectRole.Items.find(i => i.id === source.role),
+    _setValue: (source, propName, value) => source.role = value && value.id != undefined ? value.id : -1,
     _isVerifyOk: source => {
         return Verify.IsGreaterThan(source.role, 0, '不可为空')
     }
@@ -62,17 +58,17 @@ const personMgtForm = new FormModel(configPersonMgtForm)
 
 async function UpdateRoles() {
     selectRole.Items.splice(0)
-    const roles = await AxiosHelper.GetAllList<RoleMgtModel>('RoleMgt')
+    const roles = await roleMgtHelper.GetAllList()
     selectRole.Items.push(...roles)
 }
 
 /** 查 */
 async function Refresh() {
     await UpdateRoles()
-    const arr = await AxiosHelper.GetAllList<PersonMgtModel>(action)
+    const arr = await personMgtHelper.GetAllList()
     personMgtTable.RowDatas.splice(0)
     personMgtTable.RowDatas.push(...arr)
-    const count = await AxiosHelper.GetCount(action)
+    const count = await personMgtHelper.GetCount()
     pagination.Count.value = count
 }
 
@@ -83,7 +79,7 @@ async function Add() {
     personMgtForm._getSource = AddGetSource
 
     personMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Add(action, source)
+        const res = await personMgtHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -108,7 +104,7 @@ async function Edit() {
     }
 
     personMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Put(action, source)
+        const res = await personMgtHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -138,7 +134,12 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    AxiosHelper.Delete(action, model.index)
+    if (model.id === undefined) {
+        console.warn('The id is undefined!')
+        return
+    }
+
+    personMgtHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

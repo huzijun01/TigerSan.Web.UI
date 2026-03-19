@@ -1,11 +1,9 @@
 import { ref } from 'vue'
-import { authorityHelper, AxiosHelper } from '@/helpers'
-import { GetSubmitResult, MyActionResult } from '@/models'
+import { authorityHelper } from '@/helpers'
 import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
-import { selectCompany, RoleMgtModel, roleMgtTable, pagination, GetCompany } from './RoleMgtTable'
+import { selectCompany, roleMgtTable, pagination, GetCompany } from './RoleMgtTable'
+import { GetSubmitResult, MyActionResult, RoleMgtModel, companyMgtHelper, roleMgtHelper } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
-
-const action = 'RoleMgt'
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<RoleMgtModel, CompanyMgtModel> = {
@@ -13,8 +11,8 @@ const configCompany: FormItemConfig<RoleMgtModel, CompanyMgtModel> = {
     PropText: '公司',
     IsEquired: true,
     Target: selectCompany.Value,
-    _getValue: source => selectCompany.Items.find(i => i.index === source.company),
-    _setValue: (source, propName, value) => source.company = value ? value.index : -1,
+    _getValue: source => selectCompany.Items.find(i => i.id === source.company),
+    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : -1,
     _isVerifyOk: source => {
         return Verify.IsGreaterThan(source.company, 0, '不可为空')
     }
@@ -64,17 +62,17 @@ const roleMgtForm = new FormModel(configRoleMgtForm)
 
 async function UpdateCompanies() {
     selectCompany.Items.splice(0)
-    const roles = await AxiosHelper.GetAllList<CompanyMgtModel>('CompanyMgt')
+    const roles = await companyMgtHelper.GetAllList()
     selectCompany.Items.push(...roles)
 }
 
 /** 查 */
 async function Refresh() {
     await UpdateCompanies()
-    const arr = await AxiosHelper.GetAllList<RoleMgtModel>(action)
+    const arr = await roleMgtHelper.GetAllList()
     roleMgtTable.RowDatas.splice(0)
     roleMgtTable.RowDatas.push(...arr)
-    const count = await AxiosHelper.GetCount(action)
+    const count = await roleMgtHelper.GetCount()
     pagination.Count.value = count
 }
 
@@ -87,8 +85,8 @@ async function Add() {
     roleMgtForm._getSource = AddGetSource
 
     roleMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Add(action, source)
-        await authorityHelper.SaveModels(source.index)
+        const res = await roleMgtHelper.Add(source)
+        await authorityHelper.SaveModels()
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -108,11 +106,16 @@ async function Edit() {
         const rowData = roleMgtTable.SelectedRowDatas.value[0]
 
         if (!rowData) {
-            debugger
             console.warn('The rowData is undefined!')
             return new RoleMgtModel()
         }
-        authorityHelper.Update(rowData.index)
+
+        if (rowData.id === undefined) {
+            console.warn('The id is undefined!')
+            return new RoleMgtModel()
+        }
+
+        authorityHelper.Update(rowData.id)
 
         selectCompany.Value.value = GetCompany(rowData)
 
@@ -120,9 +123,14 @@ async function Edit() {
     }
 
     roleMgtForm._onSubmitAsync = async source => {
-        const res = await AxiosHelper.Put(action, source).then(() => {
-            return authorityHelper.SaveModels(source.index)
-        })
+        const res = await roleMgtHelper.Edit(source)
+
+        if (source.id === undefined) {
+            return GetSubmitResult(MyActionResult.GetError('The id is undefined!'), '添加成功')
+        }
+
+        authorityHelper.SaveModels()
+
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -152,7 +160,12 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    AxiosHelper.Delete(action, model.index)
+    if (model.id === undefined) {
+        console.warn('The id is undefined!')
+        return
+    }
+
+    roleMgtHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

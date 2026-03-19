@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 import { Colors, Theme } from '../../base'
-import type { TStringGetter, UnknownSetter, ObjectArrayFunc } from '../../types'
+import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
 
 type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
@@ -296,14 +296,20 @@ class TableItemModel<TSource extends object> {
     /** 更新“文本” 
      * “TableItem”内部会自动调用 */
     UpdateText() {
-        this.Text.value = this._headerModel
-            ._strGetter(this._rowModel._rowData, this._headerModel._propName)
+        if (this._headerModel._getStringAsync) {
+            this._headerModel._getStringAsync(this._rowModel._rowData, this._headerModel._propName).then(value => {
+                this.Text.value = value
+            })
+        } else {
+
+            this.Text.value = this._headerModel._getString(this._rowModel._rowData, this._headerModel._propName)
+        }
     }
 
     /** 修改“行数据” */
     SetRowData() {
         this._headerModel
-            ._objSetter(this._rowModel._rowData, this._headerModel._propName, this.Text.value)
+            ._setObject(this._rowModel._rowData, this._headerModel._propName, this.Text.value)
     }
 
     /** 获取“源数据” */
@@ -322,9 +328,11 @@ class TableHeaderModel<TSource extends object> {
     /** 所属“表格”配置 */
     _tableModel: TableModel<TSource>
     /** 文本获取方法 */
-    _strGetter: TStringGetter<TSource> = ObjectHelper.DefaultStringGetter
+    _getString: TStringGetter<TSource> = ObjectHelper.DefaultStringGetter
+    /** 文本获取方法（异步）：优先执行该方法 */
+    _getStringAsync?: TStringGetterAsync<TSource>
     /** 对象修改方法 */
-    _objSetter: UnknownSetter = ObjectHelper.DefaultTSetter
+    _setObject: UnknownSetter = ObjectHelper.DefaultTSetter
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -362,9 +370,11 @@ class TableHeaderConfig<TSource extends object> {
     /** 属性名 */
     _propName: string
     /** 文本获取方法 */
-    _strGetter?: TStringGetter<TSource>
+    _getString?: TStringGetter<TSource>
+    /** 文本获取方法（异步）：优先执行该方法 */
+    _getStringAsync?: TStringGetterAsync<TSource>
     /** 对象修改方法 */
-    _objSetter?: UnknownSetter
+    _setObject?: UnknownSetter
     /** 文本 */
     Text?: string
     /** 宽度 */
@@ -386,8 +396,9 @@ class TableHeaderConfig<TSource extends object> {
 /** 将“配置”设置到“模型” */
 function SetTableHeaderModel<TSource extends object>(model: TableHeaderModel<TSource>, config: TableHeaderConfig<TSource>) {
     model._propName = config._propName
-    if (config._strGetter) model._strGetter = config._strGetter
-    if (config._objSetter) model._objSetter = config._objSetter
+    if (config._getString) model._getString = config._getString
+    if (config._getStringAsync) model._getStringAsync = config._getStringAsync
+    if (config._setObject) model._setObject = config._setObject
     if (config.Text != undefined) model.Text.value = config.Text
     if (config.Width != undefined) model.Width.value = config.Width
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign

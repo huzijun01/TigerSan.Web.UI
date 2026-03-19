@@ -1,3 +1,4 @@
+import { CompanyMgtHelper, type RoleMgtModel } from '@/models'
 import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
 import { PaginationModel, SearchModel, TableModel, SelectModel } from '@/0_tigersan_ui/tigerui'
 
@@ -13,13 +14,6 @@ selectCompany.PlaceholderCN.value = '请选择公司'
 selectCompany.PlaceholderEN.value = 'Please select a company'
 selectCompany._converter = (company: CompanyMgtModel): string => company.name
 
-/** “角色管理”模型 */
-class RoleMgtModel {
-    readonly index = 0
-    company = -1
-    name = ''
-}
-
 // 字段:
 /** 分页器 */
 const pagination = new PaginationModel()
@@ -28,7 +22,7 @@ pagination.IsShowSelectedRowCount.value = true
 /** 列头 */
 const roleMgtTable = new TableModel<RoleMgtModel>([
     {
-        _propName: 'index',
+        _propName: 'id',
         Text: '序号',
         Width: 50,
         IsReadonly: true,
@@ -39,7 +33,7 @@ const roleMgtTable = new TableModel<RoleMgtModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _strGetter: source => GetCompanyName(source)
+        _getStringAsync: source => CompanyMgtHelper.GetCompanyName(source.company)
     },
     {
         _propName: 'name',
@@ -58,24 +52,13 @@ function GetCompany(role?: RoleMgtModel): CompanyMgtModel | undefined {
         console.warn('The role is undefined!')
         return
     }
-    return selectCompany.Items.find(i => i.index === role.company)
-}
-
-function GetCompanyName(role?: RoleMgtModel): string {
-    if (!role) {
-        console.warn('The role is undefined!')
-        return ''
-    }
-    const company = selectCompany.Items.find(i => i.index === role.company)
-    return company ? company.name : ''
+    return selectCompany.Items.find(i => i.id === role.company)
 }
 
 export {
     searchName,
     selectCompany,
-    RoleMgtModel,
     pagination,
     roleMgtTable,
     GetCompany,
-    GetCompanyName,
 }
