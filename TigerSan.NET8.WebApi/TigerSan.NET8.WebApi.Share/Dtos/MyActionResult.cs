@@ -13,6 +13,7 @@
     public class MyResults
     {
         public static MyActionResult OperationSuccess { get => new MyActionResult(ActionResultCode.Success, "Operation successful!"); }
+        public static MyActionResult ApiUnavailable { get => new MyActionResult(ActionResultCode.Warning, "This API is unavailable!"); }
         public static MyActionResult ResourceNotFound { get => new MyActionResult(ActionResultCode.Warning, "The resource not found!"); }
         public static MyActionResult ResourceExists { get => new MyActionResult(ActionResultCode.Warning, "The resource already exist!"); }
         public static MyActionResult ResourceNotExist { get => new MyActionResult(ActionResultCode.Warning, "The resources do not exist!"); }
@@ -29,6 +30,12 @@
 
     public class MyActionResult
     {
+        #region 【Functions】
+        public bool IsSuccess { get => Code == ActionResultCode.Success; }
+        public bool IsWarning { get => Code == ActionResultCode.Warning; }
+        public bool IsError { get => Code == ActionResultCode.Error; }
+        #endregion 【Functions】
+
         #region 【Properties】
         /// <summary>结果码</summary>
         public ActionResultCode Code { get; set; } = ActionResultCode.Success;

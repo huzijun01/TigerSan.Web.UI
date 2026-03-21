@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "26381651",
+      "name": "IdCard",
+      "font_class": "IdCard",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "742594",
+      "name": "Person_Setting",
+      "font_class": "Person_Setting",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "2806471",
+      "name": "Person_Necktie",
+      "font_class": "Person_Necktie",
+      "unicode": "e688",
+      "unicode_decimal": 59016
+    },
+    {
+      "icon_id": "7627904",
+      "name": "Necktie",
+      "font_class": "Necktie",
+      "unicode": "e699",
+      "unicode_decimal": 59033
+    },
+    {
+      "icon_id": "38136072",
+      "name": "Role",
+      "font_class": "Role",
+      "unicode": "ea0e",
+      "unicode_decimal": 59918
+    },
+    {
       "icon_id": "47069848",
       "name": "Arrow_Planar_Right",
       "font_class": "Arrow_Planar_Right",

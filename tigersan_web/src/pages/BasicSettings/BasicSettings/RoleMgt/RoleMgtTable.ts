@@ -1,5 +1,5 @@
-import { CompanyMgtHelper, type RoleMgtModel } from '@/models'
-import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
+import { CompanyMgtHelper, type RoleModel } from '@/models'
+import { CompanyModel } from '../CompanyMgtPage/CompanyMgtTable'
 import { PaginationModel, SearchModel, TableModel, SelectModel } from '@/0_tigersan_ui/tigerui'
 
 /** 搜索“名称” */
@@ -7,12 +7,12 @@ const searchName = new SearchModel()
 searchName.Placeholder.value = '请输角色名称'
 
 /** 选择框 */
-const selectCompany = new SelectModel<CompanyMgtModel>()
+const selectCompany = new SelectModel<CompanyModel>()
 selectCompany.Width.value = 208
 selectCompany.IsAllowSearch.value = true
 selectCompany.PlaceholderCN.value = '请选择公司'
 selectCompany.PlaceholderEN.value = 'Please select a company'
-selectCompany._converter = (company: CompanyMgtModel): string => company.name
+selectCompany._converter = (company: CompanyModel): string => company.name
 
 // 字段:
 /** 分页器 */
@@ -20,7 +20,7 @@ const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
-const roleMgtTable = new TableModel<RoleMgtModel>([
+const roleMgtTable = new TableModel<RoleModel>([
     {
         _propName: 'id',
         Text: '序号',
@@ -47,7 +47,7 @@ const roleMgtTable = new TableModel<RoleMgtModel>([
 roleMgtTable.IsAllowMultiSelect.value = false
 
 // 方法:
-function GetCompany(role?: RoleMgtModel): CompanyMgtModel | undefined {
+function GetCompany(role?: RoleModel): CompanyModel | undefined {
     if (!role) {
         console.warn('The role is undefined!')
         return

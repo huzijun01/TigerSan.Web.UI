@@ -1,6 +1,42 @@
 import axios from "axios"
 import { MyActionResult } from "@/models"
 import { dialog } from "@/0_tigersan_ui/tigerui"
+import JSONBig from 'json-bigint' // 导入JSONBig
+
+const api = axios.create({
+    baseURL: 'https://localhost:8888',
+    // TransformResponse:axios提供的工具，用在获取后端数据之后，先进行处理，再通过promise返回给axios调用者
+    // transformResponse发生在axios 的响应拦截器之前。
+    transformResponse: [function (data) {
+        try {
+            return JSONBig.parse(data) // 字符串--->对象
+        } catch (err) {
+            return data
+        }
+    }],
+    responseType: 'text'
+})
+
+// 请求拦截器：发送前转换 BigInt -> 字符串
+api.interceptors.request.use(config => {
+    const transform = (obj: any) => {
+        if (obj === null || typeof obj !== 'object') return obj
+
+        Object.keys(obj).forEach(key => {
+            const value = obj[key]
+            if (typeof value === 'bigint') {
+                obj[key] = value.toString();
+            } else if (typeof value === 'object') {
+                transform(value)
+            }
+        })
+        return obj
+    }
+    return {
+        ...config,
+        data: transform(config.data)
+    }
+})
 
 export class FilterModel<TValue> {
     field = ''
@@ -13,12 +49,10 @@ export class FilterModel<TValue> {
 }
 
 export class AxiosHelper {
-    static url = "https://localhost:8888"
-
     // 基础:
     static async Get(action: string): Promise<MyActionResult> {
         try {
-            const response = await axios.get(`${this.url}/${action}`)
+            const response = await api.get(action)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -34,7 +68,7 @@ export class AxiosHelper {
 
     static async Post(action: string, data: unknown): Promise<MyActionResult> {
         try {
-            const response = await axios.post(`${this.url}/${action}`, data)
+            const response = await api.post(action, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -50,7 +84,7 @@ export class AxiosHelper {
 
     static async Put<T>(action: string, data: T): Promise<MyActionResult> {
         try {
-            const response = await axios.put(`${this.url}/${action}`, data)
+            const response = await api.put(action, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -67,9 +101,9 @@ export class AxiosHelper {
         }
     }
 
-    static async Delete(action: string, index: number): Promise<MyActionResult> {
+    static async Delete(action: string, index: number | bigint): Promise<MyActionResult> {
         try {
-            const response = await axios.delete(`${this.url}/${action}/${index}`)
+            const response = await api.delete(`${action}/${index}`)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -198,7 +232,7 @@ export class AxiosHelper {
     static async Add<T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> {
         try {
             const range = isRange ? '/Range' : ''
-            const response = await axios.post(`${this.url}/${action}${range}`, data)
+            const response = await api.post(`${action}${range}`, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {

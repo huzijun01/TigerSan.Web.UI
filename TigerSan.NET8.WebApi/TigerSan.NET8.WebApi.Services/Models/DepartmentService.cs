@@ -1,0 +1,122 @@
+﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.NET8.WebApi.Share;
+using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
+
+namespace TigerSan.NET8.WebApi.Services.Models
+{
+    public class DepartmentService : IdNameServiceBase<DepartmentEntity>, IDepartmentService
+    {
+        #region 【Fields】
+        private IRoleService _roleService;
+        #endregion 【Fields】
+
+        #region 【Ctor】
+        public DepartmentService(AppDbContext db, IRoleService roleService) : base(db, db.Departments)
+        {
+            _roleService = roleService;
+        }
+        #endregion 【Ctor】
+
+        #region 【Functions】
+        #region [删]
+        #region 删除“单条数据”
+        /// <summary>删除“单条数据”</summary>
+        public new async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 获取“单条数据”：
+                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
+
+                // 验证“资源是否存在”：
+                if (entity == null)
+                {
+                    return MyResults.ResourceNotExist;
+                }
+
+                // 删除“部门”相关的“角色”：
+                var roles = await _db.Roles.Where(i => i.Department == id).Select(i => i.Id).ToListAsync();
+                var resSub = await _roleService.RemoveRange(roles, false);
+                if (resSub.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resSub;
+                }
+
+                // 删除“数据”：
+                _dbSet.Remove(entity);
+
+                // “保存更改”并“提交事务”：
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 删除“多条数据”
+        /// <summary>删除“多条数据”</summary>
+        public new async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (ids.Count < 1) return res;
+
+                // 获取“多条数据”：
+                var entities = _dbSet.Where(i => ids.Contains(i.Id));
+
+                // 验证“资源是否存在”：
+                var count = await entities.CountAsync();
+                if (count < 1)
+                {
+                    return MyResults.ResourceNotExist;
+                }
+                else if (count < ids.Count)
+                {
+                    res = MyResults.SomeResourceNotExist;
+                }
+
+                // 删除与这些“部门”相关的“角色”：
+                var roles = await _db.Roles.Where(i => ids.Contains(i.Department)).Select(i => i.Id).ToListAsync();
+                var resSub = await _roleService.RemoveRange(roles, false);
+                if (resSub.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resSub;
+                }
+
+                // 删除“多条数据”：
+                _dbSet.RemoveRange(entities);
+
+                // “保存更改”并“提交事务”：
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [删]
+        #endregion 【Functions】
+    }
+}

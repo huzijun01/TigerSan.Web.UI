@@ -1,25 +1,25 @@
 import { ref } from 'vue'
 import { authorityHelper } from '@/helpers'
-import { CompanyMgtModel } from '../CompanyMgtPage/CompanyMgtTable'
+import { CompanyModel } from '../CompanyMgtPage/CompanyMgtTable'
 import { selectCompany, roleMgtTable, pagination, GetCompany } from './RoleMgtTable'
-import { GetSubmitResult, MyActionResult, RoleMgtModel, companyMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
+import { GetSubmitResult, MyActionResult, RoleModel, companyMgtHelper, roleMgtHelper } from '@/models'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “公司”项目配置 */
-const configCompany: FormItemConfig<RoleMgtModel, CompanyMgtModel> = {
+const configCompany: FormItemConfig<RoleModel, CompanyModel> = {
     _propName: 'company',
     PropText: '公司',
     IsEquired: true,
     Target: selectCompany.Value,
-    _getValue: source => selectCompany.Items.find(i => i.id === source.company),
-    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : -1,
+    _getValue: source => selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
-        return Verify.IsGreaterThan(source.company, 0, '不可为空')
+        return Verify.IsBigintGreaterThan(source.company)
     }
 }
 
 /** “名称”项目配置 */
-const configName: FormItemConfig<RoleMgtModel, string> = {
+const configName: FormItemConfig<RoleModel, string> = {
     _propName: 'name',
     PropText: '名称',
     IsEquired: true,
@@ -30,7 +30,7 @@ const configName: FormItemConfig<RoleMgtModel, string> = {
 }
 
 /** “权限”项目配置 */
-const configAuthority: FormItemConfig<RoleMgtModel, number> = {
+const configAuthority: FormItemConfig<RoleModel, number> = {
     _propName: 'authority',
     PropText: '权限',
     IsEquired: true,
@@ -42,11 +42,11 @@ const configAuthority: FormItemConfig<RoleMgtModel, number> = {
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new RoleMgtModel()
+    return new RoleModel()
 }
 
 /** “角色管理”表单配置 */
-let configRoleMgtForm: FormConfig<RoleMgtModel> = {
+let configRoleMgtForm: FormConfig<RoleModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -107,12 +107,12 @@ async function Edit() {
 
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new RoleMgtModel()
+            return new RoleModel()
         }
 
         if (rowData.id === undefined) {
             console.warn('The id is undefined!')
-            return new RoleMgtModel()
+            return new RoleModel()
         }
 
         authorityHelper.Update(rowData.id)

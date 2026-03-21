@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3474551 */
-  src: url('iconfont.woff2?t=1773386288730') format('woff2'),
-       url('iconfont.woff?t=1773386288730') format('woff'),
-       url('iconfont.ttf?t=1773386288730') format('truetype');
+  src: url('iconfont.woff2?t=1774086313658') format('woff2'),
+       url('iconfont.woff?t=1774086313658') format('woff'),
+       url('iconfont.ttf?t=1774086313658') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,26 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-IdCard:before {
+  content: "\e63b";
+}
+
+.icon-Person_Setting:before {
+  content: "\e623";
+}
+
+.icon-Person_Necktie:before {
+  content: "\e688";
+}
+
+.icon-Necktie:before {
+  content: "\e699";
+}
+
+.icon-Role:before {
+  content: "\ea0e";
 }
 
 .icon-Arrow_Planar_Right:before {

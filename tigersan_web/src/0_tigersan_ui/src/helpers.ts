@@ -1,5 +1,6 @@
 /* 导入: */
 export * from "./helpers/ArrayHelper"
+export * from "./helpers/BigintHelper"
 export * from "./helpers/CheckboxBehavior"
 export * from "./helpers/ClassObserver"
 export * from "./helpers/ComponentHelper"

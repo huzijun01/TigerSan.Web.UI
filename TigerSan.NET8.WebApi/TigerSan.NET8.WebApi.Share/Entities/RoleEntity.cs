@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TigerSan.NET8.WebApi.Share.Attributes;
+﻿using TigerSan.NET8.WebApi.Share.Attributes;
+using TigerSan.NET8.WebApi.Share.Entities.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
-    [PrimaryKey(nameof(Id))]
-    public abstract class RoleEntity : IdEntity
+    [Table("role")]
+    public class RoleEntity : IdNameEntityBase
     {
         [SnakeColumn]
-        public long Role { get; set; }
+        public long Department { get; set; }
     }
 }

@@ -1,17 +1,17 @@
 import { ref, watch } from "vue"
 import { StringHelper } from "../../helpers"
-import type { Any2StringFunc } from "../../types"
+import type { T2StringFunc } from "../../types"
 
 /** “值转换控件”基类 */
-class ConverterBase<T> {
+class ConverterBase<TValue> {
     //#region 【Fields】
     /** 转换器 */
-    _converter?: Any2StringFunc
+    _converter?: T2StringFunc<TValue>
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 值 */
-    readonly Value = ref<T | undefined>()
+    readonly Value = ref<TValue | undefined>()
     /** 文本 */
     readonly Text = ref('')
     //#endregion 【Properties】
@@ -44,6 +44,9 @@ class ConverterBase<T> {
     /** 更新“文本” */
     readonly UpdateText = () => {
         this.Text.value = this.GetText()
+        if (this.Text.value === '' && this.Value.value != undefined) {
+            console.warn('The Text is empty!')
+        }
     }
 
     /** 是否“模糊包含” */

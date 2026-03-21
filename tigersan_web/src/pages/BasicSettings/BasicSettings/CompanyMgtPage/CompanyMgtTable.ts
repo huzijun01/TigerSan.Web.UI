@@ -1,10 +1,10 @@
 import { watch } from 'vue'
 import { useUserInfo } from '@/stores'
-import { CompanyMgtModel } from '@/models'
-import { SelectModel, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
+import { CompanyModel } from '@/models'
+import { BigintHelper, SelectModel, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
 
 /** 树 */
-const tree = new TreeModel<CompanyMgtModel>()
+const tree = new TreeModel<CompanyModel>()
 tree.IsShowCheckbox.value = false
 tree._onActive = node => {
     if (!node._data) {
@@ -38,20 +38,18 @@ watch(tree.ActiveData, data => {
 })
 
 /** 选择框（表单） */
-const selectFormParent = new SelectModel<number>()
+const selectFormParent = new SelectModel<bigint>()
 selectFormParent.Width.value = 208
 selectFormParent.IsAllowSearch.value = true
 selectFormParent.PlaceholderCN.value = '请选择公司名称'
 selectFormParent.PlaceholderEN.value = 'Please select a company'
-selectFormParent._converter = (obj: any) => {
-    if (!obj) return ''
-    const index = obj as number
-    const company = tree.GetDatas().find(d => d.id === index)
+selectFormParent._converter = index => {
+    const company = tree.GetDatas().find(d => BigintHelper.IsEqualAndNotUndefined(d.id, index))
     return company ? company.name : ''
 }
 
 // 列头:
-const companyMgtTable = new TableModel<CompanyMgtModel>([
+const companyMgtTable = new TableModel<CompanyModel>([
     {
         _propName: 'Name',
         Text: '公司名称',
@@ -79,7 +77,7 @@ companyMgtTable._initItem = itemModel => {
 
 export {
     tree,
-    CompanyMgtModel,
+    CompanyModel,
     companyMgtTable,
     selectParent,
     selectFormParent,

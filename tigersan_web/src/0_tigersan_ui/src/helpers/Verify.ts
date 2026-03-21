@@ -83,7 +83,7 @@ export class Verify {
     }
 
     /** 是否“大于” */
-    static IsGreaterThan(num: number, min: number, error?: string): VerifyResult {
+    static IsGreaterThan(num: number, min: number = 0, error?: string): VerifyResult {
         var res = new VerifyResult()
 
         if (isNaN(num)) {
@@ -96,6 +96,18 @@ export class Verify {
         }
 
         return res
+    }
+
+    /** 是否“大于”（bigint） */
+    static IsBigintGreaterThan(num: bigint, min: bigint = 0n, error?: string): VerifyResult {
+        const res = new VerifyResult();
+
+        if (num < min) {
+            res.VerifyText = error ?? `不可小于${min.toString()}`;
+            res.VerifyState = FormResult.Error;
+        }
+
+        return res;
     }
 
     /** 是否“小于” */

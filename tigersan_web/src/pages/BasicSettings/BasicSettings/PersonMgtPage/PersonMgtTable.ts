@@ -1,13 +1,13 @@
-import { PersonMgtModel, RoleMgtModel } from '@/models'
-import { PaginationModel, SearchModel, SelectModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { PersonModel, RoleModel } from '@/models'
+import { BigintHelper, PaginationModel, SearchModel, SelectModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 选择框 */
-const selectRole = new SelectModel<RoleMgtModel>()
+const selectRole = new SelectModel<RoleModel>()
 selectRole.Width.value = 208
 selectRole.IsAllowSearch.value = true
 selectRole.PlaceholderCN.value = '请选择角色'
 selectRole.PlaceholderEN.value = 'Please select a role'
-selectRole._converter = (role: RoleMgtModel): string => role.name
+selectRole._converter = (role: RoleModel): string => role.name
 
 /** 搜索“名称” */
 const searchName = new SearchModel()
@@ -19,7 +19,7 @@ const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
-const personMgtTable = new TableModel<PersonMgtModel>([
+const personMgtTable = new TableModel<PersonModel>([
     {
         _propName: 'id',
         Text: '序号',
@@ -52,15 +52,15 @@ const personMgtTable = new TableModel<PersonMgtModel>([
 personMgtTable.IsAllowMultiSelect.value = false
 
 // 方法:
-function GetRoleName(index: number): string {
-    const company = selectRole.Items.find(i => i.id === index)
+function GetRoleName(index: number | bigint): string {
+    const company = selectRole.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, index))
     return company ? company.name : ''
 }
 
 export {
     selectRole,
     searchName,
-    PersonMgtModel,
+    PersonModel,
     pagination,
     personMgtTable,
 }

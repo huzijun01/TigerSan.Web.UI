@@ -2,7 +2,7 @@ import { AxiosHelper } from "@/helpers"
 
 /** "组织机构"模型 */
 export class IdModel {
-    readonly id: number = 0
+    readonly id: bigint = 0n
 }
 
 export class IdModelHelper<TModel extends IdModel> {
@@ -21,5 +21,5 @@ export class IdModelHelper<TModel extends IdModel> {
     // 改:
     readonly Edit = async (source: TModel) => await AxiosHelper.Put(this._action, source)
     // 删:
-    readonly Delete = async (id: number) => await AxiosHelper.Delete(this._action, id)
+    readonly Delete = async (id: number | bigint) => await AxiosHelper.Delete(this._action, id)
 }

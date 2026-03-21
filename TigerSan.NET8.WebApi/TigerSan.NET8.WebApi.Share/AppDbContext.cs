@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Share.Helpers;
 
 namespace TigerSan.NET8.WebApi.Share
 {
@@ -12,12 +11,13 @@ namespace TigerSan.NET8.WebApi.Share
         #endregion 【Fields】
 
         #region 【Properties】
-        public DbSet<AdminMgtEntity> AdminMgts { get; set; }
-        public DbSet<AuthorityMgtEntity> AuthorityMgts { get; set; }
-        public DbSet<BaseStationMgtEntity> BaseStationMgts { get; set; }
-        public DbSet<CompanyMgtEntity> CompanyMgts { get; set; }
-        public DbSet<PersonMgtEntity> PersonMgts { get; set; }
-        public DbSet<RoleMgtEntity> RoleMgts { get; set; }
+        public DbSet<AdminEntity> Admins { get; set; }
+        public DbSet<AuthorityEntity> Authoritys { get; set; }
+        public DbSet<BaseStationEntity> BaseStations { get; set; }
+        public DbSet<CompanyEntity> Companies { get; set; }
+        public DbSet<DepartmentEntity> Departments { get; set; }
+        public DbSet<PersonEntity> Persons { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
         #endregion 【Properties】
 
         #region 【Ctor】
@@ -27,7 +27,7 @@ namespace TigerSan.NET8.WebApi.Share
         }
         #endregion 【Ctor】
 
-        #region 【Functions】
+        #region 【Override】
         #region 配置时
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -38,25 +38,8 @@ namespace TigerSan.NET8.WebApi.Share
         #region 模型创建时
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // 自动发现所有继承自IndexEntity的实体
-            var entityTypes = modelBuilder.Model.GetEntityTypes()
-                .Where(e => e.ClrType.IsSubclassOf(typeof(IdEntity)))
-                .ToList();
-
-            foreach (var entityType in entityTypes)
-            {
-                var idProperty = entityType.FindProperty(nameof(IdEntity.Id));
-                if (idProperty == null) continue;
-
-                // 注册雪花ID生成器
-                idProperty.SetValueGeneratorFactory((p, t) =>
-                        new SnowflakeIdGenerator(workerId: Environment.MachineName.GetHashCode() % 1024)); // 传入工作机器ID
-
-                // 确保MySQL映射为BIGINT
-                idProperty.SetColumnType("BIGINT");
-            }
         }
         #endregion
-        #endregion 【Functions】
+        #endregion 【Override】
     }
 }

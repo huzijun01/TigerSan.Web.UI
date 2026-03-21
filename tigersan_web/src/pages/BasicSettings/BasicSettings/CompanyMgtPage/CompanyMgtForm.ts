@@ -1,11 +1,11 @@
 import { ref } from 'vue'
 import { navData } from '@/navs/navModel'
-import { tree, CompanyMgtModel, selectParent, selectFormParent } from './CompanyMgtTable'
+import { tree, CompanyModel, selectParent, selectFormParent } from './CompanyMgtTable'
 import { CompanyMgtHelper, companyMgtHelper, GetSubmitResult, MyActionResult } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 /** “公司名称”项目配置 */
-const configName: FormItemConfig<CompanyMgtModel, string> = {
+const configName: FormItemConfig<CompanyModel, string> = {
     _propName: 'name',
     PropText: '公司名称',
     IsEquired: true,
@@ -16,7 +16,7 @@ const configName: FormItemConfig<CompanyMgtModel, string> = {
 }
 
 /** “公司地址”项目配置 */
-const configAddr: FormItemConfig<CompanyMgtModel, string> = {
+const configAddr: FormItemConfig<CompanyModel, string> = {
     _propName: 'addr',
     PropText: '公司地址',
     IsEquired: true,
@@ -27,7 +27,7 @@ const configAddr: FormItemConfig<CompanyMgtModel, string> = {
 }
 
 /** “父公司”项目配置 */
-const configParent: FormItemConfig<CompanyMgtModel, number | undefined> = {
+const configParent: FormItemConfig<CompanyModel, bigint | undefined> = {
     _propName: 'parent',
     PropText: '父公司',
     IsEquired: false,
@@ -36,11 +36,11 @@ const configParent: FormItemConfig<CompanyMgtModel, number | undefined> = {
 
 /** “增”源数据获取方法 */
 const AddGetSource = () => {
-    return new CompanyMgtModel()
+    return new CompanyModel()
 }
 
 /** “组织机构”表单配置 */
-let configCompanyForm: FormConfig<CompanyMgtModel> = {
+let configCompanyForm: FormConfig<CompanyModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,

@@ -1,23 +1,23 @@
 import { ref } from 'vue'
-import { selectRole, PersonMgtModel, personMgtTable, pagination } from './PersonMgtTable'
-import { GetSubmitResult, MyActionResult, RoleMgtModel, personMgtHelper, roleMgtHelper } from '@/models'
+import { selectRole, PersonModel, personMgtTable, pagination } from './PersonMgtTable'
+import { GetSubmitResult, MyActionResult, RoleModel, personMgtHelper, roleMgtHelper } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 /** “角色”项目配置 */
-const configRole: FormItemConfig<PersonMgtModel, RoleMgtModel> = {
+const configRole: FormItemConfig<PersonModel, RoleModel> = {
     _propName: 'role',
     PropText: '角色',
     IsEquired: true,
     Target: selectRole.Value,
     _getValue: source => selectRole.Items.find(i => i.id === source.role),
-    _setValue: (source, propName, value) => source.role = value && value.id != undefined ? value.id : -1,
+    _setValue: (source, propName, value) => source.role = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
-        return Verify.IsGreaterThan(source.role, 0, '不可为空')
+        return Verify.IsBigintGreaterThan(source.role)
     }
 }
 
 /** “用户名”项目配置 */
-const configUsername: FormItemConfig<PersonMgtModel, string> = {
+const configUsername: FormItemConfig<PersonModel, string> = {
     _propName: 'username',
     PropText: '用户名',
     IsEquired: true,
@@ -28,7 +28,7 @@ const configUsername: FormItemConfig<PersonMgtModel, string> = {
 }
 
 /** “昵称”项目配置 */
-const configNickname: FormItemConfig<PersonMgtModel, string> = {
+const configNickname: FormItemConfig<PersonModel, string> = {
     _propName: 'nickname',
     PropText: '昵称',
     IsEquired: true,
@@ -39,10 +39,10 @@ const configNickname: FormItemConfig<PersonMgtModel, string> = {
 }
 
 /** “增”源数据获取方法 */
-const AddGetSource = () => new PersonMgtModel()
+const AddGetSource = () => new PersonModel()
 
 /** “人员管理”表单配置 */
-let configPersonMgtForm: FormConfig<PersonMgtModel> = {
+let configPersonMgtForm: FormConfig<PersonModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
@@ -97,7 +97,7 @@ async function Edit() {
         const rowData = personMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new PersonMgtModel()
+            return new PersonModel()
         }
 
         return ObjectHelper.ObjectShallowCopy(rowData)

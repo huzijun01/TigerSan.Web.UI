@@ -79,6 +79,7 @@ export class Icons {
 
     // I:
     static Input = ""
+    static IdCard = ""
     static InputDataSource = ""
 
     // K:
@@ -112,6 +113,9 @@ export class Icons {
     static Measurement_Ruler = ""
     static Measurement_Triangle = ""
 
+    // N:
+    static Necktie = ""
+
     // O:
     static Output = ""
 
@@ -126,12 +130,15 @@ export class Icons {
     static Product = ""
     static Plugin_Linear = ""
     static Plugin_Planar = ""
+    static Person_Necktie = ""
+    static Person_Setting = ""
 
     // Q:
     static QQ = ""
     static Question = ""
 
     // R:
+    static Role = ""
     static Radar = ""
     static Router = ""
     static Refresh = ""

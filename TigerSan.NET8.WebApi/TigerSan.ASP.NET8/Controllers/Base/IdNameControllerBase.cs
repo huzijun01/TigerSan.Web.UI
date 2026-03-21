@@ -1,0 +1,30 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities.Base;
+using TigerSan.NET8.WebApi.Interfaces.Models.Base;
+
+namespace TigerSan.NET8.WebApi.Controllers.Base
+{
+    [ApiController]
+    [Route("[controller]")]
+    public abstract class IdNameControllerBase<TEntity, TIIdNameService> : IdControllerBase<TEntity, TIIdNameService> where TEntity : IdNameEntityBase where TIIdNameService : IIdNameServiceBase<TEntity>
+    {
+        #region 【Ctor】
+        public IdNameControllerBase(TIIdNameService service) : base(service)
+        {
+        }
+        #endregion 【Ctor】
+
+        #region 【Functions】
+        [HttpGet]
+        [Route("SelectIdName/{isDistinct?}")]
+        /// <summary>获取“ID名称对”集合</summary>
+        public async Task<MyActionResult> SelectIdName(bool? isDistinct)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.SelectIdName(isDistinct);
+            return res;
+        }
+        #endregion 【Functions】
+    }
+}

@@ -17,6 +17,7 @@ export type StringArrayFunc = (arr: string[]) => void
 export type AnyFunc = (value: any) => void
 export type AnyArrayFunc = (arr: any[]) => void
 export type Any2StringFunc = (value: any) => string
+export type T2StringFunc<T> = (value: T) => string
 export type UnknownFunc = (value: unknown, oldValue?: unknown) => void
 export type UnknownArrayFunc = (arr: unknown[]) => void
 export type TFunc<T> = (value: T, oldValue?: T) => void

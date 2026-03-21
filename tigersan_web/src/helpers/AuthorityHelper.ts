@@ -15,7 +15,7 @@ export class AuthorityModel {
 /** “权限助手”模型 */
 export class AuthorityHelper {
     //#region 【Fields】
-    static readonly _action = 'AuthorityMgt'
+    static readonly _action = 'Authority'
     /** “权限”树模型 */
     readonly _tree = new TreeModel<boolean>(configs, false, true)
     //#endregion 【Fields】
@@ -93,10 +93,9 @@ export class AuthorityHelper {
     }
 
     /** 加载 */
-    readonly Update = async (role: number) => {
+    readonly Update = async (role: number | bigint) => {
         const filter = new FilterModel('role', [role])
         const arr = await AxiosHelper.Where(AuthorityHelper._action, [filter])
-        console.log(arr)
     }
     //#endregion 【Functions】
 }

@@ -1,13 +1,14 @@
 import { TreeNodeConfig } from "../models"
 import { ArrayHelper } from "./ArrayHelper"
+import { BigintHelper } from "./BigintHelper"
 
 export class TreeHelper {
     /** “项目数组”转“树配置” */
     static Array2Tree<T extends object>(
         items: T[],
         getName: (item: T) => string,
-        getIndex: (item: T) => number,
-        getParent: (item: T) => number | undefined): TreeNodeConfig<T>[] {
+        getIndex: (item: T) => number | bigint,
+        getParent: (item: T) => number | bigint | undefined): TreeNodeConfig<T>[] {
 
         /** “节点”数组 */
         function GetNode(item: T): TreeNodeConfig<T> {
@@ -45,14 +46,14 @@ export class TreeHelper {
             // 添加“根项目”:
             rootItems.forEach(rootItem => {
                 /** 根节点 */
-                const rootNode = nodeArray.find(n => n._data != undefined && getIndex(n._data) === getIndex(rootItem))
+                const rootNode = nodeArray.find(n => n._data != undefined && BigintHelper.IsEqualAndNotUndefined(getIndex(n._data), getIndex(rootItem)))
                 if (!rootNode) {
                     console.warn('The rootNode is undefined!')
                     return
                 }
 
                 /** “孙项目”数组 */
-                const subItems = remainingItems.filter(i => getParent(i) === getIndex(rootItem))
+                const subItems = remainingItems.filter(i => BigintHelper.IsEqualAndNotUndefined(getParent(i), getIndex(rootItem)))
                 newRootItems.push(...subItems)
 
                 // 添加“根节点”:
