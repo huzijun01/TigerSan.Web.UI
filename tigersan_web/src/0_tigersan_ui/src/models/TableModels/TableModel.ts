@@ -206,7 +206,7 @@ class TableModel<TSource extends object> {
 
     /** 删除“行数据” */
     DeleteRowData(rowData: TSource) {
-        ArrayHelper.DeleteItem(this.RowDatas, rowData)
+        ArrayHelper.Delete(this.RowDatas, rowData)
     }
     //#endregion 【Functions】
 }
@@ -314,7 +314,7 @@ class TableItemModel<TSource extends object> {
 
     /** 获取“源数据” */
     GetSource(): unknown {
-        return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName)
+        return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName, undefined)
     }
     //#endregion 【Functions】
 }

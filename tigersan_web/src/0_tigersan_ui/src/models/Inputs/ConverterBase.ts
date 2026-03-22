@@ -1,12 +1,12 @@
 import { ref, watch } from "vue"
 import { StringHelper } from "../../helpers"
-import type { T2StringFunc } from "../../types"
+import type { T2String } from "../../types"
 
 /** “值转换控件”基类 */
 class ConverterBase<TValue> {
     //#region 【Fields】
     /** 转换器 */
-    _converter?: T2StringFunc<TValue>
+    _converter?: T2String<TValue>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -26,7 +26,7 @@ class ConverterBase<TValue> {
     //#region [private]
     /** 获取“文本” */
     private readonly GetText = () => {
-        if (this.Value.value === undefined) return ''
+        if (this.Value.value === undefined || this.Value.value === null) return ''
 
         let text = ''
 

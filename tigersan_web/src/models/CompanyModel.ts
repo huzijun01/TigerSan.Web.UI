@@ -1,16 +1,15 @@
-import { IdModel, IdModelHelper } from "./base/IdModel"
-import { BigintHelper, TreeHelper, TreeNodeConfig } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, IdNameModelHelper } from "./base/IdNameModel"
+import { BigintHelper, SelectModel, TreeHelper, TreeNodeConfig } from "@/0_tigersan_ui/tigerui"
 
 export type CompanyEvent = (model: CompanyModel) => void
 
 /** "组织机构"模型 */
-export class CompanyModel extends IdModel {
-    name: string = ''
+export class CompanyModel extends IdNameModel {
     addr: string = ''
-    parent?: bigint
+    parent?: bigint = undefined
 }
 
-export class CompanyMgtHelper extends IdModelHelper<CompanyModel> {
+export class CompanyMgtHelper extends IdNameModelHelper<CompanyModel> {
     constructor() {
         super('Company')
     }
@@ -41,6 +40,18 @@ export class CompanyMgtHelper extends IdModelHelper<CompanyModel> {
             return ''
         }
         return company.name
+    }
+
+    /** 获取“筛选框模型” */
+    GetSelectModel(): SelectModel<IdNameModel> {
+        const select = new SelectModel<IdNameModel>()
+        select.Width.value = 208
+        select.IsAllowSearch.value = true
+        select.PlaceholderCN.value = '请选择公司名称'
+        select.PlaceholderEN.value = 'Please select a company'
+        select._getItemsAsync = async () => await companyMgtHelper.SelectIdName()
+        select._converter = data => data.name
+        return select
     }
 }
 

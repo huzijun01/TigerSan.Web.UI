@@ -21,6 +21,38 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        #region 获取“后代公司ID”集合
+        /// <summary>获取“后代公司ID”集合</summary>
+        public async Task<List<long>> GetSubCompanyIds(long id)
+        {
+            var subIds = await _dbSet.AsNoTracking().Where(i => i.Parent == id).Select(i => i.Id).ToListAsync();
+            var rootIds = new List<long>(subIds);
+            var newRootIds = new List<long>();
+
+            // 添加“后代公司”:
+            while (rootIds.Count() > 0)
+            {
+                newRootIds.Clear();
+
+                // 添加“根公司”:
+                foreach (var rootId in rootIds)
+                {
+                    // “孙公司”集合:
+                    var subSubIds = await _dbSet.AsNoTracking().Where(i => i.Parent == rootId).Select(i => i.Id).ToListAsync();
+                    newRootIds.AddRange(subSubIds);
+                }
+
+                rootIds.Clear();
+                rootIds.AddRange(newRootIds);
+                subIds.AddRange(rootIds);
+            }
+
+            return subIds;
+        }
+        #endregion
+        #endregion [查]
+
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
@@ -57,9 +89,19 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“单条数据”</summary>
         public new async Task<MyActionResult> Edit(CompanyEntity entity, bool isBeginTransaction = true)
         {
-            if (entity.Parent != null && !await _dbSet.AnyAsync(i => i.Id == entity.Parent))
+            if (entity.Parent != null)
             {
-                return MyResults.Error($"父公司不存在：{entity.Id}，{entity.Parent}");
+                if (!await _dbSet.AnyAsync(i => i.Id == entity.Parent))
+                {
+                    return MyResults.Error($"父公司不存在：{entity.Name}，{entity.Parent}");
+                }
+
+                var subIds = await GetSubCompanyIds(entity.Id);
+                subIds.Add(entity.Id); // 包含自身
+                if (subIds.Contains(entity.Parent.Value))
+                {
+                    return MyResults.Error($"父公司不能是后代公司：{entity.Name}，{entity.Parent}");
+                }
             }
 
             return await base.Edit(entity, isBeginTransaction);
@@ -87,36 +129,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
 
             return res;
-        }
-        #endregion
-
-        #region 获取“后代公司ID”
-        /// <summary>获取“后代公司ID”</summary>
-        public async Task<List<long>> GetSubCompanyIds(long id)
-        {
-            var subIds = await _dbSet.AsNoTracking().Where(i => i.Parent == id).Select(i => i.Id).ToListAsync();
-            var rootIds = new List<long>(subIds);
-            var newRootIds = new List<long>();
-
-            // 添加“后代公司”:
-            while (rootIds.Count() > 0)
-            {
-                newRootIds.Clear();
-
-                // 添加“根公司”:
-                foreach (var rootId in rootIds)
-                {
-                    // “孙公司”集合:
-                    var subSubIds = await _dbSet.AsNoTracking().Where(i => i.Parent == rootId).Select(i => i.Id).ToListAsync();
-                    newRootIds.AddRange(subSubIds);
-                }
-
-                rootIds.Clear();
-                rootIds.AddRange(newRootIds);
-                subIds.AddRange(rootIds);
-            }
-
-            return subIds;
         }
         #endregion
 

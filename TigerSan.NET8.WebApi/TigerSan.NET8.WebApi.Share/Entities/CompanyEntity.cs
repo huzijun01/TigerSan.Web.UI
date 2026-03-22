@@ -10,6 +10,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string Addr { get; set; } = string.Empty;
         [SnakeColumn]
-        public long? Parent { get; set; }
+        public long? Parent { get; set; } = null;
     }
 }

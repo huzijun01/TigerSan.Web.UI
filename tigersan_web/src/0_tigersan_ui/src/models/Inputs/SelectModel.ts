@@ -54,6 +54,10 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     /** 菜单实例
      * （由“Select”内部维护） */
     static _appMenu?: App
+    /** 获取“项目集合” */
+    _getItems?: () => ShallowReactive<TSource[]>
+    /** 获取“项目集合”（异步）：优先执行该方法 */
+    _getItemsAsync?: () => ShallowReactive<Promise<TSource[]>>
     /** 选择后 */
     _onSelect?: MenuItemModelAction<TSource>
     //#endregion 【Fields】
@@ -185,6 +189,19 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    /** 更新“项目集合” */
+    readonly UpdateItems = async () => {
+        if (this._getItemsAsync) {
+            const arr = await this._getItemsAsync()
+            this.Items.splice(0)
+            this.Items.push(...arr)
+        } else if (this._getItems) {
+            const arr = this._getItems()
+            this.Items.splice(0)
+            this.Items.push(...arr)
+        }
+    }
+
     /** 更新菜单位置 */
     readonly UpdateMenuPosition = () => {
         if (!this.IsOpen.value) return

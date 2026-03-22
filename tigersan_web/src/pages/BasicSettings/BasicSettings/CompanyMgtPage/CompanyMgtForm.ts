@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 import { navData } from '@/navs/navModel'
-import { tree, CompanyModel, selectParent, selectFormParent } from './CompanyMgtTable'
-import { CompanyMgtHelper, companyMgtHelper, GetSubmitResult, MyActionResult } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
+import { CompanyMgtHelper, companyMgtHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/models'
+import { tree, CompanyModel, selectParent, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig<CompanyModel, string> = {
@@ -27,11 +27,17 @@ const configAddr: FormItemConfig<CompanyModel, string> = {
 }
 
 /** “父公司”项目配置 */
-const configParent: FormItemConfig<CompanyModel, bigint | undefined> = {
+const configParent: FormItemConfig<CompanyModel, IdNameModel | undefined> = {
     _propName: 'parent',
     PropText: '父公司',
     IsEquired: false,
-    Target: selectFormParent.Value
+    Target: selectParentCompany.Value,
+    _getValue: (obj, propName) => {
+        return selectParentCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, obj.parent))
+    },
+    _setValue: (obj, propName, value) => {
+        obj.parent = value ? value.id : undefined
+    }
 }
 
 /** “增”源数据获取方法 */
@@ -62,13 +68,11 @@ async function Refresh() {
             tree.Init(CompanyMgtHelper.Companies2Tree(arr))
         })
 
-    selectParent.Items.splice(0)
-    const names = tree.GetTexts()
-    selectParent.Items.push(...names)
+    await selectParent.UpdateItems()
 }
 
 /** 增 */
-function Add() {
+async function Add() {
     companyForm.Title.value = '新增基站'
 
     companyForm._getSource = AddGetSource
@@ -79,18 +83,16 @@ function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    selectFormParent.Items.splice(0)
-    const indexes = tree.GetDatas().map(d => d.id).filter(i => i != undefined)
-    selectFormParent.Items.push(...indexes)
+    selectParentCompany._getItemsAsync = AddGetItemsAsync
 
     companyForm.Show()
 }
 
 /** 改 */
-function Edit() {
+async function Edit() {
     const model = tree.ActiveData.value
     if (!model) {
-        console.log('The model is undefined!')
+        console.warn('The model is undefined!')
         return
     }
 
@@ -106,9 +108,7 @@ function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    selectFormParent.Items.splice(0)
-    const indexes = tree.GetDatas().map(d => d.id).filter(i => i != undefined).filter(i => i != model.id)
-    selectFormParent.Items.push(...indexes)
+    selectParentCompany._getItemsAsync = EditGetItemsAsync
 
     companyForm.Show()
 }
@@ -129,7 +129,7 @@ function DeleteRowData(state: DialogState) {
 
     const model = tree.ActiveData.value
     if (!model) {
-        console.log('The model is undefined!')
+        console.warn('The model is undefined!')
         return
     }
 

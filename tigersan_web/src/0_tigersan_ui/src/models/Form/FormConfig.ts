@@ -1,5 +1,5 @@
 import { ref, type Ref } from "vue"
-import type { TObjectAction, TGetter, TSetter, UnknownFunc } from "../../types"
+import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
 import { type FormVerify, type FormSubmit, FormModel, FormItemModel } from "./FormModel"
 
 /** 表单配置 */
@@ -43,7 +43,7 @@ class FormItemConfig<TSource extends object, TTarget> {
     /** “源数据”setter */
     _setValue?: TSetter<TSource, TTarget | undefined>
     /** 改变后 */
-    _onChange?: UnknownFunc
+    _onChange?: UnknownChange
     /** 是否“验证无误” */
     _isVerifyOk?: FormVerify<TSource>
     //#endregion 【Fields】

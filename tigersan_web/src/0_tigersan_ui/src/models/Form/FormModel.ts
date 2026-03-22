@@ -3,7 +3,7 @@ import { Colors } from "../../base"
 import { dialog } from '../../stores'
 import { ObjectHelper } from "../../helpers"
 import { FormConfig, SetFormModel } from './FormConfig'
-import type { TObjectAction, TGetter, TSetter, UnknownFunc } from "../../types"
+import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
 
 type FormVerify<TSource extends object> = (source: TSource) => VerifyResult
 type FormSubmit<TSource extends object> = (source: TSource) => SubmitResult
@@ -258,7 +258,7 @@ class FormItemModel<TSource extends object, TTarget> {
     /** “源数据”setter */
     _setValue: TSetter<TSource, TTarget | undefined> = ObjectHelper.DefaultTSetter<TTarget | undefined>
     /** 改变后 */
-    _onChange?: UnknownFunc
+    _onChange?: UnknownChange
     /** 是否“验证无误” */
     _isVerifyOk?: FormVerify<TSource>
     //#endregion 【Fields】
@@ -329,7 +329,7 @@ class FormItemModel<TSource extends object, TTarget> {
     constructor(
         formModel: FormModel<TSource>,
         propName: string,
-        target: Ref<TTarget | undefined>
+        target: Ref<TTarget | undefined>,
     ) {
         this._formModel = formModel
         this._propName = propName
@@ -350,12 +350,15 @@ class FormItemModel<TSource extends object, TTarget> {
      * （“Target”改变时，会自动调用） */
     readonly OnChange = (value: TTarget | undefined, oldValue: TTarget | undefined) => {
         if (!this._setValue) return
+
         // 修改“源数据”:
         this._setValue(this._formModel._source, this._propName, value)
+
         // 执行“改变后”回调:
         if (this._onChange) {
             this._onChange(value, oldValue)
         }
+
         // 验证:
         this.IsVerifyOk()
     }

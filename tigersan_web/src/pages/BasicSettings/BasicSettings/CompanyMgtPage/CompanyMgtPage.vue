@@ -45,7 +45,7 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configParent.ItemModel">
-                <Select :model="selectFormParent"></Select>
+                <Select :model="selectParentCompany"></Select>
             </FormItem>
         </FormRow>
     </PopForm>
@@ -55,7 +55,7 @@
 import form from './CompanyMgtForm'
 import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
-import { tree, selectParent, selectFormParent } from './CompanyMgtTable'
+import { tree, selectParent, selectParentCompany } from './CompanyMgtTable'
 import { PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

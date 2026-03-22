@@ -67,7 +67,7 @@ export class TreeHelper {
                     nodeArray.push(subNode)
 
                     // 删除“孙项目”:
-                    ArrayHelper.DeleteItem(remainingItems, subItem)
+                    ArrayHelper.Delete(remainingItems, subItem)
                 })
             })
 

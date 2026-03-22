@@ -1,7 +1,7 @@
 import { watch } from 'vue'
 import { useUserInfo } from '@/stores'
-import { CompanyModel } from '@/models'
-import { BigintHelper, SelectModel, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
+import { companyMgtHelper, CompanyModel } from '@/models'
+import { ArrayHelper, BigintHelper, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
 
 /** 树 */
 const tree = new TreeModel<CompanyModel>()
@@ -11,21 +11,17 @@ tree._onActive = node => {
         console.warn('The _data is undefined!')
         return
     }
-    selectParent.Value.value = node._data.name
+    selectCompany.Value.value = selectCompany.Items.find(n => BigintHelper.IsEqualAndNotUndefined(n.id, node._data?.id))
 }
 tree._onUnactive = () => {
-    selectParent.Value.value = undefined
+    selectCompany.Value.value = undefined
 }
-tree._onInited = () => tree.SetActiveNode(selectParent.Text.value)
+tree._onInited = () => tree.SetActiveNode(selectCompany.Text.value)
 
-/** 选择框 */
-const selectParent = new SelectModel<string>()
-selectParent.Width.value = 208
-selectParent.IsAllowSearch.value = true
-selectParent.PlaceholderCN.value = '请选择公司名称'
-selectParent.PlaceholderEN.value = 'Please select a company'
-selectParent._onSelect = () => {
-    tree.ActiveNode.value = tree.NodeArray.value.find(n => n.Text.value === selectParent.Value.value)
+/** “公司”选择框 */
+const selectCompany = companyMgtHelper.GetSelectModel()
+selectCompany._onSelect = () => {
+    tree.ActiveNode.value = tree.NodeArray.value.find(n => BigintHelper.IsEqualAndNotUndefined(n._data?.id, selectCompany.Value.value?.id))
 }
 
 watch(tree.ActiveData, data => {
@@ -37,15 +33,23 @@ watch(tree.ActiveData, data => {
     }
 })
 
-/** 选择框（表单） */
-const selectFormParent = new SelectModel<bigint>()
-selectFormParent.Width.value = 208
-selectFormParent.IsAllowSearch.value = true
-selectFormParent.PlaceholderCN.value = '请选择公司名称'
-selectFormParent.PlaceholderEN.value = 'Please select a company'
-selectFormParent._converter = index => {
-    const company = tree.GetDatas().find(d => BigintHelper.IsEqualAndNotUndefined(d.id, index))
-    return company ? company.name : ''
+/** “父公司”选择框 */
+const selectParentCompany = companyMgtHelper.GetSelectModel()
+const AddGetItemsAsync = selectParentCompany._getItemsAsync
+const EditGetItemsAsync = async () => {
+    const arr = await companyMgtHelper.SelectIdName()
+
+    const active = tree.ActiveNode.value
+    if (!active) {
+        console.warn('The node is undefined!')
+        return arr
+    }
+
+    // 剔除“自身节点”及“后代节点”:
+    const ids = active.GetArray().map(n => n._data?.id)
+    ArrayHelper.Filter(arr, i => !BigintHelper.IsContain(ids, i.id))
+
+    return arr
 }
 
 // 列头:
@@ -79,6 +83,8 @@ export {
     tree,
     CompanyModel,
     companyMgtTable,
-    selectParent,
-    selectFormParent,
+    selectCompany as selectParent,
+    selectParentCompany,
+    AddGetItemsAsync,
+    EditGetItemsAsync,
 }

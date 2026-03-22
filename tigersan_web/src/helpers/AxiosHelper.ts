@@ -1,7 +1,7 @@
 import axios from "axios"
-import { MyActionResult } from "@/models"
-import { dialog } from "@/0_tigersan_ui/tigerui"
 import JSONBig from 'json-bigint' // 导入JSONBig
+import { dialog } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, MyActionResult } from "@/models"
 
 const api = axios.create({
     baseURL: 'https://localhost:8888',
@@ -174,6 +174,26 @@ export class AxiosHelper {
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
                 dialog.ShowWarning('GetList: The data is undefined!')
+                return []
+            }
+
+            return actionResult.data as T[]
+        } catch (error) {
+            console.error(error)
+            return []
+        }
+    }
+
+    static async SelectIdName<T extends IdNameModel>(action: string, isDistinct: boolean = false): Promise<T[]> {
+        try {
+            const actionResult = await this.Get(`${action}/SelectIdName/${isDistinct}`)
+
+            if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
+                return []
+            }
+            else if (MyActionResult.IsSuccessNoData(actionResult)) {
+                dialog.ShowWarning('GetAllList: The data is undefined!')
                 return []
             }
 

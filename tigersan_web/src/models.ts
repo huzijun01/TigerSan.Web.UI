@@ -1,3 +1,5 @@
+export * from '@/models/base/IdModel'
+export * from '@/models/base/IdNameModel'
 export * from '@/models/base/MyActionResult'
 export * from '@/models/base/UserInfo'
 export * from '@/models/base/OnlineState'

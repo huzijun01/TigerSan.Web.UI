@@ -19,7 +19,6 @@ export class ObjectHelper {
         return copy;
     }
 
-
     /** “对象”深复制 */
     static ObjectDeepCopy<TSource extends object>(obj: TSource): TSource {
         const hash = new WeakMap<object, any>();
@@ -107,8 +106,8 @@ export class ObjectHelper {
     }
 
     /** 修改“字段值”默认方法 */
-    static DefaultTGetter<TValue>(obj: object, propName: string): TValue | undefined {
-        return (obj as Record<string, TValue>)[propName]
+    static DefaultTGetter<TValue>(obj: object, propName: string, defaultValue?: TValue): TValue | undefined {
+        return (obj as Record<string, TValue>)[propName] ?? defaultValue
     }
 
     /** 修改“字段值”默认方法 */
@@ -124,5 +123,49 @@ export class ObjectHelper {
     /** 判断“字段值”是否等于“目标值”  */
     static IsSourceEqual<TValue>(obj: object, propName: string, value: TValue): boolean {
         return ObjectHelper.DefaultTGetter(obj, propName) === value
+    }
+
+    /** 判断“是否为空” */
+    static IsNullOrUndefined(v?: unknown): boolean {
+        return v === null || v === undefined
+    }
+
+    /** 判断“是否不为空” */
+    static IsNotNullOrUndefined(v?: unknown): boolean {
+        return v != null && v != undefined
+    }
+
+    /** 判断“类型是否相同” */
+    static IsSameType(a: unknown, b: unknown, isIgnoreUndefinedOrNull: boolean = true): boolean {
+        // 是否忽略undefined和null:
+        if (isIgnoreUndefinedOrNull && (ObjectHelper.IsNullOrUndefined(a) || ObjectHelper.IsNullOrUndefined(b))) {
+            return true
+        } else {
+            // 处理 null 的特殊情况:
+            if (a === null && b === null) return true;
+            if (a === null || b === null) return false;
+
+            // 处理 undefined 的特殊情况:
+            if (a === undefined && b === undefined) return true;
+            if (a === undefined || b === undefined) return false;
+        }
+
+        // 获取基础类型:
+        const aType = typeof a;
+        const bType = typeof b;
+
+        // 基础类型不同直接返回 false:
+        if (aType !== bType) return false;
+
+        // 处理原始类型（排除 object 和 function）:
+        if (aType !== 'object' && aType !== 'function') {
+            return true;
+        }
+
+        // 处理对象类型和函数
+        const aTag = Object.prototype.toString.call(a);
+        const bTag = Object.prototype.toString.call(b);
+
+        return aTag === bTag;
     }
 }

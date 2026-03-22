@@ -32,10 +32,10 @@ function OnClick() {
 
 function Close() {
     const oldIsSelected = model.IsSelected.value
-    ArrayHelper.DeleteItem(model.NavBarModel.OpenedButtonModels, model)
+    ArrayHelper.Delete(model.NavBarModel.OpenedButtonModels, model)
 
     if (oldIsSelected) {
-        model.NavBarModel.SelectedButtonModel = ArrayHelper.GetFirstItem(model.NavBarModel.OpenedButtonModels)
+        model.NavBarModel.SelectedButtonModel = ArrayHelper.GetFirst(model.NavBarModel.OpenedButtonModels)
     }
 }
 </script>
