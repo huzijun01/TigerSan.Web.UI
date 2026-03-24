@@ -41,7 +41,7 @@ import { Texts, Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_
 onMounted(() => {
   const userInfo = useUserInfo()
   userInfo.Clear()
-  form.loginForm.Init()
+  form.loginForm.InitAsync()
   navData.GoBasicSettings()
 })
 </script>

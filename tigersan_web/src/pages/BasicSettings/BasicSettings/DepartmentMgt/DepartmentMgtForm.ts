@@ -1,17 +1,15 @@
 import { ref } from 'vue'
-import { CompanyModel } from '../CompanyMgtPage/CompanyMgtTable'
-import { selectCompany, departmentMgtTable, pagination, GetCompany } from './DepartmentMgtTable'
-import { GetSubmitResult, MyActionResult, DepartmentModel, companyMgtHelper, departmentMgtHelper } from '@/models'
+import { selectCompany, departmentMgtTable, pagination } from './DepartmentMgtTable'
+import { GetSubmitResult, MyActionResult, DepartmentModel, companyMgtHelper, departmentMgtHelper, IdNameModel } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “公司”项目配置 */
-const configCompany: FormItemConfig<DepartmentModel, CompanyModel> = {
+const configCompany: FormItemConfig<DepartmentModel, IdNameModel> = {
     _propName: 'company',
     PropText: '公司',
     IsEquired: true,
     Target: selectCompany.Value,
     _getValue: async source => {
-        await selectCompany.UpdateItemsAsync()
         return selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
     },
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
@@ -41,6 +39,9 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
+    _beforeInitAsync: async isEdit => {
+        await selectCompany.UpdateItemsAsync()
+    },
     _itemConfigs: [
         configCompany,
         configName,
@@ -94,8 +95,6 @@ async function Edit() {
             console.warn('The id is undefined!')
             return new DepartmentModel()
         }
-
-        selectCompany.Value.value = GetCompany(rowData)
 
         return ObjectHelper.ObjectShallowCopy(rowData)
     }

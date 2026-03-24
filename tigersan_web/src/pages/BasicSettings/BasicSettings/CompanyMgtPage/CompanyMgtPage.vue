@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="selectParent"></Select>
+                        <Select :model="selectCompany"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -55,7 +55,7 @@
 import form from './CompanyMgtForm'
 import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
-import { tree, selectParent, selectParentCompany } from './CompanyMgtTable'
+import { tree, selectCompany, selectParentCompany } from './CompanyMgtTable'
 import { PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

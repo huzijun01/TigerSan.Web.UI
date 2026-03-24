@@ -47,6 +47,8 @@ class SubmitResult {
 /** 表单模型 */
 class FormModel<TSource extends object> {
     //#region 【Fields】
+    /** 是否“为编辑” */
+    _isEdit = false
     /** 是否“显示结果” */
     _isShowResult = true
     /** 是否“显示成功结果” */
@@ -63,6 +65,10 @@ class FormModel<TSource extends object> {
     _onSubmit?: FormSubmit<TSource>
     /** 提交时（异步） */
     _onSubmitAsync?: FormSubmitAsync<TSource>
+    /** 初始化前 */
+    _beforeInit?: (isEdit: boolean) => void
+    /** 初始化前（异步） */
+    _beforeInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -88,7 +94,7 @@ class FormModel<TSource extends object> {
 
         // 显示时初始化:
         watch(this.IsShow, () => {
-            this.InitData()
+            this.InitDataAsync()
             this.InitVerifyState()
         })
     }
@@ -147,10 +153,23 @@ class FormModel<TSource extends object> {
     }
     //#endregion [private]
 
-    /** 初始化 */
-    Init() {
-        this.InitData()
+    /** 初始化（异步） */
+    async InitAsync() {
+        await this.InitDataAsync()
         this.InitVerifyState()
+    }
+
+    /** 初始化“源数据”
+     * （“Form”显示后会自动调用） */
+    async InitDataAsync() {
+        this._beforeInit?.(this._isEdit)
+        await this._beforeInitAsync?.(this._isEdit)
+
+        // 获取“源数据”:
+        this._source = this._getSource()
+
+        // 更新“目标数据”:
+        this.UpdateTargets()
     }
 
     /** 初始化“验证状态”
@@ -162,16 +181,6 @@ class FormModel<TSource extends object> {
         })
     }
 
-    /** 初始化“源数据”
-     * （“Form”显示后会自动调用） */
-    InitData() {
-        // 获取“源数据”:
-        this._source = this._getSource()
-
-        // 更新“目标数据”:
-        this.UpdateTargets()
-    }
-
     /** 更新“目标数据”集合 */
     UpdateTargets() {
         this.ForEachItemModels(itemModel => {
@@ -180,7 +189,8 @@ class FormModel<TSource extends object> {
     }
 
     /** 显示 */
-    readonly Show = () => {
+    readonly Show = (isEdit: boolean = false) => {
+        this._isEdit = isEdit
         this.IsShow.value = true
     }
 

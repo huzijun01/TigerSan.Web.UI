@@ -11,12 +11,11 @@ const configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     IsEquired: true,
     Target: selectCompany.Value,
     _getValue: async source => {
-        await selectCompany.UpdateItemsAsync()
-        return selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department))
+        return selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
     },
-    _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
+    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
-        return Verify.IsBigintGreaterThan(source.department)
+        return Verify.IsBigintGreaterThan(source.company)
     }
 }
 
@@ -27,7 +26,6 @@ const configDepartment: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     IsEquired: true,
     Target: selectDepartment.Value,
     _getValue: async source => {
-        await selectDepartment.UpdateItemsAsync()
         return selectDepartment.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department))
     },
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
@@ -66,6 +64,10 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
+    _beforeInitAsync: async isEdit => {
+        await selectCompany.UpdateItemsAsync()
+        await selectDepartment.UpdateItemsAsync()
+    },
     _itemConfigs: [
         configCompany,
         configDepartment,

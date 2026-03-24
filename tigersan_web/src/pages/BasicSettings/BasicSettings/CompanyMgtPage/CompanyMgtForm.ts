@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { navData } from '@/navs/navModel'
 import { CompanyMgtHelper, companyMgtHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/models'
-import { tree, CompanyModel, selectParent, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
+import { tree, CompanyModel, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “公司名称”项目配置 */
@@ -27,13 +27,12 @@ const configAddr: FormItemConfig<CompanyModel, string> = {
 }
 
 /** “父公司”项目配置 */
-const configParent: FormItemConfig<CompanyModel, IdNameModel | undefined> = {
+const configParent: FormItemConfig<CompanyModel, IdNameModel> = {
     _propName: 'parent',
     PropText: '父公司',
     IsEquired: false,
     Target: selectParentCompany.Value,
     _getValue: async (obj, propName) => {
-        await selectParentCompany.UpdateItemsAsync()
         return selectParentCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, obj.parent))
     },
     _setValue: (obj, propName, value) => {
@@ -51,6 +50,10 @@ let configCompanyForm: FormConfig<CompanyModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
+    _beforeInitAsync: async isEdit => {
+        selectParentCompany._getItemsAsync = isEdit ? EditGetItemsAsync : AddGetItemsAsync
+        await selectParentCompany.UpdateItemsAsync()
+    },
     _itemConfigs: [
         configName,
         configAddr,
@@ -68,13 +71,11 @@ async function Refresh() {
             tree.Nodes.splice(0)
             tree.Init(CompanyMgtHelper.Companies2Tree(arr))
         })
-
-    await selectParent.UpdateItemsAsync()
 }
 
 /** 增 */
 async function Add() {
-    companyForm.Title.value = '新增基站'
+    companyForm.Title.value = '新增公司'
 
     companyForm._getSource = AddGetSource
 
@@ -83,8 +84,6 @@ async function Add() {
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
-
-    selectParentCompany._getItemsAsync = AddGetItemsAsync
 
     companyForm.Show()
 }
@@ -97,7 +96,7 @@ async function Edit() {
         return
     }
 
-    companyForm.Title.value = '修改基站'
+    companyForm.Title.value = '修改公司'
 
     companyForm._getSource = () => {
         return ObjectHelper.ObjectShallowCopy(model)
@@ -109,9 +108,7 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    selectParentCompany._getItemsAsync = EditGetItemsAsync
-
-    companyForm.Show()
+    companyForm.Show(true)
 }
 
 /** 删 */

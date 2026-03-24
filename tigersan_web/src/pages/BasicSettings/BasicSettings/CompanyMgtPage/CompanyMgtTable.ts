@@ -83,7 +83,7 @@ export {
     tree,
     CompanyModel,
     companyMgtTable,
-    selectCompany as selectParent,
+    selectCompany,
     selectParentCompany,
     AddGetItemsAsync,
     EditGetItemsAsync,
