@@ -181,7 +181,7 @@ class TableModel<TSource extends object> {
 
             this.HeaderModels.forEach(headerModel => {
                 let itemModel = new TableItemModel(headerModel, rowModel)
-                if (this._initItem) this._initItem(itemModel) // 初始化
+                this._initItem?.(itemModel) // 初始化
                 rowModel.ItemModels.push(itemModel)
             })
         })

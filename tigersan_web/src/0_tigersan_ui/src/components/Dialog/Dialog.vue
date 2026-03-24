@@ -10,7 +10,7 @@
                 <div class="content">{{ m.Msg }}</div>
                 <div class="button-panel flex-stretch" v-if="m.IsShowButtonPanel.value">
                     <button class="yes bg-success" @click="Close(m.id, DialogState.Yes)">{{ m.ShowYesText.value
-                        }}</button>
+                    }}</button>
                     <button class="no bg-danger" v-if="m.IsShowNoButton.value" @click="Close(m.id, DialogState.No)">{{
                         m.ShowNoText.value }}</button>
                 </div>
@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { Teleport, computed, type ShallowReactive } from 'vue'
 import { useDialogStore } from '../../stores/dialog'
-import { DialogState, type DialogModel } from '../../models'
+import { DialogState, DialogModel } from '../../models'
 
 // 全局数据：
 const store = useDialogStore()

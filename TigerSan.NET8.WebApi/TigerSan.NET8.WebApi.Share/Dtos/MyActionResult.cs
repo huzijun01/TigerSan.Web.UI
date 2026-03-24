@@ -14,10 +14,11 @@
     {
         public static MyActionResult OperationSuccess { get => new MyActionResult(ActionResultCode.Success, "Operation successful!"); }
         public static MyActionResult ApiUnavailable { get => new MyActionResult(ActionResultCode.Warning, "This API is unavailable!"); }
-        public static MyActionResult ResourceNotFound { get => new MyActionResult(ActionResultCode.Warning, "The resource not found!"); }
-        public static MyActionResult ResourceExists { get => new MyActionResult(ActionResultCode.Warning, "The resource already exist!"); }
-        public static MyActionResult ResourceNotExist { get => new MyActionResult(ActionResultCode.Warning, "The resources do not exist!"); }
         public static MyActionResult SomeResourceNotExist { get => new MyActionResult(ActionResultCode.Warning, "Some resources do not exist!"); }
+        public static MyActionResult ResourceNotFound { get => new MyActionResult(ActionResultCode.Error, "The resource not found!"); }
+        public static MyActionResult ResourceExists { get => new MyActionResult(ActionResultCode.Error, "The resource already exist!"); }
+        public static MyActionResult ResourceNotExist { get => new MyActionResult(ActionResultCode.Error, "The resources do not exist!"); }
+        public static MyActionResult NameRepeated { get => new MyActionResult(ActionResultCode.Error, "The name cannot be repeated!"); }
 
         #region 【Functions】
         public static MyActionResult Success(string msg) { return new MyActionResult(ActionResultCode.Success, msg); }

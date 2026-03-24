@@ -15,26 +15,38 @@ namespace TigerSan.NET8.WebApi.Controllers
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        [HttpGet]
+        [Route("FullList")]
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<MyActionResult> GetFullList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetFullList(pageSize, pageNumber);
+            return res;
+        }
+        #endregion [查]
+
         #region [增]
-        #region private
+        #region override
         [HttpPost]
+        [Route("Unused")]
         /// <summary>添加“单条数据”</summary>
-        private new async Task<MyActionResult> Add([FromBody] RoleEntity entity)
+        public override async Task<MyActionResult> Add([FromBody] RoleEntity entity)
         {
             return MyResults.ApiUnavailable;
         }
 
         [HttpPost]
-        [Route("Range")]
+        [Route("Unused/Range")]
         /// <summary>添加“多条数据”</summary>
-        private new async Task<MyActionResult> AddRange([FromBody] IList<RoleEntity> entities)
+        public override async Task<MyActionResult> AddRange([FromBody] IList<RoleEntity> entities)
         {
             return MyResults.ApiUnavailable;
         }
-        #endregion private
+        #endregion override
 
         [HttpPost]
-        [Route("Used")]
         /// <summary>添加“单条数据”</summary>
         public async Task<MyActionResult> Add([FromBody] RoleAuthorityEntity entity)
         {
@@ -42,13 +54,32 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("Used/Range")]
+        [Route("Range")]
         /// <summary>添加“多条数据”</summary>
         public async Task<MyActionResult> AddRange([FromBody] IList<RoleAuthorityEntity> entities)
         {
             return await _service.AddRange(entities);
         }
         #endregion [增]
+
+        #region [改]
+        #region override
+        [HttpPut]
+        [Route("Unused")]
+        /// <summary>修改“单条数据”</summary>
+        public override async Task<MyActionResult> Edit([FromBody] RoleEntity entity)
+        {
+            return MyResults.ApiUnavailable;
+        }
+        #endregion override
+
+        [HttpPut]
+        /// <summary>修改“单条数据”</summary>
+        public async Task<MyActionResult> Edit([FromBody] RoleAuthorityEntity entity)
+        {
+            return await _service.Edit(entity);
+        }
+        #endregion [改]
         #endregion 【Functions】
     }
 }

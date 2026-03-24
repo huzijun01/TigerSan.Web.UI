@@ -1,13 +1,8 @@
-import { PersonModel, RoleModel } from '@/models'
-import { BigintHelper, PaginationModel, SearchModel, SelectModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { PersonModel, roleMgtHelper } from '@/models'
+import { BigintHelper, PaginationModel, SearchModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 选择框 */
-const selectRole = new SelectModel<RoleModel>()
-selectRole.Width.value = 208
-selectRole.IsAllowSearch.value = true
-selectRole.PlaceholderCN.value = '请选择角色'
-selectRole.PlaceholderEN.value = 'Please select a role'
-selectRole._converter = (role: RoleModel): string => role.name
+const selectRole = roleMgtHelper.GetSelectModel()
 
 /** 搜索“名称” */
 const searchName = new SearchModel()

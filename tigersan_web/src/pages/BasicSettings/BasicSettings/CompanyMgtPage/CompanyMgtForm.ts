@@ -32,7 +32,8 @@ const configParent: FormItemConfig<CompanyModel, IdNameModel | undefined> = {
     PropText: '父公司',
     IsEquired: false,
     Target: selectParentCompany.Value,
-    _getValue: (obj, propName) => {
+    _getValue: async (obj, propName) => {
+        await selectParentCompany.UpdateItemsAsync()
         return selectParentCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, obj.parent))
     },
     _setValue: (obj, propName, value) => {
@@ -62,13 +63,13 @@ const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.GetAllList()
+    await companyMgtHelper.GetList()
         .then(arr => {
             tree.Nodes.splice(0)
             tree.Init(CompanyMgtHelper.Companies2Tree(arr))
         })
 
-    await selectParent.UpdateItems()
+    await selectParent.UpdateItemsAsync()
 }
 
 /** 增 */

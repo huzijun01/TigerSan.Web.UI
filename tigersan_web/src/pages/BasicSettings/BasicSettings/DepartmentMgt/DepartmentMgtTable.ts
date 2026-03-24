@@ -1,4 +1,4 @@
-import { CompanyMgtHelper, DepartmentModel } from '@/models'
+import { companyMgtHelper, DepartmentModel } from '@/models'
 import { CompanyModel } from '../CompanyMgtPage/CompanyMgtTable'
 import { PaginationModel, SearchModel, TableModel, SelectModel, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
@@ -33,7 +33,7 @@ const departmentMgtTable = new TableModel<DepartmentModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => CompanyMgtHelper.GetCompanyName(source.company)
+        _getStringAsync: source => companyMgtHelper.GetNameAsync(source.company)
     },
     {
         _propName: 'name',

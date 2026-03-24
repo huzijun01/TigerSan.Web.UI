@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -21,6 +22,50 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        #region 获取“所属公司”
+        /// <summary>获取“所属公司”</summary>
+        public async Task<CompanyEntity?> GetCompany(long department)
+        {
+            try
+            {
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == department);
+                if (entity == null) return null;
+                return await _db.Companies.AsNoTracking().FirstOrDefaultAsync(i => i.Id == entity.Company);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return null;
+            }
+        }
+        #endregion
+
+        #region 获取“所属公司”集合
+        /// <summary>获取“所属公司”集合</summary>
+        public async Task<IList<CompanyEntity>> GetCompanyList(IList<long> departments)
+        {
+            var list = new List<CompanyEntity>();
+            try
+            {
+                var companys = await _dbSet
+                    .AsNoTracking()
+                    .Where(i => departments.Contains(i.Id))
+                    .Select(i => i.Company)
+                    .Distinct()
+                    .ToListAsync();
+                if (companys.Count < 1) return list;
+                return await _db.Companies.AsNoTracking().Where(i => companys.Contains(i.Id)).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return list;
+            }
+        }
+        #endregion
+        #endregion [查]
+
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>

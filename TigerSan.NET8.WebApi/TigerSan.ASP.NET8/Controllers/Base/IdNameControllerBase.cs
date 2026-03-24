@@ -17,9 +17,9 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
 
         #region 【Functions】
         [HttpGet]
-        [Route("SelectIdName/{isDistinct?}")]
+        [Route("SelectIdName")]
         /// <summary>获取“ID名称对”集合</summary>
-        public async Task<MyActionResult> SelectIdName(bool? isDistinct)
+        public virtual async Task<MyActionResult> SelectIdName([FromQuery] bool? isDistinct)
         {
             var res = MyResults.OperationSuccess;
             res.Data = await _service.SelectIdName(isDistinct);

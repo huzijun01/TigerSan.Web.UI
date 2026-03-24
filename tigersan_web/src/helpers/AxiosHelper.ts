@@ -141,97 +141,14 @@ export class AxiosHelper {
         }
     }
 
-    static async GetAllList<T>(action: string): Promise<T[]> {
-        try {
-            const actionResult = await this.Get(action)
-
-            if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-                return []
-            }
-            else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetAllList: The data is undefined!')
-                return []
-            }
-
-            return actionResult.data as T[]
-        } catch (error) {
-            console.error(error)
-            return []
-        }
-    }
-
     static async GetList<T>(
         action: string,
-        pageSize: number,
-        pageNumber: number): Promise<T[]> {
-        try {
-            const actionResult = await this.Get(`${action}/${pageSize}/${pageNumber}`)
-
-            if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-                return []
-            }
-            else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetList: The data is undefined!')
-                return []
-            }
-
-            return actionResult.data as T[]
-        } catch (error) {
-            console.error(error)
-            return []
-        }
-    }
-
-    static async SelectIdName<T extends IdNameModel>(action: string, isDistinct: boolean = false): Promise<T[]> {
-        try {
-            const actionResult = await this.Get(`${action}/SelectIdName/${isDistinct}`)
-
-            if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-                return []
-            }
-            else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetAllList: The data is undefined!')
-                return []
-            }
-
-            return actionResult.data as T[]
-        } catch (error) {
-            console.error(error)
-            return []
-        }
-    }
-
-    static async Select<T>(action: string, field: string): Promise<T[]> {
-        try {
-            const actionResult = await this.Get(`${action}/Select/${field}}`)
-
-            if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-                return []
-            }
-            else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetList: The data is undefined!')
-                return []
-            }
-
-            return actionResult.data as T[]
-        } catch (error) {
-            console.error(error)
-            return []
-        }
-    }
-
-    static async Where<T>(
-        action: string,
-        filters: FilterModel<any>[],
         pageSize?: number,
-        pageNumber?: number): Promise<T[]> {
+        pageNumber?: number,
+        strList?: string): Promise<T[]> {
         try {
-            const page = pageSize != undefined && pageNumber != undefined ? `/${pageSize}/${pageNumber}` : ''
-            const actionResult = await this.Post(`${action}/Where${page}`, filters)
+            const params = pageSize != undefined && pageNumber != undefined ? `?pageSize=${pageSize}&pageNumber=${pageNumber}` : ''
+            const actionResult = await this.Get(`${action}/${strList ?? 'List'}${params}`)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -248,6 +165,72 @@ export class AxiosHelper {
             return []
         }
     }
+
+    static async SelectIdName<T extends IdNameModel>(action: string, isDistinct?: boolean): Promise<T[]> {
+        try {
+            const params = isDistinct != undefined ? `?isDistinct=${isDistinct}` : ''
+            const actionResult = await this.Get(`${action}/SelectIdName/${params}`)
+
+            if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
+                return []
+            }
+            else if (MyActionResult.IsSuccessNoData(actionResult)) {
+                dialog.ShowWarning('GetList: The data is undefined!')
+                return []
+            }
+
+            return actionResult.data as T[]
+        } catch (error) {
+            console.error(error)
+            return []
+        }
+    }
+
+    // static async Select<T>(action: string, field: string): Promise<T[]> {
+    //     try {
+    //         const actionResult = await this.Get(`${action}/Select/${field}}`)
+
+    //         if (!MyActionResult.IsSuccess(actionResult)) {
+    //             MyActionResult.ShowResult(actionResult)
+    //             return []
+    //         }
+    //         else if (MyActionResult.IsSuccessNoData(actionResult)) {
+    //             dialog.ShowWarning('GetList: The data is undefined!')
+    //             return []
+    //         }
+
+    //         return actionResult.data as T[]
+    //     } catch (error) {
+    //         console.error(error)
+    //         return []
+    //     }
+    // }
+
+    // static async Where<T>(
+    //     action: string,
+    //     filters: FilterModel<any>[],
+    //     pageSize?: number,
+    //     pageNumber?: number): Promise<T[]> {
+    //     try {
+    //         const page = pageSize != undefined && pageNumber != undefined ? `?pageSize=${pageSize}&pageNumber=${pageNumber}` : ''
+    //         const actionResult = await this.Post(`${action}/Where${page}`, filters)
+
+    //         if (!MyActionResult.IsSuccess(actionResult)) {
+    //             MyActionResult.ShowResult(actionResult)
+    //             return []
+    //         }
+    //         else if (MyActionResult.IsSuccessNoData(actionResult)) {
+    //             dialog.ShowWarning('GetList: The data is undefined!')
+    //             return []
+    //         }
+
+    //         return actionResult.data as T[]
+    //     } catch (error) {
+    //         console.error(error)
+    //         return []
+    //     }
+    // }
 
     static async Add<T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> {
         try {

@@ -27,7 +27,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
-        public async Task<TEntity?> Get(long id)
+        public virtual async Task<TEntity?> Get(long id)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“总数”
         /// <summary>获取“总数”</summary>
-        public async Task<int> GetCount()
+        public virtual async Task<int> GetCount()
         {
             try
             {
@@ -57,34 +57,20 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         }
         #endregion
 
-        #region 获取“所有数据”
-        /// <summary>获取“所有数据”</summary>
-        public async Task<List<TEntity>> GetAllList()
+        #region 获取“数据”集合
+        /// <summary>获取“数据”集合</summary>
+        public virtual async Task<List<TEntity>> GetList(int? pageSize = null, int? pageNumber = null)
         {
             try
             {
-                return await _dbSet
-                    .AsNoTracking()
-                    .ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.Message);
-                return new List<TEntity>();
-            }
-        }
-        #endregion
+                var quaryable = _dbSet.AsNoTracking();
 
-        #region 获取“单页数据”
-        /// <summary>获取“单页数据”</summary>
-        public async Task<List<TEntity>> GetList(int pageSize, int pageNumber)
-        {
-            try
-            {
-                return await _dbSet
-                    .GetPage(pageSize, pageNumber)
-                    .AsNoTracking()
-                    .ToListAsync();
+                if (pageSize != null && pageNumber != null)
+                {
+                    quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                }
+
+                return await quaryable.ToListAsync();
             }
             catch (Exception e)
             {
@@ -96,7 +82,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“字段”集合
         /// <summary>获取“字段”集合</summary>
-        public async Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false)
+        public virtual async Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false)
         {
             try
             {
@@ -121,7 +107,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“ID值对”集合
         /// <summary>获取“ID值对”集合</summary>
-        public async Task<List<IdValue<TField>>> SelectIdValue<TField>(Func<TEntity, IdValue<TField>> selector, bool isDistinct = false)
+        public virtual async Task<List<IdValue<TField>>> SelectIdValue<TField>(Func<TEntity, IdValue<TField>> selector, bool isDistinct = false)
         {
             try
             {
@@ -146,7 +132,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 筛选集合
         /// <summary>筛选集合</summary>
-        public async Task<List<TEntity>> Where<TField>(List<FilterModel<TEntity, TField>> filters, int? pageSize = null, int? pageNumber = null)
+        public virtual async Task<List<TEntity>> Where<TField>(List<FilterModel<TEntity, TField>> filters, int? pageSize = null, int? pageNumber = null)
         {
             try
             {
@@ -174,7 +160,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region “单条数据”是否存在
         /// <summary>“单条数据”是否存在</summary>
-        public async Task<bool> IsExists(long id)
+        public virtual async Task<bool> IsExists(long id)
         {
             return await _dbSet.AsNoTracking().AnyAsync(i => i.Id == id);
         }
@@ -182,7 +168,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region “多条数据”是否存在
         /// <summary>“多条数据”是否存在</summary>
-        public async Task<bool> IsExistsRange(IList<long> ids)
+        public virtual async Task<bool> IsExistsRange(IList<long> ids)
         {
             return await _dbSet.AsNoTracking().AnyAsync(i => ids.Contains(i.Id));
         }
@@ -192,7 +178,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult> Add(TEntity entity, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult> Add(TEntity entity, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -201,6 +187,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             {
                 entity.UpdateId();
                 _dbSet.Add(entity);
+
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
             }
@@ -216,7 +203,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult> AddRange(IList<TEntity> entities, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult> AddRange(IList<TEntity> entities, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -225,6 +212,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             {
                 entities.UpdateId();
                 await _dbSet.AddRangeAsync(entities);
+
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
             }
@@ -242,7 +230,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public async Task<MyActionResult> Edit(TEntity entity, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult> Edit(TEntity entity, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -274,7 +262,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -303,7 +291,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务

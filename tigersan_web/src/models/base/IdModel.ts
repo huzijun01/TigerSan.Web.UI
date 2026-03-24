@@ -14,8 +14,7 @@ export class IdModelHelper<TModel extends IdModel> {
 
     // 查:
     readonly GetCount = async () => await AxiosHelper.GetCount(this._action)
-    readonly GetAllList = async () => await AxiosHelper.GetAllList<TModel>(this._action)
-    readonly GetList = async (pageSize: number, pageNumber: number) => await AxiosHelper.GetList<TModel>(this._action, pageSize, pageNumber)
+    readonly GetList = async (pageSize?: number, pageNumber?: number) => await AxiosHelper.GetList<TModel>(this._action, pageSize, pageNumber)
     // 增:
     readonly Add = async (source: TModel, isRange: boolean = false) => await AxiosHelper.Add(this._action, source, isRange)
     // 改:

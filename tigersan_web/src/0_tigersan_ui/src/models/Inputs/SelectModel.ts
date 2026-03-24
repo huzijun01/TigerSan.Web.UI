@@ -170,10 +170,7 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
 
         watch(this.IsOpen, isOpen => {
             this.SearchText.value = ''
-
-            if (!isOpen) {
-                this.UpdateText()
-            }
+            this.UpdateText()
         })
 
         watch(this.Text, text => {
@@ -190,7 +187,7 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
 
     //#region 【Functions】
     /** 更新“项目集合” */
-    readonly UpdateItems = async () => {
+    readonly UpdateItemsAsync = async () => {
         if (this._getItemsAsync) {
             const arr = await this._getItemsAsync()
             this.Items.splice(0)

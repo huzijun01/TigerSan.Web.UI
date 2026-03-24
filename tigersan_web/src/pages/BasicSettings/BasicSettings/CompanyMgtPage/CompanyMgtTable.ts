@@ -37,7 +37,7 @@ watch(tree.ActiveData, data => {
 const selectParentCompany = companyMgtHelper.GetSelectModel()
 const AddGetItemsAsync = selectParentCompany._getItemsAsync
 const EditGetItemsAsync = async () => {
-    const arr = await companyMgtHelper.SelectIdName()
+    const arr = await companyMgtHelper.GetIdNamesAsync()
 
     const active = tree.ActiveNode.value
     if (!active) {

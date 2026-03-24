@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
+using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -22,6 +24,67 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        #region 获取“完整数据”集合
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<List<RoleAuthorityEntity>> GetFullList(int? pageSize = null, int? pageNumber = null)
+        {
+            try
+            {
+                var list = new List<RoleAuthorityEntity>();
+                var roles = await GetList(pageSize, pageNumber);
+
+                foreach (var role in roles)
+                {
+                    var authorities = await _authorityService.FilterByRole(role.Id);
+                    var entity = new RoleAuthorityEntity
+                    {
+                        Id = role.Id,
+                        Name = role.Name,
+                        Department = role.Department,
+                        Authorities = authorities
+                    };
+                    entity.Company = _db.Departments.Where(d => d.Id == role.Department).Select(d => d.Company).FirstOrDefault();
+
+                    list.Add(entity);
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<RoleAuthorityEntity>();
+            }
+        }
+        #endregion
+
+        #region 根据“部门”筛选“单页数据”
+        /// <summary>根据“部门”筛选“单页数据”</summary>
+        public async Task<List<RoleEntity>> FilterByDepartment(long department, int? pageSize = null, int? pageNumber = null)
+        {
+            try
+            {
+                var query = _dbSet
+                    .Where(r => r.Department == department)
+                    .AsNoTracking();
+
+                if (pageSize != null && pageNumber != null)
+                {
+                    query = query.GetPage(pageSize.Value, pageNumber.Value);
+                }
+
+                return await query.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<RoleEntity>();
+            }
+        }
+        #endregion
+        #endregion [查]
+
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
@@ -32,9 +95,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                if (await _dbSet.AnyAsync(r => r.Department == entity.Department && r.Name == entity.Name))
+                {
+                    return MyResults.NameRepeated;
+                }
+
                 // 更新“Id”：
                 entity.UpdateId();
                 entity.Authorities.UpdateId();
+                entity.Authorities.ForEach(a => a.Role = entity.Id); // 设置“权限”的“角色ID”
+
+                // 添加“数据”：
+                _dbSet.Add(entity);
+                // “保存更改”：
+                await _db.SaveChangesAsync();
 
                 // 添加“权限”：
                 var resSub = await _authorityService.AddRange(entity.Authorities, false);
@@ -44,11 +118,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return resSub;
                 }
 
-                // 添加“数据”：
-                _dbSet.Add(entity);
-
-                // “保存更改”并“提交事务”：
-                await _db.SaveChangesAsync();
+                // “提交事务”：
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
             }
             catch (Exception e)
@@ -105,6 +175,62 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
         #endregion [增]
 
+        #region [改]
+        #region 修改“单条数据”
+        /// <summary>修改“单条数据”</summary>
+        public async Task<MyActionResult> Edit(RoleAuthorityEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 验证“资源是否存在”：
+                var role = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                if (role == null)
+                {
+                    return MyResults.ResourceNotExist;
+                }
+
+                // 更新“数据”：
+                if (await _dbSet.AnyAsync(r => r.Department == role.Department && r.Name == entity.Name))
+                {
+                    return MyResults.NameRepeated;
+                }
+                role.Name = entity.Name;
+
+                // 删除“角色”相关的“权限”：
+                await _db.Authoritys.Where(a => a.Role == entity.Id).ExecuteDeleteAsync();
+
+                // 更新“权限”：
+                foreach (var authority in entity.Authorities)
+                {
+                    authority.UpdateId();
+                    authority.Role = entity.Id; // 设置“权限”的“角色ID”
+                }
+
+                // 添加“权限”：
+                var resAuthority = await _authorityService.AddRange(entity.Authorities, false);
+                if (resAuthority.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resAuthority;
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
+
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
@@ -115,17 +241,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 删除“角色”相关的“权限”：
+                await _db.Authoritys.Where(a => a.Role == id).ExecuteDeleteAsync();
+
+                // 删除“角色”相关的“人员”：
+                await _db.Persons.Where(p => p.Role == id).ExecuteDeleteAsync();
+
                 // 获取“单条数据”：
                 var entity = _dbSet.FirstOrDefault(i => i.Id == id);
 
                 // 验证“资源是否存在”：
                 if (entity == null)
                 {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                     return MyResults.ResourceNotExist;
                 }
-
-                // 删除“角色”相关的“人员”：
-                _db.Persons.Where(p => p.Role == id).ExecuteDelete();
 
                 // 删除“数据”：
                 _dbSet.Remove(entity);
@@ -169,8 +299,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     res = MyResults.SomeResourceNotExist;
                 }
 
+                // 删除“角色”相关的“权限”：
+                await _db.Authoritys.Where(a => ids.Contains(a.Role)).ExecuteDeleteAsync();
+
                 // 删除与这些“角色”相关的“人员”：
-                _db.Persons.Where(p => ids.Contains(p.Role)).ExecuteDelete();
+                await _db.Persons.Where(p => ids.Contains(p.Role)).ExecuteDeleteAsync();
 
                 // 删除“多条数据”：
                 _dbSet.RemoveRange(entities);

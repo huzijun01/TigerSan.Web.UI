@@ -1,6 +1,5 @@
 import { ref } from 'vue'
 import { configs } from './configs'
-import { MyActionResult } from '@/models'
 import { AxiosHelper, FilterModel } from './AxiosHelper'
 import { Colors, TreeModel, TreeNodeModel } from "@/0_tigersan_ui/tigerui"
 
@@ -29,6 +28,7 @@ export class AuthorityHelper {
     constructor() {
         this._tree._onInit = node => {
             if (node._data) {
+                debugger
                 node.Color.value = Colors.Warning
             }
         }
@@ -50,11 +50,6 @@ export class AuthorityHelper {
         node.Color.value = isReadonly ? Colors.Warning : ''
     }
     //#endregion [private]
-
-    /** 初始化 */
-    readonly Init = () => {
-        this._tree.Init()
-    }
 
     /** 设置“是否只读” */
     readonly SetIsReadonlyRange = () => {
@@ -86,16 +81,21 @@ export class AuthorityHelper {
         return models
     }
 
-    /** 获取“权限模型”集合 */
-    readonly SaveModels = async (): Promise<MyActionResult> => {
-        const models = this.GetModels()
-        return await AxiosHelper.Add(AuthorityHelper._action, models, true)
-    }
+    /** 初始化 */
+    readonly Init = (authorities?: AuthorityModel[]) => {
+        this._tree.Init()
 
-    /** 加载 */
-    readonly Update = async (role: number | bigint) => {
-        const filter = new FilterModel('role', [role])
-        const arr = await AxiosHelper.Where(AuthorityHelper._action, [filter])
+        if (authorities) {
+            this._tree.NodeArray.value.forEach(node => {
+                const authority = authorities.find(a => node.Path.value === a.path)
+                node.IsChecked.value = authority != undefined
+                if (authority) {
+                    node._data = authority.isReadonly
+                }
+            })
+        }
+
+        this._tree.UpdateState()
     }
     //#endregion 【Functions】
 }

@@ -39,7 +39,7 @@ class FormItemConfig<TSource extends object, TTarget> {
     /** “属性名”垂直对齐 */
     _propNameVerticalAlign?: string
     /** “源数据”getter */
-    _getValue?: TGetter<TSource, TTarget | undefined>
+    _getValue?: TGetter<TSource, TTarget | undefined | Promise<TTarget | undefined>>
     /** “源数据”setter */
     _setValue?: TSetter<TSource, TTarget | undefined>
     /** 改变后 */

@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { selectRole, PersonModel, personMgtTable, pagination } from './PersonMgtTable'
-import { GetSubmitResult, MyActionResult, RoleModel, personMgtHelper, roleMgtHelper } from '@/models'
+import { GetSubmitResult, MyActionResult, IdNameModel, companyMgtHelper, departmentMgtHelper, personMgtHelper, roleMgtHelper } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
 
 /** “角色”项目配置 */
-const configRole: FormItemConfig<PersonModel, RoleModel> = {
+const configRole: FormItemConfig<PersonModel, IdNameModel> = {
     _propName: 'role',
     PropText: '角色',
     IsEquired: true,
@@ -56,18 +56,16 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
 /** “人员管理”表单模型 */
 const personMgtForm = new FormModel(configPersonMgtForm)
 
-async function UpdateRoles() {
-    selectRole.Items.splice(0)
-    const roles = await roleMgtHelper.GetAllList()
-    selectRole.Items.push(...roles)
-}
-
 /** 查 */
 async function Refresh() {
-    await UpdateRoles()
-    const arr = await personMgtHelper.GetAllList()
+    await companyMgtHelper.UpdateIdNamesAsync()
+    await departmentMgtHelper.UpdateIdNamesAsync()
+    await roleMgtHelper.UpdateIdNamesAsync()
+
+    const arr = await personMgtHelper.GetList()
     personMgtTable.RowDatas.splice(0)
     personMgtTable.RowDatas.push(...arr)
+
     const count = await personMgtHelper.GetCount()
     pagination.Count.value = count
 }
@@ -84,8 +82,9 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    await UpdateRoles()
-
+    await companyMgtHelper.UpdateIdNamesAsync()
+    await departmentMgtHelper.UpdateIdNamesAsync()
+    await roleMgtHelper.UpdateIdNamesAsync()
     personMgtForm.Show()
 }
 
@@ -109,8 +108,9 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    await UpdateRoles()
-
+    await companyMgtHelper.UpdateIdNamesAsync()
+    await departmentMgtHelper.UpdateIdNamesAsync()
+    await roleMgtHelper.UpdateIdNamesAsync()
     personMgtForm.Show()
 }
 

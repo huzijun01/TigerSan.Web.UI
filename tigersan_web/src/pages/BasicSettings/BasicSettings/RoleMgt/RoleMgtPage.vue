@@ -36,6 +36,11 @@
             </FormItem>
         </FormRow>
         <FormRow>
+            <FormItem :model="form.configDepartment.ItemModel">
+                <Select :model="selectDepartment"></Select>
+            </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">
             </FormItem>
@@ -59,7 +64,7 @@
 import form from './RoleMgtForm'
 import { onMounted } from 'vue'
 import { authorityHelper } from '@/helpers'
-import { selectCompany, searchName, roleMgtTable, pagination } from './RoleMgtTable'
+import { selectCompany, searchName, roleMgtTable, pagination, selectDepartment } from './RoleMgtTable'
 import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

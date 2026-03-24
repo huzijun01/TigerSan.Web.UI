@@ -316,6 +316,13 @@ class TreeModel<TData> {
         }
     }
 
+    /** 更新“状态” */
+    readonly UpdateState = () => {
+        this.NodeArray.value.forEach(node => {
+            this._onInit?.(node)
+        })
+    }
+
     /** 设置“激活节点” */
     SetActiveNode(text: string) {
         const node = this.NodeArray.value.find(n => n.Text.value === text)

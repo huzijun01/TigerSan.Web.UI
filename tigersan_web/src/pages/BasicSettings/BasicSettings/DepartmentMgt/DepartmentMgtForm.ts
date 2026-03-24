@@ -10,7 +10,10 @@ const configCompany: FormItemConfig<DepartmentModel, CompanyModel> = {
     PropText: '公司',
     IsEquired: true,
     Target: selectCompany.Value,
-    _getValue: source => selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+    _getValue: async source => {
+        await selectCompany.UpdateItemsAsync()
+        return selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
+    },
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
         return Verify.IsBigintGreaterThan(source.company)
@@ -47,18 +50,14 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
 /** “部门管理”表单模型 */
 const departmentMgtForm = new FormModel(configDepartmentMgtForm)
 
-async function UpdateCompanies() {
-    selectCompany.Items.splice(0)
-    const departments = await companyMgtHelper.GetAllList()
-    selectCompany.Items.push(...departments)
-}
-
 /** 查 */
 async function Refresh() {
-    await UpdateCompanies()
-    const arr = await departmentMgtHelper.GetAllList()
+    await companyMgtHelper.UpdateIdNamesAsync()
+
+    const arr = await departmentMgtHelper.GetList()
     departmentMgtTable.RowDatas.splice(0)
     departmentMgtTable.RowDatas.push(...arr)
+
     const count = await departmentMgtHelper.GetCount()
     pagination.Count.value = count
 }
@@ -75,8 +74,7 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    await UpdateCompanies()
-
+    await companyMgtHelper.UpdateIdNamesAsync()
     departmentMgtForm.Show()
 }
 
@@ -113,8 +111,7 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    await UpdateCompanies()
-
+    await companyMgtHelper.UpdateIdNamesAsync()
     departmentMgtForm.Show()
 }
 

@@ -342,8 +342,8 @@ class FormItemModel<TSource extends object, TTarget> {
 
     //#region 【Functions】
     /** 更新“目标数据” */
-    UpdateTarget() {
-        this.Target.value = this._getValue(this._formModel._source, this._propName)
+    async UpdateTarget() {
+        this.Target.value = await this._getValue(this._formModel._source, this._propName)
     }
 
     /** 修改“源数据”
