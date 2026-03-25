@@ -8,5 +8,17 @@ namespace TigerSan.NET8.WebApi.Share.Entities.Base
     {
         [SnakeColumn]
         public string Name { get; set; } = string.Empty;
+
+        #region 【Ctor】
+        public IdNameEntityBase()
+        {
+        }
+
+        public IdNameEntityBase(long id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+        #endregion 【Ctor】
     }
 }

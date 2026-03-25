@@ -1,16 +1,27 @@
 import { ref } from 'vue'
-import { selectCompany, departmentMgtTable, pagination } from './DepartmentMgtTable'
+import { departmentMgtTable } from './DepartmentMgtTable'
 import { GetSubmitResult, MyActionResult, DepartmentModel, companyMgtHelper, departmentMgtHelper, IdNameModel } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel } from '@/0_tigersan_ui/tigerui'
+
+/** 选择框 */
+const selectCompany = companyMgtHelper.GetSelectModel()
+selectCompany._getItemsAsync = async () => await departmentMgtHelper.GetCompanyListAsync()
+/** 选择框（表单） */
+const selectCompanyForm = companyMgtHelper.GetSelectModel()
+
+// 字段:
+/** 分页器 */
+const pagination = new PaginationModel()
+pagination.IsShowSelectedRowCount.value = true
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<DepartmentModel, IdNameModel> = {
     _propName: 'company',
     PropText: '公司',
     IsEquired: true,
-    Target: selectCompany.Value,
+    Target: selectCompanyForm.Value,
     _getValue: async source => {
-        return selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
+        return selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
     },
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
@@ -40,7 +51,7 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
-        await selectCompany.UpdateItemsAsync()
+        await selectCompanyForm.UpdateItemsAsync()
     },
     _itemConfigs: [
         configCompany,
@@ -54,14 +65,16 @@ const departmentMgtForm = new FormModel(configDepartmentMgtForm)
 /** 查 */
 async function Refresh() {
     await companyMgtHelper.UpdateIdNamesAsync()
-
-    const arr = await departmentMgtHelper.GetList()
-    departmentMgtTable.RowDatas.splice(0)
-    departmentMgtTable.RowDatas.push(...arr)
-
-    const count = await departmentMgtHelper.GetCount()
-    pagination.Count.value = count
+    await selectCompany.UpdateItemsAsync()
+    pagination.Count.value = await departmentMgtHelper.GetCount()
+    await departmentMgtHelper.GetFilterListAsync(selectCompany.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value)
+        .then(arr => {
+            ArrayHelper.Set(departmentMgtTable.RowDatas, arr)
+        })
 }
+
+pagination._onChange = Refresh
+selectCompany._onChange = Refresh
 
 /** 增 */
 async function Add() {
@@ -147,6 +160,9 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
+    selectCompanyForm,
+    pagination,
+    selectCompany,
     configCompany,
     configName,
     departmentMgtForm,

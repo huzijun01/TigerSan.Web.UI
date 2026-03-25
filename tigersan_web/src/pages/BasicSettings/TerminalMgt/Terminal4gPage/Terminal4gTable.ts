@@ -28,7 +28,7 @@ pagination.IsShowSelectedRowCount.value = true
 const terminal4gTable = new TableModel<Terminal4gModel>([
     {
         _propName: 'Index',
-        Text: '序号',
+        Text: 'ID',
         IsReadonly: true,
         IsAllowWrap: false,
     },

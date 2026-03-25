@@ -19,22 +19,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
-        #region 根据“角色”筛选“单页数据”
-        /// <summary>根据“角色”筛选“单页数据”</summary>
-        public async Task<List<AuthorityEntity>> FilterByRole(long role, int? pageSize = null, int? pageNumber = null)
+        #region 获取“数据”集合
+        /// <summary>获取“数据”集合</summary>
+        public async Task<List<AuthorityEntity>> GetList(long? role = null, int? pageSize = null, int? pageNumber = null)
         {
             try
             {
-                var query = _dbSet
-                    .Where(r => r.Role == role)
-                    .AsNoTracking();
+                var quaryable = _dbSet.AsNoTracking();
+
+                if (role != null)
+                {
+                    quaryable = quaryable.Where(i => i.Role == role);
+                }
 
                 if (pageSize != null && pageNumber != null)
                 {
-                    query = query.GetPage(pageSize.Value, pageNumber.Value);
+                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
-                return await query.ToListAsync();
+                return await quaryable.ToListAsync();
             }
             catch (Exception e)
             {

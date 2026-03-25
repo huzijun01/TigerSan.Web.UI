@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Search :model="searchName"></Search>
+                        <Select :model="form.selectCompany"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -23,7 +23,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="departmentMgtTable.SelectedRowCount.value" />
+                <Pagination :model="form.pagination" :selectedRowCount="departmentMgtTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
@@ -32,7 +32,7 @@
     <PopForm :model="form.departmentMgtForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="selectCompany"></Select>
+                <Select :model="form.selectCompanyForm"></Select>
             </FormItem>
         </FormRow>
         <FormRow>
@@ -46,8 +46,8 @@
 <script lang="ts" setup>
 import form from './DepartmentMgtForm'
 import { onMounted } from 'vue'
-import { selectCompany, searchName, departmentMgtTable, pagination } from './DepartmentMgtTable'
-import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
+import { departmentMgtTable } from './DepartmentMgtTable'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

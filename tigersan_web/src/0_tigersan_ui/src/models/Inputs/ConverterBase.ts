@@ -4,9 +4,11 @@ import type { T2String } from "../../types"
 
 /** “值转换控件”基类 */
 class ConverterBase<TValue> {
-    //#region 【Fields】
+    /** 改变时 */
     /** 转换器 */
     _converter?: T2String<TValue>
+    //#region 【Fields】
+    _onChange?: (value: TValue | undefined) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -42,7 +44,11 @@ class ConverterBase<TValue> {
     //#endregion [private]
 
     /** 更新“文本” */
-    readonly UpdateText = () => {
+    readonly UpdateText = (value?: TValue, oldValue?: TValue) => {
+        if (value != oldValue) {
+            this._onChange?.(this.Value.value)
+        }
+
         this.Text.value = this.GetText()
         if (this.Text.value === '' && this.Value.value != undefined) {
             console.warn('The Text is empty!')

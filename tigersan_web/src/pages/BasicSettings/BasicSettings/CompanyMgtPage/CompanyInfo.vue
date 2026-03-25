@@ -1,11 +1,13 @@
 <template>
     <div class="company-info">
-        {{ model.name }}
+        <div>ID：{{ model.id }}</div>
+        <div>名称：{{ model.name }}</div>
+        <div>地址：{{ model.addr }}</div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import type { PropType } from 'vue';
+import { type PropType } from 'vue'
 import { CompanyModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtTable'
 
 //字段:
@@ -18,7 +20,8 @@ const { model } = defineProps({
 </script>
 
 <style lang="less" scoped>
-// .company-info {
-    
-// }
+.company-info {
+    padding: 10px;
+    line-height: 1.5;
+}
 </style>

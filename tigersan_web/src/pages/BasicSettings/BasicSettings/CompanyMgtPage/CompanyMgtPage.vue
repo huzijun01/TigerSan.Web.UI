@@ -25,7 +25,7 @@
                     <Tree :model="form.tree"></Tree>
                 </div>
                 <div class="right-panel">
-                    <CompanyInfo :model="tree.ActiveData.value"></CompanyInfo>
+                    <CompanyInfo v-if="tree.IsActive.value" :model="tree.ActiveData.value"></CompanyInfo>
                 </div>
             </div>
         </div>

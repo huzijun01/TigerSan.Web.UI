@@ -18,12 +18,6 @@ tree._onUnactive = () => {
 }
 tree._onInited = () => tree.SetActiveNode(selectCompany.Text.value)
 
-/** “公司”选择框 */
-const selectCompany = companyMgtHelper.GetSelectModel()
-selectCompany._onSelect = () => {
-    tree.ActiveNode.value = tree.NodeArray.value.find(n => BigintHelper.IsEqualAndNotUndefined(n._data?.id, selectCompany.Value.value?.id))
-}
-
 watch(tree.ActiveData, data => {
     const userInfo = useUserInfo()
     if (data) {
@@ -32,6 +26,12 @@ watch(tree.ActiveData, data => {
         userInfo.Company = ''
     }
 })
+
+/** “公司”选择框 */
+const selectCompany = companyMgtHelper.GetSelectModel()
+selectCompany._onChange = () => {
+    tree.ActiveNode.value = tree.NodeArray.value.find(n => BigintHelper.IsEqualAndNotUndefined(n._data?.id, selectCompany.Value.value?.id))
+}
 
 /** “父公司”选择框 */
 const selectParentCompany = companyMgtHelper.GetSelectModel()

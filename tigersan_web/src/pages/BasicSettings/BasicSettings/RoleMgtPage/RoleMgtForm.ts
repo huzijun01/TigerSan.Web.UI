@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { authorityHelper } from '@/helpers'
 import { selectCompany, roleMgtTable, pagination, selectDepartment } from './RoleMgtTable'
 import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
@@ -83,14 +83,12 @@ const roleMgtForm = new FormModel(configRoleMgtForm)
 async function Refresh() {
     await companyMgtHelper.UpdateIdNamesAsync()
     await departmentMgtHelper.UpdateIdNamesAsync()
-
-    const arr = await roleMgtHelper.GetList()
-    roleMgtTable.RowDatas.splice(0)
-    roleMgtTable.RowDatas.push(...arr)
-
-    const count = await roleMgtHelper.GetCount()
-    pagination.Count.value = count
+    pagination.Count.value = await roleMgtHelper.GetCount()
+    await roleMgtHelper.GetList(pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
+        ArrayHelper.Set(roleMgtTable.RowDatas, arr)
+    })
 }
+pagination._onChange = Refresh
 
 /** 增 */
 async function Add() {

@@ -25,7 +25,7 @@ pagination.IsShowSelectedRowCount.value = true
 const baseStationMgtTable = new TableModel<BaseStationMgtModel>([
     {
         _propName: 'Index',
-        Text: '序号',
+        Text: 'ID',
         IsReadonly: true,
         IsAllowWrap: false,
     },

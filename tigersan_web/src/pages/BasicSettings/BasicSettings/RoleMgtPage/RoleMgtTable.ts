@@ -16,13 +16,13 @@ pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
 const roleMgtTable = new TableModel<RoleAuthorityModel>([
-    {
-        _propName: 'id',
-        Text: '序号',
-        Width: 50,
-        IsReadonly: true,
-        IsAllowWrap: false,
-    },
+    // {
+    //     _propName: 'id',
+    //     Text: 'ID',
+    //     Width: 50,
+    //     IsReadonly: true,
+    //     IsAllowWrap: false,
+    // },
     {
         _propName: 'company',
         Text: '公司',

@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -36,7 +36,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 foreach (var role in roles)
                 {
-                    var authorities = await _authorityService.FilterByRole(role.Id);
+                    var authorities = await _authorityService.GetList(role.Id);
                     var entity = new RoleAuthorityEntity
                     {
                         Id = role.Id,
@@ -44,7 +44,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         Department = role.Department,
                         Authorities = authorities
                     };
-                    entity.Company = _db.Departments.Where(d => d.Id == role.Department).Select(d => d.Company).FirstOrDefault();
+                    entity.Company = await _db.Departments.Where(d => d.Id == role.Department).Select(d => d.Company).FirstOrDefaultAsync();
 
                     list.Add(entity);
                 }
@@ -95,6 +95,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 验证“名称是否重复”：
                 if (await _dbSet.AnyAsync(r => r.Department == entity.Department && r.Name == entity.Name))
                 {
                     return MyResults.NameRepeated;
@@ -140,6 +141,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 验证“名称是否重复”：
+                foreach (var entity in entities)
+                {
+                    if (await _dbSet.AnyAsync(i => i.Department == entity.Department && i.Name == entity.Name))
+                    {
+                        return MyResults.NameRepeated;
+                    }
+                }
+
                 // 更新“Id”：
                 entities.UpdateId();
 
@@ -186,18 +196,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 // 验证“资源是否存在”：
-                var role = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
-                if (role == null)
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                if (find == null)
                 {
                     return MyResults.ResourceNotExist;
                 }
 
-                // 更新“数据”：
-                if (await _dbSet.AnyAsync(r => r.Department == role.Department && r.Name == entity.Name))
+                // 验证“名称是否重复”：
+                if (await _dbSet.AnyAsync(r => r.Department == find.Department && r.Name == entity.Name && r.Id != find.Id))
                 {
                     return MyResults.NameRepeated;
                 }
-                role.Name = entity.Name;
+
+                // 更新“数据”：
+                find.Name = entity.Name;
 
                 // 删除“角色”相关的“权限”：
                 await _db.Authoritys.Where(a => a.Role == entity.Id).ExecuteDeleteAsync();
@@ -234,7 +246,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public new async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -248,7 +260,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 await _db.Persons.Where(p => p.Role == id).ExecuteDeleteAsync();
 
                 // 获取“单条数据”：
-                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
+                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
 
                 // 验证“资源是否存在”：
                 if (entity == null)
@@ -276,7 +288,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public new async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务

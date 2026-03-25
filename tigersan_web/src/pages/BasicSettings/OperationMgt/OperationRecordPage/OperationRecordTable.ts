@@ -18,7 +18,7 @@ class OperationRecordModel {
 const operationRecordTable = new TableModel<OperationRecordModel>([
     {
         _propName: 'Index',
-        Text: '序号',
+        Text: 'ID',
         IsReadonly: true,
         IsAllowWrap: false,
     },

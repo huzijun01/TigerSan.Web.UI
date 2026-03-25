@@ -15,8 +15,8 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
     constructor() {
         super('Role')
     }
-        // 查:
-        readonly GetList = async (pageSize?: number, pageNumber?: number) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber, 'FullList')
+    // 查:
+    readonly GetList = async (pageSize?: number, pageNumber?: number) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber)
 
     /** 获取“筛选框模型” */
     GetSelectModel(): SelectModel<IdNameModel> {

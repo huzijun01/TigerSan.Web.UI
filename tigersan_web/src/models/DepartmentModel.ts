@@ -1,4 +1,5 @@
 import { SelectModel } from "@/0_tigersan_ui/tigerui"
+import { AxiosHelper, KeyValue } from "@/helpers"
 import { IdNameModel, IdNameModelHelper } from "./base/IdNameModel"
 
 export type DepartmentEvent = (model: DepartmentModel) => void
@@ -11,6 +12,15 @@ export class DepartmentModel extends IdNameModel {
 class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
     constructor() {
         super('Department')
+    }
+
+    /** 获取“所属公司”集合 */
+    readonly GetCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/CompanyList`)
+
+    /** 筛选“数据”集合 */
+    readonly GetFilterListAsync = async (company?: bigint, pageSize?: number, pageNumber?: number) => {
+        const params: KeyValue[] = [{ key: 'company', value: company }]
+        return await AxiosHelper.GetList<DepartmentModel>(this._action, pageSize, pageNumber, undefined, params)
     }
 
     /** 获取“筛选框模型” */

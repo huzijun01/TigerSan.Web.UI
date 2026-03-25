@@ -3,6 +3,7 @@ import { type NumberFunc } from "../../types"
 export class Int {
     // 字段:
     private _value = 0
+    private _oldValue = 0
     _set?: NumberFunc
 
     // 引用:
@@ -10,14 +11,13 @@ export class Int {
         return this._value
     }
     set value(num) {
-        if (isNaN(num)) {
-            return
-        }
+        if (isNaN(num)) return
 
         this._value = Math.floor(num)
 
-        if (this._set) {
+        if (this._set && (this._value != this._oldValue)) {
             this._set(this._value)
+            this._oldValue = this._value
         }
     }
 

@@ -14,7 +14,7 @@ class OperationRetryModel {
 const operationRetryTable = new TableModel<OperationRetryModel>([
     {
         _propName: 'Index',
-        Text: '序号',
+        Text: 'ID',
         IsReadonly: true,
         IsAllowWrap: false,
     },

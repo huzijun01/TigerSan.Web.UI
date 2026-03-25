@@ -135,8 +135,8 @@ class FormModel<TSource extends object> {
         }
     }
 
-    /** 显示多个结果 */
-    private ShowResultRange(arr: SubmitResult[]) {
+    /** 合并“多个结果” */
+    private GetResult(arr: SubmitResult[]): SubmitResult {
         const res = new SubmitResult()
 
         if (arr.some(r => r.Result === FormResult.Error)) {
@@ -149,7 +149,14 @@ class FormModel<TSource extends object> {
             res.Msg += r.Msg + '\r\n'
         })
 
+        return res
+    }
+
+    /** 显示多个结果 */
+    private ShowResultRange(arr: SubmitResult[]): SubmitResult {
+        const res = this.GetResult(arr)
         this.ShowResult(res)
+        return res
     }
     //#endregion [private]
 
@@ -222,10 +229,12 @@ class FormModel<TSource extends object> {
         }
 
         // 显示结果:
-        this.ShowResultRange(results)
+        const res = this.ShowResultRange(results)
 
-        // 关闭:
-        this.Close()
+        if (res.Result != FormResult.Error) {
+            // 关闭:
+            this.Close()
+        }
     }
 
     /** 是否验证成功

@@ -26,7 +26,7 @@ pagination.IsShowSelectedRowCount.value = true
 const envSensorTable = new TableModel<EnvSensorModel>([
     {
         _propName: 'Index',
-        Text: '序号',
+        Text: 'ID',
         IsReadonly: true,
         IsAllowWrap: false,
     },

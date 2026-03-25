@@ -28,7 +28,7 @@ pagination.IsShowSelectedRowCount.value = true
 const personMgtTagTable = new TableModel<PersonMgtTagModel>([
     {
         _propName: 'Index',
-        Text: '序号',
+        Text: 'ID',
         IsReadonly: true,
         IsAllowWrap: false,
     },

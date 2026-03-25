@@ -17,6 +17,24 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         [HttpGet]
+        [Route("Unused/List")]
+        /// <summary>获取“数据”集合</summary>
+        public override async Task<MyActionResult> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        {
+            return MyResults.ApiUnavailable;
+        }
+
+        [HttpGet]
+        [Route("List")]
+        /// <summary>获取“数据”集合</summary>
+        public async Task<MyActionResult> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetList(company, pageSize, pageNumber);
+            return res;
+        }
+
+        [HttpGet]
         [Route("Company/{department}")]
         /// <summary>获取“所属公司”</summary>
         public async Task<MyActionResult> GetCompany(long department)
@@ -26,13 +44,13 @@ namespace TigerSan.NET8.WebApi.Controllers
             return res;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("CompanyList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetCompany([FromBody] IList<long> departments)
+        public async Task<MyActionResult> GetCompanyList()
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetCompanyList(departments);
+            res.Data = await _service.GetCompanyList();
             return res;
         }
         #endregion [查]

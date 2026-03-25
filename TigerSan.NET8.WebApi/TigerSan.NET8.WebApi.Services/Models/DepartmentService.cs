@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
+using TigerSan.NET8.WebApi.Share.Entities.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -23,6 +25,34 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
+        #region 获取“数据”集合
+        /// <summary>获取“数据”集合</summary>
+        public async Task<List<DepartmentEntity>> GetList(long? company = null, int? pageSize = null, int? pageNumber = null)
+        {
+            try
+            {
+                var quaryable = _dbSet.AsNoTracking();
+
+                if (company != null)
+                {
+                    quaryable = quaryable.Where(i => i.Company == company);
+                }
+
+                if (pageSize != null && pageNumber != null)
+                {
+                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                }
+
+                return await quaryable.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<DepartmentEntity>();
+            }
+        }
+        #endregion
+
         #region 获取“所属公司”
         /// <summary>获取“所属公司”</summary>
         public async Task<CompanyEntity?> GetCompany(long department)
@@ -43,19 +73,24 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<IList<CompanyEntity>> GetCompanyList(IList<long> departments)
+        public async Task<IList<IdName>> GetCompanyList()
         {
-            var list = new List<CompanyEntity>();
+            var list = new List<IdName>();
             try
             {
                 var companys = await _dbSet
                     .AsNoTracking()
-                    .Where(i => departments.Contains(i.Id))
                     .Select(i => i.Company)
                     .Distinct()
                     .ToListAsync();
+
                 if (companys.Count < 1) return list;
-                return await _db.Companies.AsNoTracking().Where(i => companys.Contains(i.Id)).ToListAsync();
+
+                return await _db.Companies
+                    .AsNoTracking()
+                    .Where(i => companys.Contains(i.Id))
+                    .Select(i => new IdName(i.Id, i.Name))
+                    .ToListAsync();
             }
             catch (Exception e)
             {
@@ -66,10 +101,115 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
         #endregion [查]
 
+        #region [增]
+        #region 添加“单条数据”
+        /// <summary>添加“单条数据”</summary>
+        public override async Task<MyActionResult> Add(DepartmentEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 验证“名称是否重复”：
+                if (await _dbSet.AnyAsync(i => i.Company == entity.Company && i.Name == entity.Name))
+                {
+                    return MyResults.NameRepeated;
+                }
+
+                entity.UpdateId();
+                _dbSet.Add(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 添加“多条数据”
+        /// <summary>添加“多条数据”</summary>
+        public override async Task<MyActionResult> AddRange(IList<DepartmentEntity> entities, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 验证“名称是否重复”：
+                foreach (var entity in entities)
+                {
+                    if (await _dbSet.AnyAsync(i => i.Company == entity.Company && i.Name == entity.Name))
+                    {
+                        return MyResults.NameRepeated;
+                    }
+                }
+
+                entities.UpdateId();
+                await _dbSet.AddRangeAsync(entities);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [增]
+
+        #region [改]
+        #region 修改“单条数据”
+        /// <summary>修改“单条数据”</summary>
+        public override async Task<MyActionResult> Edit(DepartmentEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                if (find == null)
+                {
+                    return MyResults.ResourceNotExist;
+                }
+
+                // 验证“名称是否重复”：
+                if (await _dbSet.AnyAsync(d => d.Company == entity.Company && d.Name == entity.Name && d.Id != find.Id))
+                {
+                    return MyResults.NameRepeated;
+                }
+
+                find.ShallowCopy(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
+
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public new async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -77,7 +217,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 // 获取“单条数据”：
-                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
+                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
 
                 // 验证“资源是否存在”：
                 if (entity == null)
@@ -113,7 +253,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public new async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务

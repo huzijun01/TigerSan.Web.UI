@@ -1,9 +1,9 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 // BasicSettings:
 import CompanyMgtPage from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPage.vue'
-import DepartmentMgtPage from '@/pages/BasicSettings/BasicSettings/DepartmentMgt/DepartmentMgtPage.vue'
+import DepartmentMgtPage from '@/pages/BasicSettings/BasicSettings/DepartmentMgtPage/DepartmentMgtPage.vue'
 import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/PersonMgtPage.vue'
-import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgt/RoleMgtPage.vue'
+import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgtPage/RoleMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
 // TagMgt:

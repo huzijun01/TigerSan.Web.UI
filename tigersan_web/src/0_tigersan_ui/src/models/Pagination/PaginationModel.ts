@@ -12,6 +12,8 @@ class PaginationModel {
     static Default_Page_Size = 10
     /** 默认“页大小”集合 */
     static Default_Page_Sizes = [10, 20, 30, 40, 50]
+    /** 改变时 */
+    _onChange?: (pageSize: number, selectedNum: number) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -157,6 +159,8 @@ class PaginationModel {
 
         this.InitButtonModels(start, end)
         this.UpdateIsSelected()
+        
+        this._onChange?.(this.PageSize.value, this.SelectedNum.value)
     }
 
     /** 初始化“固定按钮” */

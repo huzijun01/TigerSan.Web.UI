@@ -1,42 +1,8 @@
-import axios from "axios"
-import JSONBig from 'json-bigint' // 导入JSONBig
+
+import { api } from "./AxiosApi"
 import { dialog } from "@/0_tigersan_ui/tigerui"
 import { IdNameModel, MyActionResult } from "@/models"
-
-const api = axios.create({
-    baseURL: 'https://localhost:8888',
-    // TransformResponse:axios提供的工具，用在获取后端数据之后，先进行处理，再通过promise返回给axios调用者
-    // transformResponse发生在axios 的响应拦截器之前。
-    transformResponse: [function (data) {
-        try {
-            return JSONBig.parse(data) // 字符串--->对象
-        } catch (err) {
-            return data
-        }
-    }],
-    responseType: 'text'
-})
-
-// 请求拦截器：发送前转换 BigInt -> 字符串
-api.interceptors.request.use(config => {
-    const transform = (obj: any) => {
-        if (obj === null || typeof obj !== 'object') return obj
-
-        Object.keys(obj).forEach(key => {
-            const value = obj[key]
-            if (typeof value === 'bigint') {
-                obj[key] = value.toString();
-            } else if (typeof value === 'object') {
-                transform(value)
-            }
-        })
-        return obj
-    }
-    return {
-        ...config,
-        data: transform(config.data)
-    }
-})
+import { KeyValue, ParamHelper } from "./ParamHelper"
 
 export class FilterModel<TValue> {
     field = ''
@@ -50,9 +16,39 @@ export class FilterModel<TValue> {
 
 export class AxiosHelper {
     // 基础:
-    static async Get(action: string): Promise<MyActionResult> {
+    static async Get(action: string, params?: KeyValue[]): Promise<MyActionResult> {
         try {
-            const response = await api.get(action)
+            let url = action
+            if (params) {
+                url += ParamHelper.GetParamString(params)
+            }
+
+            const response = await api.get(url)
+            const actionResult = response.data as MyActionResult
+
+            if (actionResult === undefined) {
+                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                return MyActionResult.ActionResult_Undefined
+            }
+
+            return actionResult
+        } catch (error) {
+            return MyActionResult.GetError(error)
+        }
+    }
+    
+    static async GetData<T extends object | unknown[] | number>(action: string, params?: KeyValue[]): Promise<T> {
+        return (await this.Get(action, params)).data as T
+    }
+
+    static async Post(action: string, data: unknown, params?: KeyValue[]): Promise<MyActionResult> {
+        try {
+            let url = action
+            if (params) {
+                url += ParamHelper.GetParamString(params)
+            }
+
+            const response = await api.post(url, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -66,25 +62,14 @@ export class AxiosHelper {
         }
     }
 
-    static async Post(action: string, data: unknown): Promise<MyActionResult> {
+    static async Put<T>(action: string, data: T, params?: KeyValue[]): Promise<MyActionResult> {
         try {
-            const response = await api.post(action, data)
-            const actionResult = response.data as MyActionResult
-
-            if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
-                return MyActionResult.ActionResult_Undefined
+            let url = action
+            if (params) {
+                url += ParamHelper.GetParamString(params)
             }
 
-            return actionResult
-        } catch (error) {
-            return MyActionResult.GetError(error)
-        }
-    }
-
-    static async Put<T>(action: string, data: T): Promise<MyActionResult> {
-        try {
-            const response = await api.put(action, data)
+            const response = await api.put(url, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -101,9 +86,14 @@ export class AxiosHelper {
         }
     }
 
-    static async Delete(action: string, index: number | bigint): Promise<MyActionResult> {
+    static async Delete(action: string, index: number | bigint, params?: KeyValue[]): Promise<MyActionResult> {
         try {
-            const response = await api.delete(`${action}/${index}`)
+            let url = `${action}/${index}`
+            if (params) {
+                url += ParamHelper.GetParamString(params)
+            }
+
+            const response = await api.delete(url)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -121,9 +111,14 @@ export class AxiosHelper {
     }
 
     // 列表:
-    static async GetCount(action: string): Promise<number> {
+    static async GetCount(action: string, params?: KeyValue[]): Promise<number> {
         try {
-            const actionResult = await this.Get(`${action}/Count`)
+            let url = action
+            if (params) {
+                url += ParamHelper.GetParamString(params)
+            }
+
+            const actionResult = await this.Get(`${url}/Count`)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -145,10 +140,16 @@ export class AxiosHelper {
         action: string,
         pageSize?: number,
         pageNumber?: number,
-        strList?: string): Promise<T[]> {
+        strList?: string,
+        params?: KeyValue[]): Promise<T[]> {
         try {
-            const params = pageSize != undefined && pageNumber != undefined ? `?pageSize=${pageSize}&pageNumber=${pageNumber}` : ''
-            const actionResult = await this.Get(`${action}/${strList ?? 'List'}${params}`)
+            const arrParams: KeyValue[] = [
+                { key: 'pageSize', value: pageSize },
+                { key: 'pageNumber', value: pageNumber },
+            ]
+            if (params) arrParams.push(...params)
+
+            const actionResult = await this.Get(`${action}/${strList ?? 'List'}`, arrParams)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)

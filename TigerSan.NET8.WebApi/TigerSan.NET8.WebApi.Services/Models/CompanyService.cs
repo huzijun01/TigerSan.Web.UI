@@ -56,7 +56,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public new async Task<MyActionResult> Add(CompanyEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> Add(CompanyEntity entity, bool isBeginTransaction = true)
         {
             if (entity.Parent != null && !await _dbSet.AnyAsync(i => i.Id == entity.Parent))
             {
@@ -69,7 +69,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public new async Task<MyActionResult> AddRange(IList<CompanyEntity> entities, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> AddRange(IList<CompanyEntity> entities, bool isBeginTransaction = true)
         {
             foreach (var entity in entities)
             {
@@ -87,7 +87,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public new async Task<MyActionResult> Edit(CompanyEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> Edit(CompanyEntity entity, bool isBeginTransaction = true)
         {
             if (entity.Parent != null)
             {
@@ -134,7 +134,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public new async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -142,7 +142,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 // 获取“公司”：
-                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
+                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
 
                 // 验证“资源是否存在”：
                 if (entity == null)
@@ -192,7 +192,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public new async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public override async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
         {
             var res = MyResults.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务

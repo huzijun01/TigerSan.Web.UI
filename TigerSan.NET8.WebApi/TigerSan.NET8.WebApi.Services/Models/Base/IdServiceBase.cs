@@ -67,7 +67,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
                 if (pageSize != null && pageNumber != null)
                 {
-                    quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
                 return await quaryable.ToListAsync();
@@ -237,7 +237,8 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
             try
             {
-                var find = _dbSet.FirstOrDefault(i => i.Id == entity.Id);
+                // 检验“资源”是否存在:
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
                 if (find == null)
                 {
                     return MyResults.ResourceNotExist;
@@ -269,7 +270,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
             try
             {
-                var entity = _dbSet.FirstOrDefault(i => i.Id == id);
+                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
                 if (entity == null)
                 {
                     return MyResults.ResourceNotExist;
