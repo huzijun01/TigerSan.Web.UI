@@ -1,12 +1,5 @@
-import { PersonModel, roleMgtHelper } from '@/models'
-import { BigintHelper, PaginationModel, SearchModel, TableModel } from '@/0_tigersan_ui/tigerui'
-
-/** 选择框 */
-const selectRole = roleMgtHelper.GetSelectModel()
-
-/** 搜索“名称” */
-const searchName = new SearchModel()
-searchName.Placeholder.value = '请输人员名称'
+import { PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { companyMgtHelper, departmentMgtHelper, PersonModel } from '@/models'
 
 // 字段:
 /** 分页器 */
@@ -23,11 +16,18 @@ const personMgtTable = new TableModel<PersonModel>([
     //     IsAllowWrap: false,
     // },
     {
-        _propName: 'role',
-        Text: '角色',
+        _propName: 'company',
+        Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getString: source => GetRoleName(source.role)
+        _getStringAsync: source => companyMgtHelper.GetNameAsync(source.company)
+    },
+    {
+        _propName: 'department',
+        Text: '部门',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getStringAsync: source => departmentMgtHelper.GetNameAsync(source.department)
     },
     {
         _propName: 'username',
@@ -41,20 +41,24 @@ const personMgtTable = new TableModel<PersonModel>([
         IsReadonly: true,
         IsAllowWrap: false,
     },
+    {
+        _propName: 'phone',
+        Text: '电话',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
+        _propName: 'mail',
+        Text: '邮箱',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
 ])
 
 // 初始化:
 personMgtTable.IsAllowMultiSelect.value = false
 
-// 方法:
-function GetRoleName(index: number | bigint): string {
-    const company = selectRole.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, index))
-    return company ? company.name : ''
-}
-
 export {
-    selectRole,
-    searchName,
     PersonModel,
     pagination,
     personMgtTable,

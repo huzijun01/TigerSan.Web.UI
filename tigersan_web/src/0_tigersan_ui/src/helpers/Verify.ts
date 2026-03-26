@@ -90,7 +90,7 @@ export class Verify {
             res.VerifyText = '必须为数字'
             res.VerifyState = FormResult.Error
         }
-        else if (num < min) {
+        else if (num <= min) {
             res.VerifyText = error ?? `不可小于${min}`
             res.VerifyState = FormResult.Error
         }
@@ -102,7 +102,7 @@ export class Verify {
     static IsBigintGreaterThan(num: bigint, min: bigint = 0n, error?: string): VerifyResult {
         const res = new VerifyResult();
 
-        if (num < min) {
+        if (num <= min) {
             res.VerifyText = error ?? `不可小于${min.toString()}`;
             res.VerifyState = FormResult.Error;
         }
@@ -118,7 +118,7 @@ export class Verify {
             res.VerifyText = '必须为数字'
             res.VerifyState = FormResult.Error
         }
-        else if (num > max) {
+        else if (num >= max) {
             res.VerifyText = error ?? `不可大于${max}`
             res.VerifyState = FormResult.Error
         }

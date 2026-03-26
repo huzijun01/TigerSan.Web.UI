@@ -23,8 +23,11 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
         await AxiosHelper.GetList<DepartmentModel>(this._action, pageSize, pageNumber, undefined
             , [{ key: 'company', value: company }])
 
+    /** 获取“ID名称对”集合 */
+    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByCompany`, [{ key: 'company', value: company }])
+
     /** 获取“所属公司”集合 */
-    readonly GetCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/CompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“筛选框模型” */
     GetSelectModel(): SelectModel<IdNameModel> {

@@ -22,13 +22,16 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
 
     /** 筛选“数据”集合 */
     readonly GetListAsync = async (company?: bigint, department?: bigint, pageSize?: number, pageNumber?: number) =>
-        await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber, undefined, [{ key: 'company', value: company }, { key: 'department', value: department }])
+        await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber, 'FullList', [{ key: 'company', value: company }, { key: 'department', value: department }])
+
+    /** 获取“ID名称对”集合 */
+    readonly SelectIdNameByDepartment = async (department?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByDepartment`, [{ key: 'department', value: department }])
 
     /** 获取“所属公司”集合 */
-    readonly GetCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/CompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属部门”集合 */
-    readonly GetDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/DepartmentList`, [{ key: 'company', value: company }])
+    readonly GetBelongDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
 
     /** 获取“筛选框模型” */
     GetSelectModel(): SelectModel<IdNameModel> {

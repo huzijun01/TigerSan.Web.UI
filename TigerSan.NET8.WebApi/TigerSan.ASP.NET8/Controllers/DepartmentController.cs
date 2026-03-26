@@ -55,22 +55,22 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("Company/{department}")]
-        /// <summary>获取“所属公司”</summary>
-        public async Task<MyActionResult> GetCompany(long department)
+        [Route("SelectIdNameByCompany")]
+        /// <summary>获取“ID名称对”集合/summary>
+        public async Task<MyActionResult> SelectIdNameByCompany([FromQuery] long? company = null)
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetCompany(department);
+            res.Data = await _service.SelectIdNameByCompany(company);
             return res;
         }
 
         [HttpGet]
-        [Route("CompanyList")]
+        [Route("BelongCompanyList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetCompanyList()
+        public async Task<MyActionResult> GetBelongCompanyList()
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetCompanyList();
+            res.Data = await _service.GetBelongCompanyList();
             return res;
         }
         #endregion [查]

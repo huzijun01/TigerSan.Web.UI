@@ -2,19 +2,20 @@ import { ref } from 'vue'
 import { authorityHelper } from '@/helpers'
 import { roleMgtTable } from './RoleMgtTable'
 import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, SearchModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel } from '@/0_tigersan_ui/tigerui'
 
-/** 搜索“名称” */
-const searchName = new SearchModel()
-searchName.Placeholder.value = '请输角色名称'
-
-/** 选择框 */
+// 选择框:
+/** 筛选 */
 const selectCompany = companyMgtHelper.GetSelectModel()
-selectCompany._getItemsAsync = async () => await roleMgtHelper.GetCompanyListAsync()
+selectCompany._getItemsAsync = async () => await roleMgtHelper.GetBelongCompanyListAsync()
 const selectDepartment = departmentMgtHelper.GetSelectModel()
-selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetDepartmentListAsync(selectCompany.Value.value?.id) : []
+selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
+/** 表单 */
 const selectCompanyForm = companyMgtHelper.GetSelectModel()
 const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
+selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
+// 更新:
+selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 
 /** 分页器 */
 const pagination = new PaginationModel()
@@ -26,13 +27,9 @@ const configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     PropText: '公司',
     IsEquired: true,
     Target: selectCompanyForm.Value,
-    _getValue: async source => {
-        return selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
-    },
+    _getValue: async source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => {
-        return Verify.IsBigintGreaterThan(source.company)
-    }
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
 }
 
 /** “部门”项目配置 */
@@ -41,13 +38,9 @@ const configDepartment: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     PropText: '部门',
     IsEquired: true,
     Target: selectDepartmentForm.Value,
-    _getValue: async source => {
-        return selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department))
-    },
+    _getValue: async source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => {
-        return Verify.IsBigintGreaterThan(source.department)
-    }
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
 }
 
 /** “名称”项目配置 */
@@ -56,9 +49,7 @@ const configName: FormItemConfig<RoleAuthorityModel, string> = {
     PropText: '名称',
     IsEquired: true,
     Target: ref(),
-    _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.name)
-    }
+    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.name)
 }
 
 /** “权限”项目配置 */
@@ -67,9 +58,7 @@ const configAuthority: FormItemConfig<RoleAuthorityModel, number> = {
     PropText: '权限',
     IsEquired: true,
     Target: ref(),
-    // _isVerifyOk: source => {
-    //     return Verify.IsNotUndefinedOrEmpty(source.company, 0)
-    // }
+    _isVerifyOk: source => Verify.IsNotUndefined(source.authorities)
 }
 
 /** “增”源数据获取方法 */
@@ -81,6 +70,7 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
+        await companyMgtHelper.UpdateIdNamesAsync()
         await selectCompanyForm.UpdateItemsAsync()
         await selectDepartmentForm.UpdateItemsAsync()
     },
@@ -101,6 +91,7 @@ async function Refresh() {
     await departmentMgtHelper.UpdateIdNamesAsync()
     await selectCompany.UpdateItemsAsync()
     await selectDepartment.UpdateItemsAsync()
+
     pagination.Count.value = await roleMgtHelper.GetCount(selectCompany.Value.value?.id, selectDepartment.Value.value?.id)
     await roleMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
         ArrayHelper.Set(roleMgtTable.RowDatas, arr)
@@ -127,8 +118,6 @@ async function Add() {
     selectCompanyForm.IsEnabled.value = true
     selectDepartmentForm.IsEnabled.value = true
     authorityHelper.Init()
-    await companyMgtHelper.UpdateIdNamesAsync()
-    await departmentMgtHelper.UpdateIdNamesAsync()
     roleMgtForm.Show()
 }
 
@@ -170,8 +159,6 @@ async function Edit() {
     selectCompanyForm.IsEnabled.value = false
     selectDepartmentForm.IsEnabled.value = false
     authorityHelper.Init(rowData.authorities)
-    await companyMgtHelper.UpdateIdNamesAsync()
-    await departmentMgtHelper.UpdateIdNamesAsync()
     roleMgtForm.Show()
 }
 

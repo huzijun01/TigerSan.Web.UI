@@ -20,7 +20,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         /// <summary>获取“ID名称对”集合</summary>
         public async Task<List<IdName>> SelectIdName(bool? isDistinct)
         {
-            var query = _dbSet.Select(x => new IdName(x));
+            var query = _dbSet.Select(i => new IdName(i));
 
             if (isDistinct ?? false)
             {

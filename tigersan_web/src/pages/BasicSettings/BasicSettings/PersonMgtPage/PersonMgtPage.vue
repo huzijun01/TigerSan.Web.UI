@@ -5,7 +5,9 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Search :model="searchName"></Search>
+                        <Select :model="form.selectCompany"></Select>
+                        <Select :model="form.selectDepartment"></Select>
+                        <Select :model="form.selectRole"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -29,10 +31,20 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.baseStationForm">
+    <PopForm :model="form.personMgtForm">
+        <FormRow>
+            <FormItem :model="form.configCompany.ItemModel">
+                <Select :model="form.selectCompanyForm"></Select>
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configDepartment.ItemModel">
+                <Select :model="form.selectDepartmentForm"></Select>
+            </FormItem>
+        </FormRow>
         <FormRow>
             <FormItem :model="form.configRole.ItemModel">
-                <Select :model="selectRole"></Select>
+                <Select :model="form.selectRoleForm"></Select>
             </FormItem>
         </FormRow>
         <FormRow>
@@ -45,14 +57,29 @@
                 <input type="text" v-model="form.configNickname.Target.value">
             </FormItem>
         </FormRow>
+        <FormRow>
+            <FormItem :model="form.configPassword.ItemModel">
+                <input type="text" v-model="form.configPassword.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configPhone.ItemModel">
+                <input type="text" v-model="form.configPhone.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configMail.ItemModel">
+                <input type="text" v-model="form.configMail.Target.value">
+            </FormItem>
+        </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
 import form from './PersonMgtForm'
 import { onMounted } from 'vue'
-import { selectRole, searchName, personMgtTable, pagination } from './PersonMgtTable'
-import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
+import { personMgtTable, pagination } from './PersonMgtTable'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

@@ -1,19 +1,57 @@
 import { ref } from 'vue'
-import { selectRole, PersonModel, personMgtTable, pagination } from './PersonMgtTable'
+import { PersonModel, personMgtTable, pagination } from './PersonMgtTable'
 import { GetSubmitResult, MyActionResult, IdNameModel, companyMgtHelper, departmentMgtHelper, personMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper } from '@/0_tigersan_ui/tigerui'
+
+// 选择框:
+/** 筛选 */
+const selectCompany = companyMgtHelper.GetSelectModel()
+selectCompany._getItemsAsync = async () => await roleMgtHelper.GetBelongCompanyListAsync()
+const selectDepartment = departmentMgtHelper.GetSelectModel()
+selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
+const selectRole = departmentMgtHelper.GetSelectModel()
+selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectDepartment.Value.value?.id) : []
+/** 表单 */
+const selectCompanyForm = companyMgtHelper.GetSelectModel()
+const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
+selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
+const selectRoleForm = departmentMgtHelper.GetSelectModel()
+selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? await roleMgtHelper.SelectIdNameByDepartment(selectDepartmentForm.Value.value?.id) : []
+// 更新:
+selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
+selectDepartmentForm._onChange = selectRoleForm.UpdateItemsAsync
+
+/** “公司”项目配置 */
+const configCompany: FormItemConfig<PersonModel, IdNameModel> = {
+    _propName: 'company',
+    PropText: '公司',
+    IsEquired: false,
+    Target: ref(),
+    _getValue: async source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
+}
+
+/** “部门”项目配置 */
+const configDepartment: FormItemConfig<PersonModel, IdNameModel> = {
+    _propName: 'department',
+    PropText: '部门',
+    IsEquired: false,
+    Target: ref(),
+    _getValue: async source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
+    _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
+}
 
 /** “角色”项目配置 */
 const configRole: FormItemConfig<PersonModel, IdNameModel> = {
     _propName: 'role',
     PropText: '角色',
     IsEquired: true,
-    Target: selectRole.Value,
-    _getValue: source => selectRole.Items.find(i => i.id === source.role),
+    Target: selectRoleForm.Value,
+    _getValue: async source => selectRoleForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.role)),
     _setValue: (source, propName, value) => source.role = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => {
-        return Verify.IsBigintGreaterThan(source.role)
-    }
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.role)
 }
 
 /** “用户名”项目配置 */
@@ -22,9 +60,7 @@ const configUsername: FormItemConfig<PersonModel, string> = {
     PropText: '用户名',
     IsEquired: true,
     Target: ref(),
-    _isVerifyOk: source => {
-        return Verify.IsValidUsername(source.username)
-    }
+    _isVerifyOk: source => Verify.IsValidUsername(source.username)
 }
 
 /** “昵称”项目配置 */
@@ -33,9 +69,34 @@ const configNickname: FormItemConfig<PersonModel, string> = {
     PropText: '昵称',
     IsEquired: true,
     Target: ref(),
-    _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.nickname)
-    }
+    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.nickname)
+}
+
+/** “密码”项目配置 */
+const configPassword: FormItemConfig<PersonModel, string> = {
+    _propName: 'password',
+    PropText: '密码',
+    IsEquired: true,
+    Target: ref(),
+    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.password)
+}
+
+/** “电话”项目配置 */
+const configPhone: FormItemConfig<PersonModel, string> = {
+    _propName: 'phone',
+    PropText: '电话',
+    IsEquired: false,
+    Target: ref(),
+    // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.phone)
+}
+
+/** “电话”项目配置 */
+const configMail: FormItemConfig<PersonModel, string> = {
+    _propName: 'mail',
+    PropText: '邮箱',
+    IsEquired: false,
+    Target: ref(),
+    // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.mail)
 }
 
 /** “增”源数据获取方法 */
@@ -46,10 +107,21 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
+    _beforeInitAsync: async isEdit => {
+        await companyMgtHelper.UpdateIdNamesAsync()
+        await selectCompanyForm.UpdateItemsAsync()
+        await selectDepartmentForm.UpdateItemsAsync()
+        await selectRoleForm.UpdateItemsAsync()
+    },
     _itemConfigs: [
+        configCompany,
+        configDepartment,
         configRole,
         configUsername,
         configNickname,
+        configPassword,
+        configPhone,
+        configMail,
     ]
 }
 
@@ -61,14 +133,20 @@ async function Refresh() {
     await companyMgtHelper.UpdateIdNamesAsync()
     await departmentMgtHelper.UpdateIdNamesAsync()
     await roleMgtHelper.UpdateIdNamesAsync()
+    await selectCompany.UpdateItemsAsync()
+    await selectDepartment.UpdateItemsAsync()
+    await selectRole.UpdateItemsAsync()
 
-    const arr = await personMgtHelper.GetList()
-    personMgtTable.RowDatas.splice(0)
-    personMgtTable.RowDatas.push(...arr)
-
-    const count = await personMgtHelper.GetCount()
-    pagination.Count.value = count
+    pagination.Count.value = await personMgtHelper.GetCount(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id)
+    await personMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
+        ArrayHelper.Set(personMgtTable.RowDatas, arr)
+    })
 }
+
+pagination._onChange = Refresh
+selectCompany._onChange = Refresh
+selectDepartment._onChange = Refresh
+selectRole._onChange = Refresh
 
 /** 增 */
 async function Add() {
@@ -82,9 +160,6 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    await companyMgtHelper.UpdateIdNamesAsync()
-    await departmentMgtHelper.UpdateIdNamesAsync()
-    await roleMgtHelper.UpdateIdNamesAsync()
     personMgtForm.Show()
 }
 
@@ -99,6 +174,10 @@ async function Edit() {
             return new PersonModel()
         }
 
+        selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+        selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
+        selectRoleForm.Value.value = roleMgtHelper.GetIdName(rowData.role)
+
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
@@ -108,9 +187,6 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    await companyMgtHelper.UpdateIdNamesAsync()
-    await departmentMgtHelper.UpdateIdNamesAsync()
-    await roleMgtHelper.UpdateIdNamesAsync()
     personMgtForm.Show()
 }
 
@@ -147,10 +223,21 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
+    selectCompany,
+    selectDepartment,
+    selectRole,
+    selectCompanyForm,
+    selectDepartmentForm,
+    selectRoleForm,
+    configCompany,
+    configDepartment,
     configRole,
-    configNickname,
     configUsername,
-    baseStationForm: personMgtForm,
+    configNickname,
+    configPassword,
+    configPhone,
+    configMail,
+    personMgtForm,
     Refresh,
     Add,
     Edit,

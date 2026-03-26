@@ -75,27 +75,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“所属公司”
-        /// <summary>获取“所属公司”</summary>
-        public async Task<CompanyEntity?> GetCompany(long department)
+        #region 获取“ID名称对”集合
+        /// <summary>获取“ID名称对”集合</summary>
+        public async Task<IList<IdName>> SelectIdNameByCompany(long? company = null)
         {
+            var list = new List<IdName>();
             try
             {
-                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == department);
-                if (entity == null) return null;
-                return await _db.Companies.AsNoTracking().FirstOrDefaultAsync(i => i.Id == entity.Company);
+                var queryable = _dbSet.AsNoTracking();
+
+                if (company != null)
+                {
+                    queryable = queryable.Where(i => i.Company == company);
+                }
+
+                return await queryable.Select(i => new IdName(i)).ToListAsync();
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.Message);
-                return null;
+                return list;
             }
         }
         #endregion
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<IList<IdName>> GetCompanyList()
+        public async Task<IList<IdName>> GetBelongCompanyList()
         {
             var list = new List<IdName>();
             try

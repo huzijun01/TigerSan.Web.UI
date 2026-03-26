@@ -46,6 +46,16 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         [HttpGet]
         [Route("List")]
+        /// <summary>获取“数据”集合</summary>
+        public async Task<MyActionResult> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetList(company, pageSize, pageNumber);
+            return res;
+        }
+
+        [HttpGet]
+        [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
         {
@@ -55,22 +65,32 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("CompanyList")]
-        /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetCompanyList()
+        [Route("SelectIdNameByDepartment")]
+        /// <summary>获取“ID名称对”集合/summary>
+        public async Task<MyActionResult> SelectIdNameByDepartment([FromQuery] long? department = null)
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetCompanyList();
+            res.Data = await _service.SelectIdNameByDepartment(department);
             return res;
         }
 
         [HttpGet]
-        [Route("DepartmentList")]
+        [Route("BelongCompanyList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetDepartmentList(long? company = null)
+        public async Task<MyActionResult> GetBelongCompanyList()
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetDepartmentList(company);
+            res.Data = await _service.GetBelongCompanyList();
+            return res;
+        }
+
+        [HttpGet]
+        [Route("BelongDepartmentList")]
+        /// <summary>获取“所属公司”集合</summary>
+        public async Task<MyActionResult> BelongDepartmentList(long? company = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.BelongDepartmentList(company);
             return res;
         }
         #endregion [查]

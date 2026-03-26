@@ -3,10 +3,11 @@ import { departmentMgtTable } from './DepartmentMgtTable'
 import { GetSubmitResult, MyActionResult, DepartmentModel, companyMgtHelper, departmentMgtHelper, IdNameModel } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel } from '@/0_tigersan_ui/tigerui'
 
-/** 选择框 */
+// 选择框:
+/** 筛选 */
 const selectCompany = companyMgtHelper.GetSelectModel()
-selectCompany._getItemsAsync = async () => await departmentMgtHelper.GetCompanyListAsync()
-/** 选择框（表单） */
+selectCompany._getItemsAsync = async () => await departmentMgtHelper.GetBelongCompanyListAsync()
+/** 表单 */
 const selectCompanyForm = companyMgtHelper.GetSelectModel()
 
 // 字段:
@@ -25,7 +26,7 @@ const configCompany: FormItemConfig<DepartmentModel, IdNameModel> = {
     },
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
-        return Verify.IsBigintGreaterThan(source.company)
+        return Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
     }
 }
 
@@ -51,6 +52,7 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
+        await companyMgtHelper.UpdateIdNamesAsync()
         await selectCompanyForm.UpdateItemsAsync()
     },
     _itemConfigs: [
@@ -88,7 +90,6 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    await companyMgtHelper.UpdateIdNamesAsync()
     departmentMgtForm.Show()
 }
 
@@ -123,7 +124,6 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    await companyMgtHelper.UpdateIdNamesAsync()
     departmentMgtForm.Show()
 }
 

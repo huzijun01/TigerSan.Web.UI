@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Data;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -87,13 +87,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 foreach (var role in roles)
                 {
                     var authorities = await _authorityService.GetList(role.Id);
-                    var entity = new RoleAuthorityEntity
-                    {
-                        Id = role.Id,
-                        Name = role.Name,
-                        Department = role.Department,
-                        Authorities = authorities
-                    };
+                    var entity = new RoleAuthorityEntity();
+                    entity.ShallowCopy(role);
+                    entity.Authorities = authorities;
                     entity.Company = await _db.Departments.Where(d => d.Id == role.Department).Select(d => d.Company).FirstOrDefaultAsync();
 
                     list.Add(entity);
@@ -109,22 +105,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 根据“部门”筛选“单页数据”
-        /// <summary>根据“部门”筛选“单页数据”</summary>
-        public async Task<List<RoleEntity>> FilterByDepartment(long department, int? pageSize = null, int? pageNumber = null)
+        #region 获取“数据”集合
+        /// <summary>获取“数据”集合</summary>
+        public async Task<List<RoleEntity>> GetList(long? department, int? pageSize = null, int? pageNumber = null)
         {
             try
             {
-                var query = _dbSet
-                    .Where(r => r.Department == department)
-                    .AsNoTracking();
+                var quaryable = _dbSet.AsNoTracking();
+
+                if (department != null)
+                {
+                    quaryable = quaryable.Where(i => i.Department == department);
+                }
 
                 if (pageSize != null && pageNumber != null)
                 {
-                    query = query.GetPage(pageSize.Value, pageNumber.Value);
+                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
-                return await query.ToListAsync();
+                return await quaryable.ToListAsync();
             }
             catch (Exception e)
             {
@@ -134,9 +133,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
+        #region 获取“ID名称对”集合
+        /// <summary>获取“ID名称对”集合</summary>
+        public async Task<IList<IdName>> SelectIdNameByDepartment(long? department = null)
+        {
+            var list = new List<IdName>();
+            try
+            {
+                var queryable = _dbSet.AsNoTracking();
+
+                if (department != null)
+                {
+                    queryable = queryable.Where(i => i.Department == department);
+                }
+
+                return await queryable.Select(i => new IdName(i)).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return list;
+            }
+        }
+        #endregion
+
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<IList<IdName>> GetCompanyList()
+        public async Task<IList<IdName>> GetBelongCompanyList()
         {
             var list = new List<IdName>();
             try
@@ -146,6 +169,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Select(i => i.Department)
                     .Distinct()
                     .ToListAsync();
+
+                if (departments.Count < 1) return list;
 
                 var companys = await _db.Departments
                     .AsNoTracking()
@@ -172,7 +197,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属部门”集合
         /// <summary>获取“所属部门”集合</summary>
-        public async Task<IList<IdName>> GetDepartmentList(long? company = null)
+        public async Task<IList<IdName>> BelongDepartmentList(long? company = null)
         {
             var list = new List<IdName>();
             try
@@ -182,6 +207,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Select(i => i.Department)
                     .Distinct()
                     .ToListAsync();
+
+                if (departments.Count < 1) return list;
 
                 var queryable = _db.Departments
                     .AsNoTracking()

@@ -28,7 +28,6 @@ export class AuthorityHelper {
     constructor() {
         this._tree._onInit = node => {
             if (node._data) {
-                debugger
                 node.Color.value = Colors.Warning
             }
         }
