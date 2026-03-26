@@ -1,17 +1,33 @@
 import { ref } from 'vue'
 import { authorityHelper } from '@/helpers'
-import { selectCompany, roleMgtTable, pagination, selectDepartment } from './RoleMgtTable'
+import { roleMgtTable } from './RoleMgtTable'
 import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, SearchModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
+
+/** 搜索“名称” */
+const searchName = new SearchModel()
+searchName.Placeholder.value = '请输角色名称'
+
+/** 选择框 */
+const selectCompany = companyMgtHelper.GetSelectModel()
+selectCompany._getItemsAsync = async () => await roleMgtHelper.GetCompanyListAsync()
+const selectDepartment = departmentMgtHelper.GetSelectModel()
+selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetDepartmentListAsync(selectCompany.Value.value?.id) : []
+const selectCompanyForm = companyMgtHelper.GetSelectModel()
+const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
+
+/** 分页器 */
+const pagination = new PaginationModel()
+pagination.IsShowSelectedRowCount.value = true
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     _propName: 'company',
     PropText: '公司',
     IsEquired: true,
-    Target: selectCompany.Value,
+    Target: selectCompanyForm.Value,
     _getValue: async source => {
-        return selectCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
+        return selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company))
     },
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
@@ -24,9 +40,9 @@ const configDepartment: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     _propName: 'department',
     PropText: '部门',
     IsEquired: true,
-    Target: selectDepartment.Value,
+    Target: selectDepartmentForm.Value,
     _getValue: async source => {
-        return selectDepartment.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department))
+        return selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department))
     },
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => {
@@ -65,8 +81,8 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
-        await selectCompany.UpdateItemsAsync()
-        await selectDepartment.UpdateItemsAsync()
+        await selectCompanyForm.UpdateItemsAsync()
+        await selectDepartmentForm.UpdateItemsAsync()
     },
     _itemConfigs: [
         configCompany,
@@ -83,12 +99,17 @@ const roleMgtForm = new FormModel(configRoleMgtForm)
 async function Refresh() {
     await companyMgtHelper.UpdateIdNamesAsync()
     await departmentMgtHelper.UpdateIdNamesAsync()
-    pagination.Count.value = await roleMgtHelper.GetCount()
-    await roleMgtHelper.GetList(pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
+    await selectCompany.UpdateItemsAsync()
+    await selectDepartment.UpdateItemsAsync()
+    pagination.Count.value = await roleMgtHelper.GetCount(selectCompany.Value.value?.id, selectDepartment.Value.value?.id)
+    await roleMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
         ArrayHelper.Set(roleMgtTable.RowDatas, arr)
     })
 }
+
 pagination._onChange = Refresh
+selectCompany._onChange = Refresh
+selectDepartment._onChange = Refresh
 
 /** 增 */
 async function Add() {
@@ -103,8 +124,8 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    selectCompany.IsEnabled.value = true
-    selectDepartment.IsEnabled.value = true
+    selectCompanyForm.IsEnabled.value = true
+    selectDepartmentForm.IsEnabled.value = true
     authorityHelper.Init()
     await companyMgtHelper.UpdateIdNamesAsync()
     await departmentMgtHelper.UpdateIdNamesAsync()
@@ -128,8 +149,8 @@ async function Edit() {
             return new RoleAuthorityModel()
         }
 
-        selectCompany.Value.value = companyMgtHelper.GetIdName(rowData.company)
-        selectDepartment.Value.value = departmentMgtHelper.GetIdName(rowData.department)
+        selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+        selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
 
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
@@ -146,8 +167,8 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    selectCompany.IsEnabled.value = false
-    selectDepartment.IsEnabled.value = false
+    selectCompanyForm.IsEnabled.value = false
+    selectDepartmentForm.IsEnabled.value = false
     authorityHelper.Init(rowData.authorities)
     await companyMgtHelper.UpdateIdNamesAsync()
     await departmentMgtHelper.UpdateIdNamesAsync()
@@ -187,6 +208,11 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
+    pagination,
+    selectCompany,
+    selectDepartment,
+    selectCompanyForm,
+    selectDepartmentForm,
     configCompany,
     configDepartment,
     configName,

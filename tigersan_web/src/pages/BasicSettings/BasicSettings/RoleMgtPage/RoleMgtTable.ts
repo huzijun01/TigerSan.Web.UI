@@ -1,18 +1,5 @@
+import { TableModel } from '@/0_tigersan_ui/tigerui'
 import { companyMgtHelper, departmentMgtHelper, RoleAuthorityModel } from '@/models'
-import { PaginationModel, SearchModel, TableModel } from '@/0_tigersan_ui/tigerui'
-
-/** 搜索“名称” */
-const searchName = new SearchModel()
-searchName.Placeholder.value = '请输角色名称'
-
-/** 选择框 */
-const selectCompany = companyMgtHelper.GetSelectModel()
-const selectDepartment = departmentMgtHelper.GetSelectModel()
-
-// 字段:
-/** 分页器 */
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
 const roleMgtTable = new TableModel<RoleAuthorityModel>([
@@ -49,9 +36,5 @@ const roleMgtTable = new TableModel<RoleAuthorityModel>([
 roleMgtTable.IsAllowMultiSelect.value = false
 
 export {
-    searchName,
-    selectCompany,
-    selectDepartment,
-    pagination,
     roleMgtTable,
 }

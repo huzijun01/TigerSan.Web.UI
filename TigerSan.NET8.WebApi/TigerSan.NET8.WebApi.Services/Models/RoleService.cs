@@ -25,15 +25,65 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
+        #region 获取“总数”
+        /// <summary>获取“总数”</summary>
+        public async Task<int> GetCount(long? company = null, long? department = null)
+        {
+            try
+            {
+                var quaryable = _dbSet.AsNoTracking();
+
+                // 筛选:
+                if (department != null)
+                {
+                    quaryable = quaryable.Where(i => i.Department == department);
+                }
+                else if (company != null)
+                {
+                    var departments = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
+                    quaryable = quaryable.Where(i => departments.Contains(i.Department));
+                }
+
+                return await quaryable.CountAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return 0;
+            }
+        }
+        #endregion
+
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<RoleAuthorityEntity>> GetFullList(int? pageSize = null, int? pageNumber = null)
+        public async Task<List<RoleAuthorityEntity>> GetFullList(long? company = null, long? department = null, int? pageSize = null, int? pageNumber = null)
         {
             try
             {
                 var list = new List<RoleAuthorityEntity>();
-                var roles = await GetList(pageSize, pageNumber);
 
+                var quaryable = _dbSet.AsNoTracking();
+
+                // 筛选:
+                if (department != null)
+                {
+                    quaryable = quaryable.Where(i => i.Department == department);
+                }
+                else if (company != null)
+                {
+                    var departments = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
+                    quaryable = quaryable.Where(i => departments.Contains(i.Department));
+                }
+
+                // 分页:
+                if (pageSize != null && pageNumber != null)
+                {
+                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                }
+
+                var roles = await quaryable.ToListAsync();
+
+                // 添加“权限”:
                 foreach (var role in roles)
                 {
                     var authorities = await _authorityService.GetList(role.Id);
@@ -80,6 +130,76 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 LogHelper.Instance.Error(e.Message);
                 return new List<RoleEntity>();
+            }
+        }
+        #endregion
+
+        #region 获取“所属公司”集合
+        /// <summary>获取“所属公司”集合</summary>
+        public async Task<IList<IdName>> GetCompanyList()
+        {
+            var list = new List<IdName>();
+            try
+            {
+                var departments = await _dbSet
+                    .AsNoTracking()
+                    .Select(i => i.Department)
+                    .Distinct()
+                    .ToListAsync();
+
+                var companys = await _db.Departments
+                    .AsNoTracking()
+                    .Where(d => departments.Contains(d.Id))
+                    .Select(d => d.Company)
+                    .Distinct()
+                    .ToListAsync();
+
+                if (companys.Count < 1) return list;
+
+                return await _db.Companies
+                    .AsNoTracking()
+                    .Where(i => companys.Contains(i.Id))
+                    .Select(i => new IdName(i.Id, i.Name))
+                    .ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return list;
+            }
+        }
+        #endregion
+
+        #region 获取“所属部门”集合
+        /// <summary>获取“所属部门”集合</summary>
+        public async Task<IList<IdName>> GetDepartmentList(long? company = null)
+        {
+            var list = new List<IdName>();
+            try
+            {
+                var departments = await _dbSet
+                    .AsNoTracking()
+                    .Select(i => i.Department)
+                    .Distinct()
+                    .ToListAsync();
+
+                var queryable = _db.Departments
+                    .AsNoTracking()
+                    .Where(i => departments.Contains(i.Id));
+
+                if (company != null)
+                {
+                    queryable = queryable.Where(i => i.Company == company);
+                }
+
+                return await queryable
+                    .Select(i => new IdName(i.Id, i.Name))
+                    .ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return list;
             }
         }
         #endregion

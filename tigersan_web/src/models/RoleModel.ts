@@ -15,8 +15,20 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
     constructor() {
         super('Role')
     }
+
     // 查:
-    readonly GetList = async (pageSize?: number, pageNumber?: number) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber)
+    /** 筛选“总数” */
+    readonly GetCount = async (company?: bigint, department?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }])
+
+    /** 筛选“数据”集合 */
+    readonly GetListAsync = async (company?: bigint, department?: bigint, pageSize?: number, pageNumber?: number) =>
+        await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber, undefined, [{ key: 'company', value: company }, { key: 'department', value: department }])
+
+    /** 获取“所属公司”集合 */
+    readonly GetCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/CompanyList`)
+
+    /** 获取“所属部门”集合 */
+    readonly GetDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/DepartmentList`, [{ key: 'company', value: company }])
 
     /** 获取“筛选框模型” */
     GetSelectModel(): SelectModel<IdNameModel> {

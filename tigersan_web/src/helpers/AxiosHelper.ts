@@ -113,12 +113,12 @@ export class AxiosHelper {
     // 列表:
     static async GetCount(action: string, params?: KeyValue[]): Promise<number> {
         try {
-            let url = action
+            let url = `${action}/Count`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const actionResult = await this.Get(`${url}/Count`)
+            const actionResult = await this.Get(url)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)

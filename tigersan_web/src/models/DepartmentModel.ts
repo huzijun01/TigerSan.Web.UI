@@ -14,14 +14,17 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
         super('Department')
     }
 
-    /** 获取“所属公司”集合 */
-    readonly GetCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/CompanyList`)
+    // 查:
+    /** 筛选“总数” */
+    readonly GetCount = async (company?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }])
 
     /** 筛选“数据”集合 */
-    readonly GetFilterListAsync = async (company?: bigint, pageSize?: number, pageNumber?: number) => {
-        const params: KeyValue[] = [{ key: 'company', value: company }]
-        return await AxiosHelper.GetList<DepartmentModel>(this._action, pageSize, pageNumber, undefined, params)
-    }
+    readonly GetListAsync = async (company?: bigint, pageSize?: number, pageNumber?: number) =>
+        await AxiosHelper.GetList<DepartmentModel>(this._action, pageSize, pageNumber, undefined
+            , [{ key: 'company', value: company }])
+
+    /** 获取“所属公司”集合 */
+    readonly GetCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/CompanyList`)
 
     /** 获取“筛选框模型” */
     GetSelectModel(): SelectModel<IdNameModel> {

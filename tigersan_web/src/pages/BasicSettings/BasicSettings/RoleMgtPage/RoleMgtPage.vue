@@ -5,7 +5,8 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Search :model="searchName"></Search>
+                        <Select :model="form.selectCompany"></Select>
+                        <Select :model="form.selectDepartment"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -23,7 +24,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="roleMgtTable.SelectedRowCount.value" />
+                <Pagination :model="form.pagination" :selectedRowCount="roleMgtTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
@@ -32,12 +33,12 @@
     <PopForm :model="form.roleMgtForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="selectCompany"></Select>
+                <Select :model="form.selectCompanyForm"></Select>
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configDepartment.ItemModel">
-                <Select :model="selectDepartment"></Select>
+                <Select :model="form.selectDepartmentForm"></Select>
             </FormItem>
         </FormRow>
         <FormRow>
@@ -64,8 +65,8 @@
 import form from './RoleMgtForm'
 import { onMounted } from 'vue'
 import { authorityHelper } from '@/helpers'
-import { selectCompany, searchName, roleMgtTable, pagination, selectDepartment } from './RoleMgtTable'
-import { Select, Table, Search, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
+import { roleMgtTable } from './RoleMgtTable'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

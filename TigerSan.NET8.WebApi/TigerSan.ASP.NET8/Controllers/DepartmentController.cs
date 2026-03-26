@@ -16,12 +16,32 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
+        #region Override
+        [HttpGet]
+        [Route("Unused/Count")]
+        /// <summary>获取“总数”</summary>
+        public override async Task<MyActionResult> GetCount()
+        {
+            return MyResults.ApiUnavailable;
+        }
+
         [HttpGet]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
         public override async Task<MyActionResult> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
             return MyResults.ApiUnavailable;
+        }
+        #endregion Override
+
+        [HttpGet]
+        [Route("Count")]
+        /// <summary>获取“总数”</summary>
+        public async Task<MyActionResult> GetCount([FromQuery] long? company = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetCount(company);
+            return res;
         }
 
         [HttpGet]

@@ -16,6 +16,15 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
+        #region Override
+        [HttpGet]
+        [Route("Unused/Count")]
+        /// <summary>获取“总数”</summary>
+        public override async Task<MyActionResult> GetCount()
+        {
+            return MyResults.ApiUnavailable;
+        }
+
         [HttpGet]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
@@ -23,14 +32,45 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return MyResults.ApiUnavailable;
         }
+        #endregion Override
+
+        [HttpGet]
+        [Route("Count")]
+        /// <summary>获取“总数”</summary>
+        public async Task<MyActionResult> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetCount(company, department);
+            return res;
+        }
 
         [HttpGet]
         [Route("List")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult> GetFullList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public async Task<MyActionResult> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetFullList(pageSize, pageNumber);
+            res.Data = await _service.GetFullList(company, department, pageSize, pageNumber);
+            return res;
+        }
+
+        [HttpGet]
+        [Route("CompanyList")]
+        /// <summary>获取“所属公司”集合</summary>
+        public async Task<MyActionResult> GetCompanyList()
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetCompanyList();
+            return res;
+        }
+
+        [HttpGet]
+        [Route("DepartmentList")]
+        /// <summary>获取“所属公司”集合</summary>
+        public async Task<MyActionResult> GetDepartmentList(long? company = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetDepartmentList(company);
             return res;
         }
         #endregion [查]

@@ -6,7 +6,6 @@ using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Services.Models.Base;
-using TigerSan.NET8.WebApi.Share.Entities.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -25,6 +24,29 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
+        #region 获取“总数”
+        /// <summary>获取“总数”</summary>
+        public async Task<int> GetCount(long? company = null)
+        {
+            try
+            {
+                var quaryable = _dbSet.AsNoTracking();
+
+                if (company != null)
+                {
+                    quaryable = quaryable.Where(i => i.Company == company);
+                }
+
+                return await quaryable.CountAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return 0;
+            }
+        }
+        #endregion
+
         #region 获取“数据”集合
         /// <summary>获取“数据”集合</summary>
         public async Task<List<DepartmentEntity>> GetList(long? company = null, int? pageSize = null, int? pageNumber = null)
