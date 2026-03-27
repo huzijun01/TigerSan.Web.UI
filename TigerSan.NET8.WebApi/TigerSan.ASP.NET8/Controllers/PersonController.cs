@@ -37,6 +37,16 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("FullListByName")]
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<MyActionResult> GetFullListByName(string name, int? pageSize = null, int? pageNumber = null)
+        {
+            var res = MyResults.OperationSuccess;
+            res.Data = await _service.GetFullListByName(name, pageSize, pageNumber);
+            return res;
+        }
+
+        [HttpGet]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)

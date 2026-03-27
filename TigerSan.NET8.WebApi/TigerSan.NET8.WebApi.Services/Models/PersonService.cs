@@ -54,6 +54,49 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
+        #region 根据“用户名或昵称”获取“完整数据”集合
+        /// <summary>根据“用户名或昵称”获取“完整数据”集合</summary>
+        public async Task<List<PersonFullEntity>> GetFullListByName(string name, int? pageSize = null, int? pageNumber = null)
+        {
+            try
+            {
+                var list = new List<PersonFullEntity>();
+
+                var quaryable = _dbSet.AsNoTracking();
+
+                // 筛选:
+                quaryable = quaryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
+
+                // 分页:
+                if (pageSize != null && pageNumber != null)
+                {
+                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                }
+
+                var persons = await quaryable.ToListAsync();
+
+                // 添加“权限”:
+                foreach (var person in persons)
+                {
+                    var entity = new PersonFullEntity();
+                    entity.ShallowCopy(person);
+
+                    entity.Department = await _db.Roles.Where(r => r.Id == person.Role).Select(r => r.Department).FirstOrDefaultAsync();
+                    entity.Company = await _db.Departments.Where(d => d.Id == entity.Department).Select(d => d.Company).FirstOrDefaultAsync();
+
+                    list.Add(entity);
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.Message);
+                return new List<PersonFullEntity>();
+            }
+        }
+        #endregion
+
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
         public async Task<List<PersonFullEntity>> GetFullList(long? company = null, long? department = null, long? role = null, int? pageSize = null, int? pageNumber = null)
