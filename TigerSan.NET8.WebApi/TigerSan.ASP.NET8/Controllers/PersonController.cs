@@ -67,7 +67,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetBelongRoleList")]
+        [Route("BelongRoleList")]
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult> GetBelongRoleList(long? department = null)
         {

@@ -36,7 +36,7 @@ class PersonMgtHelper extends IdModelHelper<PersonModel> {
     readonly GetBelongDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
 
     /** 获取“所属角色”集合 */
-    readonly GetBelongRoleListAsync = async (department?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/GetBelongRoleList`, [{ key: 'department', value: department }])
+    readonly GetBelongRoleListAsync = async (department?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongRoleList`, [{ key: 'department', value: department }])
 }
 
 export const personMgtHelper = new PersonMgtHelper()
