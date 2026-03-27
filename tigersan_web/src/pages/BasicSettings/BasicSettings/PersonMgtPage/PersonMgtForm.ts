@@ -119,10 +119,20 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
     _beforeInitAsync: async isEdit => {
         isPasswordChanged = false
         password.IsShowValue.value = false
-        await companyMgtHelper.UpdateIdNamesAsync()
-        await selectCompanyForm.UpdateItemsAsync()
-        await selectDepartmentForm.UpdateItemsAsync()
-        await selectRoleForm.UpdateItemsAsync()
+        if (isEdit) {
+            const rowData = personMgtTable.SelectedRowDatas.value[0]
+            if (!rowData) {
+                console.warn('The rowData is undefined!')
+                return
+            }
+
+            await selectCompanyForm.UpdateItemsAsync()
+            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            await selectDepartmentForm.UpdateItemsAsync()
+            selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
+            await selectRoleForm.UpdateItemsAsync()
+            selectRoleForm.Value.value = roleMgtHelper.GetIdName(rowData.role)
+        }
     },
     _itemConfigs: [
         configCompany,
@@ -185,10 +195,6 @@ async function Edit() {
             return new PersonModel()
         }
 
-        selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
-        selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
-        selectRoleForm.Value.value = roleMgtHelper.GetIdName(rowData.role)
-
         const data = ObjectHelper.ObjectShallowCopy(rowData)
         data.password = ''
         return data
@@ -221,11 +227,6 @@ function DeleteRowData(state: DialogState) {
     if (!model) {
         console.warn('The model is undefined!')
         return {}
-    }
-
-    if (model.id === undefined) {
-        console.warn('The id is undefined!')
-        return
     }
 
     personMgtHelper.Delete(model.id)

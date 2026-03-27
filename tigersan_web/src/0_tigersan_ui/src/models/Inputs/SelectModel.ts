@@ -188,15 +188,14 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     //#region 【Functions】
     /** 更新“项目集合” */
     readonly UpdateItemsAsync = async () => {
+        let arr: TSource[] = []
         if (this._getItemsAsync) {
-            const arr = await this._getItemsAsync()
-            this.Items.splice(0)
-            this.Items.push(...arr)
+            arr = await this._getItemsAsync()
         } else if (this._getItems) {
-            const arr = this._getItems()
-            this.Items.splice(0)
-            this.Items.push(...arr)
+            arr = this._getItems()
         }
+        this.Items.splice(0)
+        this.Items.push(...arr)
     }
 
     /** 更新菜单位置 */

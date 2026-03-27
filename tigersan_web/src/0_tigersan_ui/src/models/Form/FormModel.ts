@@ -67,7 +67,7 @@ class FormModel<TSource extends object> {
     _onSubmitAsync?: FormSubmitAsync<TSource>
     /** 初始化前 */
     _beforeInit?: (isEdit: boolean) => void
-    /** 初始化前（异步） */
+    /** 初始化前（异步）：优先执行该方法 */
     _beforeInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】
 
@@ -94,8 +94,7 @@ class FormModel<TSource extends object> {
 
         // 显示时初始化:
         watch(this.IsShow, () => {
-            this.InitDataAsync()
-            this.InitVerifyState()
+            this.Init()
         })
     }
     //#endregion 【Ctor】
@@ -160,23 +159,24 @@ class FormModel<TSource extends object> {
     }
     //#endregion [private]
 
-    /** 初始化（异步） */
-    async InitAsync() {
-        await this.InitDataAsync()
-        this.InitVerifyState()
-    }
-
-    /** 初始化“源数据”
+    /** 初始化
      * （“Form”显示后会自动调用） */
-    async InitDataAsync() {
-        this._beforeInit?.(this._isEdit)
-        await this._beforeInitAsync?.(this._isEdit)
+    Init() {
+        const init = () => {
+            // 获取“源数据”:
+            this._source = this._getSource()
+            // 更新“目标数据”:
+            this.UpdateTargets()
+            // 初始化“验证状态”:
+            this.InitVerifyState()
+        }
 
-        // 获取“源数据”:
-        this._source = this._getSource()
-
-        // 更新“目标数据”:
-        this.UpdateTargets()
+        if (this._beforeInitAsync) {
+            this._beforeInitAsync(this._isEdit).then(init)
+        } else {
+            this._beforeInit?.(this._isEdit)
+            init()
+        }
     }
 
     /** 初始化“验证状态”

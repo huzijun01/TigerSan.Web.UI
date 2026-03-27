@@ -70,9 +70,27 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
+        selectCompanyForm.IsEnabled.value = !isEdit
+        selectDepartmentForm.IsEnabled.value = !isEdit
+
         await companyMgtHelper.UpdateIdNamesAsync()
-        await selectCompanyForm.UpdateItemsAsync()
-        await selectDepartmentForm.UpdateItemsAsync()
+
+        if (isEdit) {
+            const rowData = roleMgtTable.SelectedRowDatas.value[0]
+            if (!rowData) {
+                console.warn('The rowData is undefined!')
+                return
+            }
+
+            await selectCompanyForm.UpdateItemsAsync()
+            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            await selectDepartmentForm.UpdateItemsAsync()
+            selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
+
+            authorityHelper.Init(rowData.authorities)
+        } else {
+            authorityHelper.Init()
+        }
     },
     _itemConfigs: [
         configCompany,
@@ -115,31 +133,20 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    selectCompanyForm.IsEnabled.value = true
-    selectDepartmentForm.IsEnabled.value = true
-    authorityHelper.Init()
     roleMgtForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    const rowData = roleMgtTable.SelectedRowDatas.value[0]
-
-    if (!rowData) {
-        console.warn('The rowData is undefined!')
-        return new RoleAuthorityModel()
-    }
-
     roleMgtForm.Title.value = '修改角色'
 
     roleMgtForm._getSource = () => {
-        if (rowData.id === undefined) {
-            console.warn('The id is undefined!')
+        const rowData = roleMgtTable.SelectedRowDatas.value[0]
+
+        if (!rowData) {
+            console.warn('The rowData is undefined!')
             return new RoleAuthorityModel()
         }
-
-        selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
-        selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
 
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
@@ -148,18 +155,11 @@ async function Edit() {
         source.authorities = await authorityHelper.GetModels()
         const res = await roleMgtHelper.Edit(source)
 
-        if (source.id === undefined) {
-            return GetSubmitResult(MyActionResult.GetError('The id is undefined!'), '添加成功')
-        }
-
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    selectCompanyForm.IsEnabled.value = false
-    selectDepartmentForm.IsEnabled.value = false
-    authorityHelper.Init(rowData.authorities)
-    roleMgtForm.Show()
+    roleMgtForm.Show(true)
 }
 
 /** 删 */
@@ -180,11 +180,6 @@ function DeleteRowData(state: DialogState) {
     if (!model) {
         console.warn('The model is undefined!')
         return {}
-    }
-
-    if (model.id === undefined) {
-        console.warn('The id is undefined!')
-        return
     }
 
     roleMgtHelper.Delete(model.id)

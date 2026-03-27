@@ -105,21 +105,11 @@ async function Edit() {
             return new DepartmentModel()
         }
 
-        if (rowData.id === undefined) {
-            console.warn('The id is undefined!')
-            return new DepartmentModel()
-        }
-
         return ObjectHelper.ObjectShallowCopy(rowData)
     }
 
     departmentMgtForm._onSubmitAsync = async source => {
         const res = await departmentMgtHelper.Edit(source)
-
-        if (source.id === undefined) {
-            return GetSubmitResult(MyActionResult.GetError('The id is undefined!'), '添加成功')
-        }
-
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -145,11 +135,6 @@ function DeleteRowData(state: DialogState) {
     if (!model) {
         console.warn('The model is undefined!')
         return {}
-    }
-
-    if (model.id === undefined) {
-        console.warn('The id is undefined!')
-        return
     }
 
     departmentMgtHelper.Delete(model.id)
