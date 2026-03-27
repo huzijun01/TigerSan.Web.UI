@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -239,6 +239,44 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [查]
+
+        #region [改]
+        #region 修改“单条数据”
+        /// <summary>修改“单条数据”</summary>
+        public override async Task<MyActionResult> Edit(PersonEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 检验“资源”是否存在:
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                if (find == null)
+                {
+                    return MyResults.ResourceNotExist;
+                }
+
+                if (entity.Password.Trim() == "")
+                {
+                    entity.Password = find.Password; // 保持原密码不变
+                }
+
+                find.ShallowCopy(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults.Error(e);
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
         #endregion 【Functions】
     }
 }

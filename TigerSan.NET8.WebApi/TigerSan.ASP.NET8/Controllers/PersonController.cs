@@ -69,10 +69,10 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("GetBelongRoleList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetBelongRoleList(long? role = null)
+        public async Task<MyActionResult> GetBelongRoleList(long? department = null)
         {
             var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetBelongRoleList(role);
+            res.Data = await _service.GetBelongRoleList(department);
             return res;
         }
         #endregion [查]

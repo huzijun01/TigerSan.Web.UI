@@ -59,7 +59,7 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configPassword.ItemModel">
-                <input type="text" v-model="form.configPassword.Target.value">
+                <Password :model="form.password"></Password>
             </FormItem>
         </FormRow>
         <FormRow>
@@ -79,7 +79,7 @@
 import form from './PersonMgtForm'
 import { onMounted } from 'vue'
 import { personMgtTable, pagination } from './PersonMgtTable'
-import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

@@ -5,9 +5,9 @@ import { ObjectHelper } from "../../helpers"
 import { FormConfig, SetFormModel } from './FormConfig'
 import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
 
-type FormVerify<TSource extends object> = (source: TSource) => VerifyResult
-type FormSubmit<TSource extends object> = (source: TSource) => SubmitResult
-type FormSubmitAsync<TSource extends object> = (source: TSource) => Promise<SubmitResult>
+type FormVerify<TSource extends object> = (source: TSource, isEdit: boolean) => VerifyResult
+type FormSubmit<TSource extends object> = (source: TSource, isEdit: boolean) => SubmitResult
+type FormSubmitAsync<TSource extends object> = (source: TSource, isEdit: boolean) => Promise<SubmitResult>
 
 /** 表单结果 */
 enum FormResult {
@@ -221,11 +221,11 @@ class FormModel<TSource extends object> {
         const results = new Array<SubmitResult>()
 
         if (this._onSubmit) {
-            results.push(this._onSubmit(this._source))
+            results.push(this._onSubmit(this._source, this._isEdit))
         }
 
         if (this._onSubmitAsync) {
-            results.push(await this._onSubmitAsync(this._source))
+            results.push(await this._onSubmitAsync(this._source, this._isEdit))
         }
 
         // 显示结果:
@@ -245,7 +245,7 @@ class FormModel<TSource extends object> {
         this.ForEachItemModels(itemModel => {
             if (!itemModel._isVerifyOk) return
 
-            var res = itemModel._isVerifyOk(this._source)
+            var res = itemModel._isVerifyOk(this._source, this._isEdit)
 
             if (res.VerifyState != FormResult.OK) {
                 itemModel.VerifyText.value = res.VerifyText
@@ -387,7 +387,7 @@ class FormItemModel<TSource extends object, TTarget> {
     readonly IsVerifyOk = (): boolean => {
         if (!this._isVerifyOk) return true
 
-        var res = this._isVerifyOk(this._formModel._source)
+        var res = this._isVerifyOk(this._formModel._source, this._formModel._isEdit)
 
         if (res.VerifyState != FormResult.OK) {
             this.VerifyText.value = res.VerifyText

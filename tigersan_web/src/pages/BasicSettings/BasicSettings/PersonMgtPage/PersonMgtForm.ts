@@ -1,16 +1,16 @@
 import { ref } from 'vue'
 import { PersonModel, personMgtTable, pagination } from './PersonMgtTable'
 import { GetSubmitResult, MyActionResult, IdNameModel, companyMgtHelper, departmentMgtHelper, personMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel } from '@/0_tigersan_ui/tigerui'
 
 // 选择框:
 /** 筛选 */
 const selectCompany = companyMgtHelper.GetSelectModel()
-selectCompany._getItemsAsync = async () => await roleMgtHelper.GetBelongCompanyListAsync()
+selectCompany._getItemsAsync = async () => await personMgtHelper.GetBelongCompanyListAsync()
 const selectDepartment = departmentMgtHelper.GetSelectModel()
-selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
-const selectRole = departmentMgtHelper.GetSelectModel()
-selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectDepartment.Value.value?.id) : []
+selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await personMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
+const selectRole = roleMgtHelper.GetSelectModel()
+selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await personMgtHelper.GetBelongRoleListAsync(selectDepartment.Value.value?.id) : []
 /** 表单 */
 const selectCompanyForm = companyMgtHelper.GetSelectModel()
 const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
@@ -21,6 +21,11 @@ selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? a
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 selectDepartmentForm._onChange = selectRoleForm.UpdateItemsAsync
 
+/** 密码框 */
+let isPasswordChanged = false
+const password = new PasswordModel()
+password.Width.value = '108px'
+
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<PersonModel, IdNameModel> = {
     _propName: 'company',
@@ -29,7 +34,7 @@ const configCompany: FormItemConfig<PersonModel, IdNameModel> = {
     Target: ref(),
     _getValue: async source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
+    // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
 }
 
 /** “部门”项目配置 */
@@ -40,7 +45,7 @@ const configDepartment: FormItemConfig<PersonModel, IdNameModel> = {
     Target: ref(),
     _getValue: async source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
+    // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
 }
 
 /** “角色”项目配置 */
@@ -69,7 +74,7 @@ const configNickname: FormItemConfig<PersonModel, string> = {
     PropText: '昵称',
     IsEquired: true,
     Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.nickname)
+    _isVerifyOk: source => Verify.IsValidNickname(source.nickname)
 }
 
 /** “密码”项目配置 */
@@ -77,8 +82,12 @@ const configPassword: FormItemConfig<PersonModel, string> = {
     _propName: 'password',
     PropText: '密码',
     IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.password)
+    Target: password.Value,
+    _onChange: () => isPasswordChanged = true,
+    _isVerifyOk: (source, isEdit) => {
+        if (isEdit && !isPasswordChanged) return Verify.GetOK()
+        return Verify.IsValidWeekPassword(source.password)
+    }
 }
 
 /** “电话”项目配置 */
@@ -87,7 +96,7 @@ const configPhone: FormItemConfig<PersonModel, string> = {
     PropText: '电话',
     IsEquired: false,
     Target: ref(),
-    // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.phone)
+    _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
 }
 
 /** “电话”项目配置 */
@@ -96,7 +105,7 @@ const configMail: FormItemConfig<PersonModel, string> = {
     PropText: '邮箱',
     IsEquired: false,
     Target: ref(),
-    // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.mail)
+    _isVerifyOk: source => Verify.IsValidEmail(source.mail)
 }
 
 /** “增”源数据获取方法 */
@@ -108,6 +117,8 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
+        isPasswordChanged = false
+        password.IsShowValue.value = false
         await companyMgtHelper.UpdateIdNamesAsync()
         await selectCompanyForm.UpdateItemsAsync()
         await selectDepartmentForm.UpdateItemsAsync()
@@ -178,7 +189,9 @@ async function Edit() {
         selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
         selectRoleForm.Value.value = roleMgtHelper.GetIdName(rowData.role)
 
-        return ObjectHelper.ObjectShallowCopy(rowData)
+        const data = ObjectHelper.ObjectShallowCopy(rowData)
+        data.password = ''
+        return data
     }
 
     personMgtForm._onSubmitAsync = async source => {
@@ -187,7 +200,7 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    personMgtForm.Show()
+    personMgtForm.Show(true)
 }
 
 /** 删 */
@@ -223,6 +236,7 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
+    password,
     selectCompany,
     selectDepartment,
     selectRole,

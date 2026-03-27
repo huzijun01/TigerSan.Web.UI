@@ -1,5 +1,5 @@
 import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { AxiosHelper, KeyValue } from "@/helpers"
+import { AxiosHelper } from "@/helpers"
 import { IdNameModel, IdNameModelHelper } from "./base/IdNameModel"
 
 export type DepartmentEvent = (model: DepartmentModel) => void
