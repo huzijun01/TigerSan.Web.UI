@@ -99,7 +99,7 @@ async function Edit() {
     companyForm.Title.value = '修改公司'
 
     companyForm._getSource = () => {
-        return ObjectHelper.ObjectShallowCopy(model)
+        return ObjectHelper.ShallowCopy(model)
     }
 
     companyForm._onSubmitAsync = async source => {

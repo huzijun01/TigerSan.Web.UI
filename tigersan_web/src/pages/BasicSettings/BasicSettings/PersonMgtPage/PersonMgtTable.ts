@@ -59,7 +59,6 @@ const personMgtTable = new TableModel<PersonModel>([
 personMgtTable.IsAllowMultiSelect.value = false
 
 export {
-    PersonModel,
     pagination,
     personMgtTable,
 }

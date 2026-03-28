@@ -78,7 +78,7 @@ function Edit() {
         }
 
         iRow = baseStationMgtTable.RowDatas.indexOf(rowData)
-        return ObjectHelper.ObjectShallowCopy(rowData)
+        return ObjectHelper.ShallowCopy(rowData)
     }
 
     baseStationForm._onSubmit = source => {

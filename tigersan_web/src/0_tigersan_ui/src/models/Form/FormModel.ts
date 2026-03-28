@@ -405,6 +405,7 @@ class FormItemModel<TSource extends object, TTarget> {
 export {
     type FormVerify,
     type FormSubmit,
+    type FormSubmitAsync,
     FormResult,
     VerifyResult,
     SubmitResult,

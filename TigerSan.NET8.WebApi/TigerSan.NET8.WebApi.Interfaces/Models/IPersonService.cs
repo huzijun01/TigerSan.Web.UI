@@ -7,10 +7,10 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
     public interface IPersonService : IIdServiceBase<PersonEntity>
     {
         public Task<int> GetCount(long? company = null, long? department = null, long? role = null);
-        public Task<List<PersonFullEntity>> GetFullListByName(string name, int? pageSize = null, int? pageNumber = null);
-        public Task<List<PersonFullEntity>> GetFullList(long? company = null, long? department = null, long? role = null, int? pageSize = null, int? pageNumber = null);
-        public Task<IList<IdName>> GetBelongCompanyList();
-        public Task<IList<IdName>> GetBelongDepartmentList(long? company = null);
-        public Task<IList<IdName>> GetBelongRoleList(long? department = null);
+        public Task<MyActionResult<PersonFullEntity>> GetFull(string search, string password);
+        public Task<List<PersonFullEntity>> GetFullList(long? company = null, long? department = null, long? role = null, string? name = null, int? pageSize = null, int? pageNumber = null);
+        public Task<List<IdName>> GetBelongCompanyList();
+        public Task<List<IdName>> GetBelongDepartmentList(long? company = null);
+        public Task<List<IdName>> GetBelongRoleList(long? department = null);
     }
 }

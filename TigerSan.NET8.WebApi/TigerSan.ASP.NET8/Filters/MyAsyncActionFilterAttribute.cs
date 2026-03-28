@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
 
 namespace TigerSan.NET8.WebApi.Filters
@@ -31,8 +32,14 @@ namespace TigerSan.NET8.WebApi.Filters
         #endregion
 
         #region 获取“结果”字符串
-        public static string GetResultString(ActionExecutedContext context)
+        public static string GetResultString(ActionExecutedContext? context)
         {
+            if (context == null)
+            {
+                LogHelper.Instance.IsNull(nameof(context));
+                return string.Empty;
+            }
+
             string strRes;
             try
             {
@@ -43,7 +50,7 @@ namespace TigerSan.NET8.WebApi.Filters
                 }
                 else
                 {
-                    var actionResult = objResult.Value as MyActionResult;
+                    var actionResult = objResult.Value as MyActionResult<object>;
                     if (actionResult == null)
                     {
                         strRes = JsonConvert.SerializeObject(objResult.Value, Formatting.Indented);

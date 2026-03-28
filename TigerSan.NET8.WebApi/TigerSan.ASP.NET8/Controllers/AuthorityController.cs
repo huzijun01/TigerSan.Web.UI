@@ -19,17 +19,17 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public override async Task<MyActionResult<List<AuthorityEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<List<AuthorityEntity>>.ApiUnavailable;
         }
 
         [HttpGet]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult> GetList(long? role = null, int? pageSize = null, int? pageNumber = null)
+        public async Task<MyActionResult<List<AuthorityEntity>>> GetList(long? role = null, int? pageSize = null, int? pageNumber = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<AuthorityEntity>>.OperationSuccess;
             res.Data = await _service.GetList(role, pageSize, pageNumber);
             return res;
         }

@@ -20,48 +20,38 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("Unused/Count")]
         /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult> GetCount()
+        public override async Task<MyActionResult<int>> GetCount()
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<int>.ApiUnavailable;
         }
         #endregion Override
 
         [HttpGet]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null)
+        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<int>.OperationSuccess;
             res.Data = await _service.GetCount(company, department, role);
-            return res;
-        }
-
-        [HttpGet]
-        [Route("FullListByName")]
-        /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult> GetFullListByName(string name, int? pageSize = null, int? pageNumber = null)
-        {
-            var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetFullListByName(name, pageSize, pageNumber);
             return res;
         }
 
         [HttpGet]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<PersonFullEntity>>> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null, string? name = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
         {
-            var res = MyResults.OperationSuccess;
-            res.Data = await _service.GetFullList(company, department, role, pageSize, pageNumber);
+            var res = MyResults<List<PersonFullEntity>>.OperationSuccess;
+            res.Data = await _service.GetFullList(company, department, role, name, pageSize, pageNumber);
             return res;
         }
 
         [HttpGet]
         [Route("BelongCompanyList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongCompanyList();
             return res;
         }
@@ -69,9 +59,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongDepartmentList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetBelongDepartmentList(long? company = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongDepartmentList(long? company = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongDepartmentList(company);
             return res;
         }
@@ -79,9 +69,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongRoleList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetBelongRoleList(long? department = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongRoleList(long? department = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongRoleList(department);
             return res;
         }

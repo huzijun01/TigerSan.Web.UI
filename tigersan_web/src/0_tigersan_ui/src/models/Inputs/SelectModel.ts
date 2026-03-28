@@ -191,11 +191,13 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
         let arr: TSource[] = []
         if (this._getItemsAsync) {
             arr = await this._getItemsAsync()
+            this.Items.splice(0)
+            this.Items.push(...arr)
         } else if (this._getItems) {
             arr = this._getItems()
+            this.Items.splice(0)
+            this.Items.push(...arr)
         }
-        this.Items.splice(0)
-        this.Items.push(...arr)
     }
 
     /** 更新菜单位置 */

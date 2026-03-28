@@ -135,7 +135,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“ID名称对”集合
         /// <summary>获取“ID名称对”集合</summary>
-        public async Task<IList<IdName>> SelectIdNameByDepartment(long? department = null)
+        public async Task<List<IdName>> SelectIdNameByDepartment(long? department = null)
         {
             var list = new List<IdName>();
             try
@@ -159,7 +159,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<IList<IdName>> GetBelongCompanyList()
+        public async Task<List<IdName>> GetBelongCompanyList()
         {
             var list = new List<IdName>();
             try
@@ -197,7 +197,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属部门”集合
         /// <summary>获取“所属部门”集合</summary>
-        public async Task<IList<IdName>> BelongDepartmentList(long? company = null)
+        public async Task<List<IdName>> BelongDepartmentList(long? company = null)
         {
             var list = new List<IdName>();
             try
@@ -235,9 +235,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult> Add(RoleAuthorityEntity entity, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> Add(RoleAuthorityEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -245,7 +245,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 验证“名称是否重复”：
                 if (await _dbSet.AnyAsync(r => r.Department == entity.Department && r.Name == entity.Name))
                 {
-                    return MyResults.NameRepeated;
+                    return MyResults<object>.NameRepeated;
                 }
 
                 // 更新“Id”：
@@ -271,7 +271,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -281,9 +281,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult> AddRange(IList<RoleAuthorityEntity> entities, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> AddRange(List<RoleAuthorityEntity> entities, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -293,7 +293,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     if (await _dbSet.AnyAsync(i => i.Department == entity.Department && i.Name == entity.Name))
                     {
-                        return MyResults.NameRepeated;
+                        return MyResults<object>.NameRepeated;
                     }
                 }
 
@@ -323,7 +323,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -335,9 +335,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public async Task<MyActionResult> Edit(RoleAuthorityEntity entity, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> Edit(RoleAuthorityEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -346,13 +346,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
                 if (find == null)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 // 验证“名称是否重复”：
                 if (await _dbSet.AnyAsync(r => r.Department == find.Department && r.Name == entity.Name && r.Id != find.Id))
                 {
-                    return MyResults.NameRepeated;
+                    return MyResults<object>.NameRepeated;
                 }
 
                 // 更新“数据”：
@@ -381,7 +381,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -393,9 +393,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public override async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -413,7 +413,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (entity == null)
                 {
                     if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 // 删除“数据”：
@@ -425,7 +425,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -435,9 +435,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public override async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -451,11 +451,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var count = await entities.CountAsync();
                 if (count < 1)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
                 else if (count < ids.Count)
                 {
-                    res = MyResults.SomeResourceNotExist;
+                    res = MyResults<object>.SomeResourceNotExist;
                 }
 
                 // 删除“角色”相关的“权限”：
@@ -473,7 +473,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

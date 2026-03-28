@@ -25,15 +25,15 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpGet]
         [Route("{id}")]
         /// <summary>获取“单条数据”</summary>
-        public virtual async Task<MyActionResult> Get(long id)
+        public virtual async Task<MyActionResult<TEntity>> Get(long id)
         {
             var entity = await _service.Get(id);
             if (entity == null)
             {
-                return MyResults.ResourceNotFound;
+                return MyResults<TEntity>.ResourceNotFound;
             }
 
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<TEntity>.OperationSuccess;
             res.Data = entity;
             return res;
         }
@@ -41,9 +41,9 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpGet]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public virtual async Task<MyActionResult> GetCount()
+        public virtual async Task<MyActionResult<int>> GetCount()
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<int>.OperationSuccess;
             res.Data = await _service.GetCount();
             return res;
         }
@@ -51,9 +51,9 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpGet]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public virtual async Task<MyActionResult> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public virtual async Task<MyActionResult<List<TEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<TEntity>>.OperationSuccess;
             res.Data = await _service.GetList(pageSize, pageNumber);
             return res;
         }
@@ -62,7 +62,7 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         #region [增]
         [HttpPost]
         /// <summary>添加“单条数据”</summary>
-        public virtual async Task<MyActionResult> Add([FromBody] TEntity entity)
+        public virtual async Task<MyActionResult<object>> Add([FromBody] TEntity entity)
         {
             return await _service.Add(entity);
         }
@@ -70,7 +70,7 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpPost]
         [Route("Range")]
         /// <summary>添加“多条数据”</summary>
-        public virtual async Task<MyActionResult> AddRange([FromBody] IList<TEntity> entities)
+        public virtual async Task<MyActionResult<object>> AddRange([FromBody] List<TEntity> entities)
         {
             return await _service.AddRange(entities);
         }
@@ -79,7 +79,7 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         #region [改]
         [HttpPut]
         /// <summary>修改“单条数据”</summary>
-        public virtual async Task<MyActionResult> Edit([FromBody] TEntity entity)
+        public virtual async Task<MyActionResult<object>> Edit([FromBody] TEntity entity)
         {
             return await _service.Edit(entity);
         }
@@ -89,7 +89,7 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpDelete]
         [Route("{id}")]
         /// <summary>删除“单条数据”</summary>
-        public virtual async Task<MyActionResult> Remove(long id)
+        public virtual async Task<MyActionResult<object>> Remove(long id)
         {
             return await _service.Remove(id);
         }
@@ -97,7 +97,7 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpDelete]
         [Route("Range")]
         /// <summary>删除“多条数据”</summary>
-        public virtual async Task<MyActionResult> RemoveRange([FromBody] IList<long> ids)
+        public virtual async Task<MyActionResult<object>> RemoveRange([FromBody] List<long> ids)
         {
             return await _service.RemoveRange(ids);
         }

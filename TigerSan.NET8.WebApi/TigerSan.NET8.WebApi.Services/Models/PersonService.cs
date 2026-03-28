@@ -18,6 +18,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [private]
+        /// <summary>获取“完整数据”</summary>
+        private async Task<PersonFullEntity> GetPersonFullEntity(PersonEntity person)
+        {
+            var entity = new PersonFullEntity();
+
+            entity.ShallowCopy(person);
+            entity.Password = "";
+            entity.Department = await _db.Roles.Where(r => r.Id == person.Role).Select(r => r.Department).FirstOrDefaultAsync();
+            entity.Company = await _db.Departments.Where(d => d.Id == entity.Department).Select(d => d.Company).FirstOrDefaultAsync();
+
+            return entity;
+        }
+        #endregion [private]
+
         #region [查]
         #region 获取“总数”
         /// <summary>获取“总数”</summary>
@@ -54,52 +69,43 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 根据“用户名或昵称”获取“完整数据”集合
-        /// <summary>根据“用户名或昵称”获取“完整数据”集合</summary>
-        public async Task<List<PersonFullEntity>> GetFullListByName(string name, int? pageSize = null, int? pageNumber = null)
+        #region 获取“完整数据”
+        /// <summary>
+        /// 获取“完整数据”
+        /// </summary>
+        /// <param name="search">用户名/电话/邮箱</param>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public async Task<MyActionResult<PersonFullEntity>> GetFull(string search, string password)
         {
+            var res = MyResults<PersonFullEntity>.OperationSuccess;
+
             try
             {
-                var list = new List<PersonFullEntity>();
-
-                var quaryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                quaryable = quaryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
-
-                // 分页:
-                if (pageSize != null && pageNumber != null)
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Username == search || i.Phone != null && i.Phone == search || i.Mail != null && i.Mail == search);
+                if (entity == null)
                 {
-                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                    return MyResults<PersonFullEntity>.UserNotExist;
+                }
+                else if (entity.Password != password)
+                {
+                    return MyResults<PersonFullEntity>.PasswordIncorrect;
                 }
 
-                var persons = await quaryable.ToListAsync();
-
-                // 添加“权限”:
-                foreach (var person in persons)
-                {
-                    var entity = new PersonFullEntity();
-                    entity.ShallowCopy(person);
-
-                    entity.Department = await _db.Roles.Where(r => r.Id == person.Role).Select(r => r.Department).FirstOrDefaultAsync();
-                    entity.Company = await _db.Departments.Where(d => d.Id == entity.Department).Select(d => d.Company).FirstOrDefaultAsync();
-
-                    list.Add(entity);
-                }
-
-                return list;
+                res.Data = await GetPersonFullEntity(entity);
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
-                return new List<PersonFullEntity>();
+                res = MyResults<PersonFullEntity>.Error(e);
             }
+
+            return res;
         }
         #endregion
 
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<PersonFullEntity>> GetFullList(long? company = null, long? department = null, long? role = null, int? pageSize = null, int? pageNumber = null)
+        public async Task<List<PersonFullEntity>> GetFullList(long? company = null, long? department = null, long? role = null, string? name = null, int? pageSize = null, int? pageNumber = null)
         {
             try
             {
@@ -124,6 +130,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     quaryable = quaryable.Where(i => roleIds.Contains(i.Role));
                 }
 
+                if (name != null && name.Trim() != "")
+                {
+                    quaryable = quaryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
+                }
+
                 // 分页:
                 if (pageSize != null && pageNumber != null)
                 {
@@ -135,12 +146,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 添加“权限”:
                 foreach (var person in persons)
                 {
-                    var entity = new PersonFullEntity();
-                    entity.ShallowCopy(person);
-
-                    entity.Department = await _db.Roles.Where(r => r.Id == person.Role).Select(r => r.Department).FirstOrDefaultAsync();
-                    entity.Company = await _db.Departments.Where(d => d.Id == entity.Department).Select(d => d.Company).FirstOrDefaultAsync();
-
+                    var entity = await GetPersonFullEntity(person);
                     list.Add(entity);
                 }
 
@@ -156,7 +162,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<IList<IdName>> GetBelongCompanyList()
+        public async Task<List<IdName>> GetBelongCompanyList()
         {
             var list = new List<IdName>();
             try
@@ -203,7 +209,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属部门”集合
         /// <summary>获取“所属部门”集合</summary>
-        public async Task<IList<IdName>> GetBelongDepartmentList(long? company = null)
+        public async Task<List<IdName>> GetBelongDepartmentList(long? company = null)
         {
             var list = new List<IdName>();
             try
@@ -248,7 +254,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属角色”集合
         /// <summary>获取“所属角色”集合</summary>
-        public async Task<IList<IdName>> GetBelongRoleList(long? department = null)
+        public async Task<List<IdName>> GetBelongRoleList(long? department = null)
         {
             var list = new List<IdName>();
             try
@@ -286,9 +292,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public override async Task<MyActionResult> Edit(PersonEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Edit(PersonEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -297,7 +303,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
                 if (find == null)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 if (entity.Password.Trim() == "")
@@ -312,7 +318,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

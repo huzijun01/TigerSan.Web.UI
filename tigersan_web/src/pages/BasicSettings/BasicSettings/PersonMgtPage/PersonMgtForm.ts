@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { PersonModel, personMgtTable, pagination } from './PersonMgtTable'
-import { GetSubmitResult, MyActionResult, IdNameModel, companyMgtHelper, departmentMgtHelper, personMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel } from '@/0_tigersan_ui/tigerui'
+import { personMgtTable, pagination } from './PersonMgtTable'
+import { GetSubmitResult, MyActionResult, IdNameModel, companyMgtHelper, departmentMgtHelper, personMgtHelper, roleMgtHelper, PersonModel } from '@/models'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
 // 选择框:
 /** 筛选 */
@@ -20,6 +20,12 @@ selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? a
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 selectDepartmentForm._onChange = selectRoleForm.UpdateItemsAsync
+
+/** 搜索框 */
+const searchName = new SearchModel()
+searchName.Placeholder.value = "输入用户名或昵称"
+searchName._onChange = Refresh
+searchName._onSearch = Refresh
 
 /** 密码框 */
 let isPasswordChanged = false
@@ -159,7 +165,7 @@ async function Refresh() {
     await selectRole.UpdateItemsAsync()
 
     pagination.Count.value = await personMgtHelper.GetCount(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id)
-    await personMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
+    await personMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id, searchName.Value.value, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
         ArrayHelper.Set(personMgtTable.RowDatas, arr)
     })
 }
@@ -195,7 +201,7 @@ async function Edit() {
             return new PersonModel()
         }
 
-        const data = ObjectHelper.ObjectShallowCopy(rowData)
+        const data = ObjectHelper.ShallowCopy(rowData)
         data.password = ''
         return data
     }
@@ -238,6 +244,7 @@ function DeleteRowData(state: DialogState) {
 
 export default {
     password,
+    searchName,
     selectCompany,
     selectDepartment,
     selectRole,

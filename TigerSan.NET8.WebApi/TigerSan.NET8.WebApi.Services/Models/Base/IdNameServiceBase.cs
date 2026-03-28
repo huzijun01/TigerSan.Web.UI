@@ -34,12 +34,12 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult> Add(TEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Add(TEntity entity, bool isBeginTransaction = true)
         {
             // 检验“名称”是否重复:
             if (await _dbSet.AnyAsync(i => i.Name == entity.Name))
             {
-                return MyResults.NameRepeated;
+                return MyResults<object>.NameRepeated;
             }
 
             return await base.Add(entity, isBeginTransaction);
@@ -48,13 +48,13 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public override async Task<MyActionResult> AddRange(IList<TEntity> entities, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> AddRange(List<TEntity> entities, bool isBeginTransaction = true)
         {
             // 检验“名称”是否重复:
             var names = entities.Select(e => e.Name).ToList();
             if (await _dbSet.AnyAsync(i => names.Contains(i.Name)))
             {
-                return MyResults.NameRepeated;
+                return MyResults<object>.NameRepeated;
             }
 
             return await base.AddRange(entities, isBeginTransaction);
@@ -65,9 +65,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public override async Task<MyActionResult> Edit(TEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Edit(TEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -76,13 +76,13 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
                 if (find == null)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 // 检验“名称”是否重复:
                 if (await _dbSet.AnyAsync(i => i.Name == entity.Name && i.Id != entity.Id))
                 {
-                    return MyResults.NameRepeated;
+                    return MyResults<object>.NameRepeated;
                 }
 
                 find.ShallowCopy(entity);
@@ -92,7 +92,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

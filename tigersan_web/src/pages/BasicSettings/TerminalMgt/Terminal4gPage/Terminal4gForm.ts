@@ -79,7 +79,7 @@ function Edit() {
         }
 
         iRow = terminal4gTable.RowDatas.indexOf(rowData)
-        return ObjectHelper.ObjectShallowCopy(rowData)
+        return ObjectHelper.ShallowCopy(rowData)
     }
 
     terminal4gForm._onSubmit = source => {

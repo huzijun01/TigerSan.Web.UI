@@ -8,6 +8,7 @@
                         <Select :model="form.selectCompany"></Select>
                         <Select :model="form.selectDepartment"></Select>
                         <Select :model="form.selectRole"></Select>
+                        <Search :model="form.searchName"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -79,7 +80,7 @@
 import form from './PersonMgtForm'
 import { onMounted } from 'vue'
 import { personMgtTable, pagination } from './PersonMgtTable'
-import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
+import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

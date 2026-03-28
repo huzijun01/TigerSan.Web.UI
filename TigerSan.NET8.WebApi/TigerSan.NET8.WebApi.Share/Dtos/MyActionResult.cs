@@ -10,26 +10,28 @@
     #endregion
 
     #region 结果类
-    public class MyResults
+    public class MyResults<TData>
     {
-        public static MyActionResult OperationSuccess { get => new MyActionResult(ActionResultCode.Success, "Operation successful!"); }
-        public static MyActionResult ApiUnavailable { get => new MyActionResult(ActionResultCode.Warning, "This API is unavailable!"); }
-        public static MyActionResult SomeResourceNotExist { get => new MyActionResult(ActionResultCode.Warning, "Some resources do not exist!"); }
-        public static MyActionResult ResourceNotFound { get => new MyActionResult(ActionResultCode.Error, "The resource not found!"); }
-        public static MyActionResult ResourceExists { get => new MyActionResult(ActionResultCode.Error, "The resource already exist!"); }
-        public static MyActionResult ResourceNotExist { get => new MyActionResult(ActionResultCode.Error, "The resources do not exist!"); }
-        public static MyActionResult NameRepeated { get => new MyActionResult(ActionResultCode.Error, "The name cannot be repeated!"); }
+        public static MyActionResult<TData> OperationSuccess { get => new MyActionResult<TData>(ActionResultCode.Success, "Operation successful!"); }
+        public static MyActionResult<TData> ApiUnavailable { get => new MyActionResult<TData>(ActionResultCode.Warning, "This API is unavailable!"); }
+        public static MyActionResult<TData> SomeResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Warning, "Some resources do not exist!"); }
+        public static MyActionResult<TData> ResourceNotFound { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource not found!"); }
+        public static MyActionResult<TData> ResourceExists { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource already exist!"); }
+        public static MyActionResult<TData> ResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The resources do not exist!"); }
+        public static MyActionResult<TData> NameRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The name cannot be repeated!"); }
+        public static MyActionResult<TData> UserNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "User does not exist!"); }
+        public static MyActionResult<TData> PasswordIncorrect { get => new MyActionResult<TData>(ActionResultCode.Error, "The password is incorrect!"); }
 
         #region 【Functions】
-        public static MyActionResult Success(string msg) { return new MyActionResult(ActionResultCode.Success, msg); }
-        public static MyActionResult Warning(string msg) { return new MyActionResult(ActionResultCode.Warning, msg); }
-        public static MyActionResult Error(string msg) { return new MyActionResult(ActionResultCode.Error, msg); }
-        public static MyActionResult Error(Exception e) { return new MyActionResult(ActionResultCode.Error, e.Message); }
+        public static MyActionResult<TData> Success(string msg) { return new MyActionResult<TData>(ActionResultCode.Success, msg); }
+        public static MyActionResult<TData> Warning(string msg) { return new MyActionResult<TData>(ActionResultCode.Warning, msg); }
+        public static MyActionResult<TData> Error(string msg) { return new MyActionResult<TData>(ActionResultCode.Error, msg); }
+        public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
         #endregion 【Functions】
     }
     #endregion
 
-    public class MyActionResult
+    public class MyActionResult<TData>
     {
         #region 【Functions】
         public bool IsSuccess { get => Code == ActionResultCode.Success; }
@@ -43,7 +45,7 @@
         /// <summary>信息</summary>
         public string Message { get; set; } = string.Empty;
         /// <summary>数据</summary>
-        public object? Data { get; set; }
+        public TData? Data { get; set; }
         #endregion 【Properties】
 
         #region 【Ctor】
@@ -51,13 +53,13 @@
         {
         }
 
-        public MyActionResult(string message = "", object? data = null)
+        public MyActionResult(string message = "", TData? data = default)
         {
             Message = message;
             Data = data;
         }
 
-        public MyActionResult(ActionResultCode code = ActionResultCode.Success, string message = "", object? data = null)
+        public MyActionResult(ActionResultCode code = ActionResultCode.Success, string message = "", TData? data = default)
         {
             Code = code;
             Message = message;

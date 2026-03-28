@@ -20,26 +20,26 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("Unused/Count")]
         /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult> GetCount()
+        public override async Task<MyActionResult<int>> GetCount()
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<int>.ApiUnavailable;
         }
 
         [HttpGet]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public override async Task<MyActionResult<List<RoleEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<List<RoleEntity>>.ApiUnavailable;
         }
         #endregion Override
 
         [HttpGet]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null)
+        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<int>.OperationSuccess;
             res.Data = await _service.GetCount(company, department);
             return res;
         }
@@ -47,9 +47,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<RoleEntity>>> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<RoleEntity>>.OperationSuccess;
             res.Data = await _service.GetList(company, pageSize, pageNumber);
             return res;
         }
@@ -57,9 +57,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<RoleAuthorityEntity>>> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<RoleAuthorityEntity>>.OperationSuccess;
             res.Data = await _service.GetFullList(company, department, pageSize, pageNumber);
             return res;
         }
@@ -67,9 +67,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("SelectIdNameByDepartment")]
         /// <summary>获取“ID名称对”集合/summary>
-        public async Task<MyActionResult> SelectIdNameByDepartment([FromQuery] long? department = null)
+        public async Task<MyActionResult<List<IdName>>> SelectIdNameByDepartment([FromQuery] long? department = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.SelectIdNameByDepartment(department);
             return res;
         }
@@ -77,9 +77,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongCompanyList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongCompanyList();
             return res;
         }
@@ -87,9 +87,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongDepartmentList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> BelongDepartmentList(long? company = null)
+        public async Task<MyActionResult<List<IdName>>> BelongDepartmentList(long? company = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.BelongDepartmentList(company);
             return res;
         }
@@ -100,23 +100,23 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Unused")]
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult> Add([FromBody] RoleEntity entity)
+        public override async Task<MyActionResult<object>> Add([FromBody] RoleEntity entity)
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<object>.ApiUnavailable;
         }
 
         [HttpPost]
         [Route("Unused/Range")]
         /// <summary>添加“多条数据”</summary>
-        public override async Task<MyActionResult> AddRange([FromBody] IList<RoleEntity> entities)
+        public override async Task<MyActionResult<object>> AddRange([FromBody] List<RoleEntity> entities)
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<object>.ApiUnavailable;
         }
         #endregion override
 
         [HttpPost]
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult> Add([FromBody] RoleAuthorityEntity entity)
+        public async Task<MyActionResult<object>> Add([FromBody] RoleAuthorityEntity entity)
         {
             return await _service.Add(entity);
         }
@@ -124,7 +124,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Range")]
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult> AddRange([FromBody] IList<RoleAuthorityEntity> entities)
+        public async Task<MyActionResult<object>> AddRange([FromBody] List<RoleAuthorityEntity> entities)
         {
             return await _service.AddRange(entities);
         }
@@ -135,15 +135,15 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPut]
         [Route("Unused")]
         /// <summary>修改“单条数据”</summary>
-        public override async Task<MyActionResult> Edit([FromBody] RoleEntity entity)
+        public override async Task<MyActionResult<object>> Edit([FromBody] RoleEntity entity)
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<object>.ApiUnavailable;
         }
         #endregion override
 
         [HttpPut]
         /// <summary>修改“单条数据”</summary>
-        public async Task<MyActionResult> Edit([FromBody] RoleAuthorityEntity entity)
+        public async Task<MyActionResult<object>> Edit([FromBody] RoleAuthorityEntity entity)
         {
             return await _service.Edit(entity);
         }

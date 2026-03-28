@@ -81,7 +81,7 @@ function Edit() {
         }
 
         iRow = personMgtTagTable.RowDatas.indexOf(rowData)
-        return ObjectHelper.ObjectShallowCopy(rowData)
+        return ObjectHelper.ShallowCopy(rowData)
     }
 
     personMgtTagForm._onSubmit = source => {

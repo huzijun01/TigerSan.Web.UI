@@ -6,7 +6,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
     public class IdName
     {
         public long Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
+
+        public IdName() { }
 
         public IdName(long id, string name)
         {

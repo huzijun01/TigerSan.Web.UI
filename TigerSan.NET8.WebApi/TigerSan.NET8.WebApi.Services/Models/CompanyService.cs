@@ -56,11 +56,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult> Add(CompanyEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Add(CompanyEntity entity, bool isBeginTransaction = true)
         {
             if (entity.Parent != null && !await _dbSet.AnyAsync(i => i.Id == entity.Parent))
             {
-                return MyResults.Error($"父公司不存在：{entity.Id}，{entity.Parent}");
+                return MyResults<object>.Error($"父公司不存在：{entity.Id}，{entity.Parent}");
             }
 
             return await base.Add(entity, isBeginTransaction);
@@ -69,13 +69,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public override async Task<MyActionResult> AddRange(IList<CompanyEntity> entities, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> AddRange(List<CompanyEntity> entities, bool isBeginTransaction = true)
         {
             foreach (var entity in entities)
             {
                 if (entity.Parent != null && !await _dbSet.AnyAsync(i => i.Id == entity.Parent))
                 {
-                    return MyResults.Error($"父公司不存在：{entity.Id}，{entity.Parent}");
+                    return MyResults<object>.Error($"父公司不存在：{entity.Id}，{entity.Parent}");
                 }
             }
 
@@ -87,20 +87,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public override async Task<MyActionResult> Edit(CompanyEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Edit(CompanyEntity entity, bool isBeginTransaction = true)
         {
             if (entity.Parent != null)
             {
                 if (!await _dbSet.AnyAsync(i => i.Id == entity.Parent))
                 {
-                    return MyResults.Error($"父公司不存在：{entity.Name}，{entity.Parent}");
+                    return MyResults<object>.Error($"父公司不存在：{entity.Name}，{entity.Parent}");
                 }
 
                 var subIds = await GetSubCompanyIds(entity.Id);
                 subIds.Add(entity.Id); // 包含自身
                 if (subIds.Contains(entity.Parent.Value))
                 {
-                    return MyResults.Error($"父公司不能是后代公司：{entity.Name}，{entity.Parent}");
+                    return MyResults<object>.Error($"父公司不能是后代公司：{entity.Name}，{entity.Parent}");
                 }
             }
 
@@ -111,9 +111,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [删]
         #region 删除“相关部门”
-        private async Task<MyActionResult> RemoveDepartment(long id)
+        private async Task<MyActionResult<object>> RemoveDepartment(long id)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
 
             try
             {
@@ -125,7 +125,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
             }
 
             return res;
@@ -134,9 +134,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public override async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -147,7 +147,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 验证“资源是否存在”：
                 if (entity == null)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 // 删除“相关部门”：
@@ -182,7 +182,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -192,9 +192,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public override async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -208,11 +208,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var count = await entities.CountAsync();
                 if (count < 1)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
                 else if (count < ids.Count)
                 {
-                    res = MyResults.SomeResourceNotExist;
+                    res = MyResults<object>.SomeResourceNotExist;
                 }
 
                 // 删除“后代数据”：
@@ -235,7 +235,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

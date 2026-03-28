@@ -18,9 +18,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("SubCompanyIds/{id}")]
         /// <summary>获取“后代公司ID”集合</summary>
-        public async Task<MyActionResult> GetSubCompanyIds(long id)
+        public async Task<MyActionResult<List<long>>> GetSubCompanyIds(long id)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<long>>.OperationSuccess;
             res.Data = await _service.GetSubCompanyIds(id);
             return res;
         }

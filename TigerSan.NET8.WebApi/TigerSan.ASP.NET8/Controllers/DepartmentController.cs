@@ -20,26 +20,26 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("Unused/Count")]
         /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult> GetCount()
+        public override async Task<MyActionResult<int>> GetCount()
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<int>.ApiUnavailable;
         }
 
         [HttpGet]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public override async Task<MyActionResult<List<DepartmentEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            return MyResults.ApiUnavailable;
+            return MyResults<List<DepartmentEntity>>.ApiUnavailable;
         }
         #endregion Override
 
         [HttpGet]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult> GetCount([FromQuery] long? company = null)
+        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<int>.OperationSuccess;
             res.Data = await _service.GetCount(company);
             return res;
         }
@@ -47,9 +47,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<DepartmentEntity>>> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<DepartmentEntity>>.OperationSuccess;
             res.Data = await _service.GetList(company, pageSize, pageNumber);
             return res;
         }
@@ -57,9 +57,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("SelectIdNameByCompany")]
         /// <summary>获取“ID名称对”集合/summary>
-        public async Task<MyActionResult> SelectIdNameByCompany([FromQuery] long? company = null)
+        public async Task<MyActionResult<List<IdName>>> SelectIdNameByCompany([FromQuery] long? company = null)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.SelectIdNameByCompany(company);
             return res;
         }
@@ -67,9 +67,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongCompanyList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongCompanyList();
             return res;
         }

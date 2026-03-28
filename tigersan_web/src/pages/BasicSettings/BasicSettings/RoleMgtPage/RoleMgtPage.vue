@@ -64,7 +64,7 @@
 <script lang="ts" setup>
 import form from './RoleMgtForm'
 import { onMounted } from 'vue'
-import { authorityHelper } from '@/helpers'
+import { authorityHelper } from '@/models'
 import { roleMgtTable } from './RoleMgtTable'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
 

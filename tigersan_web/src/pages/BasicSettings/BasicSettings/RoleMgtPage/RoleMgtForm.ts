@@ -1,7 +1,6 @@
 import { ref } from 'vue'
-import { authorityHelper } from '@/helpers'
 import { roleMgtTable } from './RoleMgtTable'
-import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
+import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, authorityHelper, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel } from '@/0_tigersan_ui/tigerui'
 
 // 选择框:
@@ -148,7 +147,7 @@ async function Edit() {
             return new RoleAuthorityModel()
         }
 
-        return ObjectHelper.ObjectShallowCopy(rowData)
+        return ObjectHelper.ShallowCopy(rowData)
     }
 
     roleMgtForm._onSubmitAsync = async source => {

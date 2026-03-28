@@ -1,90 +1,99 @@
 export class ObjectHelper {
-    /** “对象”浅复制 */
-    static ObjectShallowCopy<TSource extends object>(obj: TSource): TSource {
+    /** 浅复制“字段值” */
+    static ShallowSet<TSource extends object, TTarget extends object>(src: TSource, dest: TTarget): void {
+        for (const [k, v] of Object.entries(src)) {
+            if (k in dest) {
+                dest[k as keyof TTarget] = v as TTarget[keyof TTarget]
+            }
+        }
+    }
+
+    /** 浅复制 */
+    static ShallowCopy<TSource extends object>(obj: TSource): TSource {
         // 处理基本类型直接返回
         if (obj === null || typeof obj != 'object') {
-            return obj as TSource;
+            return obj as TSource
         }
 
         // 获取原型并创建新对象
-        const proto = Object.getPrototypeOf(obj);
-        const copy = Object.create(proto);
+        const proto = Object.getPrototypeOf(obj)
+        const copy = Object.create(proto)
 
         // 复制所有自身字段（包括不可枚举字段和 Symbol）
-        const keys = Reflect.ownKeys(obj);
+        const keys = Reflect.ownKeys(obj)
         for (const key of keys) {
-            copy[key as keyof TSource] = obj[key as keyof TSource];
+            copy[key as keyof TSource] = obj[key as keyof TSource]
         }
 
-        return copy;
+        return copy
     }
 
-    /** “对象”深复制 */
-    static ObjectDeepCopy<TSource extends object>(obj: TSource): TSource {
-        const hash = new WeakMap<object, any>();
+    /** 深复制 */
+    static DeepCopy<TSource extends object>(obj: TSource): TSource {
+        const hash = new WeakMap<object, any>()
 
         function _copy(obj: any): any {
             // 处理基本类型和函数
             if (obj === null || typeof obj != 'object') {
-                return obj;
+                return obj
             }
 
             // 处理循环引用
             if (hash.has(obj)) {
-                return hash.get(obj);
+                return hash.get(obj)
             }
 
             // 处理特殊类型
             switch (true) {
                 case obj instanceof Date:
-                    return new Date(obj.getTime());
+                    return new Date(obj.getTime())
                 case obj instanceof RegExp:
-                    return new RegExp(obj);
+                    return new RegExp(obj)
                 // case ArrayBuffer.isView(obj): // 处理 TypedArray
-                //     return obj.slice();
+                //     return obj.slice()
                 case obj instanceof ArrayBuffer:
-                    return obj.slice(0);
+                    return obj.slice(0)
                 case obj instanceof Map:
-                    const mapCopy = new Map();
-                    hash.set(obj, mapCopy);
+                    const mapCopy = new Map()
+                    hash.set(obj, mapCopy)
                     obj.forEach((value, key) => {
-                        mapCopy.set(_copy(key), _copy(value));
-                    });
-                    return mapCopy;
+                        mapCopy.set(_copy(key), _copy(value))
+                    })
+                    return mapCopy
                 case obj instanceof Set:
-                    const setCopy = new Set();
-                    hash.set(obj, setCopy);
+                    const setCopy = new Set()
+                    hash.set(obj, setCopy)
                     obj.forEach(value => {
-                        setCopy.add(_copy(value));
-                    });
-                    return setCopy;
+                        setCopy.add(_copy(value))
+                    })
+                    return setCopy
             }
 
             // 处理数组
             if (Array.isArray(obj)) {
-                const arrCopy = [...obj];
-                hash.set(obj, arrCopy);
+                const arrCopy = [...obj]
+                hash.set(obj, arrCopy)
                 for (let i = 0; i < arrCopy.length; i++) {
                     arrCopy[i] = _copy(arrCopy[i]);
                 }
-                return arrCopy;
+                return arrCopy
             }
 
             // 处理普通对象
-            const proto = Object.getPrototypeOf(obj);
-            const objCopy = Object.create(proto);
-            hash.set(obj, objCopy);
+            const proto = Object.getPrototypeOf(obj)
+            const objCopy = Object.create(proto)
+            hash.set(obj, objCopy)
 
             // 复制所有自身字段（包括不可枚举和 Symbol）
-            const keys = Reflect.ownKeys(obj);
+            const keys = Reflect.ownKeys(obj)
             for (const key of keys) {
-                objCopy[key] = _copy(obj[key]);
+                objCopy[key] = _copy(obj[key])
             }
 
-            return objCopy;
+            return objCopy
         }
 
-        return _copy(obj);
+        return _copy(obj)
     }
 
     /** 默认“对象行为”  */
@@ -142,30 +151,30 @@ export class ObjectHelper {
             return true
         } else {
             // 处理 null 的特殊情况:
-            if (a === null && b === null) return true;
-            if (a === null || b === null) return false;
+            if (a === null && b === null) return true
+            if (a === null || b === null) return false
 
             // 处理 undefined 的特殊情况:
-            if (a === undefined && b === undefined) return true;
-            if (a === undefined || b === undefined) return false;
+            if (a === undefined && b === undefined) return true
+            if (a === undefined || b === undefined) return false
         }
 
         // 获取基础类型:
-        const aType = typeof a;
-        const bType = typeof b;
+        const aType = typeof a
+        const bType = typeof b
 
         // 基础类型不同直接返回 false:
-        if (aType !== bType) return false;
+        if (aType !== bType) return false
 
         // 处理原始类型（排除 object 和 function）:
         if (aType !== 'object' && aType !== 'function') {
-            return true;
+            return true
         }
 
         // 处理对象类型和函数
-        const aTag = Object.prototype.toString.call(a);
-        const bTag = Object.prototype.toString.call(b);
+        const aTag = Object.prototype.toString.call(a)
+        const bTag = Object.prototype.toString.call(b)
 
-        return aTag === bTag;
+        return aTag === bTag
     }
 }

@@ -1,11 +1,11 @@
-import { UserInfo } from '@/models'
 import { useUserInfo } from '@/stores'
-import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter } from '@/0_tigersan_ui/tigerui'
+import { ActionResultCode, UserHelper, UserInfo } from '@/models'
+import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter, ObjectHelper, FormResult } from '@/0_tigersan_ui/tigerui'
 
 // 组件模型:
 const uname = new TextBoxModel()
 uname.Width.value = "100%"
-uname.Placeholder.value = "用户名/邮箱"
+uname.Placeholder.value = "用户名/电话/邮箱"
 
 const pwd = new PasswordModel()
 pwd.Width.value = "100%"
@@ -16,24 +16,24 @@ captcha.Placeholder.value = "验证码"
 
 // 配置:
 /** “用户名”项目配置 */
-const configUserName: FormItemConfig<UserInfo, string> = {
-    _propName: 'UserName',
+const configUsername: FormItemConfig<UserInfo, string> = {
+    _propName: 'username',
     PropText: '',
     IsEquired: true,
     Target: uname.Value,
     _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.UserName)
+        return Verify.IsNotUndefinedOrEmpty(source.username)
     }
 }
 
 /** “密码”项目配置 */
 const configPassword: FormItemConfig<UserInfo, string> = {
-    _propName: 'Password',
+    _propName: 'password',
     PropText: '',
     IsEquired: true,
     Target: pwd.Value,
     _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.Password)
+        return Verify.IsNotUndefinedOrEmpty(source.password)
     }
 }
 
@@ -44,7 +44,7 @@ const configCaptcha: FormItemConfig<UserInfo, string> = {
     IsEquired: true,
     Target: captcha.Value,
     _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.Captcha)
+        return Verify.IsNotUndefinedOrEmpty(source.captcha)
     }
 }
 
@@ -54,12 +54,19 @@ const GetSource = () => {
 }
 
 /** 提交 */
-const OnSubmit = (source: object) => {
+const OnSubmitAsync = async (source: object) => {
     const userInfo = useUserInfo()
-    const newUserInfo = source as UserInfo
-    userInfo.UserName = newUserInfo.UserName
-    userInfo.Password = newUserInfo.Password
-    userInfo.Captcha = newUserInfo.Captcha
+    const userInfoForm = source as UserInfo
+    var res = await UserHelper.LoginAsync(userInfoForm.username, userInfoForm.password)
+    if (res.code == ActionResultCode.Error) {
+        return new SubmitResult(res.message, FormResult.Error)
+    }
+
+    if (res.data === undefined) {
+        return new SubmitResult('The data is undefined!', FormResult.Error)
+    }
+
+    ObjectHelper.ShallowSet(res.data as object, userInfo)
     useRouter().GoTo('Home')
 
     return new SubmitResult('登录成功')
@@ -70,9 +77,9 @@ let configLoginForm: FormConfig<UserInfo> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: GetSource,
-    _onSubmit: OnSubmit,
+    _onSubmitAsync: OnSubmitAsync,
     _itemConfigs: [
-        configUserName,
+        configUsername,
         configPassword,
         configCaptcha,
     ]
@@ -86,7 +93,7 @@ export default {
     uname,
     pwd,
     captcha,
-    configUserName,
+    configUsername,
     configPassword,
     configCaptcha,
     loginForm,

@@ -4,7 +4,7 @@
     <div class="content-panel flex-stretch">
       <Form :marginH="0">
         <FormRow>
-          <FormItem :model="form.configUserName.ItemModel">
+          <FormItem :model="form.configUsername.ItemModel">
             <TextBox type="text" :model="form.uname"></TextBox>
           </FormItem>
         </FormRow>

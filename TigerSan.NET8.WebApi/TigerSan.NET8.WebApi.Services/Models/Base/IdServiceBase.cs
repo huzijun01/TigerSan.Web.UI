@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Interfaces.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Share.Entities.Base;
-using TigerSan.NET8.WebApi.Interfaces.Models.Base;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Services.Models.Base
 {
@@ -168,7 +168,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region “多条数据”是否存在
         /// <summary>“多条数据”是否存在</summary>
-        public virtual async Task<bool> IsExistsRange(IList<long> ids)
+        public virtual async Task<bool> IsExistsRange(List<long> ids)
         {
             return await _dbSet.AsNoTracking().AnyAsync(i => ids.Contains(i.Id));
         }
@@ -178,9 +178,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public virtual async Task<MyActionResult> Add(TEntity entity, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult<object>> Add(TEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -193,7 +193,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -203,9 +203,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public virtual async Task<MyActionResult> AddRange(IList<TEntity> entities, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult<object>> AddRange(List<TEntity> entities, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -218,7 +218,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -230,9 +230,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public virtual async Task<MyActionResult> Edit(TEntity entity, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult<object>> Edit(TEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -241,7 +241,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
                 if (find == null)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 find.ShallowCopy(entity);
@@ -251,7 +251,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -263,9 +263,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [删]
         #region 删除“单条数据”
         /// <summary>删除“单条数据”</summary>
-        public virtual async Task<MyActionResult> Remove(long id, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -273,7 +273,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
                 if (entity == null)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 _dbSet.Remove(entity);
@@ -282,7 +282,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -292,9 +292,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 删除“多条数据”
         /// <summary>删除“多条数据”</summary>
-        public virtual async Task<MyActionResult> RemoveRange(IList<long> ids, bool isBeginTransaction = true)
+        public virtual async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
         {
-            var res = MyResults.OperationSuccess;
+            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -306,11 +306,11 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 var count = await entities.CountAsync();
                 if (count < 1)
                 {
-                    return MyResults.ResourceNotExist;
+                    return MyResults<object>.ResourceNotExist;
                 }
                 else if (count < ids.Count)
                 {
-                    res = MyResults.SomeResourceNotExist;
+                    res = MyResults<object>.SomeResourceNotExist;
                 }
 
 
@@ -320,7 +320,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults.Error(e);
+                res = MyResults<object>.Error(e);
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

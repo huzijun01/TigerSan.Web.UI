@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-import { configs } from './configs'
-import { AxiosHelper, FilterModel } from './AxiosHelper'
+import { configs } from './AuthorityConfigs'
 import { Colors, TreeModel, TreeNodeModel } from "@/0_tigersan_ui/tigerui"
 
 /** “权限”模型 */

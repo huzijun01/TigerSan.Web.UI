@@ -37,6 +37,7 @@ class TextBoxModel {
 
     OnClear() {
         this.Value.value = ''
+        this.OnChange()
     }
     //#endregion 【Functions】
 }

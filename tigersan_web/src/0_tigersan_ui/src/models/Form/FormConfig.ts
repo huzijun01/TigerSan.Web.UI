@@ -1,6 +1,6 @@
 import { ref, type Ref } from "vue"
 import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
-import { type FormVerify, type FormSubmit, FormModel, FormItemModel } from "./FormModel"
+import { type FormVerify, type FormSubmit, type FormSubmitAsync, FormModel, FormItemModel } from "./FormModel"
 
 /** 表单配置 */
 class FormConfig<TSource extends object> {
@@ -11,6 +11,8 @@ class FormConfig<TSource extends object> {
     _getSource: TObjectAction<TSource>
     /** 提交时 */
     _onSubmit?: FormSubmit<TSource>
+    /** 提交时（异步） */
+    _onSubmitAsync?: FormSubmitAsync<TSource>
     /** 初始化前 */
     _beforeInit?: (isEdit: boolean) => void
     /** 初始化前（异步） */
@@ -81,6 +83,7 @@ function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, for
     // Fields:
     formModel._itemModels = GetItemModels(formModel, formConfig)
     formModel._onSubmit = formConfig._onSubmit
+    formModel._onSubmitAsync = formConfig._onSubmitAsync
     formModel._beforeInit = formConfig._beforeInit
     formModel._beforeInitAsync = formConfig._beforeInitAsync
 

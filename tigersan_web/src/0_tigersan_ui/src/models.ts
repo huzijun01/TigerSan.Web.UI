@@ -29,7 +29,7 @@ export * from './models/Pagination/PaginationModel'
 export * from './models/Pagination/PaginationButtonModel'
 
 /* Table: */
-export * from './models/TableModels/TableModel'
+export * from './models/Table/TableModel'
 
 /* Text: */
 export * from './models/Text/TextModel'

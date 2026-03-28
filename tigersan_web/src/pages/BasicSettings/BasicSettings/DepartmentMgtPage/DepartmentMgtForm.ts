@@ -105,7 +105,7 @@ async function Edit() {
             return new DepartmentModel()
         }
 
-        return ObjectHelper.ObjectShallowCopy(rowData)
+        return ObjectHelper.ShallowCopy(rowData)
     }
 
     departmentMgtForm._onSubmitAsync = async source => {

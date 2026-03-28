@@ -1,5 +1,3 @@
-import { watch } from 'vue'
-import { useUserInfo } from '@/stores'
 import { companyMgtHelper, CompanyModel } from '@/models'
 import { ArrayHelper, BigintHelper, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
 
@@ -17,15 +15,6 @@ tree._onUnactive = () => {
     selectCompany.Value.value = undefined
 }
 tree._onInited = () => tree.SetActiveNode(selectCompany.Text.value)
-
-watch(tree.ActiveData, data => {
-    const userInfo = useUserInfo()
-    if (data) {
-        userInfo.Company = data.name
-    } else {
-        userInfo.Company = ''
-    }
-})
 
 /** “公司”选择框 */
 const selectCompany = companyMgtHelper.GetSelectModel()
