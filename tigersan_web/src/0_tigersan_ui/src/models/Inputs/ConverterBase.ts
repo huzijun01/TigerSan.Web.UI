@@ -50,8 +50,8 @@ class ConverterBase<TValue> {
         }
 
         this.Text.value = this.GetText()
-        if (this.Text.value === '' && this.Value.value != undefined) {
-            console.warn('The Text is empty!')
+        if ((this.Text.value === '' || this.Text.value === undefined) && this.Value.value != undefined) {
+            console.warn('The Text is empty!', this.Value.value)
         }
     }
 

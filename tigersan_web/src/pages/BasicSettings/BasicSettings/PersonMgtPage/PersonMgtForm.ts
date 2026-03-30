@@ -15,7 +15,7 @@ selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await per
 const selectCompanyForm = companyMgtHelper.GetSelectModel()
 const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
 selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
-const selectRoleForm = departmentMgtHelper.GetSelectModel()
+const selectRoleForm = roleMgtHelper.GetSelectModel()
 selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? await roleMgtHelper.SelectIdNameByDepartment(selectDepartmentForm.Value.value?.id) : []
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
@@ -38,7 +38,7 @@ const configCompany: FormItemConfig<PersonModel, IdNameModel> = {
     PropText: '公司',
     IsEquired: false,
     Target: ref(),
-    _getValue: async source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+    _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
 }
@@ -49,7 +49,7 @@ const configDepartment: FormItemConfig<PersonModel, IdNameModel> = {
     PropText: '部门',
     IsEquired: false,
     Target: ref(),
-    _getValue: async source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
+    _getValue: source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
     // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
 }
@@ -60,7 +60,7 @@ const configRole: FormItemConfig<PersonModel, IdNameModel> = {
     PropText: '角色',
     IsEquired: true,
     Target: selectRoleForm.Value,
-    _getValue: async source => selectRoleForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.role)),
+    _getValue: source => selectRoleForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.role)),
     _setValue: (source, propName, value) => source.role = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => Verify.IsBigintGreaterThan(source.role)
 }

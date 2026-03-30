@@ -47,7 +47,7 @@
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configAuthority.ItemModel">
+            <FormItem :model="form.configAuthorities.ItemModel">
                 <div class="readonly-panel flex-left" v-show="authorityHelper._tree.IsActive.value">
                     <span class="text">{{ Texts.IsReadonly.value }}</span>
                     <input type="checkbox" v-model="authorityHelper.IsReadonly.value"

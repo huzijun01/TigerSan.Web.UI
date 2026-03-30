@@ -49,6 +49,21 @@ export class Verify {
         return res
     }
 
+    /** 是否“相等” */
+    static IsEqual(s1: string, s2: string, strNotEqual?: string): VerifyResult {
+        var res = new VerifyResult()
+
+        if (s1.trim() === '' || s2.trim() === '') {
+            res.VerifyText = '不能为空'
+            res.VerifyState = FormResult.Error
+        } else if (s1 != s2) {
+            res.VerifyText = strNotEqual ?? '值不相同'
+            res.VerifyState = FormResult.Error
+        }
+
+        return res
+    }
+
     /** 是否“大于” */
     static IsGreaterThan(num: number, min: number = 0, error?: string): VerifyResult {
         var res = new VerifyResult()

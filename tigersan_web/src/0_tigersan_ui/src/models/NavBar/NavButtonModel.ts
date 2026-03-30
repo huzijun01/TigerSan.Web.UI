@@ -28,7 +28,7 @@ class NavButtonModel {
     /** 所属“导航栏”模型 */
     NavBarModel: NavBarModel
     /** 所属“目录”模型 */
-    NavFolderModel: NavFolderModel
+    ParentFolderModel: NavFolderModel
     //#endregion 【Properties】
 
     //#region 【Events】
@@ -45,7 +45,7 @@ class NavButtonModel {
         component?: Component
     ) {
         this.NavBarModel = navModel
-        this.NavFolderModel = navFolderModel
+        this.ParentFolderModel = navFolderModel
         this._component = component
     }
     //#endregion 【Ctor】

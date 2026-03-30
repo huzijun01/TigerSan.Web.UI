@@ -92,7 +92,7 @@ const configMail: FormItemConfig<UserInfo, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new UserInfo()
 
-/** “人员管理”表单配置 */
+/** “用户信息”表单配置 */
 let configPersonMgtForm: FormConfig<UserInfo> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -113,28 +113,25 @@ let configPersonMgtForm: FormConfig<UserInfo> = {
     ]
 }
 
-/** “人员管理”表单模型 */
-const personMgtForm = new FormModel(configPersonMgtForm)
+/** “用户信息”表单模型 */
+const userInfoForm = new FormModel(configPersonMgtForm)
 
 /** 改 */
 async function Edit() {
-    personMgtForm.Title.value = '修改人员'
+    userInfoForm.Title.value = '修改用户信息'
 
-    personMgtForm._getSource = () => {
+    userInfoForm._getSource = () => {
         const userInfo = useUserInfo()
         ObjectHelper.ShallowSet(userInfo, person)
-
-        console.log(person)
-
         return person
     }
 
-    // personMgtForm._onSubmitAsync = async source => {
-    //     const res = await personMgtHelper.Edit(source)
+    // userInfoForm._onSubmitAsync = async source => {
+    //     const res = await userInfoHelper.Edit(source)
     //     return GetSubmitResult(res, '修改成功')
     // }
 
-    personMgtForm.Show(true)
+    userInfoForm.Show(true)
 }
 
 export default {
@@ -148,6 +145,6 @@ export default {
     configPassword,
     configPhone,
     configMail,
-    personMgtForm,
+    userInfoForm,
     Edit,
 }

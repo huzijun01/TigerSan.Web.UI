@@ -24,6 +24,7 @@ class Texts {
     static readonly Offline = TextModel.Computed('Offline', '离线')
     static readonly Version = TextModel.Computed('Version: V', '版本：V')
     static readonly IsReadonly = TextModel.Computed('IsReadonly: ', '是否只读：')
+    static readonly ChangePassword = TextModel.Computed('Change password ', '修改密码')
 }
 
 export {

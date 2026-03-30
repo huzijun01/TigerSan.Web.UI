@@ -70,21 +70,21 @@ function SetNavButtonModel(model: NavButtonModel, config: NavButtonConfig) {
 
 function CreateNavFolderModel(
     barModel: NavBarModel,
-    folder: NavFolderConfig,
+    folderConfig: NavFolderConfig,
     folderModel?: NavFolderModel) {
     let newFolderModel = new NavFolderModel(barModel, folderModel)
-    SetNavFolderModel(newFolderModel, folder)
+    SetNavFolderModel(newFolderModel, folderConfig)
 
     // 子文件夹:
-    if (folder.Folders) {
-        folder.Folders.forEach(f => {
+    if (folderConfig.Folders) {
+        folderConfig.Folders.forEach(f => {
             newFolderModel.FolderModels.push(CreateNavFolderModel(barModel, f, newFolderModel))
         })
     }
 
     // 子按钮:
-    if (folder.Buttons) {
-        folder.Buttons.forEach(b => {
+    if (folderConfig.Buttons) {
+        folderConfig.Buttons.forEach(b => {
             let buttonModel = new NavButtonModel(barModel, newFolderModel)
             SetNavButtonModel(buttonModel, b)
             newFolderModel.ButtonModels.push(buttonModel)

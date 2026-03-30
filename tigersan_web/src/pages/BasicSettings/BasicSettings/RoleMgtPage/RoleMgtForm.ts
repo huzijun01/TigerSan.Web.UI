@@ -26,7 +26,7 @@ const configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     PropText: '公司',
     IsEquired: true,
     Target: selectCompanyForm.Value,
-    _getValue: async source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+    _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
 }
@@ -37,7 +37,7 @@ const configDepartment: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     PropText: '部门',
     IsEquired: true,
     Target: selectDepartmentForm.Value,
-    _getValue: async source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
+    _getValue: source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
     _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
 }
@@ -52,8 +52,8 @@ const configName: FormItemConfig<RoleAuthorityModel, string> = {
 }
 
 /** “权限”项目配置 */
-const configAuthority: FormItemConfig<RoleAuthorityModel, number> = {
-    _propName: 'authority',
+const configAuthorities: FormItemConfig<RoleAuthorityModel, number> = {
+    _propName: 'authorities',
     PropText: '权限',
     IsEquired: true,
     Target: ref(),
@@ -95,7 +95,7 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
         configCompany,
         configDepartment,
         configName,
-        configAuthority,
+        configAuthorities,
     ]
 }
 
@@ -197,7 +197,7 @@ export default {
     configCompany,
     configDepartment,
     configName,
-    configAuthority,
+    configAuthorities,
     roleMgtForm,
     Refresh,
     Add,

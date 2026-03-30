@@ -24,7 +24,7 @@
                 <!-- 单次响铃时长: -->
                 <Form>
                     <FormRow>
-                        <FormItem :model="form.configringingTime.ItemModel">
+                        <FormItem :model="form.configRingingTime.ItemModel">
                             <Form>
                                 <FormRow>
                                     <span>快：</span>

@@ -1,12 +1,12 @@
 import { ref, shallowRef, shallowReactive, type ShallowReactive } from 'vue'
 import type { NumberAction } from '../../types'
-import { NavButtonModel } from './NavButtonModel'
-import { NavFolderModel } from './NavFolderModel'
+import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'
+import { NavFolderModel, type NavFolderHandler } from './NavFolderModel'
 import { type NavFolderConfig, CreateNavFolderModel } from './NavConfig'
 
-type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
+export type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
 
-class NavBarModel {
+export class NavBarModel {
     //#region 【Fields】
     static readonly _defaultFolderModel = new NavFolderModel(new NavBarModel())
     static readonly _defaultButtonModel = new NavButtonModel(new NavBarModel(), new NavFolderModel(new NavBarModel()))
@@ -71,6 +71,14 @@ class NavBarModel {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    /** 递归操作“项目”集合 */
+    RecursivelyOperateItems(
+        fnFolder: NavFolderHandler | undefined,
+        fnButton: NavButtonHandler | undefined = undefined,
+        isIncludeNotShowFolder: boolean = true) {
+        NavFolderModel.RecursivelyOperateSubItems(this.FolderModel, fnFolder, fnButton, isIncludeNotShowFolder)
+    }
+
     /** 初始化 */
     Init(folder: NavFolderConfig) {
         // 状态:
@@ -82,6 +90,8 @@ class NavBarModel {
         this.FolderModel.FolderModels.push(...folderModel.FolderModels)
         this.FolderModel.ButtonModels.splice(0)
         this.FolderModel.ButtonModels.push(...folderModel.ButtonModels)
+        folderModel.FolderModels.forEach(f => f.ParentFolderModel = this.FolderModel)
+        folderModel.ButtonModels.forEach(b => b.ParentFolderModel = this.FolderModel)
         this.UpdateHeight()
     }
 
@@ -114,9 +124,4 @@ class NavBarModel {
             })
     }
     //#endregion 【Functions】
-}
-
-export {
-    NavBarModel,
-    type TryNavButtonHandler
 }

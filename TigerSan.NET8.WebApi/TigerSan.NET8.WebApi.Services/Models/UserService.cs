@@ -173,6 +173,53 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [查]
+
+        #region [改]
+        #region 修改“密码”
+        /// <summary>修改“密码”</summary>
+        public async Task<MyActionResult<object>> EditPassword(PasswordEdit edit)
+        {
+            var res = MyResults<object>.OperationSuccess;
+
+            try
+            {
+                var admin = await _db.Admins.FirstOrDefaultAsync(i => i.Id == edit.Id);
+                var person = admin == null ? await _db.Persons.FirstOrDefaultAsync(i => i.Id == edit.Id) : null;
+
+                if (admin != null)
+                {
+                    if (!Equals(admin.Password, edit.OldPassword))
+                    {
+                        return MyResults<object>.PasswordIncorrect;
+                    }
+
+                    admin.Password = edit.Password;
+                }
+                else if (person != null)
+                {
+                    if (!Equals(person.Password, edit.OldPassword))
+                    {
+                        return MyResults<object>.PasswordIncorrect;
+                    }
+
+                    person.Password = edit.Password;
+                }
+                else
+                {
+                    return MyResults<object>.UserNotExist;
+                }
+
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e);
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
         #endregion 【Functions】
     }
 }

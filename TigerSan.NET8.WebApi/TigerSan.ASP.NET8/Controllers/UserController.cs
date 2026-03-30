@@ -27,6 +27,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.Login(search, password);
         }
+
+        [HttpPut]
+        [Route("Password")]
+        /// <summary>修改“密码”</summary>
+        public async Task<MyActionResult<object>> EditPassword([FromBody] PasswordEdit edit)
+        {
+            return await _service.EditPassword(edit);
+        }
         #endregion 【Functions】
     }
 }

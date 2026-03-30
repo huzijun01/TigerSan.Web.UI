@@ -296,20 +296,38 @@ class TableItemModel<TSource extends object> {
     /** 更新“文本” 
      * “TableItem”内部会自动调用 */
     UpdateText() {
+        // 检验“属性是否存在”:
+        if (this._headerModel._propName === '') {
+            return
+        }
+        else if (!(this._headerModel._propName in this._rowModel._rowData)) {
+            console.warn(`The _rowData does not contain the ${this._headerModel._propName} field!`)
+            return
+        }
+
+        // 修改“文本”:
         if (this._headerModel._getStringAsync) {
             this._headerModel._getStringAsync(this._rowModel._rowData, this._headerModel._propName).then(value => {
                 this.Text.value = value
             })
         } else {
-
             this.Text.value = this._headerModel._getString(this._rowModel._rowData, this._headerModel._propName)
         }
     }
 
     /** 修改“行数据” */
     SetRowData() {
-        this._headerModel
-            ._setObject(this._rowModel._rowData, this._headerModel._propName, this.Text.value)
+        // 检验“属性是否存在”:
+        if (this._headerModel._propName === '') {
+            return
+        }
+        else if (!(this._headerModel._propName in this._rowModel._rowData)) {
+            console.warn(`The _rowData does not contain the ${this._headerModel._propName} field!`)
+            return
+        }
+
+        // 修改“行数据”:
+        this._headerModel._setObject(this._rowModel._rowData, this._headerModel._propName, this.Text.value)
     }
 
     /** 获取“源数据” */

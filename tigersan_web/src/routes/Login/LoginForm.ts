@@ -39,7 +39,7 @@ const configPassword: FormItemConfig<UserInfo, string> = {
 
 /** “验证码”项目配置 */
 const configCaptcha: FormItemConfig<UserInfo, string> = {
-    _propName: 'Captcha',
+    _propName: 'captcha',
     PropText: '',
     IsEquired: true,
     Target: captcha.Value,
@@ -50,7 +50,7 @@ const configCaptcha: FormItemConfig<UserInfo, string> = {
 
 /** “增”源数据获取方法 */
 const GetSource = () => {
-    return new UserInfo('admin', 'admin', '1234')
+    return new UserInfo('admin', 'admin123', '1234')
 }
 
 /** 提交 */

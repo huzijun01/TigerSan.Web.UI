@@ -7,8 +7,8 @@ export class TreeHelper {
     static Array2Tree<T extends object>(
         items: T[],
         getName: (item: T) => string,
-        getIndex: (item: T) => number | bigint,
-        getParent: (item: T) => number | bigint | undefined): TreeNodeConfig<T>[] {
+        getIndex: (item: T) => number | bigint | string,
+        getParent: (item: T) => number | bigint | string | undefined): TreeNodeConfig<T>[] {
 
         /** “节点”数组 */
         function GetNode(item: T): TreeNodeConfig<T> {

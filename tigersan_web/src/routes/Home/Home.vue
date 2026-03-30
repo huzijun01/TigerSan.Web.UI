@@ -26,7 +26,7 @@
           </IconButton>
           <IconButton :icon="Icons.Question" :text="Texts.Help.value"></IconButton>
           <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value"></IconButton>
-          <IconButton :icon="Icons.User" :text="userInfo.username" :click="form.Edit"></IconButton>
+          <IconButton :icon="Icons.User" :text="userInfo.nickname" :click="form.Edit"></IconButton>
           <IconButton :icon="Icons.Output" text="" :click="OnExit"></IconButton>
         </div>
       </div>
@@ -43,14 +43,14 @@
     </div>
   </div>
 
-  <!-- 表单: -->
-  <PopForm :model="form.personMgtForm">
+  <!-- 表单（修改用户信息）: -->
+  <PopForm :model="form.userInfoForm">
     <FormRow>
       <FormItem :model="form.configCompany.ItemModel">
         <input type="text" disabled v-model="form.configCompany.Target.value"></input>
       </FormItem>
     </FormRow>
-    <FormRow>
+    <FormRow v-if="!userInfo.isAdmin">
       <FormItem :model="form.configDepartment.ItemModel">
         <input type="text" disabled v-model="form.configDepartment.Target.value"></input>
       </FormItem>
@@ -65,31 +65,49 @@
         <input type="text" v-model="form.configUsername.Target.value">
       </FormItem>
     </FormRow>
-    <FormRow>
+    <FormRow v-if="!userInfo.isAdmin">
       <FormItem :model="form.configNickname.ItemModel">
         <input type="text" v-model="form.configNickname.Target.value">
       </FormItem>
     </FormRow>
-    <FormRow>
-      <FormItem :model="form.configPassword.ItemModel">
-        <Password :model="form.password"></Password>
-      </FormItem>
-    </FormRow>
-    <FormRow>
+    <FormRow v-if="!userInfo.isAdmin">
       <FormItem :model="form.configPhone.ItemModel">
         <input type="text" v-model="form.configPhone.Target.value">
       </FormItem>
     </FormRow>
-    <FormRow>
+    <FormRow v-if="!userInfo.isAdmin">
       <FormItem :model="form.configMail.ItemModel">
         <input type="text" v-model="form.configMail.Target.value">
+      </FormItem>
+    </FormRow>
+    <FormRow>
+      <button @click="passwordForm.Edit">{{ Texts.ChangePassword.value }}</button>
+    </FormRow>
+  </PopForm>
+
+  <!-- 表单（修改密码）: -->
+  <PopForm :model="passwordForm.passwordForm">
+    <FormRow>
+      <FormItem :model="passwordForm.configOldPassword.ItemModel">
+        <Password :model="passwordForm.oldPassword"></Password>
+      </FormItem>
+    </FormRow>
+    <FormRow>
+      <FormItem :model="passwordForm.configPassword.ItemModel">
+        <Password :model="passwordForm.password"></Password>
+      </FormItem>
+    </FormRow>
+    <FormRow>
+      <FormItem :model="passwordForm.configConfirmPassword.ItemModel">
+        <Password :model="passwordForm.confirmPassword"></Password>
       </FormItem>
     </FormRow>
   </PopForm>
 </template>
 
 <script lang="ts" setup>
-import form from './HomeForm'
+import form from './UserInfoForm'
+import passwordForm from './PasswordForm'
 import AppConfig from '@/AppConfig'
 import { onBeforeMount, onMounted } from 'vue'
 import { useUserInfo } from '@/stores'

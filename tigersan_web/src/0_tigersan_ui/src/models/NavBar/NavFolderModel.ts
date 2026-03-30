@@ -38,7 +38,7 @@ class NavFolderModel {
     /** 所属“导航栏”模型 */
     NavBarModel: NavBarModel
     /** 所属“目录”模型 */
-    NavFolderModel?: NavFolderModel
+    ParentFolderModel?: NavFolderModel
     /** “按钮”集合 */
     ButtonModels: ShallowReactive<NavButtonModel[]> = shallowReactive([])
     /** “目录”集合 */
@@ -57,7 +57,7 @@ class NavFolderModel {
     //#region 【Ctor】
     constructor(navModel: NavBarModel, navFolderModel?: NavFolderModel) {
         this.NavBarModel = navModel
-        this.NavFolderModel = navFolderModel
+        this.ParentFolderModel = navFolderModel
     }
     //#endregion 【Ctor】
 
@@ -121,7 +121,7 @@ class NavFolderModel {
             },
             buttonModel => {
                 if (isExcludeNotDisplayButton
-                    && !buttonModel.NavFolderModel.IsOpen.value) {
+                    && !buttonModel.ParentFolderModel.IsOpen.value) {
                     return
                 }
                 ++count.ButtonCount

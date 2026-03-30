@@ -1,5 +1,5 @@
 import { PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
-import { companyMgtHelper, departmentMgtHelper, PersonModel } from '@/models'
+import { companyMgtHelper, departmentMgtHelper, PersonModel, roleMgtHelper } from '@/models'
 
 // 字段:
 /** 分页器 */
@@ -28,6 +28,13 @@ const personMgtTable = new TableModel<PersonModel>([
         IsReadonly: true,
         IsAllowWrap: false,
         _getStringAsync: source => departmentMgtHelper.GetNameAsync(source.department)
+    },
+    {
+        _propName: 'role',
+        Text: '角色',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getStringAsync: source => roleMgtHelper.GetNameAsync(source.role)
     },
     {
         _propName: 'username',

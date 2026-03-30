@@ -101,7 +101,7 @@ const configLightColor: FormItemConfig<LightSettingModel, string[]> = {
 
 /** “单次亮灯时长”项目配置 */
 const configLightTime: FormItemConfig<LightSettingModel, boolean> = {
-    _propName: 'LightTime',
+    _propName: '',
     _propNameVerticalAlign: 'top',
     PropText: '单次亮灯时长',
     IsEquired: true,

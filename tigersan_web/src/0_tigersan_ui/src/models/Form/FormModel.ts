@@ -28,6 +28,18 @@ class VerifyResult {
         this.VerifyText = verifyText
         this.VerifyState = verifyState
     }
+
+    IsOK() {
+        return this.VerifyState === FormResult.OK
+    }
+
+    IsWarning() {
+        return this.VerifyState === FormResult.Warning
+    }
+
+    IsError() {
+        return this.VerifyState === FormResult.Error
+    }
 }
 
 /** 提交结果 */
@@ -362,12 +374,31 @@ class FormItemModel<TSource extends object, TTarget> {
     //#region 【Functions】
     /** 更新“目标数据” */
     async UpdateTarget() {
-        this.Target.value = await this._getValue(this._formModel._source, this._propName)
+        // 检验“属性是否存在”:
+        if (this._propName === '') {
+            return
+        }
+        else if (!(this._propName in this._formModel._source)) {
+            console.warn(`The _source does not contain the ${this._propName} field!`)
+            return
+        }
+
+        // 修改“目标数据”:
+        this.Target.value = this._getValue(this._formModel._source, this._propName)
     }
 
     /** 修改“源数据”
      * （“Target”改变时，会自动调用） */
     readonly OnChange = (value: TTarget | undefined, oldValue: TTarget | undefined) => {
+        // 检验“属性是否存在”:
+        if (this._propName === '') {
+            return
+        }
+        else if (!(this._propName in this._formModel._source)) {
+            console.warn(`The _source does not contain the ${this._propName} field!`)
+            return
+        }
+
         if (!this._setValue) return
 
         // 修改“源数据”:

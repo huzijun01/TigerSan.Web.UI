@@ -70,8 +70,8 @@ const configEnable: FormItemConfig<RingingSettingModel, boolean> = {
 }
 
 /** “单次响铃时长”项目配置 */
-const configringingTime: FormItemConfig<RingingSettingModel, boolean> = {
-    _propName: 'ringingTime',
+const configRingingTime: FormItemConfig<RingingSettingModel, boolean> = {
+    _propName: '',
     _propNameVerticalAlign: 'top',
     PropText: '单次响铃时长',
     IsEquired: true,
@@ -192,7 +192,7 @@ let configringingSettingForm: FormConfig<RingingSettingModel> = {
         configProductType,
         configEnable,
         configFirmwareVersion,
-        configringingTime,
+        configRingingTime,
         configRinging_Fast_On,
         configRinging_Fast_Off,
         configRinging_Faster_On,
@@ -215,7 +215,7 @@ export default {
     configProductType,
     configFirmwareVersion,
     configEnable,
-    configringingTime,
+    configRingingTime,
     configRinging_Fast_On,
     configRinging_Fast_Off,
     configRinging_Faster_On,

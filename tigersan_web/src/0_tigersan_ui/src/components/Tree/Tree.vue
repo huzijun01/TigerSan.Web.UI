@@ -15,7 +15,6 @@ const { model } = defineProps({
         default: () => new TreeModel<any>()
     }
 })
-
 </script>
 
 <style lang="less" scoped>

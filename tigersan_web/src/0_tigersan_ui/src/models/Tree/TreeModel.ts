@@ -220,7 +220,7 @@ class TreeNodeConfig<TData> {
 class TreeModel<TData> {
     //#region 【Fields】
     /** “配置”集合 */
-    private _configs?: TreeNodeConfig<TData>[]
+    _configs: TreeNodeConfig<TData>[] = []
     /** 默认“数据” */
     _defaultData?: TData
     /** 默认“选中状态” */
@@ -286,7 +286,13 @@ class TreeModel<TData> {
     }
 
     /** 初始化 */
-    readonly Init = (configs?: TreeNodeConfig<TData>[]) => {
+    readonly Init = (
+        configs?: TreeNodeConfig<TData>[],
+        defaultData?: TData,
+        defaultIsChecked: boolean = false) => {
+        this._defaultData = defaultData
+        this._defaultIsChecked = defaultIsChecked
+
         if (configs) this._configs = configs
 
         try {
