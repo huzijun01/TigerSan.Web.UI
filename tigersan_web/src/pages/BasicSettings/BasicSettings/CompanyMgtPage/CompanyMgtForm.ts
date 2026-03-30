@@ -32,9 +32,7 @@ const configParent: FormItemConfig<CompanyModel, IdNameModel> = {
     PropText: '父公司',
     IsEquired: false,
     Target: selectParentCompany.Value,
-    _getValue: async (obj, propName) => {
-        return selectParentCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, obj.parent))
-    },
+    _getValue: async (obj, propName) => selectParentCompany.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, obj.parent)),
     _setValue: (obj, propName, value) => {
         obj.parent = value ? value.id : undefined
     }

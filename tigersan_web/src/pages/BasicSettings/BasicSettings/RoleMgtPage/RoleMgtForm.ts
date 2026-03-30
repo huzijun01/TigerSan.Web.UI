@@ -28,7 +28,7 @@ const configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     Target: selectCompanyForm.Value,
     _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
 }
 
 /** “部门”项目配置 */
@@ -39,7 +39,7 @@ const configDepartment: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
     Target: selectDepartmentForm.Value,
     _getValue: source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department, 0n, '不可为空')
 }
 
 /** “名称”项目配置 */

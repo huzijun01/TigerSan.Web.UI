@@ -72,7 +72,7 @@ table {
     .content-panel {
         flex-grow: 1;
         padding: 24px;
-        overflow: hidden;
+        overflow: auto;
     }
 
     .button-panel {

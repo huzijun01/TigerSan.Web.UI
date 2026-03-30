@@ -23,9 +23,7 @@ const configCompany: FormItemConfig<DepartmentModel, IdNameModel> = {
     Target: selectCompanyForm.Value,
     _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => {
-        return Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
-    }
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
 }
 
 /** “名称”项目配置 */

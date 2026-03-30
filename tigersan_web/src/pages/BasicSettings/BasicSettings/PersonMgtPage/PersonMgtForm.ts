@@ -40,7 +40,7 @@ const configCompany: FormItemConfig<PersonModel, IdNameModel> = {
     Target: ref(),
     _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
     _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company)
+    // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
 }
 
 /** “部门”项目配置 */
@@ -51,7 +51,7 @@ const configDepartment: FormItemConfig<PersonModel, IdNameModel> = {
     Target: ref(),
     _getValue: source => selectDepartmentForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.department)),
     _setValue: (source, propName, value) => source.department = value && value.id != undefined ? value.id : 0n,
-    // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department)
+    // _isVerifyOk: source => Verify.IsBigintGreaterThan(source.department, 0n, '不可为空')
 }
 
 /** “角色”项目配置 */
@@ -62,7 +62,7 @@ const configRole: FormItemConfig<PersonModel, IdNameModel> = {
     Target: selectRoleForm.Value,
     _getValue: source => selectRoleForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.role)),
     _setValue: (source, propName, value) => source.role = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.role)
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.role, 0n, '不可为空')
 }
 
 /** “用户名”项目配置 */

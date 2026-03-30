@@ -10,7 +10,7 @@ export class ContentSizeBehavior {
     /** 是否“打开” */
     readonly IsOpen = ref(true)
     /** 内容最大高度 */
-    readonly ContentMaxHeight = ref(500)
+    readonly ContentMaxHeight = ref(Number.MAX_VALUE)
     /** “内容容器”内边距 */
     readonly ContentPanelPadding = ref(0)
     /** 内容高度
