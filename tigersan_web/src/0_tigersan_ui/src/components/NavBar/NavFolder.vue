@@ -1,5 +1,5 @@
 <template>
-    <div class="nav-folder" v-if="model.IsShow.value">
+    <div class="nav-folder" v-if="model.IsAllowShow.value">
         <div class="border" ref="refRoot" @click="OnClick">
             <div class="icon iconfont">{{ model.Icon }}</div>
             <div class="title ellipsis">{{ model.Title }}</div>

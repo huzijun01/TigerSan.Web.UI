@@ -1,44 +1,32 @@
 import { ref, shallowReactive, type ShallowReactive } from 'vue'
-import { nanoid } from 'nanoid'
-import { Icons } from '../../base'
 import type { Action } from '../../types'
 import { NavBarModel } from './NavBarModel'
+import { NavItemModel } from './NavItemModel'
 import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'
 
-type NavFolderHandler = (folderModel: NavFolderModel) => void
+export type NavFolderHandler = (folderModel: NavFolderModel) => void
 
-class SubItemCount {
+export class SubItemCount {
     FolderCount: number = 0
     ButtonCount: number = 0
 }
 
-class NavFolderModel {
+export class NavFolderModel extends NavItemModel {
     //#region 【Fields】
-    _id = nanoid()
-
     _oldHeight: number = -1
     _oldIsOpened: boolean = true
-
     /** 更新“文件夹”高度
      * （NavFolder内部会自动添加回调） */
     public _updateFolderHeight?: Action;
     //#endregion 【Fields】
 
     //#region 【Properties】
-    /** 图标 */
-    Icon = ref(Icons.Folder_Linear)
-    /** 标题 */
-    Title = ref("null")
-    /** 是否显示 */
-    IsShow = ref(true)
+    /** 所属“目录”模型 */
+    ParentFolderModel?: NavFolderModel
     /** 是否打开 */
     IsOpen = ref(true)
     /** 子项高度 */
     SubItemsHeight = ref(0)
-    /** 所属“导航栏”模型 */
-    NavBarModel: NavBarModel
-    /** 所属“目录”模型 */
-    ParentFolderModel?: NavFolderModel
     /** “按钮”集合 */
     ButtonModels: ShallowReactive<NavButtonModel[]> = shallowReactive([])
     /** “目录”集合 */
@@ -55,9 +43,9 @@ class NavFolderModel {
     //#endregion 【Events】
 
     //#region 【Ctor】
-    constructor(navModel: NavBarModel, navFolderModel?: NavFolderModel) {
-        this.NavBarModel = navModel
-        this.ParentFolderModel = navFolderModel
+    constructor(navModel: NavBarModel, parentFolderModel?: NavFolderModel) {
+        super(navModel)
+        this.ParentFolderModel = parentFolderModel
     }
     //#endregion 【Ctor】
 
@@ -121,6 +109,7 @@ class NavFolderModel {
             },
             buttonModel => {
                 if (isExcludeNotDisplayButton
+                    && buttonModel.ParentFolderModel
                     && !buttonModel.ParentFolderModel.IsOpen.value) {
                     return
                 }
@@ -147,10 +136,4 @@ class NavFolderModel {
             + count.ButtonCount * this.NavBarModel._getButtonHeight()
     }
     //#endregion 【Functions】
-}
-
-export {
-    type NavFolderHandler,
-    SubItemCount,
-    NavFolderModel
 }

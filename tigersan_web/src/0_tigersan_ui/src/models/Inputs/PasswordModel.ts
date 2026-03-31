@@ -1,23 +1,23 @@
 import { computed, ref } from 'vue'
-import { TextBoxModel } from './TextBoxModel'
 import { Icons } from '../../base'
+import { TextBoxModel } from './TextBoxModel'
 
 class PasswordModel extends TextBoxModel {
     //#region 【Properties】
-    IsShowValue = ref(false)
+    readonly IsShowValue = ref(false)
 
     //#region [computed]
-    Type = computed(() => {
+    readonly Type = computed(() => {
         return this.IsShowValue.value ? 'text' : 'password'
     })
-    EyeText = computed(() => {
+    readonly EyeText = computed(() => {
         return this.IsShowValue.value ? Icons.Eye : Icons.Eye_Close
     })
     //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Functions】
-    OnClickEye() {
+    readonly OnClickEye = () => {
         this.IsShowValue.value = !this.IsShowValue.value
     }
     //#endregion 【Functions】

@@ -17,44 +17,51 @@ import OperationRecordPage from '@/pages/BasicSettings/OperationMgt/OperationRec
 import OperationRetryPage from '@/pages/BasicSettings/OperationMgt/OperationRetryPage/OperationRetryPage.vue'
 // SystemSettings:
 import SystemSettingsPage from '@/pages/BasicSettings/SystemSettings/SystemSettingsPage/SystemSettingsPage.vue'
+import { Authorities } from './Authorities'
 
-const navBasicSettings: NavFolderConfig = {
+export const navBasicSettings: NavFolderConfig = {
     Folders: [
         {
             Title: "基础设置",
             Icon: Icons.Setting_Linear,
             IsOpen: true,
+            _authority: Authorities.BasicSettingsFolder,
             Buttons: [
                 {
                     Title: "组织机构",
                     Icon: Icons.Monitor,
                     IsSelected: true,
                     IsShowCloseButton: false,
-                    _component: CompanyMgtPage
+                    _component: CompanyMgtPage,
+                    _authority: Authorities.CompanyMgtPage,
                 },
                 {
                     Title: "部门管理",
                     Icon: Icons.Group,
                     IsSelected: false,
-                    _component: DepartmentMgtPage
+                    _component: DepartmentMgtPage,
+                    _authority: Authorities.DepartmentMgtPage,
                 },
                 {
                     Title: "角色管理",
                     Icon: Icons.Necktie,
                     IsSelected: false,
-                    _component: RoleMgtPage
+                    _component: RoleMgtPage,
+                    _authority: Authorities.RoleMgtPage,
                 },
                 {
                     Title: "人员管理",
                     Icon: Icons.Person,
                     IsSelected: false,
-                    _component: PersonMgtPage
+                    _component: PersonMgtPage,
+                    _authority: Authorities.PersonMgtPage,
                 },
                 {
                     Title: "场地管理",
                     Icon: Icons.Building_1,
                     IsSelected: false,
-                    _component: undefined
+                    _component: undefined,
+                    _authority: Authorities.PlaceMgt,
                 },
             ]
         },
@@ -62,12 +69,14 @@ const navBasicSettings: NavFolderConfig = {
             Title: "基站管理",
             Icon: Icons.Router,
             IsOpen: false,
+            _authority: Authorities.BaseStationMgtFolder,
             Buttons: [
                 {
                     Title: "基站管理",
                     Icon: Icons.Router,
                     IsSelected: false,
-                    _component: BaseStationMgtPage
+                    _component: BaseStationMgtPage,
+                    _authority: Authorities.BaseStationMgtPage,
                 },
             ]
         },
@@ -75,21 +84,25 @@ const navBasicSettings: NavFolderConfig = {
             Title: "标签管理",
             Icon: Icons.Label_2,
             IsOpen: false,
+            _authority: Authorities.TagMgtFolder,
             Buttons: [
                 {
                     Title: "人员管理标签",
                     Icon: Icons.Person,
                     _component: PersonMgtTagPage,
+                    _authority: Authorities.PersonMgtTagPage,
                 },
                 {
                     Title: "资产管理标签",
                     Icon: Icons.Asset,
                     _component: AssetMgtTagPage,
+                    _authority: Authorities.AssetMgtTagPage,
                 },
                 {
                     Title: "传感器标签",
                     Icon: Icons.Environment,
-                    _component: EnvSensorPage
+                    _component: EnvSensorPage,
+                    _authority: Authorities.EnvSensorPage,
                 },
             ]
         },
@@ -97,11 +110,13 @@ const navBasicSettings: NavFolderConfig = {
             Title: "设备管理",
             Icon: Icons.Server,
             IsOpen: false,
+            _authority: Authorities.EqpMgtFolder,
             Buttons: [
                 {
                     Title: "4G定位终端",
                     Icon: Icons.EQP,
                     _component: Terminal4gPage,
+                    _authority: Authorities.Terminal4gPage,
                 },
             ]
         },
@@ -109,16 +124,19 @@ const navBasicSettings: NavFolderConfig = {
             IsOpen: false,
             Title: "操作管理",
             Icon: Icons.ViewProcess,
+            _authority: Authorities.OperationMgtFolder,
             Buttons: [
                 {
                     Title: "操作记录",
                     Icon: Icons.Time,
-                    _component: OperationRecordPage
+                    _component: OperationRecordPage,
+                    _authority: Authorities.OperationRecordPage,
                 },
                 {
                     Title: "操作重试",
                     Icon: Icons.Refresh,
-                    _component: OperationRetryPage
+                    _component: OperationRetryPage,
+                    _authority: Authorities.OperationRetryPage,
                 },
             ]
         },
@@ -126,25 +144,24 @@ const navBasicSettings: NavFolderConfig = {
             IsOpen: false,
             Title: "系统设置",
             Icon: Icons.Setting_Linear,
+            _authority: Authorities.SystemSettingsFolder,
             Buttons: [
                 {
                     Icon: Icons.Server,
                     Title: "设备设置",
-                    _component: SystemSettingsPage
+                    _component: SystemSettingsPage,
+                    _authority: Authorities.SystemSettingsPage,
                 },
                 {
                     Title: "报警管理",
                     Icon: Icons.Bell,
                     IsSelected: false,
-                    _component: undefined
+                    _component: undefined,
+                    _authority: Authorities.AlarmMgtPage,
                 },
             ]
         },
     ],
     Buttons: [
     ]
-}
-
-export {
-    navBasicSettings
 }

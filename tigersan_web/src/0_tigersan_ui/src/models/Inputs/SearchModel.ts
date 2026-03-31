@@ -8,11 +8,11 @@ class SearchModel extends TextBoxModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
-    IsShowValue = ref(false)
+    readonly IsShowValue = ref(false)
     //#endregion 【Properties】
 
     //#region 【Functions】
-    OnSearch() {
+    readonly OnSearch = () => {
         if (this._onSearch) {
             this._onSearch(this.Value.value)
         }

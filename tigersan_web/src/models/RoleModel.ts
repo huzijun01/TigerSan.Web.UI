@@ -1,6 +1,6 @@
 import { SelectModel } from "@/0_tigersan_ui/tigerui"
 import { AxiosHelper } from "@/helpers"
-import { AuthorityModel } from './AuthorityModel'
+import { AuthorityModel } from '../0_tigersan_ui/src/models/Authority/AuthorityModel'
 import { IdNameModel, IdNameModelHelper } from "./base/IdNameModel"
 
 export type RoleEvent = (model: RoleAuthorityModel) => void

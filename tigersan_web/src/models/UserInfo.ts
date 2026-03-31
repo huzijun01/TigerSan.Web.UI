@@ -1,7 +1,7 @@
 import { ObjectHelper, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { IdNameModel } from '@/models'
 import { AxiosHelper } from '@/helpers'
-import { AuthorityModel } from './AuthorityModel'
+import { AuthorityModel } from '../0_tigersan_ui/src/models/Authority/AuthorityModel'
 
 export class UserInfo {
     // 基础:

@@ -3,7 +3,7 @@ import { StringHelper } from "../../helpers"
 import type { T2String } from "../../types"
 
 /** “值转换控件”基类 */
-class ConverterBase<TValue> {
+export class ConverterBase<TValue> {
     /** 改变时 */
     /** 转换器 */
     _converter?: T2String<TValue>
@@ -51,17 +51,14 @@ class ConverterBase<TValue> {
 
         this.Text.value = this.GetText()
         if ((this.Text.value === '' || this.Text.value === undefined) && this.Value.value != undefined) {
+            debugger
             console.warn('The Text is empty!', this.Value.value)
         }
     }
 
     /** 是否“模糊包含” */
-    IsFuzzyIncludes(search: string): boolean {
+    readonly IsFuzzyIncludes = (search: string): boolean => {
         return StringHelper.IsFuzzyIncludes(this.GetText(), search)
     }
     //#endregion 【Functions】
-}
-
-export {
-    ConverterBase
 }

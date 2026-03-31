@@ -5,11 +5,11 @@ import { ContentSizeBehavior } from "../../helpers"
 class DrawerBoxModel extends ContentSizeBehavior {
     //#region 【Properties】
     /** 是否“打开” */
-    Title = ref('Title')
+    readonly Title = ref('Title')
 
     //#region [computed]
     /** 类对象 */
-    ClassObj = computed(() => {
+    readonly ClassObj = computed(() => {
         return {
             'drawer-box-open': this.IsOpen.value
         }
@@ -19,7 +19,7 @@ class DrawerBoxModel extends ContentSizeBehavior {
 
     //#region 【Functions】
     /** 点击后 */
-    OnClick() {
+    readonly OnClick = () => {
         this.IsOpen.value = !this.IsOpen.value
     }
     //#endregion 【Functions】

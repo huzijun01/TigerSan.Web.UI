@@ -8,13 +8,13 @@ class TextBoxModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
-    Value = ref('')
-    Placeholder = ref('')
-    Width = ref('')
-    IsReadonly = ref(false)
+    readonly Value = ref('')
+    readonly Placeholder = ref('')
+    readonly Width = ref('')
+    readonly IsReadonly = ref(false)
 
     //#region [computed]
-    styleObj = computed(() => {
+    readonly styleObj = computed(() => {
         return {
             width: this.Width.value,
         }
@@ -23,19 +23,19 @@ class TextBoxModel {
     //#endregion 【Properties】
 
     //#region 【Functions】
-    OnInput() {
+    readonly OnInput = () => {
         if (this._onInput) {
             this._onInput(this.Value.value)
         }
     }
 
-    OnChange() {
+    readonly OnChange = () => {
         if (this._onChange) {
             this._onChange(this.Value.value)
         }
     }
 
-    OnClear() {
+    readonly OnClear = () => {
         this.Value.value = ''
         this.OnChange()
     }

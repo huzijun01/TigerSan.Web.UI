@@ -17,15 +17,15 @@ class PaginationButtonModel {
 
     //#region 【Properties】
     /** 文本 */
-    Text = ref('1')
+    readonly Text = ref('1')
     /** 悬浮文本 */
-    HoverText = ref('')
+    readonly HoverText = ref('')
     /** 是否“显示” */
-    IsShow = ref(true)
+    readonly IsShow = ref(true)
     /** 是否“被选中” */
-    IsSelected = ref(false)
+    readonly IsSelected = ref(false)
     /** 是否“启用” */
-    IsEnable = ref(true)
+    readonly IsEnable = ref(true)
 
     //#region [引用]
     /** 数字 */
@@ -54,7 +54,7 @@ class PaginationButtonModel {
 
     //#region 【回调】
     /** “普通按钮”被选中 */
-    private NormalButton_OnCheckedInternal = () => {
+    private readonly NormalButton_OnCheckedInternal = () => {
         this._pagination.SelectedNum.value = this.Num
     }
     //#endregion 【回调】

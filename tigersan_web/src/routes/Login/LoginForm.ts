@@ -1,6 +1,6 @@
 import { useUserInfo } from '@/stores'
 import { ActionResultCode, UserHelper, UserInfo } from '@/models'
-import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter, ObjectHelper, FormResult } from '@/0_tigersan_ui/tigerui'
+import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter, ObjectHelper, FormResult, authorityHelper, PathIsReadonly } from '@/0_tigersan_ui/tigerui'
 
 // 组件模型:
 const uname = new TextBoxModel()
@@ -57,6 +57,7 @@ const GetSource = () => {
 const OnSubmitAsync = async (source: object) => {
     const userInfo = useUserInfo()
     const userInfoForm = source as UserInfo
+    // 发送“登录请求”:
     var res = await UserHelper.LoginAsync(userInfoForm.username, userInfoForm.password)
     if (res.code == ActionResultCode.Error) {
         return new SubmitResult(res.message, FormResult.Error)
@@ -66,7 +67,17 @@ const OnSubmitAsync = async (source: object) => {
         return new SubmitResult('The data is undefined!', FormResult.Error)
     }
 
+    // 保存“用户信息”:
     ObjectHelper.ShallowSet(res.data as object, userInfo)
+
+    // 添加“权限”:
+    if (userInfo.isAdmin && userInfo.isRoot) {
+        authorityHelper.AddAllAuthorities()
+    } else {
+        authorityHelper.SetAuthorities(userInfo.authorities)
+    }
+
+    // 跳转到“主页”:
     useRouter().GoTo('Home')
 
     return new SubmitResult('登录成功')

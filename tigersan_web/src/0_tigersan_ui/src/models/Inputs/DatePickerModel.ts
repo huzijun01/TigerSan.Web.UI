@@ -27,7 +27,7 @@ class DatePickerModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
-    date = ref<string | string[]>([])
+    readonly date = ref<string | string[]>([])
     //#endregion 【Properties】
 
     //#region 【Functions】

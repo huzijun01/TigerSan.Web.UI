@@ -4,13 +4,11 @@ import { Colors, Theme } from '../../base'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
 
-type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
-type TryTableItemFunc<T extends object> = TableItemFunc<T> | undefined
-type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
-type TryTableHeaderFunc<T extends object> = TableHeaderFunc<T> | undefined
+export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
+export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
 
 /** 文本对齐 */
-enum TextAlign {
+export enum TextAlign {
     Left = 'left',
     Right = 'right',
     Center = 'center',
@@ -18,7 +16,7 @@ enum TextAlign {
 }
 
 /** “表格”配置 */
-class TableModel<TSource extends object> {
+export class TableModel<TSource extends object> {
     //#region 【Fields】
     /** 是否“自动刷新” */
     _isAutoRefresh = true
@@ -31,15 +29,15 @@ class TableModel<TSource extends object> {
      * （由“TableModel”维护） */
     _checkboxBehavior: CheckboxBehavior
     /** 初始化“项目” */
-    _initItem: TryTableItemFunc<TSource>
+    _initItem?: TableItemFunc<TSource>
     /** 初始化“列头” */
-    _initHeader: TryTableHeaderFunc<TSource>
+    _initHeader?: TableHeaderFunc<TSource>
     /** 初始化“行模型”后 */
     _onInitRowModel?: (rowDatas: ShallowReactive<TSource[]>) => void
     /** “项目文本”输入 */
-    _onItemTextInput: TryTableItemFunc<TSource>
+    _onItemTextInput?: TableItemFunc<TSource>
     /** “项目文本”改变 */
-    _onItemTextChange: TryTableItemFunc<TSource>
+    _onItemTextChange?: TableItemFunc<TSource>
     /** “选中状态”改变 */
     _onSelectStateChange?: ObjectArrayFunc
     //#endregion 【Fields】
@@ -49,58 +47,58 @@ class TableModel<TSource extends object> {
     readonly RowDatas: ShallowReactive<TSource[]> = shallowReactive([])
 
     /** “列头模型”集合 */
-    HeaderModels: ShallowReactive<TableHeaderModel<TSource>[]> = shallowReactive([])
+    readonly HeaderModels: ShallowReactive<TableHeaderModel<TSource>[]> = shallowReactive([])
 
     /** “行模型”集合 */
-    RowModels: ShallowReactive<TableRowModel<TSource>[]> = shallowReactive([])
+    readonly RowModels: ShallowReactive<TableRowModel<TSource>[]> = shallowReactive([])
 
     /** 是否“填充父容器” */
-    IsFill = ref(true)
+    readonly IsFill = ref(true)
 
     /** 是否“全选” */
-    IsSelectAll = ref(false)
+    readonly IsSelectAll = ref(false)
 
     /** 是否“显示复选框” */
-    IsShowCheckBox = ref(true)
+    readonly IsShowCheckBox = ref(true)
 
     /** 是否“允许多选” */
-    IsAllowMultiSelect = ref(true)
+    readonly IsAllowMultiSelect = ref(true)
 
     //#region [computed]
     /** 类对象 */
-    ClassObj = computed(() => {
+    readonly ClassObj = computed(() => {
         return {
             fill: this.IsFill.value
         }
     })
 
     /** 是否“已选中” */
-    IsSelected = computed(() => {
+    readonly IsSelected = computed(() => {
         return this.SelectedRowDatas.value.length > 0
     })
 
     /** 是否“已单选” */
-    IsOnlySelected = computed(() => {
+    readonly IsOnlySelected = computed(() => {
         return this.SelectedRowDatas.value.length === 1
     })
 
     /** 是否“显示全选复选框” */
-    IsShowSelectAllCheckBox = computed(() => {
+    readonly IsShowSelectAllCheckBox = computed(() => {
         return this.IsShowCheckBox && this.IsAllowMultiSelect.value
     })
 
     /** 行数 */
-    Count = computed(() => {
+    readonly Count = computed(() => {
         return this.RowDatas.length
     })
 
     /** “被选行”个数 */
-    SelectedRowCount = computed(() => {
+    readonly SelectedRowCount = computed(() => {
         return this.SelectedRowDatas.value.length
     })
 
     /** “被选中”的“行数据”集合 */
-    SelectedRowDatas = computed(() => {
+    readonly SelectedRowDatas = computed(() => {
         let list = new Array<TSource>()
 
         this.RowModels.forEach(rowModel => {
@@ -152,7 +150,7 @@ class TableModel<TSource extends object> {
 
     //#region 【Functions】
     /** 刷新 */
-    Refresh(isInitHeaderModels: boolean = false) {
+    readonly Refresh = (isInitHeaderModels: boolean = false) => {
         if (isInitHeaderModels) {
             this.InitHeaderModels()
         }
@@ -160,7 +158,7 @@ class TableModel<TSource extends object> {
     }
 
     /** 初始化“列头模型”集合 */
-    InitHeaderModels() {
+    readonly InitHeaderModels = () => {
         this.HeaderModels.splice(0)
 
         this._headerConfigs.forEach(headerConfig => {
@@ -172,7 +170,7 @@ class TableModel<TSource extends object> {
     }
 
     /** 初始化“行模型” */
-    InitRowModel() {
+    readonly InitRowModel = () => {
         this.RowModels.splice(0)
 
         this.RowDatas.forEach(rowData => {
@@ -193,26 +191,26 @@ class TableModel<TSource extends object> {
 
     /** 触发“选中状态”改变
      * （由“Table”内部自动调用） */
-    RiseOnSelectStateChange() {
+    readonly RiseOnSelectStateChange = () => {
         if (!this._onSelectStateChange) return
         this._onSelectStateChange(this.SelectedRowDatas.value)
     }
 
     /** 设置“行数据”集合 */
-    SetRowDatas(rowDatas: TSource[]) {
+    readonly SetRowDatas = (rowDatas: TSource[]) => {
         this.RowDatas.splice(0)
         this.RowDatas.push(...rowDatas)
     }
 
     /** 删除“行数据” */
-    DeleteRowData(rowData: TSource) {
+    readonly DeleteRowData = (rowData: TSource) => {
         ArrayHelper.Delete(this.RowDatas, rowData)
     }
     //#endregion 【Functions】
 }
 
 /** “行”配置 */
-class TableRowModel<T extends object> {
+export class TableRowModel<T extends object> {
     //#region 【Fields】
     _id = nanoid()
     /** 行数据 */
@@ -223,10 +221,10 @@ class TableRowModel<T extends object> {
 
     //#region 【Properties】
     /** 是否“选中” */
-    IsChecked = ref(false)
+    readonly IsChecked = ref(false)
 
     /** “项目模型”集合 */
-    ItemModels: ShallowReactive<TableItemModel<T>[]> = shallowReactive([])
+    readonly ItemModels: ShallowReactive<TableItemModel<T>[]> = shallowReactive([])
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -238,7 +236,7 @@ class TableRowModel<T extends object> {
 }
 
 /** “项目”配置 */
-class TableItemModel<TSource extends object> {
+export class TableItemModel<TSource extends object> {
     //#region 【Fields】
     _id = nanoid()
     _headerModel: TableHeaderModel<TSource>
@@ -250,17 +248,17 @@ class TableItemModel<TSource extends object> {
 
     //#region 【Properties】
     /** 文本 */
-    Text = ref('')
+    readonly Text = ref('')
     /** 是否只读 */
-    IsReadonly = computed(() => this._headerModel.IsReadonly.value)
+    readonly IsReadonly = computed(() => this._headerModel.IsReadonly.value)
     /** 颜色 */
-    Color = ref('')
+    readonly Color = ref('')
     /** 背景 */
-    Background = ref(Colors.Transparent)
+    readonly Background = ref(Colors.Transparent)
 
     //#region [computed]
     /** 类对象 */
-    ClassObj = computed(() => {
+    readonly ClassObj = computed(() => {
         return {
             ellipsis: !this._headerModel.IsAllowWrap.value,
         }
@@ -279,7 +277,7 @@ class TableItemModel<TSource extends object> {
     //#region 【Functions】
     /** 项目文本输入
      * （由“TableItem”内部调用） */
-    _onItemTextInput() {
+    readonly _onItemTextInput = () => {
         if (this._tableModel._onItemTextInput) {
             this._tableModel._onItemTextInput(this)
         }
@@ -287,7 +285,7 @@ class TableItemModel<TSource extends object> {
 
     /** 项目文本改变
      * （由“TableItem”内部调用） */
-    _onItemTextChange() {
+    readonly _onItemTextChange = () => {
         if (this._tableModel._onItemTextChange) {
             this._tableModel._onItemTextChange(this)
         }
@@ -295,7 +293,7 @@ class TableItemModel<TSource extends object> {
 
     /** 更新“文本” 
      * “TableItem”内部会自动调用 */
-    UpdateText() {
+    readonly UpdateText = () => {
         // 检验“属性是否存在”:
         if (this._headerModel._propName === '') {
             return
@@ -316,7 +314,7 @@ class TableItemModel<TSource extends object> {
     }
 
     /** 修改“行数据” */
-    SetRowData() {
+    readonly SetRowData = () => {
         // 检验“属性是否存在”:
         if (this._headerModel._propName === '') {
             return
@@ -331,14 +329,14 @@ class TableItemModel<TSource extends object> {
     }
 
     /** 获取“源数据” */
-    GetSource(): unknown {
+    readonly GetSource = (): unknown => {
         return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName, undefined)
     }
     //#endregion 【Functions】
 }
 
 /** “列头”模型 */
-class TableHeaderModel<TSource extends object> {
+export class TableHeaderModel<TSource extends object> {
     //#region 【Fields】
     _id = nanoid()
     /** 属性名 */
@@ -355,19 +353,19 @@ class TableHeaderModel<TSource extends object> {
 
     //#region 【Properties】
     /** 文本 */
-    Text = ref('null')
+    readonly Text = ref('null')
     /** 宽度 */
-    Width = ref<number | undefined>(undefined)
+    readonly Width = ref<number | undefined>(undefined)
     /** 文本对齐 */
-    TextAlign = ref(TextAlign.Center)
+    readonly TextAlign = ref(TextAlign.Center)
     /** 是否只读 */
-    IsReadonly = ref(true)
+    readonly IsReadonly = ref(true)
     /** 是否允许换行 */
-    IsAllowWrap = ref(false)
+    readonly IsAllowWrap = ref(false)
 
     //#region [computed]
     /** 样式对象 */
-    widthStyleObj = computed(() => {
+    readonly widthStyleObj = computed(() => {
         return {
             width: this.Width.value != undefined ? `${this.Width.value}px` : 'auto'
         }
@@ -384,7 +382,7 @@ class TableHeaderModel<TSource extends object> {
 }
 
 /** “列头”配置 */
-class TableHeaderConfig<TSource extends object> {
+export class TableHeaderConfig<TSource extends object> {
     /** 属性名 */
     _propName: string
     /** 文本获取方法 */
@@ -412,7 +410,7 @@ class TableHeaderConfig<TSource extends object> {
 }
 
 /** 将“配置”设置到“模型” */
-function SetTableHeaderModel<TSource extends object>(model: TableHeaderModel<TSource>, config: TableHeaderConfig<TSource>) {
+export function SetTableHeaderModel<TSource extends object>(model: TableHeaderModel<TSource>, config: TableHeaderConfig<TSource>) {
     model._propName = config._propName
     if (config._getString) model._getString = config._getString
     if (config._getStringAsync) model._getStringAsync = config._getStringAsync
@@ -422,18 +420,4 @@ function SetTableHeaderModel<TSource extends object>(model: TableHeaderModel<TSo
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
     if (config.IsAllowWrap != undefined) model.IsAllowWrap.value = config.IsAllowWrap
-}
-
-export {
-    type TableItemFunc,
-    type TryTableItemFunc,
-    type TableHeaderFunc,
-    type TryTableHeaderFunc,
-    TextAlign,
-    TableModel,
-    TableRowModel,
-    TableItemModel,
-    TableHeaderModel,
-    TableHeaderConfig,
-    SetTableHeaderModel,
 }

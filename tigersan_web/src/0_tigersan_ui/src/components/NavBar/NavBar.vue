@@ -22,8 +22,8 @@
 
         <!-- 菜单: -->
         <div class="menu">
-            <NavFolder v-for="f in model.FolderModel.FolderModels" :key="f._id" :model="f" />
-            <NavButton v-for="b in model.FolderModel.ButtonModels" :key="b._id" :model="b" />
+            <NavFolder v-for="f in model.RootFolder.FolderModels" :key="f._id" :model="f" />
+            <NavButton v-for="b in model.RootFolder.ButtonModels" :key="b._id" :model="b" />
         </div>
 
         <!-- 底部: -->

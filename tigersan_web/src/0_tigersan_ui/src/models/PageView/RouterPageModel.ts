@@ -17,10 +17,10 @@ class RouterPageModel {
 
     //#region 【Properties】
     /** 页面 */
-    GetPage = () => {
+    readonly GetPage = () => {
         return this._page
     }
-    SetPage = (page: PageModel) => {
+    readonly SetPage = (page: PageModel) => {
         this._page = page
         if (RouterPageModel._onPageChange) {
             RouterPageModel._onPageChange(page)
@@ -29,10 +29,10 @@ class RouterPageModel {
     private _page = new PageModel()
 
     /** “页面”集合 */
-    GetPages = () => {
+    readonly GetPages = () => {
         return this._pages
     }
-    SetPages = (pages: PageModel[]) => {
+    readonly SetPages = (pages: PageModel[]) => {
         this._pages = pages
         this.GoTo('/')
     }
@@ -48,7 +48,7 @@ class RouterPageModel {
 
     //#region 【Functions】
     /** 跳转 */
-    GoTo = (path: string) => {
+    readonly GoTo = (path: string) => {
         const page = this._pages.find(p => p.path === path)
         if (page) {
             this.SetPage(page)

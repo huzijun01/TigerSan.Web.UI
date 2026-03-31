@@ -1,15 +1,22 @@
 import { type Component } from 'vue'
 import { NavBarModel } from './NavBarModel'
+import { NavItemModel } from './NavItemModel'
+import { AuthorityVerify } from '../Authority/AuthorityVerify'
 import { type NavButtonHandler, NavButtonModel } from "./NavButtonModel"
 import { type NavFolderHandler, NavFolderModel } from './NavFolderModel'
 
-class NavFolderConfig {
+class NavItemConfig {
+    /** 权限 */
+    _authority?: AuthorityVerify
     /** 图标 */
     Icon?: string
     /** 标题 */
     Title?: string
     /** 是否显示 */
     IsShow?: boolean
+}
+
+class NavFolderConfig extends NavItemConfig {
     /** 是否打开 */
     IsOpen?: boolean
     /** 子项高度 */
@@ -26,15 +33,9 @@ class NavFolderConfig {
     Closed?: NavFolderHandler
 }
 
-class NavButtonConfig {
+class NavButtonConfig extends NavItemConfig {
     /** 组件 */
     _component?: Component
-    /** 图标 */
-    Icon?: string
-    /** 标题 */
-    Title?: string
-    /** 是否显示 */
-    IsShow?: boolean
     /** 是否打开 */
     IsOpen?: boolean
     /** 是否被选中 */
@@ -47,10 +48,15 @@ class NavButtonConfig {
     Checked?: NavButtonHandler
 }
 
-function SetNavFolderModel(model: NavFolderModel, config: NavFolderConfig) {
+function SetNavItemModel(model: NavItemModel, config: NavItemConfig) {
     if (config.Icon != undefined) model.Icon.value = config.Icon
     if (config.Title != undefined) model.Title.value = config.Title
     if (config.IsShow != undefined) model.IsShow.value = config.IsShow
+    if (config._authority != undefined) model._authority = config._authority
+}
+
+function SetNavFolderModel(model: NavFolderModel, config: NavFolderConfig) {
+    SetNavItemModel(model, config)
     if (config.IsOpen != undefined) model.IsOpen.value = config.IsOpen
     if (config.SubItemsHeight != undefined) model.SubItemsHeight.value = config.SubItemsHeight
     model.Clicked = config.Clicked
@@ -60,9 +66,7 @@ function SetNavFolderModel(model: NavFolderModel, config: NavFolderConfig) {
 
 function SetNavButtonModel(model: NavButtonModel, config: NavButtonConfig) {
     model._component = config._component
-    if (config.Icon != undefined) model.Icon.value = config.Icon
-    if (config.Title != undefined) model.Title.value = config.Title
-    if (config.IsShow != undefined) model.IsShow.value = config.IsShow
+    SetNavItemModel(model, config)
     if (config.IsShowCloseButton != undefined) model.IsShowCloseButton.value = config.IsShowCloseButton
     model.Clicked = config.Clicked
     model.Checked = config.Checked

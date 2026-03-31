@@ -9,14 +9,14 @@ class CheckboxModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
-    IsChecked = ref(false)
-    Value = ref<string>()
-    Text = ref('')
-    IsReadonly = ref(false)
+    readonly IsChecked = ref(false)
+    readonly Value = ref<string>()
+    readonly Text = ref('')
+    readonly IsReadonly = ref(false)
     //#endregion 【Properties】
 
     //#region 【Functions】
-    OnChange = () => {
+    readonly OnChange = () => {
         if (this._onChange) {
             this._onChange(this)
         }
@@ -30,11 +30,11 @@ class CheckboxGroupModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
-    Values = ref<Array<string>>([])
+    readonly Values = ref<Array<string>>([])
     //#endregion 【Properties】
 
     //#region 【Functions】
-    OnChange() {
+    readonly OnChange = () => {
         if (this._onChange) {
             this._onChange(this.Values.value)
         }

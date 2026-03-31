@@ -48,13 +48,13 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configAuthorities.ItemModel">
-                <div class="readonly-panel flex-left" v-show="authorityHelper._tree.IsActive.value">
+                <div class="readonly-panel flex-left" v-show="form.authorityHelperForm._tree.IsActive.value">
                     <span class="text">{{ Texts.IsReadonly.value }}</span>
-                    <input type="checkbox" v-model="authorityHelper.IsReadonly.value"
-                        @change="authorityHelper.SetIsReadonlyRange">
+                    <input type="checkbox" v-model="form.authorityHelperForm.IsReadonly.value"
+                        @change="form.authorityHelperForm.UpdateIsReadonlyRange">
                 </div>
                 <div class="tree-box">
-                    <Tree :model="authorityHelper._tree" />
+                    <Tree :model="form.authorityHelperForm._tree" />
                 </div>
             </FormItem>
         </FormRow>
@@ -64,7 +64,6 @@
 <script lang="ts" setup>
 import form from './RoleMgtForm'
 import { onMounted } from 'vue'
-import { authorityHelper } from '@/models'
 import { roleMgtTable } from './RoleMgtTable'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
 

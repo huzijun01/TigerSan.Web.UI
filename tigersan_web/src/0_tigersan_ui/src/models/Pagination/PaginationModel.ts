@@ -159,7 +159,7 @@ class PaginationModel {
 
         this.InitButtonModels(start, end)
         this.UpdateIsSelected()
-        
+
         this._onChange?.(this.PageSize.value, this.SelectedNum.value)
     }
 

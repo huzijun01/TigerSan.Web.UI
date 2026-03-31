@@ -1,5 +1,5 @@
 <template>
-    <div class="nav-button" ref="refRoot" v-if="model.IsShow.value" @click="OnClick" :class="{
+    <div class="nav-button" ref="refRoot" v-if="model.IsAllowShow.value" @click="OnClick" :class="{
         selected: model.IsSelected.value
     }">
         <div class="icon iconfont">{{ model.Icon }}</div>

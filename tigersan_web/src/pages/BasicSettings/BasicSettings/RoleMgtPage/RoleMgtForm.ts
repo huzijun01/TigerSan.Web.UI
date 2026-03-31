@@ -1,7 +1,11 @@
 import { ref } from 'vue'
 import { roleMgtTable } from './RoleMgtTable'
-import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, authorityHelper, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel } from '@/0_tigersan_ui/tigerui'
+import { authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper } from '@/0_tigersan_ui/tigerui'
+
+/** “权限助手”实例 */
+const authorityHelperForm = new AuthorityHelper()
+authorityHelperForm._tree._configs = authorityHelper._tree._configs
 
 // 选择框:
 /** 筛选 */
@@ -86,9 +90,9 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
             await selectDepartmentForm.UpdateItemsAsync()
             selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
 
-            authorityHelper.Init(rowData.authorities)
+            authorityHelperForm.InitTree(rowData.authorities)
         } else {
-            authorityHelper.Init()
+            authorityHelperForm.InitTree()
         }
     },
     _itemConfigs: [
@@ -126,8 +130,9 @@ async function Add() {
     roleMgtForm._getSource = AddGetSource
 
     roleMgtForm._onSubmitAsync = async source => {
-        source.authorities = await authorityHelper.GetModels()
+        source.authorities = await authorityHelperForm.GetAuthorities()
         const res = await roleMgtHelper.Add(source)
+
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -151,7 +156,7 @@ async function Edit() {
     }
 
     roleMgtForm._onSubmitAsync = async source => {
-        source.authorities = await authorityHelper.GetModels()
+        source.authorities = await authorityHelperForm.GetAuthorities()
         const res = await roleMgtHelper.Edit(source)
 
         await Refresh()
@@ -189,6 +194,7 @@ function DeleteRowData(state: DialogState) {
 }
 
 export default {
+    authorityHelperForm,
     pagination,
     selectCompany,
     selectDepartment,
