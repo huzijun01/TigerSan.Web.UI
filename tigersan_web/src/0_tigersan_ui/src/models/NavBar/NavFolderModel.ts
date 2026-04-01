@@ -55,19 +55,20 @@ export class NavFolderModel extends NavItemModel {
         folderModel: NavFolderModel,
         fnFolder: NavFolderHandler | undefined,
         fnButton: NavButtonHandler | undefined = undefined,
-        isIncludeNotShowFolder: boolean = true) {
-        if (!isIncludeNotShowFolder && (!folderModel.IsShow.value || !folderModel.IsOpen.value)) return
+        isIncludeNotShowItem: boolean = true) {
+        if (!isIncludeNotShowItem && (!folderModel.IsAllowShow.value || !folderModel.IsOpen.value)) return
 
         // 子目录：
         for (const subFolderModel of folderModel.FolderModels) {
             fnFolder?.(subFolderModel)
-            NavFolderModel.RecursivelyOperateSubItems(subFolderModel, fnFolder, fnButton, isIncludeNotShowFolder)
+            NavFolderModel.RecursivelyOperateSubItems(subFolderModel, fnFolder, fnButton, isIncludeNotShowItem)
         }
 
         // 子按钮：
         if (!fnButton) return
 
         for (const buttonModel of folderModel.ButtonModels) {
+            if (!isIncludeNotShowItem && buttonModel._authority && !buttonModel._authority.IsEnable.value) continue
             fnButton?.(buttonModel)
         }
     }
