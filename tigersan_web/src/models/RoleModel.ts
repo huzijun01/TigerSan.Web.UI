@@ -19,7 +19,7 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
 
     // 查:
     /** 筛选“总数” */
-    readonly GetCount = async (company?: bigint, department?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }])
+    readonly GetCountAsync = async (company?: bigint, department?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }])
 
     /** 筛选“数据”集合 */
     readonly GetListAsync = async (company?: bigint, department?: bigint, pageSize?: number, pageNumber?: number) =>

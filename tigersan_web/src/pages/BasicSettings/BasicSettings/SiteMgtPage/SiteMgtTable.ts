@@ -1,13 +1,8 @@
-import { PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
-import { companyMgtHelper, departmentMgtHelper, PersonModel, roleMgtHelper } from '@/models'
-
-// 字段:
-/** 分页器 */
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
+import { companyMgtHelper, siteTypeMgtHelper, SiteModel } from '@/models'
+import { TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
-const personMgtTable = new TableModel<PersonModel>([
+const siteMgtTable = new TableModel<SiteModel>([
     // {
     //     _propName: 'id',
     //     Text: 'ID',
@@ -23,28 +18,33 @@ const personMgtTable = new TableModel<PersonModel>([
         _getStringAsync: source => companyMgtHelper.GetName(source.company)
     },
     {
-        _propName: 'department',
-        Text: '部门',
+        _propName: 'type',
+        Text: '类型',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => departmentMgtHelper.GetName(source.department)
+        _getStringAsync: source => siteTypeMgtHelper.GetName(source.type)
     },
     {
-        _propName: 'role',
-        Text: '角色',
-        IsReadonly: true,
-        IsAllowWrap: false,
-        _getStringAsync: source => roleMgtHelper.GetName(source.role)
-    },
-    {
-        _propName: 'username',
-        Text: '用户名',
+        _propName: 'name',
+        Text: '名称',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
-        _propName: 'nickname',
-        Text: '昵称',
+        _propName: 'addr',
+        Text: '地址',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
+        _propName: 'addrDetail',
+        Text: '详细地址',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
+        _propName: 'manager',
+        Text: '联系人',
         IsReadonly: true,
         IsAllowWrap: false,
     },
@@ -55,17 +55,16 @@ const personMgtTable = new TableModel<PersonModel>([
         IsAllowWrap: false,
     },
     {
-        _propName: 'mail',
-        Text: '邮箱',
+        _propName: 'comment',
+        Text: '备注',
         IsReadonly: true,
         IsAllowWrap: false,
     },
 ])
 
 // 初始化:
-personMgtTable.IsAllowMultiSelect.value = false
+siteMgtTable.IsAllowMultiSelect.value = false
 
 export {
-    pagination,
-    personMgtTable,
+    siteMgtTable,
 }

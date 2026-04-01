@@ -15,7 +15,7 @@ const departmentMgtTable = new TableModel<DepartmentModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetNameAsync(source.company)
+        _getStringAsync: source => companyMgtHelper.GetName(source.company)
     },
     {
         _propName: 'name',

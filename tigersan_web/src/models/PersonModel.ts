@@ -23,7 +23,7 @@ class PersonMgtHelper extends IdModelHelper<PersonModel> {
     }
 
     /** 筛选“总数” */
-    readonly GetCount = async (company?: bigint, department?: bigint, role?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }, { key: 'role', value: role }])
+    readonly GetCountAsync = async (company?: bigint, department?: bigint, role?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }, { key: 'role', value: role }])
 
     /** 筛选“数据”集合 */
     readonly GetListAsync = async (company?: bigint, department?: bigint, role?: bigint, name?: string, pageSize?: number, pageNumber?: number) =>

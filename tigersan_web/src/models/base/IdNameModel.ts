@@ -17,7 +17,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
 
     // 查:
     /** 获取“ID名称对”集合 */
-    readonly GetIdNamesAsync = async () => await AxiosHelper.SelectIdName(this._action)
+    readonly GetIdNames = async () => await AxiosHelper.SelectIdName(this._action)
 
     /** 获取“ID名称对” */
     readonly GetIdName = (id: bigint): IdNameModel | undefined => {
@@ -29,7 +29,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
     }
 
     /** 获取“公司” */
-    readonly GetModelAsync = async (id: bigint): Promise<TModel | undefined> => {
+    readonly GetModel = async (id: bigint): Promise<TModel | undefined> => {
         const model = (await this.GetList()).find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
 
         if (!model) {
@@ -40,9 +40,9 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
     }
 
     /** 获取“名称” */
-    readonly GetNameAsync = async (id: bigint, isUpdate: boolean = false): Promise<string> => {
+    readonly GetName = async (id: bigint, isUpdate: boolean = false): Promise<string> => {
         if (isUpdate || !this._idNames) {
-            this._idNames = await this.GetIdNamesAsync()
+            this._idNames = await this.GetIdNames()
         }
 
         const idName = this._idNames.find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
@@ -55,8 +55,8 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
     }
 
     /** 更新“ID名称对”集合 */
-    readonly UpdateIdNamesAsync = async () => {
-        this._idNames = await this.GetIdNamesAsync()
+    readonly UpdateIdNames = async () => {
+        this._idNames = await this.GetIdNames()
     }
 
     /** 获取“筛选框模型” */
@@ -69,7 +69,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
         select.IsAllowSearch.value = true
         select.PlaceholderCN.value = placeholderCN
         select.PlaceholderEN.value = placeholderEN
-        select._getItemsAsync = async () => await this.GetIdNamesAsync()
+        select._getItemsAsync = async () => await this.GetIdNames()
         select._converter = data => data.name
         return select
     }

@@ -157,14 +157,14 @@ const personMgtForm = new FormModel(configPersonMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNamesAsync()
-    await departmentMgtHelper.UpdateIdNamesAsync()
-    await roleMgtHelper.UpdateIdNamesAsync()
+    await companyMgtHelper.UpdateIdNames()
+    await departmentMgtHelper.UpdateIdNames()
+    await roleMgtHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await selectDepartment.UpdateItemsAsync()
     await selectRole.UpdateItemsAsync()
 
-    pagination.Count.value = await personMgtHelper.GetCount(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id)
+    pagination.Count.value = await personMgtHelper.GetCountAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id)
     await personMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id, searchName.Value.value, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
         ArrayHelper.Set(personMgtTable.RowDatas, arr)
     })

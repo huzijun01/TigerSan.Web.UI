@@ -3,8 +3,8 @@ using TigerSan.NET8.WebApi.Share.Entities.Base;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
-    [Table("department")]
-    public class DepartmentEntity : CompanyEntityBase
+    [Table("site_type")]
+    public class SiteTypeEntity : IdNameEntityBase
     {
     }
 }

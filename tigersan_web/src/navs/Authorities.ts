@@ -7,7 +7,8 @@ export class Authorities {
     static DepartmentMgtPage = authorityHelper.GetAuthority()
     static RoleMgtPage = authorityHelper.GetAuthority()
     static PersonMgtPage = authorityHelper.GetAuthority()
-    static PlaceMgt = authorityHelper.GetAuthority()
+    static SiteType = authorityHelper.GetAuthority()
+    static SiteMgt = authorityHelper.GetAuthority()
     /** 基站管理 */
     static BaseStationMgtFolder = authorityHelper.GetAuthority()
     static BaseStationMgtPage = authorityHelper.GetAuthority()

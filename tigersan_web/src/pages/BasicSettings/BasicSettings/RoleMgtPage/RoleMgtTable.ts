@@ -15,14 +15,14 @@ const roleMgtTable = new TableModel<RoleAuthorityModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetNameAsync(source.company)
+        _getStringAsync: source => companyMgtHelper.GetName(source.company)
     },
     {
         _propName: 'department',
         Text: '部门',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => departmentMgtHelper.GetNameAsync(source.department)
+        _getStringAsync: source => departmentMgtHelper.GetName(source.department)
     },
     {
         _propName: 'name',

@@ -4,6 +4,8 @@ import CompanyMgtPage from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/C
 import DepartmentMgtPage from '@/pages/BasicSettings/BasicSettings/DepartmentMgtPage/DepartmentMgtPage.vue'
 import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/PersonMgtPage.vue'
 import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgtPage/RoleMgtPage.vue'
+import SiteMgtPage from '@/pages/BasicSettings/BasicSettings/SiteMgtPage/SiteMgtPage.vue'
+import SiteTypeMgtPage from '@/pages/BasicSettings/BasicSettings/SiteTypeMgtPage/SiteTypeMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
 // TagMgt:
@@ -57,11 +59,18 @@ export const navBasicSettings: NavFolderConfig = {
                     _authority: Authorities.PersonMgtPage,
                 },
                 {
+                    Title: "场地类型",
+                    Icon: Icons.Building_1,
+                    IsSelected: false,
+                    _component: SiteTypeMgtPage,
+                    _authority: Authorities.SiteType,
+                },
+                {
                     Title: "场地管理",
                     Icon: Icons.Building_1,
                     IsSelected: false,
-                    _component: undefined,
-                    _authority: Authorities.PlaceMgt,
+                    _component: SiteMgtPage,
+                    _authority: Authorities.SiteMgt,
                 },
             ]
         },

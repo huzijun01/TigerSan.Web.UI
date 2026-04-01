@@ -18,6 +18,8 @@ namespace TigerSan.NET8.WebApi.Share
         public DbSet<DepartmentEntity> Departments { get; set; }
         public DbSet<PersonEntity> Persons { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
+        public DbSet<SiteEntity> Sites { get; set; }
+        public DbSet<SiteTypeEntity> SiteTypes { get; set; }
         #endregion 【Properties】
 
         #region 【Ctor】

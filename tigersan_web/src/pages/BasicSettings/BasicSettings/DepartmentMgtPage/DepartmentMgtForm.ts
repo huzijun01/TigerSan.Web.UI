@@ -48,7 +48,7 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
-        await companyMgtHelper.UpdateIdNamesAsync()
+        await companyMgtHelper.UpdateIdNames()
         await selectCompanyForm.UpdateItemsAsync()
     },
     _itemConfigs: [
@@ -62,7 +62,7 @@ const departmentMgtForm = new FormModel(configDepartmentMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNamesAsync()
+    await companyMgtHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     pagination.Count.value = await departmentMgtHelper.GetCount(selectCompany.Value.value?.id)
     await departmentMgtHelper.GetListAsync(selectCompany.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value)

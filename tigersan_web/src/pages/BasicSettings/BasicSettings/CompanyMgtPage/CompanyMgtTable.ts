@@ -26,7 +26,7 @@ selectCompany._onChange = () => {
 const selectParentCompany = companyMgtHelper.GetSelectModel()
 const AddGetItemsAsync = selectParentCompany._getItemsAsync
 const EditGetItemsAsync = async () => {
-    const arr = await companyMgtHelper.GetIdNamesAsync()
+    const arr = await companyMgtHelper.GetIdNames()
 
     const active = tree.ActiveNode.value
     if (!active) {

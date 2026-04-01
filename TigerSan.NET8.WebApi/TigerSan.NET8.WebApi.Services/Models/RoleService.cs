@@ -400,11 +400,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 是否已被使用：
+                if (await _db.Persons.AnyAsync(p => p.Role == id))
+                {
+                    return MyResults<object>.ResourceBeenOccupied;
+                }
+
                 // 删除“角色”相关的“权限”：
                 await _db.Authoritys.Where(a => a.Role == id).ExecuteDeleteAsync();
-
-                // 删除“角色”相关的“人员”：
-                await _db.Persons.Where(p => p.Role == id).ExecuteDeleteAsync();
 
                 // 获取“单条数据”：
                 var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
@@ -444,6 +447,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 if (ids.Count < 1) return res;
 
+                // 是否已被使用：
+                if (await _db.Persons.AnyAsync(p => ids.Contains(p.Role)))
+                {
+                    return MyResults<object>.ResourceBeenOccupied;
+                }
+
                 // 获取“多条数据”：
                 var entities = _dbSet.Where(i => ids.Contains(i.Id));
 
@@ -460,9 +469,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 // 删除“角色”相关的“权限”：
                 await _db.Authoritys.Where(a => ids.Contains(a.Role)).ExecuteDeleteAsync();
-
-                // 删除与这些“角色”相关的“人员”：
-                await _db.Persons.Where(p => ids.Contains(p.Role)).ExecuteDeleteAsync();
 
                 // 删除“多条数据”：
                 _dbSet.RemoveRange(entities);

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { roleMgtTable } from './RoleMgtTable'
-import { authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper } from '@/0_tigersan_ui/tigerui'
+import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “权限助手”实例 */
 const authorityHelperForm = new AuthorityHelper()
@@ -76,7 +76,7 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectDepartmentForm.IsEnabled.value = !isEdit
 
-        await companyMgtHelper.UpdateIdNamesAsync()
+        await companyMgtHelper.UpdateIdNames()
 
         if (isEdit) {
             const rowData = roleMgtTable.SelectedRowDatas.value[0]
@@ -108,12 +108,12 @@ const roleMgtForm = new FormModel(configRoleMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNamesAsync()
-    await departmentMgtHelper.UpdateIdNamesAsync()
+    await companyMgtHelper.UpdateIdNames()
+    await departmentMgtHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await selectDepartment.UpdateItemsAsync()
 
-    pagination.Count.value = await roleMgtHelper.GetCount(selectCompany.Value.value?.id, selectDepartment.Value.value?.id)
+    pagination.Count.value = await roleMgtHelper.GetCountAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id)
     await roleMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
         ArrayHelper.Set(roleMgtTable.RowDatas, arr)
     })
