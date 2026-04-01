@@ -138,7 +138,7 @@ function DeleteRowData(state: DialogState) {
 
 /** 进入主页 */
 function GoHome() {
-    navData.GoHome()
+    navData.InitHome()
 }
 
 export default {

@@ -51,7 +51,6 @@ export class ConverterBase<TValue> {
 
         this.Text.value = this.GetText()
         if ((this.Text.value === '' || this.Text.value === undefined) && this.Value.value != undefined) {
-            debugger
             console.warn('The Text is empty!', this.Value.value)
         }
     }

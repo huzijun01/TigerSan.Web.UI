@@ -20,7 +20,7 @@
 
         <div class="info-panel flex-right" ref="refInfoPanel">
           <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.company.name"></KeyValue>
-          <IconButton :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value" :click="navData.GoBasicSettings">
+          <IconButton :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value" :click="navData.InitBasicSettings">
           </IconButton>
           <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale">
           </IconButton>

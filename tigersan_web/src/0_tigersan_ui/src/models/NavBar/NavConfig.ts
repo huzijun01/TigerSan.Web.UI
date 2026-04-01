@@ -5,7 +5,7 @@ import { AuthorityVerify } from '../Authority/AuthorityVerify'
 import { type NavButtonHandler, NavButtonModel } from "./NavButtonModel"
 import { type NavFolderHandler, NavFolderModel } from './NavFolderModel'
 
-class NavItemConfig {
+export class NavItemConfig {
     /** 权限 */
     _authority?: AuthorityVerify
     /** 图标 */
@@ -16,7 +16,7 @@ class NavItemConfig {
     IsShow?: boolean
 }
 
-class NavFolderConfig extends NavItemConfig {
+export class NavFolderConfig extends NavItemConfig {
     /** 是否打开 */
     IsOpen?: boolean
     /** 子项高度 */
@@ -33,7 +33,7 @@ class NavFolderConfig extends NavItemConfig {
     Closed?: NavFolderHandler
 }
 
-class NavButtonConfig extends NavItemConfig {
+export class NavButtonConfig extends NavItemConfig {
     /** 组件 */
     _component?: Component
     /** 是否打开 */
@@ -48,14 +48,14 @@ class NavButtonConfig extends NavItemConfig {
     Checked?: NavButtonHandler
 }
 
-function SetNavItemModel(model: NavItemModel, config: NavItemConfig) {
+export function SetNavItemModel(model: NavItemModel, config: NavItemConfig) {
     if (config.Icon != undefined) model.Icon.value = config.Icon
     if (config.Title != undefined) model.Title.value = config.Title
     if (config.IsShow != undefined) model.IsShow.value = config.IsShow
     if (config._authority != undefined) model._authority = config._authority
 }
 
-function SetNavFolderModel(model: NavFolderModel, config: NavFolderConfig) {
+export function SetNavFolderModel(model: NavFolderModel, config: NavFolderConfig) {
     SetNavItemModel(model, config)
     if (config.IsOpen != undefined) model.IsOpen.value = config.IsOpen
     if (config.SubItemsHeight != undefined) model.SubItemsHeight.value = config.SubItemsHeight
@@ -64,7 +64,7 @@ function SetNavFolderModel(model: NavFolderModel, config: NavFolderConfig) {
     model.Closed = config.Closed
 }
 
-function SetNavButtonModel(model: NavButtonModel, config: NavButtonConfig) {
+export function SetNavButtonModel(model: NavButtonModel, config: NavButtonConfig) {
     model._component = config._component
     SetNavItemModel(model, config)
     if (config.IsShowCloseButton != undefined) model.IsShowCloseButton.value = config.IsShowCloseButton
@@ -72,7 +72,7 @@ function SetNavButtonModel(model: NavButtonModel, config: NavButtonConfig) {
     model.Checked = config.Checked
 }
 
-function CreateNavFolderModel(
+export function CreateNavFolderModel(
     barModel: NavBarModel,
     folderConfig: NavFolderConfig,
     folderModel?: NavFolderModel) {
@@ -93,14 +93,16 @@ function CreateNavFolderModel(
             SetNavButtonModel(buttonModel, b)
             newFolderModel.ButtonModels.push(buttonModel)
 
-            // 打开:
-            if (b.IsOpen == true || b.IsSelected == true) {
-                barModel.OpenedButtonModels.push(buttonModel)
-            }
+            if (!b._authority || b._authority.IsEnable.value) {
+                // 打开:
+                if (b.IsOpen == true || b.IsSelected == true) {
+                    barModel.OpenedButtonModels.push(buttonModel)
+                }
 
-            // 选中:
-            if (b.IsSelected == true) {
-                barModel.SelectedButtonModel = buttonModel
+                // 选中:
+                if (b.IsSelected == true) {
+                    barModel.SelectedButtonModel = buttonModel
+                }
             }
         })
     }
@@ -111,12 +113,4 @@ function CreateNavFolderModel(
     }
 
     return newFolderModel
-}
-
-export {
-    NavFolderConfig,
-    NavButtonConfig,
-    SetNavFolderModel,
-    SetNavButtonModel,
-    CreateNavFolderModel
 }

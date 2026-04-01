@@ -1,7 +1,7 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from './Authorities'
 
-export const navHomeMgt: NavFolderConfig = {
+export const navHome: NavFolderConfig = {
     Folders: [
         {
             Title: "业务类别 1",

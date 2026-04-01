@@ -36,6 +36,8 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     readonly Color = ref('')
     /** 是否“选中” */
     readonly IsChecked = ref(false)
+    /** 是否“不确定” */
+    readonly IsIndeterminate = ref(false)
     /** “子项”集合 */
     readonly Childs = shallowReactive<TreeNodeModel<TData>[]>([])
 
@@ -111,9 +113,8 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     }
     //#endregion [static]
 
-    //#region [private]
     /** 更新“祖先节点”选中状态 */
-    private readonly UpdateParentNodesIsChecked = () => {
+    readonly UpdateParentNodesIsChecked = () => {
         if (!this._isAutoUpdate) return
 
         this._isAutoUpdate = false
@@ -121,13 +122,14 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
         this.UpTraverse(node => {
             if (this._id === node._id) return
             node.IsChecked.value = node.Childs.every(n => n.IsChecked.value)
+            node.IsIndeterminate.value = node.Childs.some(n => n.IsChecked.value || n.IsIndeterminate.value) && !node.IsChecked.value
         })
 
         this._isAutoUpdate = true
     }
 
     /** 更新“后代节点”选中状态 */
-    private readonly UpdateSubNodesIsChecked = () => {
+    readonly UpdateSubNodesIsChecked = () => {
         if (!this._isAutoUpdate) return
 
         this._isAutoUpdate = false
@@ -135,11 +137,11 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
         this.Traverse(node => {
             if (this._id === node._id) return
             node.IsChecked.value = this.IsChecked.value
+            node.IsIndeterminate.value = false
         })
 
         this._isAutoUpdate = true
     }
-    //#endregion [private]
 
     /** 遍历 */
     readonly Traverse = (callback: TreeNodeModelFunc<TData>) => {
@@ -324,6 +326,9 @@ export class TreeModel<TData> {
 
     /** 更新“状态” */
     readonly UpdateState = () => {
+        const ends = this.NodeArray.value.filter(n => n.Childs.length < 1)
+        ends.forEach(n => n.UpdateParentNodesIsChecked())
+
         this.NodeArray.value.forEach(node => {
             this._onInit?.(node)
         })

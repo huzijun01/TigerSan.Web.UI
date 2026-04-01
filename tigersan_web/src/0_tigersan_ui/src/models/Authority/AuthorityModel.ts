@@ -146,7 +146,7 @@ export class AuthorityHelper {
         const authorities: AuthorityModel[] = []
 
         this._tree.NodeArray.value.forEach(node => {
-            if (!node.IsChecked.value) return
+            if (!node.IsChecked.value && !node.IsIndeterminate.value) return
 
             const authority = new AuthorityModel()
             authority.path = node.Path.value
@@ -176,6 +176,7 @@ export class AuthorityHelper {
 
     /** 设置“权限”集合 */
     readonly SetAuthorities = (authorities: PathIsReadonly[]) => {
+        authorityHelper.InitTree()
         this.Authorities.splice(0)
         this.Authorities.push(...authorities.map(a => new PathIsReadonly(a.path, a.isReadonly)))
     }

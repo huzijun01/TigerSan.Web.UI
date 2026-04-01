@@ -45,6 +45,7 @@ textarea {
 }
 
 input[type="checkbox"] {
+    @color: white;
     @size: 18px;
     @font-size: 14px;
     /* 显示: */
@@ -55,10 +56,12 @@ input[type="checkbox"] {
     border: 2px solid;
     border-radius: 4px;
     /* 颜色: */
-    color: white;
+    color: @color;
     border-color: var(--theme-border);
     /* 过渡: */
     transition: var(--Global-Transition);
+    /* 其它: */
+    cursor: pointer;
 
     &::after {
         /* 文本: */
@@ -80,9 +83,30 @@ input[type="checkbox"] {
     }
 
     &:disabled {
+        /* 颜色: */
         color: var(--theme-color-disabled);
         border-color: var(--theme-border-disabled);
         background: var(--theme-mask-hover);
+        /* 其它: */
+        cursor: not-allowed;
+    }
+
+    &:indeterminate {
+        /* 颜色: */
+        border-color: var(--theme-brand);
+        background: var(--theme-brand);
+
+        &::after {
+            content: "";
+            /* 尺寸: */
+            width: @font-size;
+            height: 2.2px;
+            border-radius: 1px;
+            /* 透明度: */
+            opacity: 1;
+            /* 颜色: */
+            background: @color;
+        }
     }
 }
 

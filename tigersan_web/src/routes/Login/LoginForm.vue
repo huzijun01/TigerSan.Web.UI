@@ -35,14 +35,12 @@ import form from './LoginForm'
 import AppConfig from '@/AppConfig'
 import { onMounted } from 'vue'
 import { useUserInfo } from '@/stores'
-import { navData } from '@/navs/navModel'
 import { Texts, Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
 
 onMounted(() => {
   const userInfo = useUserInfo()
   userInfo.Clear()
   form.loginForm.Init()
-  navData.GoBasicSettings()
 })
 </script>
 

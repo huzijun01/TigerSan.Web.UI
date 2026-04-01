@@ -130,7 +130,7 @@ async function Add() {
     roleMgtForm._getSource = AddGetSource
 
     roleMgtForm._onSubmitAsync = async source => {
-        source.authorities = await authorityHelperForm.GetAuthorities()
+        source.authorities = authorityHelperForm.GetAuthorities()
         const res = await roleMgtHelper.Add(source)
 
         await Refresh()
@@ -156,7 +156,7 @@ async function Edit() {
     }
 
     roleMgtForm._onSubmitAsync = async source => {
-        source.authorities = await authorityHelperForm.GetAuthorities()
+        source.authorities = authorityHelperForm.GetAuthorities()
         const res = await roleMgtHelper.Edit(source)
 
         await Refresh()

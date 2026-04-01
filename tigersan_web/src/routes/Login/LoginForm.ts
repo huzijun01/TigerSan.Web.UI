@@ -1,4 +1,5 @@
 import { useUserInfo } from '@/stores'
+import { navData } from '@/navs/navModel'
 import { ActionResultCode, UserHelper, UserInfo } from '@/models'
 import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter, ObjectHelper, FormResult, authorityHelper, PathIsReadonly } from '@/0_tigersan_ui/tigerui'
 
@@ -77,6 +78,8 @@ const OnSubmitAsync = async (source: object) => {
         authorityHelper.SetAuthorities(userInfo.authorities)
     }
 
+    // 初始化“导航栏”:
+    navData.InitBasicSettings()
     // 跳转到“主页”:
     useRouter().GoTo('Home')
 

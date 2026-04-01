@@ -62,6 +62,13 @@
   flex-grow: 0;
   flex-shrink: 0;
 }
+.drawer {
+  overflow: hidden;
+  transition: var(--Global-Transition);
+}
+.drawer .size-panel {
+  overflow: auto;
+}
 .ellipsis {
   overflow: hidden !important;
   white-space: nowrap !important;
@@ -151,6 +158,8 @@ input[type="checkbox"] {
   border-color: var(--theme-border);
   /* 过渡: */
   transition: var(--Global-Transition);
+  /* 其它: */
+  cursor: pointer;
 }
 input[type="checkbox"] > * {
   flex-grow: 0;
@@ -173,9 +182,28 @@ input[type="checkbox"]:checked::after {
   opacity: 1;
 }
 input[type="checkbox"]:disabled {
+  /* 颜色: */
   color: var(--theme-color-disabled);
   border-color: var(--theme-border-disabled);
   background: var(--theme-mask-hover);
+  /* 其它: */
+  cursor: not-allowed;
+}
+input[type="checkbox"]:indeterminate {
+  /* 颜色: */
+  border-color: var(--theme-brand);
+  background: var(--theme-brand);
+}
+input[type="checkbox"]:indeterminate::after {
+  content: "";
+  /* 尺寸: */
+  width: 14px;
+  height: 2.2px;
+  border-radius: 1px;
+  /* 透明度: */
+  opacity: 1;
+  /* 颜色: */
+  background: white;
 }
 .link {
   cursor: pointer;
