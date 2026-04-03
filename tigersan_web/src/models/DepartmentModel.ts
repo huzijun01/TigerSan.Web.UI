@@ -15,8 +15,14 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
     }
 
     // 查:
+    /** 获取“筛选框模型” */
+    GetSelectModel(): SelectModel<IdNameModel> {
+        return super.GetSelectModel('请选择部门', 'Please select a department')
+    }
+
     /** 筛选“总数” */
-    readonly GetCount = async (company?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }])
+    readonly GetCount = async (company?: bigint) => await AxiosHelper.GetCount(this._action,
+        [{ key: 'company', value: company }])
 
     /** 筛选“数据”集合 */
     readonly GetListAsync = async (company?: bigint, pageSize?: number, pageNumber?: number) =>
@@ -24,15 +30,11 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
             , [{ key: 'company', value: company }])
 
     /** 获取“ID名称对”集合 */
-    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByCompany`, [{ key: 'company', value: company }])
+    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByCompany`,
+        [{ key: 'company', value: company }])
 
     /** 获取“所属公司”集合 */
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
-
-    /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择部门', 'Please select a department')
-    }
 }
 
 export const departmentMgtHelper = new DepartmentMgtHelper()

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Entities.Base;
+using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models.Base
 {
@@ -35,7 +35,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return null;
             }
         }
@@ -51,7 +51,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return 0;
             }
         }
@@ -63,18 +63,18 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         {
             try
             {
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 if (pageSize != null && pageNumber != null)
                 {
-                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
-                return await quaryable.ToListAsync();
+                return await queryable.ToListAsync();
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<TEntity>();
             }
         }
@@ -99,7 +99,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<TField>();
             }
         }
@@ -124,7 +124,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<IdValue<TField>>();
             }
         }
@@ -152,7 +152,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<TEntity>();
             }
         }
@@ -193,7 +193,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -218,7 +218,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -251,7 +251,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -282,7 +282,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -320,7 +320,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

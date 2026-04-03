@@ -13,10 +13,10 @@ typeSelect.Items.push(...[
     'MTB04 5G资产标签',
 ])
 
-const stateSelect = new SelectModel()
-stateSelect.Width.value = 120
-stateSelect.Value.value = '全部'
-stateSelect.Items.push(...['全部', '在线', '离线'])
+const selectState = new SelectModel()
+selectState.Width.value = 120
+selectState.Value.value = '全部'
+selectState.Items.push(...['全部', '在线', '离线'])
 
 const firmwareSelect = new SelectModel()
 firmwareSelect.Width.value = 120
@@ -29,6 +29,6 @@ firmwareSelect.Items.push(...[
 export default {
     searchMac,
     typeSelect,
-    stateSelect,
+    selectState,
     firmwareSelect,
 }

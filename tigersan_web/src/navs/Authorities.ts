@@ -7,7 +7,6 @@ export class Authorities {
     static DepartmentMgtPage = authorityHelper.GetAuthority()
     static RoleMgtPage = authorityHelper.GetAuthority()
     static PersonMgtPage = authorityHelper.GetAuthority()
-    static SiteType = authorityHelper.GetAuthority()
     static SiteMgt = authorityHelper.GetAuthority()
     /** 基站管理 */
     static BaseStationMgtFolder = authorityHelper.GetAuthority()
@@ -24,6 +23,10 @@ export class Authorities {
     static OperationMgtFolder = authorityHelper.GetAuthority()
     static OperationRecordPage = authorityHelper.GetAuthority()
     static OperationRetryPage = authorityHelper.GetAuthority()
+    /** 字典管理 */
+    static DictionaryMgtFolder = authorityHelper.GetAuthority()
+    static SiteType = authorityHelper.GetAuthority()
+    static StationType = authorityHelper.GetAuthority()
     /** 系统设置 */
     static SystemSettingsFolder = authorityHelper.GetAuthority()
     static SystemSettingsPage = authorityHelper.GetAuthority()

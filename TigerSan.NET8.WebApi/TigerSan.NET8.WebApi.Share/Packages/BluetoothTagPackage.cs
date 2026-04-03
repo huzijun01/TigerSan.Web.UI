@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Share.Packages
 {
@@ -20,7 +21,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
             }
 
             return null;

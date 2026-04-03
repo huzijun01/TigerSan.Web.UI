@@ -4,12 +4,12 @@ import { Verify, dialog, Colors, DialogMode, DialogState, FormModel, SubmitResul
 
 /** “MAC地址”项目配置 */
 const configMacAddr: FormItemConfig<AssetMgtTagModel, string> = {
-    _propName: 'MacAddr',
+    _propName: 'macAddr',
     PropText: 'MAC地址',
     IsEquired: true,
     Target: ref(),
     _isVerifyOk: source => {
-        return Verify.IsNotUndefinedOrEmpty(source.MacAddr)
+        return Verify.IsNotUndefinedOrEmpty(source.macAddr)
     }
 }
 

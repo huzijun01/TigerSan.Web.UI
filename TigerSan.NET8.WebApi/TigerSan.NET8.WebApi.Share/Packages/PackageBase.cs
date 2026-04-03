@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Share.Packages
 {
@@ -31,7 +32,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
             }
 
             return null;
@@ -47,7 +48,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
             }
 
             return string.Empty;
@@ -70,7 +71,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("topic")]
         public string Topic { get; set; } = string.Empty;
 
-        /// <summary>采集器ID</summary>
+        /// <summary>采集器ID（MAC地址）</summary>
         public string CollectorId { get => Topic.Split('/').Last(); }
     }
 }

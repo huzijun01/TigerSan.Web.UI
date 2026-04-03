@@ -2,6 +2,7 @@
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Services.Models.Base;
 
@@ -39,7 +40,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<AdminEntity>.Error(e);
+                res = MyResults<AdminEntity>.Error(e.GetMessage());
             }
 
             return res;

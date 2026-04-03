@@ -6,7 +6,7 @@ using TigerSan.NET8.WebApi.Share;
 
 namespace TigerSan.NET8.WebApi.Extensions
 {
-    static class ServiceRegisterExtension
+    public static class ServiceRegisterExtension
     {
         #region 添加“过滤器”
         public static void AddFilters(this WebApplicationBuilder builder)
@@ -66,6 +66,7 @@ namespace TigerSan.NET8.WebApi.Extensions
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ISiteService, SiteService>();
             services.AddTransient<ISiteTypeService, SiteTypeService>();
+            services.AddTransient<IStationTypeService, StationTypeService>();
             services.AddTransient<IUserService, UserService>();
         }
         #endregion

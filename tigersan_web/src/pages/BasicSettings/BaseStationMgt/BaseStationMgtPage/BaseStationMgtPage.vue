@@ -5,25 +5,20 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <span>基站管理：</span>
-                        <Select :model="select.typeSelect"></Select>
+                        <Select :model="form.selectState"></Select>
+                        <Search :model="form.searchMac"></Search>
                     </div>
                     <div class="row-panel">
-                        <span>状态:</span>
-                        <Select :model="select.stateSelect"></Select>
-                        <Search :model="select.searchMac"></Search>
+                        <Select :model="form.selectCompany"></Select>
+                        <Select :model="form.selectSite"></Select>
+                        <Select :model="form.selectType"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button @click="BatchOperation">批量操作</button>
-                        <button :disabled="!IsOnlySelected" @click="WifiUpdate">WiFi固件升级</button>
-                        <button :disabled="!IsOnlySelected" @click="BluetoothUpdate">蓝牙固件升级</button>
-                    </div>
-                    <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 新增</button>
-                        <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
+                        <button :disabled="!IsOnlySelected" @click="form.Repair">维修</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
                         <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
@@ -35,10 +30,10 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
-                    <KeyValue :propName="Texts.Online.value" :propValue="onlineCount" :color="Colors.Success">
+                <Pagination :model="form.pagination" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
+                    <KeyValue :propName="Texts.Online.value" :propValue="form.onlineCount" :color="Colors.Success">
                     </KeyValue>
-                    <KeyValue :propName="Texts.Offline.value" :propValue="offlineCount" :color="Colors.Danger">
+                    <KeyValue :propName="Texts.Offline.value" :propValue="form.offlineCount" :color="Colors.Danger">
                     </KeyValue>
                 </Pagination>
             </div>
@@ -47,6 +42,21 @@
 
     <!-- 表单: -->
     <PopForm :model="form.baseStationForm">
+        <FormRow>
+            <FormItem :model="form.configCompany.ItemModel">
+                <Select :model="form.selectCompanyForm"></Select>
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configSite.ItemModel">
+                <Select :model="form.selectSiteForm"></Select>
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configType.ItemModel">
+                <Select :model="form.selectTypeForm"></Select>
+            </FormItem>
+        </FormRow>
         <FormRow>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">
@@ -57,35 +67,33 @@
                 <input type="text" v-model="form.configMacAddr.Target.value">
             </FormItem>
         </FormRow>
+        <FormRow>
+            <FormItem :model="form.configHeartbeatInterval.ItemModel">
+                <input type="text" v-model="form.configHeartbeatInterval.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configReportInterval.ItemModel">
+                <input type="text" v-model="form.configReportInterval.Target.value">
+            </FormItem>
+        </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
+import { onMounted } from 'vue'
 import form from './BaseStationMgtForm'
-import select from './BaseStationMgtSelect'
-import { baseStationMgtTable, onlineCount, offlineCount, pagination } from './BaseStationMgtTable'
-import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+import { baseStationMgtTable } from './BaseStationMgtTable'
+import { Texts, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = baseStationMgtTable
 
-// 【方法】:
-function BatchOperation() {
-    dialog.ShowInformation('批量操作')
-}
-
-function WifiUpdate() {
-    dialog.ShowInformation('WiFi固件升级')
-}
-
-function BluetoothUpdate() {
-    dialog.ShowInformation('蓝牙固件升级')
-}
-
-function Restart() {
-    dialog.ShowInformation('重启')
-}
+// 【过程】:
+onMounted(() => {
+    form.Refresh()
+})
 </script>
 
 <style lang="less" scoped>

@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10761910",
+      "name": "Dictionary",
+      "font_class": "Dictionary",
+      "unicode": "e8e9",
+      "unicode_decimal": 59625
+    },
+    {
       "icon_id": "26381651",
       "name": "IdCard",
       "font_class": "IdCard",

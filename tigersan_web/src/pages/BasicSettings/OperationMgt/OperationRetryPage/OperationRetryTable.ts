@@ -3,7 +3,7 @@ import { TableModel } from '@/0_tigersan_ui/tigerui'
 /** "操作重试"模型 */
 class OperationRetryModel {
     Index = 0
-    MacAddr = ''
+    macAddr = ''
     EqpType = ''
     OperationType = ''
     OperationTime = ''
@@ -19,7 +19,7 @@ const operationRetryTable = new TableModel<OperationRetryModel>([
         IsAllowWrap: false,
     },
     {
-        _propName: 'MacAddr',
+        _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -55,7 +55,7 @@ const arr: OperationRetryModel[] =
     [
         {
             Index: 1,
-            MacAddr: 'AC233FC21C39',
+            macAddr: 'AC233FC21C39',
             EqpType: 'MBT02',
             OperationType: '传感器',
             OperationTime: '2026-01-21 17:33:56',

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
-using TigerSan.NET8.WebApi.Share.Entities.Base;
 using TigerSan.NET8.WebApi.Interfaces.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models.Base
@@ -92,7 +92,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

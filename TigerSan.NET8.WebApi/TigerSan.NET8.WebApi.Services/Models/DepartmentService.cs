@@ -30,18 +30,18 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 if (company != null)
                 {
-                    quaryable = quaryable.Where(i => i.Company == company);
+                    queryable = queryable.Where(i => i.Company == company);
                 }
 
-                return await quaryable.CountAsync();
+                return await queryable.CountAsync();
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return 0;
             }
         }
@@ -53,23 +53,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 if (company != null)
                 {
-                    quaryable = quaryable.Where(i => i.Company == company);
+                    queryable = queryable.Where(i => i.Company == company);
                 }
 
                 if (pageSize != null && pageNumber != null)
                 {
-                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
-                return await quaryable.ToListAsync();
+                return await queryable.ToListAsync();
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<DepartmentEntity>();
             }
         }
@@ -93,7 +93,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }
@@ -122,7 +122,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }
@@ -153,7 +153,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -187,7 +187,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -225,7 +225,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -271,7 +271,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -322,7 +322,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

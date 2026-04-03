@@ -23,7 +23,7 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
     // 查:
     /** 获取“筛选框模型” */
     GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择公司', 'Please select a site')
+        return super.GetSelectModel('请选择场地', 'Please select a site')
     }
 
     /** 筛选“总数” */
@@ -34,6 +34,10 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
     readonly GetListAsync = async (company?: bigint, type?: bigint, pageSize?: number, pageNumber?: number) =>
         await AxiosHelper.GetList<SiteModel>(this._action, pageSize, pageNumber, undefined,
             [{ key: 'company', value: company }, { key: 'type', value: type }])
+
+    /** 获取“ID名称对”集合 */
+    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByCompany`,
+        [{ key: 'company', value: company }])
 
     /** 获取“所属公司”集合 */
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)

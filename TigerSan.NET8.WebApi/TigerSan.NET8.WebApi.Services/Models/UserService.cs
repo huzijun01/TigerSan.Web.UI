@@ -69,7 +69,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
             }
 
             return userInfo;
@@ -107,7 +107,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
             }
 
             return userInfo;
@@ -165,7 +165,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<UserInfo>.Error(e);
+                res = MyResults<UserInfo>.Error(e.GetMessage());
             }
 
             res = MyResults<UserInfo>.UserNotExist;
@@ -213,7 +213,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
             }
 
             return res;

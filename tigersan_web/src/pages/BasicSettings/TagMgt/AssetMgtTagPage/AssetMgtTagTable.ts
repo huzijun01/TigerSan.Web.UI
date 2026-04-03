@@ -5,7 +5,7 @@ import { Colors, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 /** “资产管理标签”模型 */
 class AssetMgtTagModel {
     Index = 0
-    MacAddr = ''
+    macAddr = ''
     EqpType = ''
     Version = ''
     OnlineState = OnlineState.Offline
@@ -31,7 +31,7 @@ const assetMgtTagTable = new TableModel<AssetMgtTagModel>([
         IsAllowWrap: false,
     },
     {
-        _propName: 'MacAddr',
+        _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -80,7 +80,7 @@ const arr: AssetMgtTagModel[] =
     [
         {
             Index: 1,
-            MacAddr: 'EQP1',
+            macAddr: 'EQP1',
             EqpType: 'Type1',
             Version: '1.0.0',
             OnlineState: OnlineState.Online,
@@ -90,7 +90,7 @@ const arr: AssetMgtTagModel[] =
         },
         {
             Index: 2,
-            MacAddr: 'EQP2',
+            macAddr: 'EQP2',
             EqpType: 'Type2',
             Version: '1.0.0',
             OnlineState: OnlineState.Online,
@@ -100,7 +100,7 @@ const arr: AssetMgtTagModel[] =
         },
         {
             Index: 3,
-            MacAddr: 'EQP3',
+            macAddr: 'EQP3',
             EqpType: 'Type3',
             Version: '1.0.0',
             OnlineState: OnlineState.Offline,

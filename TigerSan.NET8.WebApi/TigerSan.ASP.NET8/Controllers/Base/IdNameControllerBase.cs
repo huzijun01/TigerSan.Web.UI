@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Entities.Base;
+using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Interfaces.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Controllers.Base

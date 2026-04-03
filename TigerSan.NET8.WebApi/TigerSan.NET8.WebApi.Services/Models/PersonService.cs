@@ -40,30 +40,30 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 // 筛选:
                 if (role != null)
                 {
-                    quaryable = quaryable.Where(i => i.Role == role);
+                    queryable = queryable.Where(i => i.Role == role);
                 }
                 else if (department != null)
                 {
                     var roleIds = await _db.Roles.Where(r => r.Department == department).Select(r => r.Id).ToListAsync();
-                    quaryable = quaryable.Where(i => roleIds.Contains(i.Role));
+                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
                 }
                 else if (company != null)
                 {
                     var departmentIds = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
                     var roleIds = await _db.Roles.Where(r => departmentIds.Contains(r.Department)).Select(r => r.Id).ToListAsync();
-                    quaryable = quaryable.Where(i => roleIds.Contains(i.Role));
+                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
                 }
 
-                return await quaryable.CountAsync();
+                return await queryable.CountAsync();
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return 0;
             }
         }
@@ -96,7 +96,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<PersonFullEntity>.Error(e);
+                res = MyResults<PersonFullEntity>.Error(e.GetMessage());
             }
 
             return res;
@@ -111,37 +111,37 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var list = new List<PersonFullEntity>();
 
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 // 筛选:
                 if (role != null)
                 {
-                    quaryable = quaryable.Where(i => i.Role == role);
+                    queryable = queryable.Where(i => i.Role == role);
                 }
                 else if (department != null)
                 {
                     var roleIds = await _db.Roles.Where(r => r.Department == department).Select(r => r.Id).ToListAsync();
-                    quaryable = quaryable.Where(i => roleIds.Contains(i.Role));
+                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
                 }
                 else if (company != null)
                 {
                     var departmentIds = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
                     var roleIds = await _db.Roles.Where(r => departmentIds.Contains(r.Department)).Select(r => r.Id).ToListAsync();
-                    quaryable = quaryable.Where(i => roleIds.Contains(i.Role));
+                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
                 }
 
                 if (name != null && name.Trim() != "")
                 {
-                    quaryable = quaryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
+                    queryable = queryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
                 }
 
                 // 分页:
                 if (pageSize != null && pageNumber != null)
                 {
-                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
-                var persons = await quaryable.ToListAsync();
+                var persons = await queryable.ToListAsync();
 
                 // 添加“权限”:
                 foreach (var person in persons)
@@ -154,7 +154,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<PersonFullEntity>();
             }
         }
@@ -201,7 +201,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }
@@ -246,7 +246,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }
@@ -282,7 +282,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }
@@ -318,7 +318,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e);
+                res = MyResults<object>.Error(e.GetMessage());
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

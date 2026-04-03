@@ -10,7 +10,7 @@
                     </div>
                     <div class="row-panel">
                         <span>在线状态:</span>
-                        <Select :model="select.stateSelect"></Select>
+                        <Select :model="select.selectState"></Select>
                         <span>固件版本:</span>
                         <Select :model="select.firmwareSelect"></Select>
                         <Search :model="select.searchMac"></Search>

@@ -50,7 +50,7 @@ pagination._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    siteTypeMgtForm.Title.value = '新增部门'
+    siteTypeMgtForm.Title.value = '新增场地类型'
 
     siteTypeMgtForm._getSource = AddGetSource
 

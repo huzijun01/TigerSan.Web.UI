@@ -1,5 +1,5 @@
-import { companyMgtHelper, SiteTypeModel } from '@/models'
 import { TableModel } from '@/0_tigersan_ui/tigerui'
+import { SiteTypeModel } from '@/models'
 
 /** 列头 */
 const siteTypeMgtTable = new TableModel<SiteTypeModel>([

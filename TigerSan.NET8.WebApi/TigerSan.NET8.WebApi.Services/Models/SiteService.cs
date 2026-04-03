@@ -25,23 +25,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 if (company != null)
                 {
-                    quaryable = quaryable.Where(i => i.Company == company);
+                    queryable = queryable.Where(i => i.Company == company);
                 }
 
                 if (type != null)
                 {
-                    quaryable = quaryable.Where(i => i.Type == type);
+                    queryable = queryable.Where(i => i.Type == type);
                 }
 
-                return await quaryable.CountAsync();
+                return await queryable.CountAsync();
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return 0;
             }
         }
@@ -53,29 +53,53 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                var quaryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking();
 
                 if (company != null)
                 {
-                    quaryable = quaryable.Where(i => i.Company == company);
+                    queryable = queryable.Where(i => i.Company == company);
                 }
 
                 if (type != null)
                 {
-                    quaryable = quaryable.Where(i => i.Type == type);
+                    queryable = queryable.Where(i => i.Type == type);
                 }
 
                 if (pageSize != null && pageNumber != null)
                 {
-                    quaryable = quaryable.GetPage(pageSize.Value, pageNumber.Value);
+                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
-                return await quaryable.ToListAsync();
+                return await queryable.ToListAsync();
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return new List<SiteEntity>();
+            }
+        }
+        #endregion
+
+        #region 获取“ID名称对”集合
+        /// <summary>获取“ID名称对”集合</summary>
+        public async Task<List<IdName>> SelectIdNameByCompany(long? company = null)
+        {
+            var list = new List<IdName>();
+            try
+            {
+                var queryable = _dbSet.AsNoTracking();
+
+                if (company != null)
+                {
+                    queryable = queryable.Where(i => i.Company == company);
+                }
+
+                return await queryable.Select(i => new IdName(i)).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return list;
             }
         }
         #endregion
@@ -103,7 +127,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }
@@ -139,7 +163,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.Message);
+                LogHelper.Instance.Error(e.GetMessage());
                 return list;
             }
         }

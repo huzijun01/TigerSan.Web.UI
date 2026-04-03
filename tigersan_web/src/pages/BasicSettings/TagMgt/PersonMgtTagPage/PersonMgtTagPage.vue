@@ -10,7 +10,7 @@
                     </div>
                     <div class="row-panel">
                         <span>在线状态:</span>
-                        <Select :model="select.stateSelect"></Select>
+                        <Select :model="select.selectState"></Select>
                         <span>蓝牙固件:</span>
                         <Select :model="select.bluetoothFirmwareSelect"></Select>
                         <Search :model="select.searchIMEI"></Search>

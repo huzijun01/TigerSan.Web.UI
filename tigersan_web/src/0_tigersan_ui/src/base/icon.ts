@@ -45,6 +45,7 @@ export class Icons {
     static Disabled = ""
     static Drag_Hand = ""
     static DataOutput = ""
+    static Dictionary = ""
     static Drag_Arrow = ""
     static Drag_Square = ""
     static Delete_Linear = ""

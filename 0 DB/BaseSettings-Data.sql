@@ -19,3 +19,8 @@ INSERT INTO tigersan_web.site_type (id,name) VALUES
 	 (116328408602443825,'非乡村便民点'),
 	 (116328407297753168,'项目营业点'),
 	 (116328420136648920,'驻场营业点');
+
+INSERT INTO tigersan_web.station_type (id,name) VALUES
+	 (116333028802428978,'DY-AIOT2210'),
+	 (116333028018421844,'DY-AIOT2211'),
+	 (116333030163480681,'DY-GPS智能基站');

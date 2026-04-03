@@ -96,6 +96,16 @@ export class ObjectHelper {
         return _copy(obj)
     }
 
+    /** 修改“字段值”默认方法 */
+    static DefaultTGetter<TValue>(obj: object, propName: string, defaultValue?: TValue): TValue | undefined {
+        return (obj as Record<string, TValue>)[propName] ?? defaultValue
+    }
+
+    /** 修改“字段值”默认方法 */
+    static DefaultTSetter<TValue>(obj: object, propName: string, value: TValue): void {
+        (obj as Record<string, TValue>)[propName] = value;
+    }
+
     /** 默认“对象行为”  */
     static DefaultObjectAction() { return {} }
 
@@ -106,7 +116,7 @@ export class ObjectHelper {
         return String(value)
     }
 
-    /** 获取“字段值”默认方法 */
+    /** 获取“数字值”默认方法 */
     static DefaultNumberGetter(obj: object, propName: string): number {
         const value = (obj as Record<string, unknown>)[propName]
 
@@ -114,14 +124,31 @@ export class ObjectHelper {
         return value != null ? Number(value) : 0
     }
 
-    /** 修改“字段值”默认方法 */
-    static DefaultTGetter<TValue>(obj: object, propName: string, defaultValue?: TValue): TValue | undefined {
-        return (obj as Record<string, TValue>)[propName] ?? defaultValue
+    /** 获取“日期文本”默认方法 */
+    static DefaultDateStringGetter(obj: object, propName: string): string {
+        const value = (obj as Record<string, unknown>)[propName]
+        if (!(value instanceof Date || typeof value === 'string' || typeof value === 'number')) {
+            console.warn('The value type is incorrect!')
+            return ''
+        }
+        return this.GetDateString(value)
     }
 
-    /** 修改“字段值”默认方法 */
-    static DefaultTSetter<TValue>(obj: object, propName: string, value: TValue): void {
-        (obj as Record<string, TValue>)[propName] = value;
+    /** 获取“日期文本” */
+    static GetDateString(value?: Date | number | string) {
+        let date: Date
+        if (value === undefined
+            || value === null
+            || typeof value === 'string' && value.trim() === ''
+            || typeof value === 'number' && value < 1) {
+            return ''
+        }
+        else if (value instanceof Date) {
+            date = value
+        } else {
+            date = new Date(value)
+        }
+        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
     }
 
     /** 判断“字段文本”是否等于“目标值”  */

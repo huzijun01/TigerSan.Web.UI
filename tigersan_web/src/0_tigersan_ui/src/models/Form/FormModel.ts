@@ -105,8 +105,10 @@ class FormModel<TSource extends object> {
         this.UpdateTargets()
 
         // 显示时初始化:
-        watch(this.IsShow, () => {
-            this.Init()
+        watch(this.IsShow, isShow => {
+            if (isShow) {
+                this.Init()
+            }
         })
     }
     //#endregion 【Ctor】

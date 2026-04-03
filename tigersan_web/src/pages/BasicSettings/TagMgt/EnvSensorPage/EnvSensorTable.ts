@@ -5,7 +5,7 @@ import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_
 /** "环境传感器"模型 */
 class EnvSensorModel {
     Index = 0
-    MacAddr = ''
+    macAddr = ''
     Version = ''
     OnlineState = OnlineState.Offline
     Battery = 0
@@ -31,7 +31,7 @@ const envSensorTable = new TableModel<EnvSensorModel>([
         IsAllowWrap: false,
     },
     {
-        _propName: 'MacAddr',
+        _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
         IsAllowWrap: false,
@@ -80,7 +80,7 @@ const arr: EnvSensorModel[] =
     [
         {
             Index: 1,
-            MacAddr: 'EQP1',
+            macAddr: 'EQP1',
             Version: '1.0.0',
             OnlineState: OnlineState.Online,
             Battery: 100,
@@ -90,7 +90,7 @@ const arr: EnvSensorModel[] =
         },
         {
             Index: 2,
-            MacAddr: 'EQP2',
+            macAddr: 'EQP2',
             Version: '1.0.0',
             OnlineState: OnlineState.Online,
             Battery: 45,
@@ -100,7 +100,7 @@ const arr: EnvSensorModel[] =
         },
         {
             Index: 3,
-            MacAddr: 'EQP3',
+            macAddr: 'EQP3',
             Version: '1.0.0',
             OnlineState: OnlineState.Offline,
             Battery: 20,

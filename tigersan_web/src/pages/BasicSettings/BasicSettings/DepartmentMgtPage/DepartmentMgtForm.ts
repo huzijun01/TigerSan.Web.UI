@@ -38,9 +38,7 @@ const configName: FormItemConfig<DepartmentModel, string> = {
 }
 
 /** “增”源数据获取方法 */
-const AddGetSource = () => {
-    return new DepartmentModel()
-}
+const AddGetSource = () => new DepartmentModel()
 
 /** “部门管理”表单配置 */
 let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
@@ -127,13 +125,13 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const model = departmentMgtTable.SelectedRowDatas.value[0]
-    if (!model) {
-        console.warn('The model is undefined!')
+    const rowData = departmentMgtTable.SelectedRowDatas.value[0]
+    if (!rowData) {
+        console.warn('The rowData is undefined!')
         return {}
     }
 
-    departmentMgtHelper.Delete(model.id)
+    departmentMgtHelper.Delete(rowData.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

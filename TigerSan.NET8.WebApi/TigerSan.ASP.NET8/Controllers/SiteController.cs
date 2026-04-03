@@ -55,6 +55,16 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("SelectIdNameByCompany")]
+        /// <summary>获取“ID名称对”集合/summary>
+        public async Task<MyActionResult<List<IdName>>> SelectIdNameByCompany([FromQuery] long? company = null)
+        {
+            var res = MyResults<List<IdName>>.OperationSuccess;
+            res.Data = await _service.SelectIdNameByCompany(company);
+            return res;
+        }
+
+        [HttpGet]
         [Route("BelongCompanyList")]
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()

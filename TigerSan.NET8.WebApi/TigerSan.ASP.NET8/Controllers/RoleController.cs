@@ -86,7 +86,7 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         [HttpGet]
         [Route("BelongDepartmentList")]
-        /// <summary>获取“所属公司”集合</summary>
+        /// <summary>获取“所属部门”集合</summary>
         public async Task<MyActionResult<List<IdName>>> BelongDepartmentList(long? company = null)
         {
             var res = MyResults<List<IdName>>.OperationSuccess;

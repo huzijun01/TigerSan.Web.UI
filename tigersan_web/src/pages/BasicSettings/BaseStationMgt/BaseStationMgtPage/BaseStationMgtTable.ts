@@ -1,150 +1,97 @@
-import { ref } from 'vue'
-import { OnlineState, GetOnlineString, IsOnline } from '@/models'
-import { Colors, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
-
-/** “基站管理”模型 */
-class BaseStationMgtModel {
-    Index = 0
-    MacAddr = ''
-    EqpName = ''
-    EqpType = ''
-    OnlineState = OnlineState.Offline
-    UpdateTime = ''
-    Version = ''
-}
-
-// 字段:
-const onlineCount = ref(0)
-const offlineCount = ref(0)
-
-// 分页器:
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
+import { Colors, ObjectHelper, TableModel } from '@/0_tigersan_ui/tigerui'
+import { OnlineState, GetOnlineString, BaseStationModel, companyMgtHelper, siteMgtHelper, stationTypeMgtHelper } from '@/models'
 
 // 列头:
-const baseStationMgtTable = new TableModel<BaseStationMgtModel>([
+const baseStationMgtTable = new TableModel<BaseStationModel>([
+    // {
+    //     _propName: 'id',
+    //     Text: 'ID',
+    //     Width: 50,
+    //     IsReadonly: true,
+    //     IsAllowWrap: false,
+    // },
     {
-        _propName: 'Index',
-        Text: 'ID',
+        _propName: 'company',
+        Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
+        _getStringAsync: source => companyMgtHelper.GetName(source.company)
     },
     {
-        _propName: 'MacAddr',
+        _propName: 'site',
+        Text: '场地',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getStringAsync: source => siteMgtHelper.GetName(source.site)
+    },
+    {
+        _propName: 'type',
+        Text: '类型',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getStringAsync: source => stationTypeMgtHelper.GetName(source.type)
+    },
+    {
+        _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
-        _propName: 'EqpName',
-        Text: '设备名称',
+        _propName: 'addr',
+        Text: '更新时间',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
-        _propName: 'OnlineState',
+        _propName: 'name',
+        Text: '名称',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
+        _propName: 'onlineState',
         Text: '在线状态',
         IsReadonly: true,
         IsAllowWrap: false,
         _getString: GetOnlineString,
     },
     {
-        _propName: 'EqpType',
-        Text: '型号',
+        _propName: 'heartbeatInterval',
+        Text: '心跳（秒）',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
-        _propName: 'UpdateTime',
-        Text: '更新时间',
+        _propName: 'reportInterval',
+        Text: '上报周期（秒）',
         IsReadonly: true,
         IsAllowWrap: false,
     },
     {
-        _propName: 'Version',
-        Text: '蓝牙固件版本',
+        _propName: 'monthOffline',
+        Text: '当月离线总时长',
         IsReadonly: true,
         IsAllowWrap: false,
+    },
+    {
+        _propName: 'createTime',
+        Text: '创建时间',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getString: source => ObjectHelper.GetDateString(source.createTime)
+    },
+    {
+        _propName: 'lastReportTime',
+        Text: '最后上报时间',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getString: source => ObjectHelper.GetDateString(source.lastReportTime)
     },
 ])
 
-// 数据:
-const arr: BaseStationMgtModel[] =
-    [
-        {
-            Index: 1,
-            MacAddr: 'AC233FC21C39',
-            EqpName: '009',
-            OnlineState: OnlineState.Online,
-            UpdateTime: '2026-01-21 17:33:56',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-        {
-            Index: 2,
-            MacAddr: 'AC233FC23E1F',
-            EqpName: 'MG6',
-            OnlineState: OnlineState.Online,
-            UpdateTime: '2026-01-12 11:06:27',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-        {
-            Index: 3,
-            MacAddr: 'AC233FC22827',
-            EqpName: 'qd-A',
-            OnlineState: OnlineState.Online,
-            UpdateTime: '2026-01-14 11:39:58',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-        {
-            Index: 4,
-            MacAddr: 'AC233FC22827',
-            EqpName: 'qd-B',
-            OnlineState: OnlineState.Online,
-            UpdateTime: '2026-01-14 11:39:58',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-        {
-            Index: 5,
-            MacAddr: 'AC233FC22827',
-            EqpName: 'qd-C',
-            OnlineState: OnlineState.Online,
-            UpdateTime: '2026-01-14 11:39:58',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-        {
-            Index: 6,
-            MacAddr: 'AC233FC22827',
-            EqpName: 'qd-D',
-            OnlineState: OnlineState.Online,
-            UpdateTime: '2026-01-14 11:39:58',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-        {
-            Index: 7,
-            MacAddr: 'AC233FC22827',
-            EqpName: 'qd-E',
-            OnlineState: OnlineState.Offline,
-            UpdateTime: '2026-01-14 11:39:58',
-            EqpType: 'g1-e-grapes',
-            Version: '3.7.0',
-        },
-    ]
-baseStationMgtTable.RowDatas.push(...arr)
-
 // 初始化:
 baseStationMgtTable.IsAllowMultiSelect.value = false
-
-baseStationMgtTable._initHeader = headerModel => {
-    if (headerModel._propName === 'Index') {
-        headerModel.Width.value = 50
-    }
-}
 
 baseStationMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'OnlineState') {
@@ -169,16 +116,7 @@ baseStationMgtTable._initItem = itemModel => {
     }
 }
 
-baseStationMgtTable._onInitRowModel = rowDatas => {
-    pagination.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
-    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
-}
-
 export {
-    BaseStationMgtModel,
-    onlineCount,
-    offlineCount,
-    pagination,
+    BaseStationModel,
     baseStationMgtTable,
 }

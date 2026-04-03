@@ -12,10 +12,10 @@ typeSelect.Items.push(...[
     'MWC04 4G小型融合定位工牌',
 ])
 
-const stateSelect = new SelectModel()
-stateSelect.Width.value = 120
-stateSelect.Value.value = '全部'
-stateSelect.Items.push(...['全部', '在线', '离线'])
+const selectState = new SelectModel()
+selectState.Width.value = 120
+selectState.Value.value = '全部'
+selectState.Items.push(...['全部', '在线', '离线'])
 
 const bluetoothFirmwareSelect = new SelectModel()
 bluetoothFirmwareSelect.Width.value = 120
@@ -25,6 +25,6 @@ bluetoothFirmwareSelect.Items.push(...['全部'])
 export default {
     searchIMEI,
     typeSelect,
-    stateSelect,
+    selectState,
     bluetoothFirmwareSelect,
 }

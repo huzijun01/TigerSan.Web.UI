@@ -8,6 +8,7 @@ import SiteMgtPage from '@/pages/BasicSettings/BasicSettings/SiteMgtPage/SiteMgt
 import SiteTypeMgtPage from '@/pages/BasicSettings/BasicSettings/SiteTypeMgtPage/SiteTypeMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
+import StationTypeMgtPage from '@/pages/BasicSettings/BaseStationMgt/StationTypeMgtPage/StationTypeMgtPage.vue'
 // TagMgt:
 import PersonMgtTagPage from '@/pages/BasicSettings/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
 import AssetMgtTagPage from '@/pages/BasicSettings/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
@@ -57,13 +58,6 @@ export const navBasicSettings: NavFolderConfig = {
                     IsSelected: false,
                     _component: PersonMgtPage,
                     _authority: Authorities.PersonMgtPage,
-                },
-                {
-                    Title: "场地类型",
-                    Icon: Icons.Building_1,
-                    IsSelected: false,
-                    _component: SiteTypeMgtPage,
-                    _authority: Authorities.SiteType,
                 },
                 {
                     Title: "场地管理",
@@ -146,6 +140,28 @@ export const navBasicSettings: NavFolderConfig = {
                     Icon: Icons.Refresh,
                     _component: OperationRetryPage,
                     _authority: Authorities.OperationRetryPage,
+                },
+            ]
+        },
+        {
+            IsOpen: false,
+            Title: "字典管理",
+            Icon: Icons.Dictionary,
+            _authority: Authorities.DictionaryMgtFolder,
+            Buttons: [
+                {
+                    Title: "场地类型",
+                    Icon: Icons.Building_1,
+                    IsSelected: false,
+                    _component: SiteTypeMgtPage,
+                    _authority: Authorities.SiteType,
+                },
+                {
+                    Title: "基站类型",
+                    Icon: Icons.Router,
+                    IsSelected: false,
+                    _component: StationTypeMgtPage,
+                    _authority: Authorities.StationType,
                 },
             ]
         },
