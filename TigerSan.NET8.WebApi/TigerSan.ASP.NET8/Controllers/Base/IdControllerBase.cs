@@ -57,7 +57,7 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
             [FromBody] List<FilterModel>? filters = null)
         {
             var res = MyResults<List<TEntity>>.OperationSuccess;
-            res.Data = await _service.GetList<TEntity>(pageSize, pageNumber);
+            res.Data = await _service.GetList<TEntity>(pageSize, pageNumber, filters);
             return res;
         }
         #endregion [查]
