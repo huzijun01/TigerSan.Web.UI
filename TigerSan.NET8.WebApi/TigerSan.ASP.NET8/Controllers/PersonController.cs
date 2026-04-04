@@ -17,16 +17,16 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         #region Override
-        [HttpGet]
+        [HttpPost]
         [Route("Unused/Count")]
         /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult<int>> GetCount()
+        public override async Task<MyActionResult<int>> GetCount([FromBody] List<FilterModel>? filters = null)
         {
             return MyResults<int>.ApiUnavailable;
         }
         #endregion Override
 
-        [HttpGet]
+        [HttpPost]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
         public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null)
@@ -36,7 +36,7 @@ namespace TigerSan.NET8.WebApi.Controllers
             return res;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult<List<PersonFullEntity>>> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null, string? name = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)

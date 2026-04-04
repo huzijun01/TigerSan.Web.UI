@@ -38,23 +38,26 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
             return res;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public virtual async Task<MyActionResult<int>> GetCount()
+        public virtual async Task<MyActionResult<int>> GetCount([FromBody] List<FilterModel>? filters = null)
         {
             var res = MyResults<int>.OperationSuccess;
-            res.Data = await _service.GetCount();
+            res.Data = await _service.GetCount(filters);
             return res;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public virtual async Task<MyActionResult<List<TEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public virtual async Task<MyActionResult<List<TEntity>>> GetList(
+            [FromQuery] int? pageSize,
+            [FromQuery] int? pageNumber,
+            [FromBody] List<FilterModel>? filters = null)
         {
             var res = MyResults<List<TEntity>>.OperationSuccess;
-            res.Data = await _service.GetList(pageSize, pageNumber);
+            res.Data = await _service.GetList<TEntity>(pageSize, pageNumber);
             return res;
         }
         #endregion [查]

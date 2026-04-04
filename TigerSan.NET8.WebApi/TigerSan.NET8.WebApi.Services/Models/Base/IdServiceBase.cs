@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -24,6 +25,76 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [Static]
+        #region 获取“过滤器Queryable”
+        public static IQueryable<TEntity> GetFilterQueryable(IQueryable<TEntity> queryable, List<FilterModel> filters)
+        {
+            foreach (var filter in filters)
+            {
+                if (string.IsNullOrEmpty(filter.PropName) || !filter.Values.Any()) continue;
+
+                var parameter = Expression.Parameter(typeof(TEntity), "x");
+                var property = Expression.Property(parameter, filter.PropName);
+                var propertyType = property.Type;
+
+                var values = filter.Values.Distinct().ToList();
+
+                Func<object, BinaryExpression> selector;
+                if (propertyType == typeof(string))
+                {
+                    selector = v => Expression.Equal(
+                        Expression.Call(property, typeof(string).GetMethod("ToLower", Type.EmptyTypes)!),
+                        Expression.Constant(v.ToString()?.ToLower(), typeof(string))
+                    );
+                }
+                else if (propertyType == typeof(int))
+                {
+                    selector = v =>
+                    {
+                        int.TryParse(v.ToString(), out var convertedValue);
+                        return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
+                    };
+                }
+                else if (propertyType == typeof(double))
+                {
+                    selector = v =>
+                    {
+                        double.TryParse(v.ToString(), out var convertedValue);
+                        return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
+                    };
+                }
+                else if (propertyType == typeof(long))
+                {
+                    selector = v =>
+                    {
+                        long.TryParse(v.ToString(), out var convertedValue);
+                        return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
+                    };
+                }
+                else if (propertyType == typeof(bool))
+                {
+                    selector = v =>
+                    {
+                        bool.TryParse(v.ToString(), out var convertedValue);
+                        return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
+                    };
+                }
+                else
+                {
+                    LogHelper.Instance.Warning($"Unsupported filter type: {propertyType.Name}");
+                    continue;
+                }
+
+                var body = values.Select(selector).Aggregate(Expression.OrElse);
+                var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
+                queryable = queryable.Where(lambda);
+            }
+
+            return queryable;
+        }
+        #endregion
+        #endregion [Static]
+
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
@@ -43,11 +114,18 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“总数”
         /// <summary>获取“总数”</summary>
-        public virtual async Task<int> GetCount()
+        public virtual async Task<int> GetCount(List<FilterModel>? filters = null)
         {
             try
             {
-                return await _dbSet.AsNoTracking().CountAsync();
+                var queryable = _dbSet.AsNoTracking();
+
+                if (filters != null)
+                {
+                    queryable = GetFilterQueryable(queryable, filters);
+                }
+
+                return await queryable.CountAsync();
             }
             catch (Exception e)
             {
@@ -59,7 +137,10 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“数据”集合
         /// <summary>获取“数据”集合</summary>
-        public virtual async Task<List<TEntity>> GetList(int? pageSize = null, int? pageNumber = null)
+        public virtual async Task<List<TEntity>> GetList<TField>(
+            int? pageSize = null,
+            int? pageNumber = null,
+            List<FilterModel>? filters = null)
         {
             try
             {
@@ -68,6 +149,11 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 if (pageSize != null && pageNumber != null)
                 {
                     queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
+                }
+
+                if (filters != null)
+                {
+                    queryable = GetFilterQueryable(queryable, filters);
                 }
 
                 return await queryable.ToListAsync();
@@ -126,34 +212,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             {
                 LogHelper.Instance.Error(e.GetMessage());
                 return new List<IdValue<TField>>();
-            }
-        }
-        #endregion
-
-        #region 筛选集合
-        /// <summary>筛选集合</summary>
-        public virtual async Task<List<TEntity>> Where<TField>(List<FilterModel<TEntity, TField>> filters, int? pageSize = null, int? pageNumber = null)
-        {
-            try
-            {
-                var list = _dbSet.AsNoTracking();
-
-                if (pageSize != null && pageNumber != null)
-                {
-                    list = list.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                foreach (var filter in filters)
-                {
-                    list = list.Where(i => filter.IsMatch(i));
-                }
-
-                return await list.ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return new List<TEntity>();
             }
         }
         #endregion

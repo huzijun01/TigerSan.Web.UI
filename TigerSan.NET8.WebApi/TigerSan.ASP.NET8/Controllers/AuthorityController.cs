@@ -16,15 +16,18 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
-        [HttpGet]
+        [HttpPost]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult<List<AuthorityEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public override async Task<MyActionResult<List<AuthorityEntity>>> GetList(
+            [FromQuery] int? pageSize,
+            [FromQuery] int? pageNumber,
+            [FromBody] List<FilterModel>? filters = null)
         {
             return MyResults<List<AuthorityEntity>>.ApiUnavailable;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
         public async Task<MyActionResult<List<AuthorityEntity>>> GetList(long? role = null, int? pageSize = null, int? pageNumber = null)

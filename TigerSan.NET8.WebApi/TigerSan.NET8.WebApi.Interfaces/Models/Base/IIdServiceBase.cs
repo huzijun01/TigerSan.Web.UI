@@ -7,11 +7,18 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models.Base
     {
         // 查:
         public Task<TEntity?> Get(long id);
-        public Task<int> GetCount();
-        public Task<List<TEntity>> GetList(int? pageSize = null, int? pageNumber = null);
+
+        public Task<int> GetCount(List<FilterModel>? filters = null);
+
+        public Task<List<TEntity>> GetList<TField>(
+            int? pageSize = null,
+            int? pageNumber = null,
+            List<FilterModel>? filters = null);
+
         public Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false);
-        public Task<List<TEntity>> Where<TField>(List<FilterModel<TEntity, TField>> filters, int? pageSize = null, int? pageNumber = null);
+
         public Task<bool> IsExists(long id);
+
         public Task<bool> IsExistsRange(List<long> ids);
 
         // 增:

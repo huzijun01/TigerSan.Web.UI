@@ -17,24 +17,27 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         #region Override
-        [HttpGet]
+        [HttpPost]
         [Route("Unused/Count")]
         /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult<int>> GetCount()
+        public override async Task<MyActionResult<int>> GetCount([FromBody] List<FilterModel>? filters = null)
         {
             return MyResults<int>.ApiUnavailable;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult<List<SiteEntity>>> GetList([FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public override async Task<MyActionResult<List<SiteEntity>>> GetList(
+            [FromQuery] int? pageSize,
+            [FromQuery] int? pageNumber,
+            [FromBody] List<FilterModel>? filters = null)
         {
             return MyResults<List<SiteEntity>>.ApiUnavailable;
         }
         #endregion Override
 
-        [HttpGet]
+        [HttpPost]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
         public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? type = null)
@@ -44,7 +47,7 @@ namespace TigerSan.NET8.WebApi.Controllers
             return res;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
         public async Task<MyActionResult<List<SiteEntity>>> GetList([FromQuery] long? company = null, [FromQuery] long? type = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)

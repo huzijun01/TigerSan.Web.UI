@@ -1,15 +1,15 @@
 
 import { api } from "./AxiosApi"
 import { dialog } from "@/0_tigersan_ui/tigerui"
-import { IdNameModel, MyActionResult } from "@/models"
 import { KeyValue, ParamHelper } from "./ParamHelper"
+import { IdNameModel, MyActionResult } from "@/models"
 
-export class FilterModel<TValue> {
-    field = ''
-    values: TValue[] = []
+export class FilterModel {
+    propName = ''
+    values: unknown[] = []
 
-    constructor(field: string = '', values: TValue[] = []) {
-        this.field = field
+    constructor(propName: string = '', values: unknown[] = []) {
+        this.propName = propName
         this.values = values
     }
 }
@@ -36,12 +36,12 @@ export class AxiosHelper {
             return MyActionResult.GetError(error)
         }
     }
-    
+
     static async GetData<T extends object | unknown[] | number>(action: string, params?: KeyValue[]): Promise<T> {
         return (await this.Get(action, params)).data as T
     }
 
-    static async Post(action: string, data: unknown, params?: KeyValue[]): Promise<MyActionResult> {
+    static async Post(action: string, data?: unknown, params?: KeyValue[]): Promise<MyActionResult> {
         try {
             let url = action
             if (params) {
@@ -111,14 +111,12 @@ export class AxiosHelper {
     }
 
     // 列表:
-    static async GetCount(action: string, params?: KeyValue[]): Promise<number> {
+    static async GetCount(
+        action: string,
+        params?: KeyValue[],
+        filters?: FilterModel[]): Promise<number> {
         try {
-            let url = `${action}/Count`
-            if (params) {
-                url += ParamHelper.GetParamString(params)
-            }
-
-            const actionResult = await this.Get(url)
+            const actionResult = await this.Post(`${action}/Count`, filters, params)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -141,7 +139,8 @@ export class AxiosHelper {
         pageSize?: number,
         pageNumber?: number,
         strList?: string,
-        params?: KeyValue[]): Promise<T[]> {
+        params?: KeyValue[],
+        filters?: FilterModel[]): Promise<T[]> {
         try {
             const arrParams: KeyValue[] = [
                 { key: 'pageSize', value: pageSize },
@@ -149,7 +148,7 @@ export class AxiosHelper {
             ]
             if (params) arrParams.push(...params)
 
-            const actionResult = await this.Get(`${action}/${strList ?? 'List'}`, arrParams)
+            const actionResult = await this.Post(`${action}/${strList ?? 'List'}`, filters, arrParams)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -191,31 +190,6 @@ export class AxiosHelper {
     // static async Select<T>(action: string, field: string): Promise<T[]> {
     //     try {
     //         const actionResult = await this.Get(`${action}/Select/${field}}`)
-
-    //         if (!MyActionResult.IsSuccess(actionResult)) {
-    //             MyActionResult.ShowResult(actionResult)
-    //             return []
-    //         }
-    //         else if (MyActionResult.IsSuccessNoData(actionResult)) {
-    //             dialog.ShowWarning('GetList: The data is undefined!')
-    //             return []
-    //         }
-
-    //         return actionResult.data as T[]
-    //     } catch (error) {
-    //         console.error(error)
-    //         return []
-    //     }
-    // }
-
-    // static async Where<T>(
-    //     action: string,
-    //     filters: FilterModel<any>[],
-    //     pageSize?: number,
-    //     pageNumber?: number): Promise<T[]> {
-    //     try {
-    //         const page = pageSize != undefined && pageNumber != undefined ? `?pageSize=${pageSize}&pageNumber=${pageNumber}` : ''
-    //         const actionResult = await this.Post(`${action}/Where${page}`, filters)
 
     //         if (!MyActionResult.IsSuccess(actionResult)) {
     //             MyActionResult.ShowResult(actionResult)
