@@ -22,7 +22,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<List<AuthorityEntity>>> GetList(
             [FromQuery] int? pageSize,
             [FromQuery] int? pageNumber,
-            [FromBody] List<FilterModel>? filters = null)
+            [FromBody] FilterDto? filter = null)
         {
             return MyResults<List<AuthorityEntity>>.ApiUnavailable;
         }

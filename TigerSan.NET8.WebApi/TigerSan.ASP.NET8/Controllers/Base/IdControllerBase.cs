@@ -41,10 +41,10 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [HttpPost]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public virtual async Task<MyActionResult<int>> GetCount([FromBody] List<FilterModel>? filters = null)
+        public virtual async Task<MyActionResult<int>> GetCount([FromBody] FilterDto? filter = null)
         {
             var res = MyResults<int>.OperationSuccess;
-            res.Data = await _service.GetCount(filters);
+            res.Data = await _service.GetCount(filter);
             return res;
         }
 
@@ -54,10 +54,10 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         public virtual async Task<MyActionResult<List<TEntity>>> GetList(
             [FromQuery] int? pageSize,
             [FromQuery] int? pageNumber,
-            [FromBody] List<FilterModel>? filters = null)
+            [FromBody] FilterDto? filter = null)
         {
             var res = MyResults<List<TEntity>>.OperationSuccess;
-            res.Data = await _service.GetList<TEntity>(pageSize, pageNumber, filters);
+            res.Data = await _service.GetList<TEntity>(pageSize, pageNumber, filter);
             return res;
         }
         #endregion [查]

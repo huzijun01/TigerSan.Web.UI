@@ -14,6 +14,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 【Ctor】
         public PersonService(AppDbContext db) : base(db, db.Persons)
         {
+            _parentIdPropName = nameof(PersonEntity.Role);
+            _parent = new ParentFilterModel(typeof(RoleEntity), nameof(_db.Roles), nameof(RoleEntity.Department));
+            _parent
+                .AddParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
+                .AddParent(typeof(CompanyEntity), nameof(_db.Companies));
         }
         #endregion 【Ctor】
 
@@ -120,13 +125,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else if (department != null)
                 {
-                    var roleIds = await _db.Roles.Where(r => r.Department == department).Select(r => r.Id).ToListAsync();
-                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
+                    var roleIds = await _db.Roles
+                        .Where(r => r.Department == department)
+                        .Select(r => r.Id)
+                        .ToListAsync();
+                    queryable = queryable
+                        .Where(i => roleIds
+                        .Contains(i.Role));
                 }
                 else if (company != null)
                 {
-                    var departmentIds = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    var roleIds = await _db.Roles.Where(r => departmentIds.Contains(r.Department)).Select(r => r.Id).ToListAsync();
+                    var departmentIds = await _db.Departments
+                        .Where(d => d.Company == company)
+                        .Select(d => d.Id)
+                        .ToListAsync();
+                    var roleIds = await _db.Roles
+                        .Where(r => departmentIds
+                        .Contains(r.Department))
+                        .Select(r => r.Id)
+                        .ToListAsync();
                     queryable = queryable.Where(i => roleIds.Contains(i.Role));
                 }
 

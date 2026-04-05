@@ -2,17 +2,7 @@
 import { api } from "./AxiosApi"
 import { dialog } from "@/0_tigersan_ui/tigerui"
 import { KeyValue, ParamHelper } from "./ParamHelper"
-import { IdNameModel, MyActionResult } from "@/models"
-
-export class FilterModel {
-    propName = ''
-    values: unknown[] = []
-
-    constructor(propName: string = '', values: unknown[] = []) {
-        this.propName = propName
-        this.values = values
-    }
-}
+import { FilterModel, IdNameModel, MyActionResult } from "@/models"
 
 export class AxiosHelper {
     // 基础:

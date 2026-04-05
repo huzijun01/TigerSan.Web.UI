@@ -8,12 +8,12 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models.Base
         // 查:
         public Task<TEntity?> Get(long id);
 
-        public Task<int> GetCount(List<FilterModel>? filters = null);
+        public Task<int> GetCount(FilterDto? filter = null);
 
         public Task<List<TEntity>> GetList<TField>(
             int? pageSize = null,
             int? pageNumber = null,
-            List<FilterModel>? filters = null);
+            FilterDto? filter = null);
 
         public Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false);
 

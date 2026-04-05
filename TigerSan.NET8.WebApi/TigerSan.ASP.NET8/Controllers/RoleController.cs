@@ -20,7 +20,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Unused/Count")]
         /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult<int>> GetCount([FromBody] List<FilterModel>? filters = null)
+        public override async Task<MyActionResult<int>> GetCount([FromBody] FilterDto? filter = null)
         {
             return MyResults<int>.ApiUnavailable;
         }
@@ -31,7 +31,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<List<RoleEntity>>> GetList(
             [FromQuery] int? pageSize,
             [FromQuery] int? pageNumber,
-            [FromBody] List<FilterModel>? filters = null)
+            [FromBody] FilterDto? filter = null)
         {
             return MyResults<List<RoleEntity>>.ApiUnavailable;
         }
