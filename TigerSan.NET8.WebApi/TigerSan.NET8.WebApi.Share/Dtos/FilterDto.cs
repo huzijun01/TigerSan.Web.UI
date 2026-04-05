@@ -28,8 +28,10 @@
 
     #region 父表过滤器
     /// <summary>父表过滤器</summary>
-    public class ParentFilterDto : ParentBase<ParentFilterDto>
+    public class ParentFilterDto
     {
+        /// <summary>父表</summary>
+        public ParentFilterDto? Parent { get; set; }
         /// <summary>ID集合</summary>
         public List<long> Ids { get; set; } = new List<long>();
     }
@@ -37,8 +39,10 @@
 
     #region “父表”模型
     /// <summary>“父表”模型</summary>
-    public class ParentFilterModel : ParentBase<ParentFilterModel>
+    public class ParentFilterModel
     {
+        /// <summary>父表</summary>
+        public ParentFilterModel? Parent { get; set; }
         /// <summary>实体类型</summary>
         public Type EntityType { get; set; }
         /// <summary>DbSet名称</summary>
@@ -67,42 +71,6 @@
             Parent = parent;
             return parent;
         }
-    }
-    #endregion
-
-    #region “父表”基类
-    /// <summary>“父表”基类</summary>
-    public class ParentBase<T> where T : ParentBase<T>
-    {
-        /// <summary>父表</summary>
-        public T? Parent { get; set; }
-
-        /// <summary>层级</summary>
-        public int Larger { get => GetLarger(); }
-
-        #region 【Functions】
-        #region 获取“层级”
-        private int GetLarger()
-        {
-            if (Parent == null) return 1;
-            return Parent.GetLarger() + 1;
-        }
-        #endregion
-
-        #region 获取“父表”
-        public ParentBase<T>? Get(int larger)
-        {
-            if (Larger == larger) return this;
-            if (Parent == null) return null;
-            return Parent.Get(larger);
-        }
-
-        public ParentBase<T>? Get(ParentBase<T> larger)
-        {
-            return Get(larger.Larger);
-        }
-        #endregion
-        #endregion 【Functions】
     }
     #endregion
 
