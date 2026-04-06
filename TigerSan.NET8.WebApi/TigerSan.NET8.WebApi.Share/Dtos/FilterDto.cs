@@ -5,15 +5,15 @@
     public class FilterDto
     {
         /// <summary>父表</summary>
-        public ParentFilterDto? Parent { get; set; }
+        public ParentFilter? Parent { get; set; }
         /// <summary>“过滤器”集合</summary>
-        public List<PropFilterDto>? Filters { get; set; }
+        public List<PropFilter>? Filters { get; set; }
     }
     #endregion
 
-    #region 属性过滤器
-    /// <summary>属性过滤器</summary>
-    public class PropFilterDto
+    #region “属性”过滤器
+    /// <summary>“属性”过滤器</summary>
+    public class PropFilter
     {
         /// <summary>属性名</summary>
         public string PropName { get; set; } = string.Empty;
@@ -21,19 +21,19 @@
         public object? Value { get; set; }
         /// <summary>值集合</summary>
         public List<object>? Values { get; set; }
-        /// <summary>父表</summary>
-        public ParentFilterDto? Parent { get; set; }
     }
     #endregion
 
-    #region 父表过滤器
-    /// <summary>父表过滤器</summary>
-    public class ParentFilterDto
+    #region “父表”过滤器
+    /// <summary>“父表”过滤器</summary>
+    public class ParentFilter
     {
-        /// <summary>父表</summary>
-        public ParentFilterDto? Parent { get; set; }
+        /// <summary>ID</summary>
+        public long? Id { get; set; }
         /// <summary>ID集合</summary>
-        public List<long> Ids { get; set; } = new List<long>();
+        public List<long>? Ids { get; set; }
+        /// <summary>父表</summary>
+        public ParentFilter? Parent { get; set; }
     }
     #endregion
 

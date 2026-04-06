@@ -1,15 +1,16 @@
+/** “过滤器”模型 */
 export class FilterModel {
-    parent?: ParentFilterModel
-    filters?: PropFilterModel[]
+    parent?: ParentFilter
+    filters?: PropFilter[]
 }
 
-export class PropFilterModel {
+/** “属性”过滤器 */
+export class PropFilter {
     propName = ''
     value?: unknown
     values?: unknown[] = []
 
-    constructor(
-        propName: string = '',
+    constructor(propName: string = '',
         value?: unknown,
         values?: unknown[]) {
         this.propName = propName
@@ -18,7 +19,9 @@ export class PropFilterModel {
     }
 }
 
-export class ParentFilterModel {
-    ids: bigint[] = []
-    parent?: ParentFilterModel
+/** “父表”过滤器 */
+export class ParentFilter {
+    id?: bigint
+    ids?: bigint[] = []
+    parent?: ParentFilter
 }
