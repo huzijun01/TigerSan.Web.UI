@@ -16,54 +16,16 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
-        #region Override
-        [HttpPost]
-        [Route("Unused/Count")]
-        /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult<int>> GetCount([FromBody] FilterDto? filter = null)
-        {
-            return MyResults<int>.ApiUnavailable;
-        }
-
-        [HttpPost]
-        [Route("Unused/List")]
-        /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult<List<BaseStationEntity>>> GetList(
-            [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
-            [FromBody] FilterDto? filter = null)
-        {
-            return MyResults<List<BaseStationEntity>>.ApiUnavailable;
-        }
-        #endregion Override
-
-        [HttpPost]
-        [Route("Count")]
-        /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? site = null, [FromQuery] OnlineState? state = null, [FromQuery] long? type = null)
-        {
-            var res = MyResults<int>.OperationSuccess;
-            res.Data = await _service.GetCount(company, site, state, type);
-            return res;
-        }
-
-        [HttpPost]
-        [Route("List")]
-        /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult<List<BaseStationEntity>>> GetList([FromQuery] long? company = null, [FromQuery] long? site = null, [FromQuery] OnlineState? state = null, [FromQuery] long? type = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
-        {
-            var res = MyResults<List<BaseStationEntity>>.OperationSuccess;
-            res.Data = await _service.GetList(company, site, state, type, pageSize, pageNumber);
-            return res;
-        }
-
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult<List<BaseStationDto>>> GetFullList([FromQuery] long? company = null, [FromQuery] long? site = null, [FromQuery] OnlineState? state = null, [FromQuery] long? type = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<BaseStationDto>>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            [FromBody] FilterDto? filter = null)
         {
             var res = MyResults<List<BaseStationDto>>.OperationSuccess;
-            res.Data = await _service.GetFullList(company, site, state, type, pageSize, pageNumber);
+            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
             return res;
         }
 
@@ -90,7 +52,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongStationTypeList")]
         /// <summary>获取“所属场地”集合</summary>
-        public async Task<MyActionResult<List<IdName>>> BelongStationTypeList(long? company = null, [FromQuery] long? site = null)
+        public async Task<MyActionResult<List<IdName>>> BelongStationTypeList(long? company = null, long? site = null)
         {
             var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongStationTypeList(company, site);

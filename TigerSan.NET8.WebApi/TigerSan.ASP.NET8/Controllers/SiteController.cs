@@ -29,8 +29,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
         public override async Task<MyActionResult<List<SiteEntity>>> GetList(
-            [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
+            int? pageSize,
+            int? pageNumber,
             [FromBody] FilterDto? filter = null)
         {
             return MyResults<List<SiteEntity>>.ApiUnavailable;
@@ -40,7 +40,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? type = null)
+        public async Task<MyActionResult<int>> GetCount(long? company = null, long? type = null)
         {
             var res = MyResults<int>.OperationSuccess;
             res.Data = await _service.GetCount(company, type);
@@ -50,7 +50,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult<List<SiteEntity>>> GetList([FromQuery] long? company = null, [FromQuery] long? type = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<SiteEntity>>> GetList(long? company = null, long? type = null, int? pageSize = null, int? pageNumber = null)
         {
             var res = MyResults<List<SiteEntity>>.OperationSuccess;
             res.Data = await _service.GetList(company, type, pageSize, pageNumber);
@@ -60,7 +60,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("SelectIdNameByCompany")]
         /// <summary>获取“ID名称对”集合/summary>
-        public async Task<MyActionResult<List<IdName>>> SelectIdNameByCompany([FromQuery] long? company = null)
+        public async Task<MyActionResult<List<IdName>>> SelectIdNameByCompany(long? company = null)
         {
             var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.SelectIdNameByCompany(company);
@@ -80,7 +80,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("BelongSiteTypeList")]
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult<List<IdName>>> GetBelongSiteTypeList([FromQuery] long? company = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongSiteTypeList(long? company = null)
         {
             var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.GetBelongSiteTypeList(company);

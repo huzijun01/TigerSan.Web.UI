@@ -10,8 +10,8 @@ namespace TigerSan.NET8.WebApi.Share
     {
         #region 【Fields】
         private AppSettings _appSettings;
-        /// <summary>“DbSet属性”缓存</summary>
-        private static Dictionary<string, PropertyInfo>? _dbSetPropCaches;
+        /// <summary>“DbSet属性”字典</summary>
+        public static readonly Dictionary<string, PropertyInfo> _dbSetProps = GetDbSetProps();
         #endregion 【Fields】
 
         #region 【Properties】
@@ -31,7 +31,6 @@ namespace TigerSan.NET8.WebApi.Share
         public AppDbContext(AppSettings appSettings)
         {
             _appSettings = appSettings;
-            InitializeDbSetPropCaches();
         }
         #endregion 【Ctor】
 
@@ -52,14 +51,13 @@ namespace TigerSan.NET8.WebApi.Share
 
         #region 【Functions】
         #region [Private]
-        #region 初始化“DbSet属性”缓存
-        /// <summary>初始化“DbSet属性”缓存</summary>
-        private void InitializeDbSetPropCaches()
+        #region 获取“DbSet属性”字典
+        /// <summary>获取“DbSet属性”字典</summary>
+        private static Dictionary<string, PropertyInfo> GetDbSetProps()
         {
-            if (_dbSetPropCaches != null) return;
-            _dbSetPropCaches = new Dictionary<string, PropertyInfo>();
-
+            var dbSetProps = new Dictionary<string, PropertyInfo>();
             var properties = typeof(AppDbContext).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
             foreach (var property in properties)
             {
                 if (property.PropertyType.IsGenericType &&
@@ -68,26 +66,44 @@ namespace TigerSan.NET8.WebApi.Share
                     var entityType = property.PropertyType.GetGenericArguments()[0];
                     if (typeof(IdEntityBase).IsAssignableFrom(entityType))
                     {
-                        _dbSetPropCaches[property.Name] = property;
+                        dbSetProps[property.Name] = property;
                     }
                 }
             }
+
+            return dbSetProps;
         }
         #endregion
         #endregion [Private]
+
+        #region [Static]
+        #region 获取“DbSet名称”
+        /// <summary>获取“DbSet名称”</summary>
+        public static string GetDbSetName(Type dbSetType)
+        {
+            var dbSetProp = _dbSetProps.Values.FirstOrDefault(p => p.PropertyType == dbSetType);
+            if (dbSetProp == null)
+            {
+                LogHelper.Instance.Warning($"The DbSet property for type '{dbSetType.Name}' was not found!");
+                return string.Empty;
+            }
+            return dbSetProp.Name;
+        }
+        #endregion
+        #endregion [Static]
 
         #region 获取“DbSet”
         /// <summary>获取“DbSet”</summary>
         public IQueryable? GetDbSet(string dbSetName)
         {
-            if (_dbSetPropCaches == null)
+            if (_dbSetProps == null)
             {
-                LogHelper.Instance.IsNull(nameof(_dbSetPropCaches));
+                LogHelper.Instance.IsNull(nameof(_dbSetProps));
                 return null;
             }
 
             // 查找匹配的DbSet属性:
-            _dbSetPropCaches.TryGetValue(dbSetName, out var property);
+            _dbSetProps.TryGetValue(dbSetName, out var property);
 
             // 验证属性存在:
             if (property == null)

@@ -64,11 +64,10 @@ const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.GetList()
-        .then(arr => {
-            tree.Nodes.splice(0)
-            tree.Init(CompanyMgtHelper.Companies2Tree(arr))
-        })
+    await companyMgtHelper.GetList({}).then(arr => {
+        tree.Nodes.splice(0)
+        tree.Init(CompanyMgtHelper.Companies2Tree(arr))
+    })
 }
 
 /** 增 */

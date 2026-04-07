@@ -19,11 +19,33 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
 
     // 查:
     /** 筛选“总数” */
-    readonly GetCountAsync = async (company?: bigint, department?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }])
+    readonly GetCountAsync = async (param: {
+        company?: bigint,
+        department?: bigint
+    }) => await AxiosHelper.GetCount(this._action,
+        {
+            params: [
+                { key: 'company', value: param.company },
+                { key: 'department', value: param.department }
+            ]
+        })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (company?: bigint, department?: bigint, pageSize?: number, pageNumber?: number) =>
-        await AxiosHelper.GetList<RoleAuthorityModel>(this._action, pageSize, pageNumber, 'FullList', [{ key: 'company', value: company }, { key: 'department', value: department }])
+    readonly GetListAsync = async (param: {
+        pageSize?: number,
+        pageNumber?: number,
+        company?: bigint,
+        department?: bigint,
+    }) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action,
+        {
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            strList: 'FullList',
+            params: [
+                { key: 'company', value: param.company },
+                { key: 'department', value: param.department }
+            ]
+        })
 
     /** 获取“ID名称对”集合 */
     readonly SelectIdNameByDepartment = async (department?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByDepartment`, [{ key: 'department', value: department }])

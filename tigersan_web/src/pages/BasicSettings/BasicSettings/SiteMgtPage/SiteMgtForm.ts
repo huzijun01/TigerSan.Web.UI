@@ -145,8 +145,16 @@ async function Refresh() {
     await selectCompany.UpdateItemsAsync()
     await selectType.UpdateItemsAsync()
 
-    pagination.Count.value = await siteMgtHelper.GetCountAsync(selectCompany.Value.value?.id, selectType.Value.value?.id)
-    await siteMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectType.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
+    pagination.Count.value = await siteMgtHelper.GetCountAsync({
+        company: selectCompany.Value.value?.id,
+        type: selectType.Value.value?.id
+    })
+    await siteMgtHelper.GetListAsync({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+        company: selectCompany.Value.value?.id,
+        type: selectType.Value.value?.id,
+    }).then(arr => {
         ArrayHelper.Set(siteMgtTable.RowDatas, arr)
     })
 }

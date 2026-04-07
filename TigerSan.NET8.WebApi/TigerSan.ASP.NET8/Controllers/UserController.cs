@@ -23,7 +23,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("Login")]
         /// <summary>登录</summary>
-        public async Task<MyActionResult<UserInfo>> Login([FromQuery] string search, [FromQuery] string password)
+        public async Task<MyActionResult<UserInfo>> Login(string search, string password)
         {
             return await _service.Login(search, password);
         }

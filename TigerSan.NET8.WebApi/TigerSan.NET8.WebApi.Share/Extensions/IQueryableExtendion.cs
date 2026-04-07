@@ -49,7 +49,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             var method = _cachedWhereMethod.Value;
             if (method == null)
             {
-                LogHelper.Instance.Warning("The Queryable.Where method cannot be found!");
+                LogHelper.Instance.IsNull(nameof(method));
                 return null;
             }
 
@@ -60,12 +60,12 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             }
             catch (TargetInvocationException tie)
             {
-                LogHelper.Instance.Warning($"执行Where方法失败: {tie.InnerException?.Message ?? tie.Message}");
+                LogHelper.Instance.Warning($"The execution of the Where method failed:{Environment.NewLine}{tie.GetMessage()}");
                 return null;
             }
             catch (ArgumentException ae)
             {
-                LogHelper.Instance.Warning($"类型参数不匹配: {ae.InnerException?.Message ?? ae.Message}");
+                LogHelper.Instance.Warning($"Type parameter mismatch:{Environment.NewLine}{ae.GetMessage()}");
                 return null;
             }
         }
@@ -82,6 +82,11 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             {
                 if (input == null) return false;
 
+                if (type.IsEnum)
+                {
+                    return TryParseEnum(type, input, out result);
+                }
+
                 var converter = TypeDescriptor.GetConverter(type);
                 if (converter == null || !converter.IsValid(input)) return false;
 
@@ -97,7 +102,54 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             }
         }
         #endregion
+
+        #region 转换“枚举”
+        /// <summary>转换“枚举”</summary>
+        private static bool TryParseEnum(Type enumType, string input, out object result)
+        {
+            result = new object();
+            try
+            {
+                if (char.IsDigit(input[0]) || input.StartsWith("-") && char.IsDigit(input[1]))
+                {
+                    if (Enum.IsDefined(enumType, Convert.ToInt32(input)))
+                    {
+                        result = Enum.ToObject(enumType, Convert.ToInt32(input));
+                        return true;
+                    }
+                }
+                else
+                {
+                    var enumValue = Enum.Parse(enumType, input, ignoreCase: true);
+                    result = enumValue;
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
         #endregion 【Helpers】
+
+        #region 不选择
+        /// <summary>不选择</summary>
+        public static IQueryable<TEntity> False<TEntity>(this IQueryable<TEntity> queryable)
+        {
+            return queryable.Where(x => false);
+        }
+
+        /// <summary>不选择</summary>
+        public static IQueryable False(this IQueryable queryable)
+        {
+            var parameter = Expression.Parameter(queryable.ElementType, "p");
+            var falseConstant = Expression.Constant(false, typeof(bool));
+            var lambda = Expression.Lambda(falseConstant, parameter);
+            return queryable.Where(lambda)!;
+        }
+        #endregion
 
         #region 获取“过滤器数据”
         public static IQueryable GetFilter(Type entityType, IQueryable queryable, PropFilter filter)
@@ -118,11 +170,11 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 if (filter.Values == null || filter.Values.Count() < 1 || string.IsNullOrEmpty(filter.PropName)) return queryable;
 
                 // 获取“属性信息”:
-                var propertyInfo = entityType.GetProperty(filter.PropName);
+                var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance);
                 if (propertyInfo == null)
                 {
                     LogHelper.Instance.Warning($"Property '{filter.PropName}' not found on type '{entityType.Name}'");
-                    return queryable;
+                    return queryable.False();
                 }
 
                 // 创建“x”表达式:
@@ -166,7 +218,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 if (newQueryable == null)
                 {
                     LogHelper.Instance.IsNull(nameof(newQueryable));
-                    return queryable;
+                    return queryable.False();
                 }
 
                 queryable = newQueryable;
@@ -182,18 +234,20 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
 
         #region 获取“单页数据”
         /// <summary>获取“单页数据”</summary>
-        public static IQueryable<TEntity> GetPage<TEntity>(this IQueryable<TEntity> queryable, int pageSize, int pageNumber) where TEntity : IdEntityBase
+        public static IQueryable<TEntity> GetPage<TEntity>(this IQueryable<TEntity> queryable, int? pageSize, int? pageNumber) where TEntity : IdEntityBase
         {
+            if (pageSize == null || pageNumber == null) return queryable;
             return queryable
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize);
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value);
         }
         #endregion
 
         #region 获取“单过滤器数据”
         /// <summary>获取“单过滤器数据”</summary>
-        public static IQueryable<TEntity> GetOnlyFilter<TEntity>(this IQueryable<TEntity> queryable, PropFilter filters) where TEntity : IdEntityBase
+        public static IQueryable<TEntity> GetOnlyFilter<TEntity>(this IQueryable<TEntity> queryable, PropFilter? filters) where TEntity : IdEntityBase
         {
+            if (filters == null) return queryable;
             return (IQueryable<TEntity>)GetFilter(typeof(TEntity), queryable, filters);
         }
         #endregion
@@ -217,19 +271,24 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             this IQueryable<TEntity> queryable,
             string? parentIdPropName,
             AppDbContext db,
-            ParentFilterModel? parent,
-            ParentFilter parentDto) where TEntity : IdEntityBase
+            DbSetConfig? config,
+            ParentFilter parent) where TEntity : IdEntityBase
         {
-            if (parent == null || parentIdPropName == null)
+            if (config == null)
             {
-                LogHelper.Instance.Warning($"The _parent or _parentIdPropName has not been set for the current Service!");
-                return queryable;
+                LogHelper.Instance.IsNull(nameof(config));
+                return queryable.False();
+            }
+            if (parentIdPropName == null)
+            {
+                LogHelper.Instance.IsNull(nameof(parentIdPropName));
+                return queryable.False();
             }
 
             var parentIds = await GetParentIds(
                 db,
-                parent,
-                parentDto);
+                config,
+                parent);
 
             queryable = queryable.GetOnlyFilter(new PropFilter()
             {
@@ -244,55 +303,55 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
         #region 获取“父表ID”集合
         public static async Task<List<long>> GetParentIds(
             AppDbContext db,
-            ParentFilterModel parent,
-            ParentFilter parentDto)
+            DbSetConfig config,
+            ParentFilter parent)
         {
             var ids = new List<long>();
 
             // 添加单值:
-            if (parentDto.Id != null)
+            if (parent.Id != null)
             {
-                if (parentDto.Ids == null)
+                if (parent.Ids == null)
                 {
-                    parentDto.Ids = new List<long>();
+                    parent.Ids = new List<long>();
                 }
-                parentDto.Ids.Add(parentDto.Id.Value);
+                parent.Ids.Add(parent.Id.Value);
             }
 
-            if (parentDto.Ids != null && parentDto.Ids.Count() > 0) // 无需向上筛选
+            if (parent.Ids != null && parent.Ids.Count() > 0) // 无需向上筛选
             {
-                return parentDto.Ids;
+                return parent.Ids;
             }
-            else if (parentDto.Parent == null || parent.Parent == null) // 已到顶级
+            else if (parent.Parent == null || config.Parent == null) // 已到顶级
             {
                 return ids;
             }
 
             // 继续向上获取父表ID集合:
-            parentDto.Ids = await GetParentIds(
+            parent.Ids = await GetParentIds(
                 db,
-                parent.Parent,
-                parentDto.Parent);
+                config.Parent,
+                parent.Parent);
 
-            if (parentDto.Ids.Count() < 1) return ids;
+            if (parent.Ids.Count() < 1) return ids;
 
             // 获取父表ID集合:
-            var queryableParent = db.GetDbSet(parent.DbSetName) as IQueryable<IdEntityBase>;
+            var queryableParent = db.GetDbSet(config.DbSetName) as IQueryable<IdEntityBase>;
             if (queryableParent == null)
             {
                 LogHelper.Instance.IsNull(nameof(queryableParent));
                 return ids;
             }
-            if (parent.ParentIdPropName == null)
+            if (config.ParentIdPropName == null)
             {
-                LogHelper.Instance.IsNull(nameof(parent.ParentIdPropName));
+                LogHelper.Instance.IsNull(nameof(config.ParentIdPropName));
                 return ids;
             }
 
-            queryableParent = GetFilter(parent.EntityType, queryableParent, new PropFilter()
+            queryableParent = GetFilter(config.EntityType, queryableParent, new PropFilter()
             {
-                PropName = parent.ParentIdPropName,
-                Values = parentDto.Ids.Cast<object>().ToList()
+                PropName = config.ParentIdPropName,
+                Values = parent.Ids.Cast<object>().ToList()
             }) as IQueryable<IdEntityBase>;
             if (queryableParent == null)
             {

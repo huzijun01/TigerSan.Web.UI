@@ -16,33 +16,17 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
-        #region Override
-        [HttpPost]
-        [Route("Unused/Count")]
-        /// <summary>获取“总数”</summary>
-        public override async Task<MyActionResult<int>> GetCount([FromBody] FilterDto? filter = null)
-        {
-            return MyResults<int>.ApiUnavailable;
-        }
-        #endregion Override
-
-        [HttpPost]
-        [Route("Count")]
-        /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null)
-        {
-            var res = MyResults<int>.OperationSuccess;
-            res.Data = await _service.GetCount(company, department, role);
-            return res;
-        }
-
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult<List<PersonFullEntity>>> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] long? role = null, string? name = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<PersonFullEntity>>> GetFullList(
+            string? name = null,
+            int? pageSize = null,
+            int? pageNumber = null,
+            [FromBody] FilterDto? filter = null)
         {
             var res = MyResults<List<PersonFullEntity>>.OperationSuccess;
-            res.Data = await _service.GetFullList(company, department, role, name, pageSize, pageNumber);
+            res.Data = await _service.GetFullList(name, pageSize, pageNumber, filter);
             return res;
         }
 

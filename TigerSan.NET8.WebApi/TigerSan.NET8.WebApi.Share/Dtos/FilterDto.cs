@@ -37,12 +37,12 @@
     }
     #endregion
 
-    #region “父表”模型
-    /// <summary>“父表”模型</summary>
-    public class ParentFilterModel
+    #region “表”配置
+    /// <summary>“表”配置</summary>
+    public class DbSetConfig
     {
         /// <summary>父表</summary>
-        public ParentFilterModel? Parent { get; set; }
+        public DbSetConfig? Parent { get; set; }
         /// <summary>实体类型</summary>
         public Type EntityType { get; set; }
         /// <summary>DbSet名称</summary>
@@ -50,11 +50,11 @@
         /// <summary>父项ID属性名称</summary>
         public string? ParentIdPropName { get; set; }
 
-        public ParentFilterModel(
+        public DbSetConfig(
             Type entityType,
             string dbSetName,
             string? parentIdPropName = null,
-            ParentFilterModel? parent = null)
+            DbSetConfig? parent = null)
         {
             EntityType = entityType;
             DbSetName = dbSetName;
@@ -62,12 +62,12 @@
             Parent = parent;
         }
 
-        public ParentFilterModel AddParent(
+        public DbSetConfig SetParent(
             Type entityType,
             string dbSetName,
             string? parentIdPropName = null)
         {
-            var parent = new ParentFilterModel(entityType, dbSetName, parentIdPropName);
+            var parent = new DbSetConfig(entityType, dbSetName, parentIdPropName);
             Parent = parent;
             return parent;
         }

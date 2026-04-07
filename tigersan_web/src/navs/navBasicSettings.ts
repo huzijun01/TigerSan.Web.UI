@@ -5,16 +5,17 @@ import DepartmentMgtPage from '@/pages/BasicSettings/BasicSettings/DepartmentMgt
 import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/PersonMgtPage.vue'
 import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgtPage/RoleMgtPage.vue'
 import SiteMgtPage from '@/pages/BasicSettings/BasicSettings/SiteMgtPage/SiteMgtPage.vue'
-import SiteTypeMgtPage from '@/pages/BasicSettings/BasicSettings/SiteTypeMgtPage/SiteTypeMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
-import StationTypeMgtPage from '@/pages/BasicSettings/BaseStationMgt/StationTypeMgtPage/StationTypeMgtPage.vue'
 // TagMgt:
 import PersonMgtTagPage from '@/pages/BasicSettings/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
 import AssetMgtTagPage from '@/pages/BasicSettings/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
 import EnvSensorPage from '@/pages/BasicSettings/TagMgt/EnvSensorPage/EnvSensorPage.vue'
 // TerminalMgt:
 import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
+// DictionaryMgt:
+import SiteTypeMgtPage from '@/pages/BasicSettings/DictionaryMgt/SiteTypeMgtPage/SiteTypeMgtPage.vue'
+import StationTypeMgtPage from '@/pages/BasicSettings/DictionaryMgt/StationTypeMgtPage/StationTypeMgtPage.vue'
 // OperationMgt:
 import OperationRecordPage from '@/pages/BasicSettings/OperationMgt/OperationRecordPage/OperationRecordPage.vue'
 import OperationRetryPage from '@/pages/BasicSettings/OperationMgt/OperationRetryPage/OperationRetryPage.vue'

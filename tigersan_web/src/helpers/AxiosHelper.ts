@@ -1,112 +1,19 @@
 
-import { api } from "./AxiosApi"
 import { dialog } from "@/0_tigersan_ui/tigerui"
-import { KeyValue, ParamHelper } from "./ParamHelper"
+import { AxiosBase } from "./AxiosBase"
+import { KeyValue } from "./ParamHelper"
 import { FilterModel, IdNameModel, MyActionResult } from "@/models"
 
-export class AxiosHelper {
-    // 基础:
-    static async Get(action: string, params?: KeyValue[]): Promise<MyActionResult> {
-        try {
-            let url = action
-            if (params) {
-                url += ParamHelper.GetParamString(params)
-            }
-
-            const response = await api.get(url)
-            const actionResult = response.data as MyActionResult
-
-            if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
-                return MyActionResult.ActionResult_Undefined
-            }
-
-            return actionResult
-        } catch (error) {
-            return MyActionResult.GetError(error)
-        }
-    }
-
-    static async GetData<T extends object | unknown[] | number>(action: string, params?: KeyValue[]): Promise<T> {
-        return (await this.Get(action, params)).data as T
-    }
-
-    static async Post(action: string, data?: unknown, params?: KeyValue[]): Promise<MyActionResult> {
-        try {
-            let url = action
-            if (params) {
-                url += ParamHelper.GetParamString(params)
-            }
-
-            const response = await api.post(url, data)
-            const actionResult = response.data as MyActionResult
-
-            if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
-                return MyActionResult.ActionResult_Undefined
-            }
-
-            return actionResult
-        } catch (error) {
-            return MyActionResult.GetError(error)
-        }
-    }
-
-    static async Put<T>(action: string, data: T, params?: KeyValue[]): Promise<MyActionResult> {
-        try {
-            let url = action
-            if (params) {
-                url += ParamHelper.GetParamString(params)
-            }
-
-            const response = await api.put(url, data)
-            const actionResult = response.data as MyActionResult
-
-            if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
-                return MyActionResult.ActionResult_Undefined
-            }
-            else if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-            }
-
-            return actionResult
-        } catch (error) {
-            return MyActionResult.GetError(error)
-        }
-    }
-
-    static async Delete(action: string, index: number | bigint, params?: KeyValue[]): Promise<MyActionResult> {
-        try {
-            let url = `${action}/${index}`
-            if (params) {
-                url += ParamHelper.GetParamString(params)
-            }
-
-            const response = await api.delete(url)
-            const actionResult = response.data as MyActionResult
-
-            if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
-                return MyActionResult.ActionResult_Undefined
-            }
-            else if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-            }
-
-            return actionResult
-        } catch (error) {
-            return MyActionResult.GetError(error)
-        }
-    }
-
+export class AxiosHelper extends AxiosBase {
     // 列表:
     static async GetCount(
         action: string,
-        params?: KeyValue[],
-        filters?: FilterModel[]): Promise<number> {
+        param: {
+            params?: KeyValue[],
+            filter?: FilterModel
+        }): Promise<number> {
         try {
-            const actionResult = await this.Post(`${action}/Count`, filters, params)
+            const actionResult = await this.Post(`${action}/Count`, param.params, param.filter)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -126,19 +33,21 @@ export class AxiosHelper {
 
     static async GetList<T>(
         action: string,
-        pageSize?: number,
-        pageNumber?: number,
-        strList?: string,
-        params?: KeyValue[],
-        filters?: FilterModel[]): Promise<T[]> {
+        param: {
+            pageSize?: number,
+            pageNumber?: number,
+            strList?: string,
+            params?: KeyValue[],
+            filter?: FilterModel
+        }): Promise<T[]> {
         try {
             const arrParams: KeyValue[] = [
-                { key: 'pageSize', value: pageSize },
-                { key: 'pageNumber', value: pageNumber },
+                { key: 'pageSize', value: param.pageSize },
+                { key: 'pageNumber', value: param.pageNumber },
             ]
-            if (params) arrParams.push(...params)
+            if (param.params) arrParams.push(...param.params)
 
-            const actionResult = await this.Post(`${action}/${strList ?? 'List'}`, filters, arrParams)
+            const actionResult = await this.Post(`${action}/${param.strList ?? 'List'}`, arrParams, param.filter)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -156,10 +65,18 @@ export class AxiosHelper {
         }
     }
 
-    static async SelectIdName<T extends IdNameModel>(action: string, isDistinct?: boolean): Promise<T[]> {
+    static async SelectIdName<T extends IdNameModel>(
+        action: string,
+        param: {
+            isDistinct?: boolean,
+            params?: KeyValue[],
+            filter?: FilterModel
+        }): Promise<T[]> {
         try {
-            const params = isDistinct != undefined ? `?isDistinct=${isDistinct}` : ''
-            const actionResult = await this.Get(`${action}/SelectIdName/${params}`)
+            const arrParams: KeyValue[] = [{ key: 'isDistinct', value: param.isDistinct }]
+            if (param.params) arrParams.push(...param.params)
+
+            const actionResult = await this.Post(`${action}/SelectIdName`, arrParams, param.filter)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
@@ -174,6 +91,25 @@ export class AxiosHelper {
         } catch (error) {
             console.error(error)
             return []
+        }
+    }
+
+    static async Add<T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> {
+        try {
+            const range = isRange ? '/Range' : ''
+            const actionResult = await this.Post(`${action}${range}`, undefined, data)
+
+            if (actionResult === undefined) {
+                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                return MyActionResult.ActionResult_Undefined
+            }
+            else if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
+            }
+
+            return actionResult
+        } catch (error) {
+            return MyActionResult.GetError(error)
         }
     }
 
@@ -196,24 +132,4 @@ export class AxiosHelper {
     //         return []
     //     }
     // }
-
-    static async Add<T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> {
-        try {
-            const range = isRange ? '/Range' : ''
-            const response = await api.post(`${action}${range}`, data)
-            const actionResult = response.data as MyActionResult
-
-            if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
-                return MyActionResult.ActionResult_Undefined
-            }
-            else if (!MyActionResult.IsSuccess(actionResult)) {
-                MyActionResult.ShowResult(actionResult)
-            }
-
-            return actionResult
-        } catch (error) {
-            return MyActionResult.GetError(error)
-        }
-    }
 }

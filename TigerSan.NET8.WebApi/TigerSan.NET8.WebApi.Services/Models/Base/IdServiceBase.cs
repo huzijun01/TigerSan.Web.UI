@@ -13,8 +13,8 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region 【Fields】
         public AppDbContext _db;
         public DbSet<TEntity> _dbSet;
-        public ParentFilterModel? _parent;
-        public string? _parentIdPropName;
+        /// <summary>“当前表”配置</summary>
+        private readonly static DbSetConfig _dbSetConfig = new DbSetConfig(typeof(TEntity), AppDbContext.GetDbSetName(typeof(DbSet<TEntity>)));
         #endregion 【Fields】
 
         #region 【Ctor】
@@ -26,6 +26,17 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [static]
+        #region 修改“当前表”配置
+        /// <summary>修改“当前表”配置</summary>
+        public static DbSetConfig SetDbSetConfig(string parentIdPropName)
+        {
+            _dbSetConfig.ParentIdPropName = parentIdPropName;
+            return _dbSetConfig;
+        }
+        #endregion
+        #endregion [static]
+
         #region 获取“过滤器数据”
         /// <summary>获取“过滤器数据”</summary>
         public virtual async Task<IQueryable<TEntity>> GetFilter(IQueryable<TEntity> queryable, FilterDto? filter = null)
@@ -42,9 +53,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     if (filter.Parent != null)
                     {
                         queryable = await queryable.GetParentFilter(
-                            _parentIdPropName,
+                            _dbSetConfig.ParentIdPropName,
                             _db,
-                            _parent,
+                            _dbSetConfig.Parent,
                             filter.Parent);
                     }
                 }
@@ -105,12 +116,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         {
             try
             {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
+                var queryable = _dbSet.AsNoTracking().GetPage(pageSize, pageNumber);
 
                 queryable = await GetFilter(queryable, filter);
 

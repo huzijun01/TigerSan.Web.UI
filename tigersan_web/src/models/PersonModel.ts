@@ -23,11 +23,57 @@ class PersonMgtHelper extends IdModelHelper<PersonModel> {
     }
 
     /** 筛选“总数” */
-    readonly GetCountAsync = async (company?: bigint, department?: bigint, role?: bigint) => await AxiosHelper.GetCount(this._action, [{ key: 'company', value: company }, { key: 'department', value: department }, { key: 'role', value: role }])
+    readonly GetCountAsync = async (param: {
+        company?: bigint,
+        department?: bigint,
+        role?: bigint,
+        name?: string,
+    }) => await AxiosHelper.GetCount(this._action,
+        {
+            params: [
+                { key: 'name', value: param.name }
+            ],
+            filter: {
+                parent: {
+                    id: param.role,
+                    parent: {
+                        id: param.department,
+                        parent: {
+                            id: param.company,
+                        }
+                    }
+                }
+            }
+        })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (company?: bigint, department?: bigint, role?: bigint, name?: string, pageSize?: number, pageNumber?: number) =>
-        await AxiosHelper.GetList<PersonModel>(this._action, pageSize, pageNumber, 'FullList', [{ key: 'company', value: company }, { key: 'department', value: department }, { key: 'role', value: role }, { key: 'name', value: name }])
+    readonly GetListAsync = async (param: {
+        pageSize?: number,
+        pageNumber?: number,
+        company?: bigint,
+        department?: bigint,
+        role?: bigint,
+        name?: string,
+    }) => await AxiosHelper.GetList<PersonModel>(this._action,
+        {
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            strList: 'FullList',
+            params: [
+                { key: 'name', value: param.name }
+            ],
+            filter: {
+                parent: {
+                    id: param.role,
+                    parent: {
+                        id: param.department,
+                        parent: {
+                            id: param.company,
+                        }
+                    }
+                }
+            }
+        })
 
     /** 获取“所属公司”集合 */
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)

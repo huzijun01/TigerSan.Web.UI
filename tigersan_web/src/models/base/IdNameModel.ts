@@ -17,7 +17,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
 
     // 查:
     /** 获取“ID名称对”集合 */
-    readonly GetIdNames = async () => await AxiosHelper.SelectIdName(this._action)
+    readonly GetIdNames = async () => await AxiosHelper.SelectIdName(this._action, {})
 
     /** 获取“ID名称对” */
     readonly GetIdName = (id: bigint): IdNameModel | undefined => {
@@ -30,7 +30,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
 
     /** 获取“公司” */
     readonly GetModel = async (id: bigint): Promise<TModel | undefined> => {
-        const model = (await this.GetList()).find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
+        const model = (await this.GetList({})).find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
 
         if (!model) {
             console.warn('The model is undefined!')

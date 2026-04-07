@@ -164,8 +164,20 @@ async function Refresh() {
     await selectDepartment.UpdateItemsAsync()
     await selectRole.UpdateItemsAsync()
 
-    pagination.Count.value = await personMgtHelper.GetCountAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id)
-    await personMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectDepartment.Value.value?.id, selectRole.Value.value?.id, searchName.Value.value, pagination.PageSize.value, pagination.SelectedNum.value).then(arr => {
+    pagination.Count.value = await personMgtHelper.GetCountAsync({
+        company: selectCompany.Value.value?.id,
+        department: selectDepartment.Value.value?.id,
+        role: selectRole.Value.value?.id,
+        name: searchName.Value.value,
+    })
+    await personMgtHelper.GetListAsync({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+        company: selectCompany.Value.value?.id,
+        department: selectDepartment.Value.value?.id,
+        role: selectRole.Value.value?.id,
+        name: searchName.Value.value,
+    }).then(arr => {
         ArrayHelper.Set(personMgtTable.RowDatas, arr)
     })
 }

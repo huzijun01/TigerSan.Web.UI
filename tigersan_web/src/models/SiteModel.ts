@@ -27,13 +27,32 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
     }
 
     /** 筛选“总数” */
-    readonly GetCountAsync = async (company?: bigint, type?: bigint) => await AxiosHelper.GetCount(this._action,
-        [{ key: 'company', value: company }, { key: 'type', value: type }])
+    readonly GetCountAsync = async (param: {
+        company?: bigint,
+        type?: bigint
+    }) => await AxiosHelper.GetCount(this._action,
+        {
+            params: [
+                { key: 'company', value: param.company },
+                { key: 'type', value: param.type }
+            ]
+        })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (company?: bigint, type?: bigint, pageSize?: number, pageNumber?: number) =>
-        await AxiosHelper.GetList<SiteModel>(this._action, pageSize, pageNumber, undefined,
-            [{ key: 'company', value: company }, { key: 'type', value: type }])
+    readonly GetListAsync = async (param: {
+        pageSize?: number,
+        pageNumber?: number
+        company?: bigint,
+        type?: bigint,
+    }) => await AxiosHelper.GetList<SiteModel>(this._action,
+        {
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            params: [
+                { key: 'company', value: param.company },
+                { key: 'type', value: param.type }
+            ]
+        })
 
     /** 获取“ID名称对”集合 */
     readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByCompany`,

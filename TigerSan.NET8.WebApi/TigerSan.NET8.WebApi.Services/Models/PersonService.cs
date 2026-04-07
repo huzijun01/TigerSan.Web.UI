@@ -14,11 +14,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 【Ctor】
         public PersonService(AppDbContext db) : base(db, db.Persons)
         {
-            _parentIdPropName = nameof(PersonEntity.Role);
-            _parent = new ParentFilterModel(typeof(RoleEntity), nameof(_db.Roles), nameof(RoleEntity.Department));
-            _parent
-                .AddParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
-                .AddParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
+        static PersonService()
+        {
+            SetDbSetConfig(nameof(PersonEntity.Role))
+                .SetParent(typeof(RoleEntity), nameof(_db.Roles), nameof(RoleEntity.Department))
+                .SetParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
         }
         #endregion 【Ctor】
 
@@ -39,49 +42,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion [private]
 
         #region [查]
-        #region 获取“总数”
-        /// <summary>获取“总数”</summary>
-        public async Task<int> GetCount(long? company = null, long? department = null, long? role = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                if (role != null)
-                {
-                    queryable = queryable.Where(i => i.Role == role);
-                }
-                else if (department != null)
-                {
-                    var roleIds = await _db.Roles.Where(r => r.Department == department).Select(r => r.Id).ToListAsync();
-                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
-                }
-                else if (company != null)
-                {
-                    var departmentIds = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    var roleIds = await _db.Roles.Where(r => departmentIds.Contains(r.Department)).Select(r => r.Id).ToListAsync();
-                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
-                }
-
-                return await queryable.CountAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return 0;
-            }
-        }
-        #endregion
-
-        #region 获取“完整数据”
+        #region 获取“完整登录数据”
         /// <summary>
-        /// 获取“完整数据”
+        /// 获取“完整登录数据”
         /// </summary>
         /// <param name="search">用户名/电话/邮箱</param>
         /// <param name="password">密码</param>
         /// <returns></returns>
-        public async Task<MyActionResult<PersonFullEntity>> GetFull(string search, string password)
+        public async Task<MyActionResult<PersonFullEntity>> GetLoginFull(string search, string password)
         {
             var res = MyResults<PersonFullEntity>.OperationSuccess;
 
@@ -110,52 +78,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<PersonFullEntity>> GetFullList(long? company = null, long? department = null, long? role = null, string? name = null, int? pageSize = null, int? pageNumber = null)
+        public async Task<List<PersonFullEntity>> GetFullList(
+            string? name = null,
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null)
         {
             try
             {
                 var list = new List<PersonFullEntity>();
 
-                var queryable = _dbSet.AsNoTracking();
+                var queryable = _dbSet.AsNoTracking().GetPage(pageSize, pageNumber);
 
-                // 筛选:
-                if (role != null)
-                {
-                    queryable = queryable.Where(i => i.Role == role);
-                }
-                else if (department != null)
-                {
-                    var roleIds = await _db.Roles
-                        .Where(r => r.Department == department)
-                        .Select(r => r.Id)
-                        .ToListAsync();
-                    queryable = queryable
-                        .Where(i => roleIds
-                        .Contains(i.Role));
-                }
-                else if (company != null)
-                {
-                    var departmentIds = await _db.Departments
-                        .Where(d => d.Company == company)
-                        .Select(d => d.Id)
-                        .ToListAsync();
-                    var roleIds = await _db.Roles
-                        .Where(r => departmentIds
-                        .Contains(r.Department))
-                        .Select(r => r.Id)
-                        .ToListAsync();
-                    queryable = queryable.Where(i => roleIds.Contains(i.Role));
-                }
+                queryable = await GetFilter(queryable, filter);
 
                 if (name != null && name.Trim() != "")
                 {
                     queryable = queryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
-                }
-
-                // 分页:
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
                 }
 
                 var persons = await queryable.ToListAsync();

@@ -6,6 +6,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models.Base
     public interface IIdNameServiceBase<TEntity> : IIdServiceBase<TEntity> where TEntity : IdNameEntityBase
     {
         // 查:
-        public Task<List<IdName>> SelectIdName(bool? isDistinct);
+        public Task<List<IdName>> SelectIdName(bool? isDistinct = null, FilterDto? filter = null);
     }
 }

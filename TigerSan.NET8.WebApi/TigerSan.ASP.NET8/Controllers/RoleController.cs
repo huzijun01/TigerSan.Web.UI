@@ -29,8 +29,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
         public override async Task<MyActionResult<List<RoleEntity>>> GetList(
-            [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
+            int? pageSize,
+            int? pageNumber,
             [FromBody] FilterDto? filter = null)
         {
             return MyResults<List<RoleEntity>>.ApiUnavailable;
@@ -40,7 +40,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Count")]
         /// <summary>获取“总数”</summary>
-        public async Task<MyActionResult<int>> GetCount([FromQuery] long? company = null, [FromQuery] long? department = null)
+        public async Task<MyActionResult<int>> GetCount(long? company = null, long? department = null)
         {
             var res = MyResults<int>.OperationSuccess;
             res.Data = await _service.GetCount(company, department);
@@ -50,7 +50,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult<List<RoleEntity>>> GetList([FromQuery] long? company = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<RoleEntity>>> GetList(long? company = null, int? pageSize = null, int? pageNumber = null)
         {
             var res = MyResults<List<RoleEntity>>.OperationSuccess;
             res.Data = await _service.GetList(company, pageSize, pageNumber);
@@ -60,7 +60,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult<List<RoleAuthorityEntity>>> GetFullList([FromQuery] long? company = null, [FromQuery] long? department = null, [FromQuery] int? pageSize = null, [FromQuery] int? pageNumber = null)
+        public async Task<MyActionResult<List<RoleAuthorityEntity>>> GetFullList(long? company = null, long? department = null, int? pageSize = null, int? pageNumber = null)
         {
             var res = MyResults<List<RoleAuthorityEntity>>.OperationSuccess;
             res.Data = await _service.GetFullList(company, department, pageSize, pageNumber);
@@ -70,7 +70,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("SelectIdNameByDepartment")]
         /// <summary>获取“ID名称对”集合/summary>
-        public async Task<MyActionResult<List<IdName>>> SelectIdNameByDepartment([FromQuery] long? department = null)
+        public async Task<MyActionResult<List<IdName>>> SelectIdNameByDepartment(long? department = null)
         {
             var res = MyResults<List<IdName>>.OperationSuccess;
             res.Data = await _service.SelectIdNameByDepartment(department);

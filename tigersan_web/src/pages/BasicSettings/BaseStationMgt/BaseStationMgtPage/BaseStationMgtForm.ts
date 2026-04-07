@@ -153,13 +153,29 @@ async function Refresh() {
     await stationTypeMgtHelper.UpdateIdNames()
     await selectType.UpdateItemsAsync()
 
-    onlineCount.value = await baseStationMgtHelper.GetCount(selectCompany.Value.value?.id, selectSite.Value.value?.id, OnlineState.Online, selectType.Value.value?.id)
-    pagination.Count.value = await baseStationMgtHelper.GetCount(selectCompany.Value.value?.id, selectSite.Value.value?.id, selectState.Value.value, selectType.Value.value?.id)
+    onlineCount.value = await baseStationMgtHelper.GetCount({
+        company: selectCompany.Value.value?.id,
+        site: selectSite.Value.value?.id,
+        state: OnlineState.Online,
+        type: selectType.Value.value?.id
+    })
+    pagination.Count.value = await baseStationMgtHelper.GetCount({
+        company: selectCompany.Value.value?.id,
+        site: selectSite.Value.value?.id,
+        state: selectState.Value.value,
+        type: selectType.Value.value?.id
+    })
     offlineCount.value = pagination.Count.value - onlineCount.value
-    await baseStationMgtHelper.GetListAsync(selectCompany.Value.value?.id, selectSite.Value.value?.id, selectState.Value.value, selectType.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value)
-        .then(arr => {
-            ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
-        })
+    await baseStationMgtHelper.GetListAsync({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+        company: selectCompany.Value.value?.id,
+        site: selectSite.Value.value?.id,
+        state: selectState.Value.value,
+        type: selectType.Value.value?.id,
+    }).then(arr => {
+        ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
+    })
 }
 
 pagination._onChange = Refresh

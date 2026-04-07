@@ -29,13 +29,57 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
     }
 
     /** 筛选“总数” */
-    readonly GetCount = async (company?: bigint, site?: bigint, state?: OnlineState, type?: bigint) => await AxiosHelper.GetCount(this._action,
-        [{ key: 'company', value: company }, { key: 'site', value: site }, { key: 'state', value: state }, { key: 'type', value: type }])
+    readonly GetCount = async (
+        param: {
+            company?: bigint,
+            site?: bigint,
+            state?: OnlineState,
+            type?: bigint,
+        }
+    ) => await AxiosHelper.GetCount(this._action,
+        {
+            filter: {
+                filters: [
+                    { propName: 'OnlineState', value: param.state },
+                    { propName: 'Type', value: param.type }
+                ],
+                parent: {
+                    id: param.site,
+                    parent: {
+                        id: param.company,
+                    }
+                }
+            },
+        })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (company?: bigint, site?: bigint, state?: OnlineState, type?: bigint, pageSize?: number, pageNumber?: number) =>
-        await AxiosHelper.GetList<BaseStationModel>(this._action, pageSize, pageNumber, 'FullList',
-            [{ key: 'company', value: company }, { key: 'site', value: site }, { key: 'state', value: state }, { key: 'type', value: type }])
+    readonly GetListAsync = async (
+        param: {
+            pageSize?: number,
+            pageNumber?: number,
+            company?: bigint,
+            site?: bigint,
+            state?: OnlineState,
+            type?: bigint,
+        }
+    ) => await AxiosHelper.GetList<BaseStationModel>(this._action,
+        {
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            strList: 'FullList',
+            filter: {
+                filters: [
+                    { propName: 'OnlineState', value: param.state },
+                    { propName: 'Type', value: param.type }
+                ],
+                parent: {
+                    id: param.site,
+                    parent: {
+                        id: param.company,
+                    }
+                }
+            },
+        })
 
     /** 获取“所属公司”集合 */
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)

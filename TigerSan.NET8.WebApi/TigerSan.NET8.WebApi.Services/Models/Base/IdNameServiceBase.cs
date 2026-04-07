@@ -7,7 +7,7 @@ using TigerSan.NET8.WebApi.Interfaces.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models.Base
 {
-    public class IdNameServiceBase<TEntity> : IdServiceBase<TEntity>, IIdServiceBase<TEntity> where TEntity : IdNameEntityBase
+    public class IdNameServiceBase<TEntity> : IdServiceBase<TEntity>, IIdNameServiceBase<TEntity> where TEntity : IdNameEntityBase
     {
         #region 【Ctor】
         public IdNameServiceBase(AppDbContext db, DbSet<TEntity> dbSet) : base(db, dbSet)
@@ -18,16 +18,19 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region 【Functions】
         #region [查]
         /// <summary>获取“ID名称对”集合</summary>
-        public async Task<List<IdName>> SelectIdName(bool? isDistinct)
+        public async Task<List<IdName>> SelectIdName(bool? isDistinct = null, FilterDto? filter = null)
         {
-            var query = _dbSet.Select(i => new IdName(i));
+            var queryable = _dbSet.AsNoTracking();
+            queryable = await GetFilter(queryable, filter);
+
+            var select = queryable.Select(i => new IdName(i));
 
             if (isDistinct ?? false)
             {
-                query = query.Distinct();
+                select = select.Distinct();
             }
 
-            return await query.ToListAsync();
+            return await select.ToListAsync();
         }
         #endregion [查]
 

@@ -52,8 +52,8 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         [Route("List")]
         /// <summary>获取“数据”集合</summary>
         public virtual async Task<MyActionResult<List<TEntity>>> GetList(
-            [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
+            int? pageSize = null,
+            int? pageNumber = null,
             [FromBody] FilterDto? filter = null)
         {
             var res = MyResults<List<TEntity>>.OperationSuccess;

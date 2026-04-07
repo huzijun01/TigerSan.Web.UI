@@ -62,11 +62,16 @@ const departmentMgtForm = new FormModel(configDepartmentMgtForm)
 async function Refresh() {
     await companyMgtHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
-    pagination.Count.value = await departmentMgtHelper.GetCount(selectCompany.Value.value?.id)
-    await departmentMgtHelper.GetListAsync(selectCompany.Value.value?.id, pagination.PageSize.value, pagination.SelectedNum.value)
-        .then(arr => {
-            ArrayHelper.Set(departmentMgtTable.RowDatas, arr)
-        })
+    pagination.Count.value = await departmentMgtHelper.GetCount({
+        company: selectCompany.Value.value?.id
+    })
+    await departmentMgtHelper.GetListAsync({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+        company: selectCompany.Value.value?.id,
+    }).then(arr => {
+        ArrayHelper.Set(departmentMgtTable.RowDatas, arr)
+    })
 }
 
 pagination._onChange = Refresh

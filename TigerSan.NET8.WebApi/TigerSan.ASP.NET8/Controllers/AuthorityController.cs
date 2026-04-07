@@ -20,8 +20,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         [Route("Unused/List")]
         /// <summary>获取“数据”集合</summary>
         public override async Task<MyActionResult<List<AuthorityEntity>>> GetList(
-            [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
+            int? pageSize,
+            int? pageNumber,
             [FromBody] FilterDto? filter = null)
         {
             return MyResults<List<AuthorityEntity>>.ApiUnavailable;

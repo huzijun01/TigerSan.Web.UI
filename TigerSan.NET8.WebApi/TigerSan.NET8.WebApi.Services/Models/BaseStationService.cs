@@ -16,161 +16,29 @@ namespace TigerSan.NET8.WebApi.Services.Models
         public BaseStationService(AppDbContext db) : base(db, db.BaseStations)
         {
         }
+
+        static BaseStationService()
+        {
+            SetDbSetConfig(nameof(BaseStationEntity.Site))
+                .SetParent(typeof(SiteEntity), nameof(_db.Sites), nameof(SiteEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
         #endregion 【Ctor】
 
         #region 【Functions】
         #region [查]
-        #region 获取“总数”
-        /// <summary>获取“总数”</summary>
-        public async Task<int> GetCount(long? company = null, long? site = null, OnlineState? state = null, long? type = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                if (site != null)
-                {
-                    queryable = queryable.Where(i => i.Site == site);
-                }
-                else if (company != null)
-                {
-                    var sites = await _db.Sites.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    queryable = queryable.Where(i => sites.Contains(i.Site));
-                }
-
-                if (state != null)
-                {
-                    queryable = queryable.Where(i => i.OnlineState == state);
-                }
-
-                if (type != null)
-                {
-                    queryable = queryable.Where(i => i.Type == type);
-                }
-
-                return await queryable.CountAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return 0;
-            }
-        }
-        #endregion
-
-        #region 获取“状态总数”
-        /// <summary>获取“状态总数”</summary>
-        public async Task<int> GetStateCount(OnlineState state, long? company = null, long? site = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                if (site != null)
-                {
-                    queryable = queryable.Where(i => i.Site == site);
-                }
-                else if (company != null)
-                {
-                    var sites = await _db.Sites.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    queryable = queryable.Where(i => sites.Contains(i.Site));
-                }
-
-                return await queryable.Where(i => i.OnlineState == state).CountAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return 0;
-            }
-        }
-        #endregion
-
-        #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
-        public async Task<List<BaseStationEntity>> GetList(long? company = null, long? site = null, OnlineState? state = null, long? type = null, int? pageSize = null, int? pageNumber = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                if (site != null)
-                {
-                    queryable = queryable.Where(i => i.Site == site);
-                }
-                else if (company != null)
-                {
-                    var sites = await _db.Sites.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    queryable = queryable.Where(i => sites.Contains(i.Site));
-                }
-
-                if (state != null)
-                {
-                    queryable = queryable.Where(i => i.OnlineState == state);
-                }
-
-                if (type != null)
-                {
-                    queryable = queryable.Where(i => i.Type == type);
-                }
-
-                // 分页:
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                return await queryable.ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return new List<BaseStationEntity>();
-            }
-        }
-        #endregion
-
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<BaseStationDto>> GetFullList(long? company = null, long? site = null, OnlineState? state = null, long? type = null, int? pageSize = null, int? pageNumber = null)
+        public async Task<List<BaseStationDto>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null)
         {
             try
             {
                 var list = new List<BaseStationDto>();
 
-                var queryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                if (site != null)
-                {
-                    queryable = queryable.Where(i => i.Site == site);
-                }
-                else if (company != null)
-                {
-                    var sites = await _db.Sites.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    queryable = queryable.Where(i => sites.Contains(i.Site));
-                }
-
-                if (state != null)
-                {
-                    queryable = queryable.Where(i => i.OnlineState == state);
-                }
-
-                if (type != null)
-                {
-                    queryable = queryable.Where(i => i.Type == type);
-                }
-
-                // 分页:
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                var stations = await queryable.ToListAsync();
+                var stations = await GetList<BaseStationDto>(pageSize, pageNumber, filter);
 
                 // 添加“数据”:
                 foreach (var station in stations)

@@ -129,7 +129,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                var resPerson = await _personService.GetFull(search, password);
+                var resPerson = await _personService.GetLoginFull(search, password);
                 if (Equals(resPerson.Message, MyResults<UserInfo>.PasswordIncorrect.Message))
                 {
                     return MyResults<UserInfo>.PasswordIncorrect;

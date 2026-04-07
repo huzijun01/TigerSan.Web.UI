@@ -16,13 +16,13 @@ namespace TigerSan.NET8.WebApi.Controllers.Base
         #endregion 【Ctor】
 
         #region 【Functions】
-        [HttpGet]
+        [HttpPost]
         [Route("SelectIdName")]
         /// <summary>获取“ID名称对”集合</summary>
-        public virtual async Task<MyActionResult<List<IdName>>> SelectIdName([FromQuery] bool? isDistinct)
+        public virtual async Task<MyActionResult<List<IdName>>> SelectIdName(bool? isDistinct, [FromBody] FilterDto? filter = null)
         {
             var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.SelectIdName(isDistinct);
+            res.Data = await _service.SelectIdName(isDistinct, filter);
             return res;
         }
         #endregion 【Functions】

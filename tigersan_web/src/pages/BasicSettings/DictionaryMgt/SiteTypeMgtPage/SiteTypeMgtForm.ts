@@ -39,11 +39,13 @@ const siteTypeMgtForm = new FormModel(configSiteTypeMgtForm)
 
 /** 查 */
 async function Refresh() {
-    pagination.Count.value = await siteTypeMgtHelper.GetCount()
-    await siteTypeMgtHelper.GetList(pagination.PageSize.value, pagination.SelectedNum.value)
-        .then(arr => {
-            ArrayHelper.Set(siteTypeMgtTable.RowDatas, arr)
-        })
+    pagination.Count.value = await siteTypeMgtHelper.GetCount({})
+    await siteTypeMgtHelper.GetList({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+    }).then(arr => {
+        ArrayHelper.Set(siteTypeMgtTable.RowDatas, arr)
+    })
 }
 
 pagination._onChange = Refresh
