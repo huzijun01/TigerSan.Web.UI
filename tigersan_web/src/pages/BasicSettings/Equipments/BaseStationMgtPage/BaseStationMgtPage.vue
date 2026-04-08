@@ -6,7 +6,7 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <Select :model="form.selectState"></Select>
-                        <Search :model="form.searchMac"></Search>
+                        <Search :model="form.searchMacAddr"></Search>
                     </div>
                     <div class="row-panel">
                         <Select :model="form.selectCompany"></Select>

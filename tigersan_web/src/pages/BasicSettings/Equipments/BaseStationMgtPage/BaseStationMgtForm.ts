@@ -27,8 +27,9 @@ const selectTypeForm = stationTypeMgtHelper.GetSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectSiteForm.UpdateItemsAsync
 
-const searchMac = new SearchModel()
-searchMac.Placeholder.value = '请输入名称或MAC'
+const searchMacAddr = new SearchModel()
+searchMacAddr.Placeholder.value = '请输入MAC地址'
+searchMacAddr._onSearch = Refresh
 
 const selectState = new SelectModel<OnlineState>()
 selectState.Width.value = 100
@@ -157,13 +158,15 @@ async function Refresh() {
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         state: OnlineState.Online,
-        type: selectType.Value.value?.id
+        type: selectType.Value.value?.id,
+        macAddr: searchMacAddr.Value.value,
     })
     pagination.Count.value = await baseStationMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         state: selectState.Value.value,
-        type: selectType.Value.value?.id
+        type: selectType.Value.value?.id,
+        macAddr: searchMacAddr.Value.value,
     })
     offlineCount.value = pagination.Count.value - onlineCount.value
     await baseStationMgtHelper.GetListAsync({
@@ -173,6 +176,7 @@ async function Refresh() {
         site: selectSite.Value.value?.id,
         state: selectState.Value.value,
         type: selectType.Value.value?.id,
+        macAddr: searchMacAddr.Value.value,
     }).then(arr => {
         ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
     })
@@ -258,7 +262,7 @@ export default {
     pagination,
     onlineCount,
     offlineCount,
-    searchMac,
+    searchMacAddr,
     selectState,
     selectCompany,
     selectSite,

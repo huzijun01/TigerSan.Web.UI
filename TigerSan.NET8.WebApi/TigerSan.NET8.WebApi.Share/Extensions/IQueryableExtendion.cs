@@ -187,6 +187,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 Func<object, Expression> selector;
                 if (propertyType == typeof(string))
                 {
+                    if (string.IsNullOrEmpty(filter.Value?.ToString())) return queryable;
                     selector = obj => Expression.Equal(
                         Expression.Call(property, MethodPicker.ToLower),
                         Expression.Constant(obj.ToString()?.ToLower(), typeof(string))

@@ -11,7 +11,7 @@
                         <Select :model="select.eqpTypeSelect"></Select>
                     </div>
                     <div class="row-panel">
-                        <Search :model="select.searchMac"></Search>
+                        <Search :model="select.searchMacAddr"></Search>
                         <DatePicker :model="select.date"></DatePicker>
                     </div>
                 </div>

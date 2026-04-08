@@ -35,13 +35,15 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             site?: bigint,
             state?: OnlineState,
             type?: bigint,
+            macAddr?: string,
         }
     ) => await AxiosHelper.GetCount(this._action,
         {
             filter: {
                 filters: [
                     { propName: 'OnlineState', value: param.state },
-                    { propName: 'Type', value: param.type }
+                    { propName: 'Type', value: param.type },
+                    { propName: 'MacAddr', value: param.macAddr },
                 ],
                 parent: {
                     id: param.site,
@@ -61,6 +63,7 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             site?: bigint,
             state?: OnlineState,
             type?: bigint,
+            macAddr?: string,
         }
     ) => await AxiosHelper.GetList<BaseStationModel>(this._action,
         {
@@ -70,7 +73,8 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             filter: {
                 filters: [
                     { propName: 'OnlineState', value: param.state },
-                    { propName: 'Type', value: param.type }
+                    { propName: 'Type', value: param.type },
+                    { propName: 'MacAddr', value: param.macAddr },
                 ],
                 parent: {
                     id: param.site,

@@ -1,7 +1,7 @@
 import { Texts, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
-const searchMac = new SearchModel()
-searchMac.Placeholder.value = '请输入名称或MAC'
+const searchMacAddr = new SearchModel()
+searchMacAddr.Placeholder.value = '请输入MAC地址'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
@@ -27,7 +27,7 @@ firmwareSelect.Items.push(...[
 ])
 
 export default {
-    searchMac,
+    searchMacAddr,
     typeSelect,
     selectState,
     firmwareSelect,

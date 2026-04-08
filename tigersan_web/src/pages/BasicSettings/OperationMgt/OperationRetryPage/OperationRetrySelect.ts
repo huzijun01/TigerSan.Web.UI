@@ -1,7 +1,7 @@
 import { DatePickerModel, DateType, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
-const searchMac = new SearchModel()
-searchMac.Placeholder.value = '请输入名称或MAC'
+const searchMacAddr = new SearchModel()
+searchMacAddr.Placeholder.value = '请输入MAC地址'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150
@@ -40,7 +40,7 @@ date._onChange = value => {
 }
 
 export default {
-    searchMac,
+    searchMacAddr,
     operationTypeSelect,
     eqpTypeSelect,
     date,

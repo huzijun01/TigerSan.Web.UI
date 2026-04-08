@@ -11,7 +11,7 @@
                     <div class="row-panel">
                         <span>在线状态:</span>
                         <Select :model="select.selectState"></Select>
-                        <Search :model="select.searchMac"></Search>
+                        <Search :model="select.searchMacAddr"></Search>
                     </div>
                 </div>
                 <div class="button-panel">

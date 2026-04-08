@@ -13,7 +13,7 @@
                         <Select :model="select.selectState"></Select>
                         <span>固件版本:</span>
                         <Select :model="select.firmwareSelect"></Select>
-                        <Search :model="select.searchMac"></Search>
+                        <Search :model="select.searchMacAddr"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
