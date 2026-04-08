@@ -17,8 +17,4 @@
     <PackageReference Include="TigerSan.CsvLog" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\BaseSettings\" />
-  </ItemGroup>
-
 </Project>

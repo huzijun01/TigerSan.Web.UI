@@ -16,4 +16,9 @@
     <ProjectReference Include="..\TigerSan.NET8.WebApi.Share\TigerSan.NET8.WebApi.Share.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Equipments\" />
+    <Folder Include="Controllers\BaseSettings\" />
+  </ItemGroup>
+
 </Project>

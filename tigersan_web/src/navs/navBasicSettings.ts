@@ -6,16 +6,18 @@ import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/Per
 import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgtPage/RoleMgtPage.vue'
 import SiteMgtPage from '@/pages/BasicSettings/BasicSettings/SiteMgtPage/SiteMgtPage.vue'
 // BaseStationMgt:
-import BaseStationMgtPage from '@/pages/BasicSettings/BaseStationMgt/BaseStationMgtPage/BaseStationMgtPage.vue'
+import BaseStationMgtPage from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtPage.vue'
 // TagMgt:
-import PersonMgtTagPage from '@/pages/BasicSettings/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
-import AssetMgtTagPage from '@/pages/BasicSettings/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
-import EnvSensorPage from '@/pages/BasicSettings/TagMgt/EnvSensorPage/EnvSensorPage.vue'
+import PersonMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
+import AssetMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
+import EnvSensorPage from '@/pages/BasicSettings/Equipments/TagMgt/EnvSensorPage/EnvSensorPage.vue'
 // TerminalMgt:
 import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
-// DictionaryMgt:
-import SiteTypeMgtPage from '@/pages/BasicSettings/DictionaryMgt/SiteTypeMgtPage/SiteTypeMgtPage.vue'
-import StationTypeMgtPage from '@/pages/BasicSettings/DictionaryMgt/StationTypeMgtPage/StationTypeMgtPage.vue'
+// Dictionaries:
+import ScenarioMgtPage from '@/pages/BasicSettings/Dictionaries/ScenarioMgtPage/ScenarioMgtPage.vue'
+import SiteTypeMgtPage from '@/pages/BasicSettings/Dictionaries/SiteTypeMgtPage/SiteTypeMgtPage.vue'
+import StationTypeMgtPage from '@/pages/BasicSettings/Dictionaries/StationTypeMgtPage/StationTypeMgtPage.vue'
+import TagTypeMgtPage from '@/pages/BasicSettings/Dictionaries/TagTypeMgtPage/TagTypeMgtPage.vue'
 // OperationMgt:
 import OperationRecordPage from '@/pages/BasicSettings/OperationMgt/OperationRecordPage/OperationRecordPage.vue'
 import OperationRetryPage from '@/pages/BasicSettings/OperationMgt/OperationRetryPage/OperationRetryPage.vue'
@@ -162,6 +164,20 @@ export const navBasicSettings: NavFolderConfig = {
                     Icon: Icons.Router,
                     IsSelected: false,
                     _component: StationTypeMgtPage,
+                    _authority: Authorities.StationType,
+                },
+                {
+                    Title: "场景类型",
+                    Icon: Icons.Product,
+                    IsSelected: false,
+                    _component: ScenarioMgtPage,
+                    _authority: Authorities.SiteType,
+                },
+                {
+                    Title: "标签类型",
+                    Icon: Icons.Label_2,
+                    IsSelected: false,
+                    _component: TagTypeMgtPage,
                     _authority: Authorities.StationType,
                 },
             ]

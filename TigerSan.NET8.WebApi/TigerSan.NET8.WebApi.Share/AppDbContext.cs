@@ -15,16 +15,22 @@ namespace TigerSan.NET8.WebApi.Share
         #endregion 【Fields】
 
         #region 【Properties】
+        // BaseSettings:
         public DbSet<AdminEntity> Admins { get; set; }
         public DbSet<AuthorityEntity> Authoritys { get; set; }
-        public DbSet<BaseStationEntity> BaseStations { get; set; }
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<DepartmentEntity> Departments { get; set; }
         public DbSet<PersonEntity> Persons { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<SiteEntity> Sites { get; set; }
+        // Dictionaries:
+        public DbSet<ScenarioEntity> Scenarios { get; set; }
         public DbSet<SiteTypeEntity> SiteTypes { get; set; }
         public DbSet<StationTypeEntity> StationTypes { get; set; }
+        public DbSet<TagTypeEntity> TagTypes { get; set; }
+        // Equipments:
+        public DbSet<BaseStationEntity> BaseStations { get; set; }
+        public DbSet<TagEntity> Tags { get; set; }
         #endregion 【Properties】
 
         #region 【Ctor】

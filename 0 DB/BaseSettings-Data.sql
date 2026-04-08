@@ -1,5 +1,5 @@
 INSERT INTO tigersan_web.admin_mgt (id,company,name,password,is_root) VALUES
-	 (0,NULL,'admin','admin',1);
+	 (0,NULL,'admin','admin123',1);
 
 INSERT INTO tigersan_web.site_type (id,name) VALUES
 	 (116328410096926849,'京东星配'),

@@ -1,8 +1,8 @@
-﻿using TigerSan.NET8.WebApi.Filters;
+﻿using TigerSan.NET8.WebApi.Share;
+using TigerSan.NET8.WebApi.Filters;
 using TigerSan.NET8.WebApi.Helpers;
-using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Services.Models;
-using TigerSan.NET8.WebApi.Share;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Extensions
 {
@@ -57,17 +57,22 @@ namespace TigerSan.NET8.WebApi.Extensions
         #region 注册“服务”
         public static void RegisterServices(this IServiceCollection services)
         {
+            // BaseSettings:
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IAuthorityService, AuthorityService>();
-            services.AddTransient<IBaseStationService, BaseStationService>();
             services.AddTransient<ICompanyService, CompanyService>();
             services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ISiteService, SiteService>();
+            services.AddTransient<IUserService, UserService>();
+            // Dictionaries:
+            services.AddTransient<IScenarioService, ScenarioService>();
             services.AddTransient<ISiteTypeService, SiteTypeService>();
             services.AddTransient<IStationTypeService, StationTypeService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITagTypeService, TagTypeService>();
+            // Equipments:
+            services.AddTransient<IBaseStationService, BaseStationService>();
         }
         #endregion
     }

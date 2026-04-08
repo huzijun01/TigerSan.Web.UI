@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Interfaces.Models.Base;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 
-namespace TigerSan.NET8.WebApi.Controllers.Base
+namespace TigerSan.NET8.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
