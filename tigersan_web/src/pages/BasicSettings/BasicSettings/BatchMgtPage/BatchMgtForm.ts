@@ -15,7 +15,7 @@ selectCompanyForm._onChange = selectScenarioForm.UpdateItemsAsync
 
 /** 搜索框 */
 const searchBatchId = new SearchModel()
-searchBatchId.Placeholder.value = "请输入批次"
+searchBatchId.PlaceholderCN.value = "请输入批次"
 searchBatchId._onChange = Refresh
 searchBatchId._onSearch = Refresh
 
@@ -83,7 +83,7 @@ const configComment: FormItemConfig<BatchModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new BatchModel()
 
-/** “人员管理”表单配置 */
+/** “批次管理”表单配置 */
 let configBatchMgtForm: FormConfig<BatchModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -114,7 +114,7 @@ let configBatchMgtForm: FormConfig<BatchModel> = {
     ]
 }
 
-/** “人员管理”表单模型 */
+/** “批次管理”表单模型 */
 const batchMgtForm = new FormModel(configBatchMgtForm)
 
 /** 查 */
@@ -146,7 +146,7 @@ selectScenario._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    batchMgtForm.Title.value = '新增人员'
+    batchMgtForm.Title.value = '新增批次'
 
     batchMgtForm._getSource = AddGetSource
 
@@ -161,7 +161,7 @@ async function Add() {
 
 /** 改 */
 async function Edit() {
-    batchMgtForm.Title.value = '修改人员'
+    batchMgtForm.Title.value = '修改批次'
 
     batchMgtForm._getSource = () => {
         const rowData = batchMgtTable.SelectedRowDatas.value[0]

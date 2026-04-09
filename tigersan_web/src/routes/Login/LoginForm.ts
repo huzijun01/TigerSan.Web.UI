@@ -6,14 +6,14 @@ import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxMod
 // 组件模型:
 const uname = new TextBoxModel()
 uname.Width.value = "100%"
-uname.Placeholder.value = "用户名/电话/邮箱"
+uname.PlaceholderCN.value = "用户名/电话/邮箱"
 
 const pwd = new PasswordModel()
 pwd.Width.value = "100%"
-pwd.Placeholder.value = "密码"
+pwd.PlaceholderCN.value = "密码"
 
 const captcha = new TextBoxModel()
-captcha.Placeholder.value = "验证码"
+captcha.PlaceholderCN.value = "验证码"
 
 // 配置:
 /** “用户名”项目配置 */

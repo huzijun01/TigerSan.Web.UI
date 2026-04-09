@@ -1,7 +1,7 @@
 import { Texts, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
 const searchIMEI = new SearchModel()
-searchIMEI.Placeholder.value = '请输入IMEI'
+searchIMEI.PlaceholderCN.value = '请输入IMEI'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300

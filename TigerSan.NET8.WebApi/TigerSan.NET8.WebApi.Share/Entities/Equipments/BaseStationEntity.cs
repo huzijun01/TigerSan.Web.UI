@@ -11,6 +11,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long Type { get; set; }
         [SnakeColumn]
+        public bool IsEnable { get; set; } = false;
+        [SnakeColumn]
         public string MacAddr { get; set; } = string.Empty;
         [SnakeColumn]
         public OnlineState OnlineState { get; set; } = OnlineState.Offline;

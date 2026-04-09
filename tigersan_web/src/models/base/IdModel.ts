@@ -3,7 +3,7 @@ import { AxiosHelper } from "../../helpers/AxiosHelper"
 
 /** "组织机构"模型 */
 export class IdModel {
-    readonly id: bigint = 0n
+    id: bigint = 0n
 }
 
 export class IdModelHelper<TModel extends IdModel> {
@@ -36,8 +36,12 @@ export class IdModelHelper<TModel extends IdModel> {
     // 改:
     readonly Edit = async (source: TModel) =>
         await AxiosHelper.Put(this._action, source)
+    readonly EditRange = async (sources: TModel[]) =>
+        await AxiosHelper.Put(this._action, sources, undefined, true)
 
     // 删:
     readonly Delete = async (id: number | bigint) =>
         await AxiosHelper.Delete(this._action, id)
+    readonly DeleteRange = async (ids: number[] | bigint[]) =>
+        await AxiosHelper.DeleteRange(this._action, ids)
 }

@@ -1,7 +1,7 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { BaseStationModel, baseStationMgtTable } from './BaseStationMgtTable'
-import { baseStationMgtHelper, companyMgtHelper, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, OnlineState2String, siteMgtHelper, stationTypeMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper } from '@/0_tigersan_ui/tigerui'
+import { baseStationMgtHelper, companyMgtHelper, IsEnable2String, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, OnlineState2String, siteMgtHelper, stationTypeMgtHelper } from '@/models'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel } from '@/0_tigersan_ui/tigerui'
 
 // 字段:
 const onlineCount = ref(0)
@@ -10,6 +10,11 @@ const offlineCount = ref(0)
 // 分页器:
 const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
+
+// 开关:
+const switchIsEnable = new SwitchModel()
+watch(baseStationMgtTable.IsSelected, isSelected => switchIsEnable.IsEnable.value = isSelected)
+switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
@@ -28,15 +33,28 @@ const selectTypeForm = stationTypeMgtHelper.GetSelectModel()
 selectCompanyForm._onChange = selectSiteForm.UpdateItemsAsync
 
 const searchMacAddr = new SearchModel()
-searchMacAddr.Placeholder.value = '请输入MAC地址'
+searchMacAddr.PlaceholderCN.value = '请输入MAC地址'
+searchMacAddr.PlaceholderEN.value = 'Please enter the MAC'
 searchMacAddr._onSearch = Refresh
 
 const selectState = new SelectModel<OnlineState>()
-selectState.Width.value = 100
+selectState.Width.value = 120
 selectState.Value.value = undefined
 selectState.IsAllowSearch.value = true
+selectState.PlaceholderCN.value = '在线状态'
+selectState.PlaceholderEN.value = 'OnlineState'
 selectState.Items.push(...[OnlineState.Online, OnlineState.Offline])
 selectState._converter = OnlineState2String
+
+const selectIsEnable = new SelectModel<boolean>()
+selectIsEnable.Width.value = 120
+selectIsEnable.Value.value = undefined
+selectIsEnable.IsAllowSearch.value = true
+selectIsEnable.PlaceholderCN.value = '激活状态'
+selectIsEnable.PlaceholderEN.value = 'IsEnable'
+selectIsEnable.Items.push(...[true, false])
+selectIsEnable._converter = IsEnable2String
+baseStationMgtTable._onSelectStateChange = InitSelectIsEnableState
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<BaseStationModel, IdNameModel> = {
@@ -147,6 +165,8 @@ const baseStationForm = new FormModel(configBaseStationForm)
 
 /** 查 */
 async function Refresh() {
+    InitSelectIsEnableState()
+
     await companyMgtHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await siteMgtHelper.UpdateIdNames()
@@ -157,6 +177,7 @@ async function Refresh() {
     onlineCount.value = await baseStationMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
         state: OnlineState.Online,
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
@@ -164,6 +185,7 @@ async function Refresh() {
     pagination.Count.value = await baseStationMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
         state: selectState.Value.value,
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
@@ -174,6 +196,7 @@ async function Refresh() {
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
         state: selectState.Value.value,
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
@@ -187,6 +210,7 @@ selectCompany._onChange = Refresh
 selectSite._onChange = Refresh
 selectType._onChange = Refresh
 selectState._onChange = Refresh
+selectIsEnable._onChange = Refresh
 
 /** 增 */
 function Add() {
@@ -227,6 +251,40 @@ function Edit() {
     baseStationForm.Show(true)
 }
 
+/** 改 */
+function EditIsEnable(isEnable: boolean) {
+    if (!baseStationMgtTable.IsSelected.value) return
+
+    dialog.ShowDialog(
+        '修改启用状态',
+        isEnable ? '是否启用' : '是否禁用',
+        undefined,
+        (state) => {
+            if (state != DialogState.Yes) {
+                InitSelectIsEnableState()
+                return
+            }
+
+            const rowDatas: BaseStationModel[] = []
+            baseStationMgtTable.SelectedRowDatas.value.forEach(rowData => {
+                const newRowData = ObjectHelper.ShallowCopy(rowData)
+                newRowData.isEnable = isEnable
+                rowDatas.push(newRowData)
+            })
+
+            baseStationMgtHelper.EditRange(rowDatas).then(res => {
+                Refresh().then(InitSelectIsEnableState)
+                MyActionResult.ShowResult(res)
+            })
+        },
+        DialogMode.YesOrNo,
+        Colors.Warning)
+}
+
+function InitSelectIsEnableState() {
+    switchIsEnable.Value.value = baseStationMgtTable.IsSelected.value && baseStationMgtTable.SelectedRowDatas.value.every(r => r.isEnable)
+}
+
 /** 删 */
 function Delete() {
     dialog.ShowDialog(
@@ -263,7 +321,9 @@ export default {
     onlineCount,
     offlineCount,
     searchMacAddr,
+    switchIsEnable,
     selectState,
+    selectIsEnable,
     selectCompany,
     selectSite,
     selectType,
@@ -281,6 +341,7 @@ export default {
     Refresh,
     Add,
     Edit,
+    EditIsEnable,
     Delete,
     Repair,
 }

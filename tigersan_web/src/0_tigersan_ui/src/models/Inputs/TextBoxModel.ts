@@ -1,5 +1,7 @@
-import type { StringFunc } from "../../types"
 import { ref, computed } from "vue"
+import { Texts } from "../../texts"
+import { TextModel } from "../Text/TextModel"
+import type { StringFunc } from "../../types"
 
 class TextBoxModel {
     //#region 【Fields】
@@ -9,11 +11,17 @@ class TextBoxModel {
 
     //#region 【Properties】
     readonly Value = ref('')
-    readonly Placeholder = ref('')
     readonly Width = ref('')
     readonly IsReadonly = ref(false)
+    /** 占位文本（英文） */
+    readonly PlaceholderEN = ref('')
+    /** 占位文本（中文） */
+    readonly PlaceholderCN = ref('')
 
     //#region [computed]
+    /** 显示的“占位文本” */
+    readonly ShowPlaceholder = TextModel.DefaultComputed(this.PlaceholderEN, this.PlaceholderCN, Texts.PleaseEnter)
+
     readonly styleObj = computed(() => {
         return {
             width: this.Width.value,

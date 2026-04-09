@@ -24,6 +24,7 @@ export class Icons {
 
     // B:
     static Bell = ""
+    static Batch = ""
     static Bilibili = ""
     static Building_1 = ""
     static Building_2 = ""
@@ -81,6 +82,7 @@ export class Icons {
     // I:
     static Input = ""
     static IdCard = ""
+    static Inbound = ""
     static InputDataSource = ""
 
     // K:
@@ -92,6 +94,7 @@ export class Icons {
     static Log = ""
     static Lock = ""
     static Loop = ""
+    static Layer = ""
     static Letter = ""
     static Label_1 = ""
     static Label_2 = ""
@@ -119,6 +122,7 @@ export class Icons {
 
     // O:
     static Output = ""
+    static Outbound = ""
 
     // P:
     static Pay = ""
@@ -142,6 +146,7 @@ export class Icons {
     static Role = ""
     static Radar = ""
     static Router = ""
+    static Review = ""
     static Refresh = ""
 
     // S:
@@ -168,6 +173,7 @@ export class Icons {
     static Table = ""
     static Tools = ""
     static Topmost = ""
+    static Transport = ""
     static TextBox_A = ""
     static TextBox_T = ""
     static Time_Small = ""

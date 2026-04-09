@@ -14,6 +14,15 @@ export const GetOnlineString = (obj: object, propName: string = 'OnlineState'): 
     return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineState.Online ? Texts.Online.value : Texts.Offline.value
 }
 
-export const OnlineState2String = (value: OnlineState) => {
-    return value === OnlineState.Online ? '在线' : '离线'
+export const GetIsEnableString = (obj: object, propName: string = 'IsEnable'): string => {
+    return ObjectHelper.DefaultTGetter(obj, propName, false) ? Texts.Enable.value : Texts.Disable.value
 }
+
+export const OnlineState2String = (value: OnlineState) => {
+    return value === OnlineState.Online ? Texts.Online.value : Texts.Offline.value
+}
+
+export const IsEnable2String = (value: boolean) => {
+    return value ? Texts.Enable.value : Texts.Disable.value
+}
+

@@ -13,6 +13,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long? Station { get; set; }
         [SnakeColumn]
+        public bool IsEnable { get; set; } = false;
+        [SnakeColumn]
         public string TagId { get; set; } = string.Empty;
         [SnakeColumn]
         public string? BrandId { get; set; } = string.Empty;

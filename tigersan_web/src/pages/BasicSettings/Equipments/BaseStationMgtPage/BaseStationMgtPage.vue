@@ -6,6 +6,7 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <Select :model="form.selectState"></Select>
+                        <Select :model="form.selectIsEnable"></Select>
                         <Search :model="form.searchMacAddr"></Search>
                     </div>
                     <div class="row-panel">
@@ -18,9 +19,12 @@
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 新增</button>
-                        <button :disabled="!IsOnlySelected" @click="form.Repair">维修</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
                         <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                    </div>
+                    <div class="row-panel">
+                        <Switch :model="form.switchIsEnable"></Switch>
+                        <button :disabled="!IsOnlySelected" @click="form.Repair">维修</button>
                     </div>
                 </div>
             </div>
@@ -84,7 +88,7 @@
 import { onMounted } from 'vue'
 import form from './BaseStationMgtForm'
 import { baseStationMgtTable } from './BaseStationMgtTable'
-import { Texts, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

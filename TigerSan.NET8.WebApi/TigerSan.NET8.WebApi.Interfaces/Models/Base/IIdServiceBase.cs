@@ -27,6 +27,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 
         // 改:
         public Task<MyActionResult<object>> Edit(TEntity entity, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> EditRange(List<TEntity> entities, bool isBeginTransaction = true);
 
         // 删:
         public Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true);

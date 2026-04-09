@@ -7,6 +7,7 @@ export class BaseStationModel extends IdNameModel {
     company: bigint = 0n
     site: bigint = 0n
     type: bigint = 0n
+    isEnable = false
     macAddr = ''
     addr = ''
     onlineState = OnlineState.Offline
@@ -33,6 +34,7 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
         param: {
             company?: bigint,
             site?: bigint,
+            isEnable?: boolean,
             state?: OnlineState,
             type?: bigint,
             macAddr?: string,
@@ -41,6 +43,7 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
         {
             filter: {
                 filters: [
+                    { propName: 'IsEnable', value: param.isEnable },
                     { propName: 'OnlineState', value: param.state },
                     { propName: 'Type', value: param.type },
                     { propName: 'MacAddr', value: param.macAddr },
@@ -61,6 +64,7 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             pageNumber?: number,
             company?: bigint,
             site?: bigint,
+            isEnable?: boolean,
             state?: OnlineState,
             type?: bigint,
             macAddr?: string,
@@ -72,6 +76,7 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             strList: 'FullList',
             filter: {
                 filters: [
+                    { propName: 'IsEnable', value: param.isEnable },
                     { propName: 'OnlineState', value: param.state },
                     { propName: 'Type', value: param.type },
                     { propName: 'MacAddr', value: param.macAddr },

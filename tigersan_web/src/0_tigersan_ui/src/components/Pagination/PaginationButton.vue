@@ -93,7 +93,7 @@ function OnClick() {
 
     &.disabled {
         .show-text();
-        cursor: default;
+        cursor: not-allowed;
         color: var(--theme-color-disabled);
     }
 }

@@ -86,6 +86,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.Edit(entity);
         }
+
+        [HttpPut]
+        [Route("Range")]
+        /// <summary>修改“多条数据”</summary>
+        public virtual async Task<MyActionResult<object>> EditRange([FromBody] List<TEntity> entities)
+        {
+            return await _service.EditRange(entities);
+        }
         #endregion [改]
 
         #region [删]

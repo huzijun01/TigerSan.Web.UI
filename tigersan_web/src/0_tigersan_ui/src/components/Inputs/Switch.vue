@@ -111,7 +111,7 @@ let { model } = defineProps({
     }
 
     &.disable {
-        cursor: default;
+        cursor: not-allowed;
         filter: brightness(90%);
     }
 }

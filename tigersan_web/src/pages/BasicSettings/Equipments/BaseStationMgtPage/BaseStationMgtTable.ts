@@ -1,5 +1,5 @@
 import { Colors, ObjectHelper, TableModel } from '@/0_tigersan_ui/tigerui'
-import { OnlineState, GetOnlineString, BaseStationModel, companyMgtHelper, siteMgtHelper, stationTypeMgtHelper } from '@/models'
+import { OnlineState, GetOnlineString, BaseStationModel, companyMgtHelper, siteMgtHelper, stationTypeMgtHelper, GetIsEnableString } from '@/models'
 
 // 列头:
 const baseStationMgtTable = new TableModel<BaseStationModel>([
@@ -50,6 +50,13 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
         IsAllowWrap: false,
     },
     {
+        _propName: 'isEnable',
+        Text: '激活状态',
+        IsReadonly: true,
+        IsAllowWrap: false,
+        _getString: GetIsEnableString,
+    },
+    {
         _propName: 'onlineState',
         Text: '在线状态',
         IsReadonly: true,
@@ -91,10 +98,20 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
 ])
 
 // 初始化:
-baseStationMgtTable.IsAllowMultiSelect.value = false
+baseStationMgtTable.IsAllowMultiSelect.value = true
 
 baseStationMgtTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'OnlineState') {
+    if (itemModel._headerModel._propName === 'isEnable') {
+        if (itemModel.GetSource()) {
+            itemModel.Color.value = Colors.Success
+            itemModel.Background.value = Colors.Success10
+        } else {
+            itemModel.Color.value = Colors.Danger
+            itemModel.Background.value = Colors.Danger10
+        }
+    }
+
+    if (itemModel._headerModel._propName === 'onlineState') {
         if (itemModel.GetSource() === OnlineState.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
@@ -104,7 +121,7 @@ baseStationMgtTable._initItem = itemModel => {
         }
     }
 
-    if (itemModel._headerModel._propName === 'Battery') {
+    if (itemModel._headerModel._propName === 'battery') {
         const battery = itemModel.GetSource() as number
         if (battery >= 50) {
             itemModel.Color.value = Colors.Success

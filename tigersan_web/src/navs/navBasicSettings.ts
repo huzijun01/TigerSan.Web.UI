@@ -72,7 +72,7 @@ export const navBasicSettings: NavFolderConfig = {
                 },
                 {
                     Title: "批次管理",
-                    Icon: Icons.Building_1,
+                    Icon: Icons.Layer,
                     IsSelected: false,
                     _component: BatchMgtPage,
                     _authority: Authorities.BatchMgtPage,

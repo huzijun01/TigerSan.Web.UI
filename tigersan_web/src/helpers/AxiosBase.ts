@@ -50,9 +50,11 @@ export class AxiosBase {
         }
     }
 
-    static async Put<T>(action: string, data: T, params?: KeyValue[]): Promise<MyActionResult> {
+    static async Put<T>(action: string, data: T, params?: KeyValue[], isRange: boolean = false): Promise<MyActionResult> {
         try {
-            let url = action
+            const range = isRange ? '/Range' : ''
+
+            let url = `${action}${range}`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
@@ -74,14 +76,38 @@ export class AxiosBase {
         }
     }
 
-    static async Delete(action: string, index: number | bigint, params?: KeyValue[]): Promise<MyActionResult> {
+    static async Delete(action: string, id: number | bigint, params?: KeyValue[]): Promise<MyActionResult> {
         try {
-            let url = `${action}/${index}`
+            let url = `${action}/${id}`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
             const response = await api.delete(url)
+            const actionResult = response.data as MyActionResult
+
+            if (actionResult === undefined) {
+                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                return MyActionResult.ActionResult_Undefined
+            }
+            else if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
+            }
+
+            return actionResult
+        } catch (error) {
+            return MyActionResult.GetError(error)
+        }
+    }
+
+    static async DeleteRange(action: string, ids: number[] | bigint[], params?: KeyValue[]): Promise<MyActionResult> {
+        try {
+            let url = `${action}/Range`
+            if (params) {
+                url += ParamHelper.GetParamString(params)
+            }
+
+            const response = await api.delete(url, { data: ids })
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {

@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "6241666",
+      "name": "Inbound",
+      "font_class": "Inbound",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "6789076",
+      "name": "Outbound",
+      "font_class": "Outbound",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "7118867",
+      "name": "Batch",
+      "font_class": "Batch",
+      "unicode": "e6c5",
+      "unicode_decimal": 59077
+    },
+    {
+      "icon_id": "11766652",
+      "name": "Review",
+      "font_class": "Review",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "12157029",
+      "name": "Layer",
+      "font_class": "Layer",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
+      "icon_id": "38714842",
+      "name": "Transport",
+      "font_class": "Transport",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
       "icon_id": "10761910",
       "name": "Dictionary",
       "font_class": "Dictionary",

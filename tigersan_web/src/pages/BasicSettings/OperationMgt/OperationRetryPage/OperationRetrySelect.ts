@@ -1,7 +1,7 @@
 import { DatePickerModel, DateType, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
 const searchMacAddr = new SearchModel()
-searchMacAddr.Placeholder.value = '请输入MAC地址'
+searchMacAddr.PlaceholderCN.value = '请输入MAC地址'
 
 const operationTypeSelect = new SelectModel()
 operationTypeSelect.Width.value = 150

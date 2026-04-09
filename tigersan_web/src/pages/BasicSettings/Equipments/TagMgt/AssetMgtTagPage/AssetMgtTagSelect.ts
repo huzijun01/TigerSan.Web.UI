@@ -1,7 +1,7 @@
 import { Texts, SelectModel, SearchModel } from '@/0_tigersan_ui/tigerui'
 
 const searchMacAddr = new SearchModel()
-searchMacAddr.Placeholder.value = '请输入MAC地址'
+searchMacAddr.PlaceholderCN.value = '请输入MAC地址'
 
 const typeSelect = new SelectModel()
 typeSelect.Width.value = 300
