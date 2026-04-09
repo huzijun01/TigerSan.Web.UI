@@ -170,7 +170,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 if (filter.Values == null || filter.Values.Count() < 1 || string.IsNullOrEmpty(filter.PropName)) return queryable;
 
                 // 获取“属性信息”:
-                var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance);
+                var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                 if (propertyInfo == null)
                 {
                     LogHelper.Instance.Warning($"Property '{filter.PropName}' not found on type '{entityType.Name}'");

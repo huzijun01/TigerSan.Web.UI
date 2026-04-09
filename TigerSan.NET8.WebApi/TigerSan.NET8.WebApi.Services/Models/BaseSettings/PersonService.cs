@@ -88,7 +88,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var list = new List<PersonFullEntity>();
 
-                var queryable = _dbSet.AsNoTracking().GetPage(pageSize, pageNumber);
+                var queryable = _dbSet.AsNoTracking();
 
                 queryable = await GetFilter(queryable, filter);
 
@@ -97,7 +97,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     queryable = queryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
                 }
 
-                var persons = await queryable.ToListAsync();
+                var persons = await queryable.GetPage(pageSize, pageNumber).ToListAsync();
 
                 // 添加“权限”:
                 foreach (var person in persons)

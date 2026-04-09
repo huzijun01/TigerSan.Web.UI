@@ -17,6 +17,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Fields】
 
         #region 【Ctor】
+        static RoleService()
+        {
+            SetDbSetConfig(nameof(RoleEntity.Department))
+                .SetParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
         public RoleService(AppDbContext db, IAuthorityService authorityService) : base(db, db.Roles)
         {
             _authorityService = authorityService;
@@ -25,38 +32,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
-        #region 获取“总数”
-        /// <summary>获取“总数”</summary>
-        public async Task<int> GetCount(long? company = null, long? department = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                // 筛选:
-                if (department != null)
-                {
-                    queryable = queryable.Where(i => i.Department == department);
-                }
-                else if (company != null)
-                {
-                    var departments = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    queryable = queryable.Where(i => departments.Contains(i.Department));
-                }
-
-                return await queryable.CountAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return 0;
-            }
-        }
-        #endregion
-
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<RoleAuthorityEntity>> GetFullList(long? company = null, long? department = null, int? pageSize = null, int? pageNumber = null)
+        public async Task<List<RoleAuthorityEntity>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null)
         {
             try
             {
@@ -64,29 +45,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 var queryable = _dbSet.AsNoTracking();
 
-                // 筛选:
-                if (department != null)
-                {
-                    queryable = queryable.Where(i => i.Department == department);
-                }
-                else if (company != null)
-                {
-                    var departments = await _db.Departments.Where(d => d.Company == company).Select(d => d.Id).ToListAsync();
-                    queryable = queryable.Where(i => departments.Contains(i.Department));
-                }
+                queryable = await GetFilter(queryable, filter);
 
-                // 分页:
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                var roles = await queryable.ToListAsync();
+                var roles = await queryable.GetPage(pageSize, pageNumber).ToListAsync();
 
                 // 添加“权限”:
                 foreach (var role in roles)
                 {
-                    var authorities = await _authorityService.GetList(role.Id);
+                    var authorities = await _authorityService.GetListByRole(role.Id);
                     var entity = new RoleAuthorityEntity();
                     entity.ShallowCopy(role);
                     entity.Authorities = authorities;
@@ -101,58 +67,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 LogHelper.Instance.Error(e.GetMessage());
                 return new List<RoleAuthorityEntity>();
-            }
-        }
-        #endregion
-
-        #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
-        public async Task<List<RoleEntity>> GetList(long? department, int? pageSize = null, int? pageNumber = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (department != null)
-                {
-                    queryable = queryable.Where(i => i.Department == department);
-                }
-
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                return await queryable.ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return new List<RoleEntity>();
-            }
-        }
-        #endregion
-
-        #region 获取“ID名称对”集合
-        /// <summary>获取“ID名称对”集合</summary>
-        public async Task<List<IdName>> SelectIdNameByDepartment(long? department = null)
-        {
-            var list = new List<IdName>();
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (department != null)
-                {
-                    queryable = queryable.Where(i => i.Department == department);
-                }
-
-                return await queryable.Select(i => new IdName(i)).ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return list;
             }
         }
         #endregion
@@ -197,7 +111,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属部门”集合
         /// <summary>获取“所属部门”集合</summary>
-        public async Task<List<IdName>> BelongDepartmentList(long? company = null)
+        public async Task<List<IdName>> GetBelongDepartmentList(long? company = null)
         {
             var list = new List<IdName>();
             try

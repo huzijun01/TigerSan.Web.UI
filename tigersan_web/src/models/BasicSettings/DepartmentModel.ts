@@ -25,7 +25,9 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
         company?: bigint
     }) => await AxiosHelper.GetCount(this._action,
         {
-            params: [{ key: 'company', value: param.company }]
+            filter: {
+                filters: [{ propName: 'Company', value: param.company }]
+            }
         })
 
     /** 筛选“数据”集合 */
@@ -33,19 +35,21 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,
-    }) =>
-        await AxiosHelper.GetList<DepartmentModel>(this._action,
-            {
-                pageSize: param.pageSize,
-                pageNumber: param.pageNumber,
-                params: [
-                    { key: 'company', value: param.company }
-                ]
-            })
+    }) => await AxiosHelper.GetList(this._action,
+        {
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            filter: {
+                filters: [{ propName: 'Company', value: param.company }]
+            }
+        })
 
     /** 获取“ID名称对”集合 */
-    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/SelectIdNameByCompany`,
-        [{ key: 'company', value: company }])
+    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await this.GetIdNames({
+        filter: {
+            filters: [{ propName: 'Company', value: company }]
+        }
+    })
 
     /** 获取“所属公司”集合 */
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)

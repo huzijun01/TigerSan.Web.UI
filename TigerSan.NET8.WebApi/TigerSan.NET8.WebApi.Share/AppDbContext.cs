@@ -23,6 +23,7 @@ namespace TigerSan.NET8.WebApi.Share
         public DbSet<PersonEntity> Persons { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<SiteEntity> Sites { get; set; }
+        public DbSet<BatchEntity> Batches { get; set; }
         // Dictionaries:
         public DbSet<ScenarioEntity> Scenarios { get; set; }
         public DbSet<SiteTypeEntity> SiteTypes { get; set; }

@@ -1,6 +1,8 @@
 import { IdModel, IdModelHelper } from "./IdModel"
 import { AxiosHelper } from "../../helpers/AxiosHelper"
 import { BigintHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
+import type { KeyValue } from "@/helpers"
+import type { FilterModel } from "@/models"
 
 /** ID名称对 */
 export class IdNameModel extends IdModel {
@@ -17,7 +19,11 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
 
     // 查:
     /** 获取“ID名称对”集合 */
-    readonly GetIdNames = async () => await AxiosHelper.SelectIdName(this._action, {})
+    readonly GetIdNames = async (param?: {
+        isDistinct?: boolean,
+        params?: KeyValue[],
+        filter?: FilterModel
+    }) => await AxiosHelper.SelectIdName(this._action, param ?? {})
 
     /** 获取“ID名称对” */
     readonly GetIdName = (id: bigint): IdNameModel | undefined => {

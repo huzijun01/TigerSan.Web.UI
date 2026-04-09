@@ -5,6 +5,7 @@ import DepartmentMgtPage from '@/pages/BasicSettings/BasicSettings/DepartmentMgt
 import PersonMgtPage from '@/pages/BasicSettings/BasicSettings/PersonMgtPage/PersonMgtPage.vue'
 import RoleMgtPage from '@/pages/BasicSettings/BasicSettings/RoleMgtPage/RoleMgtPage.vue'
 import SiteMgtPage from '@/pages/BasicSettings/BasicSettings/SiteMgtPage/SiteMgtPage.vue'
+import BatchMgtPage from '@/pages/BasicSettings/BasicSettings/BatchMgtPage/BatchMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtPage.vue'
 // TagMgt:
@@ -68,6 +69,13 @@ export const navBasicSettings: NavFolderConfig = {
                     IsSelected: false,
                     _component: SiteMgtPage,
                     _authority: Authorities.SiteMgt,
+                },
+                {
+                    Title: "批次管理",
+                    Icon: Icons.Building_1,
+                    IsSelected: false,
+                    _component: BatchMgtPage,
+                    _authority: Authorities.BatchMgtPage,
                 },
             ]
         },

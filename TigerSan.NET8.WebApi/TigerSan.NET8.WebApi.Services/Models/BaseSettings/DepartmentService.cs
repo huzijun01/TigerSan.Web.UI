@@ -16,6 +16,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Fields】
 
         #region 【Ctor】
+        static DepartmentService()
+        {
+            SetDbSetConfig(nameof(BatchEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
         public DepartmentService(AppDbContext db, IRoleService roleService) : base(db, db.Departments)
         {
             _roleService = roleService;
@@ -24,81 +30,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
-        #region 获取“总数”
-        /// <summary>获取“总数”</summary>
-        public async Task<int> GetCount(long? company = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (company != null)
-                {
-                    queryable = queryable.Where(i => i.Company == company);
-                }
-
-                return await queryable.CountAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return 0;
-            }
-        }
-        #endregion
-
-        #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
-        public async Task<List<DepartmentEntity>> GetList(long? company = null, int? pageSize = null, int? pageNumber = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (company != null)
-                {
-                    queryable = queryable.Where(i => i.Company == company);
-                }
-
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                return await queryable.ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return new List<DepartmentEntity>();
-            }
-        }
-        #endregion
-
-        #region 获取“ID名称对”集合
-        /// <summary>获取“ID名称对”集合</summary>
-        public async Task<List<IdName>> SelectIdNameByCompany(long? company = null)
-        {
-            var list = new List<IdName>();
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (company != null)
-                {
-                    queryable = queryable.Where(i => i.Company == company);
-                }
-
-                return await queryable.Select(i => new IdName(i)).ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return list;
-            }
-        }
-        #endregion
-
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
         public async Task<List<IdName>> GetBelongCompanyList()

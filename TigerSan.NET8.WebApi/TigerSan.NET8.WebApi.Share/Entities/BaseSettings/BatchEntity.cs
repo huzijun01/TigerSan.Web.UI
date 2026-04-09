@@ -4,7 +4,7 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("batch")]
-    public class BatchEntity : IdNameEntityBase
+    public class BatchEntity : IdEntityBase
     {
         [SnakeColumn]
         public long Company { get; set; }
@@ -13,7 +13,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string BatchId { get; set; } = string.Empty;
         [SnakeColumn]
-        public string ShipmentTime { get; set; } = string.Empty;
+        public DateTime ShipmentTime { get; set; } = DateTime.Now;
         [SnakeColumn]
         public string? Manager { get; set; } = string.Empty;
         [SnakeColumn]

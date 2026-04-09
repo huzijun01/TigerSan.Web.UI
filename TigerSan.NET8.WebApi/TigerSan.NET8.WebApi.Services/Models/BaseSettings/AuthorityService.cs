@@ -12,6 +12,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
     public class AuthorityService : IdServiceBase<AuthorityEntity>, IAuthorityService
     {
         #region 【Ctor】
+        static AuthorityService()
+        {
+            SetDbSetConfig(nameof(AuthorityEntity.Role))
+                .SetParent(typeof(RoleEntity), nameof(_db.Roles));
+        }
+
         public AuthorityService(AppDbContext db) : base(db, db.Authoritys)
         {
         }
@@ -19,9 +25,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
-        #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
-        public async Task<List<AuthorityEntity>> GetList(long? role = null, int? pageSize = null, int? pageNumber = null)
+        #region 根据“角色”获取“数据”集合
+        /// <summary>根据“角色”获取“数据”集合</summary>
+        public async Task<List<AuthorityEntity>> GetListByRole(long? role = null, int? pageSize = null, int? pageNumber = null)
         {
             try
             {
@@ -32,12 +38,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     queryable = queryable.Where(i => i.Role == role);
                 }
 
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                return await queryable.ToListAsync();
+                return await queryable.GetPage(pageSize, pageNumber).ToListAsync();
             }
             catch (Exception e)
             {

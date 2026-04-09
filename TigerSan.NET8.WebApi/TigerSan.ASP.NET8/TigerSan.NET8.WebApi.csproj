@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Equipments\" />
-    <Folder Include="Controllers\BaseSettings\" />
   </ItemGroup>
 
 </Project>

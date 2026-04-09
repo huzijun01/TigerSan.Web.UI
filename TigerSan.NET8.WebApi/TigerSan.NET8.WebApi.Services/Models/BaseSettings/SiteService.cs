@@ -12,6 +12,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
     public class SiteService : IdNameServiceBase<SiteEntity>, ISiteService
     {
         #region 【Ctor】
+        static SiteService()
+        {
+            SetDbSetConfig(nameof(SiteEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
         public SiteService(AppDbContext db) : base(db, db.Sites)
         {
         }
@@ -19,91 +25,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
-        #region 获取“总数”
-        /// <summary>获取“总数”</summary>
-        public async Task<int> GetCount(long? company = null, long? type = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (company != null)
-                {
-                    queryable = queryable.Where(i => i.Company == company);
-                }
-
-                if (type != null)
-                {
-                    queryable = queryable.Where(i => i.Type == type);
-                }
-
-                return await queryable.CountAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return 0;
-            }
-        }
-        #endregion
-
-        #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
-        public async Task<List<SiteEntity>> GetList(long? company = null, long? type = null, int? pageSize = null, int? pageNumber = null)
-        {
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (company != null)
-                {
-                    queryable = queryable.Where(i => i.Company == company);
-                }
-
-                if (type != null)
-                {
-                    queryable = queryable.Where(i => i.Type == type);
-                }
-
-                if (pageSize != null && pageNumber != null)
-                {
-                    queryable = queryable.GetPage(pageSize.Value, pageNumber.Value);
-                }
-
-                return await queryable.ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return new List<SiteEntity>();
-            }
-        }
-        #endregion
-
-        #region 获取“ID名称对”集合
-        /// <summary>获取“ID名称对”集合</summary>
-        public async Task<List<IdName>> SelectIdNameByCompany(long? company = null)
-        {
-            var list = new List<IdName>();
-            try
-            {
-                var queryable = _dbSet.AsNoTracking();
-
-                if (company != null)
-                {
-                    queryable = queryable.Where(i => i.Company == company);
-                }
-
-                return await queryable.Select(i => new IdName(i)).ToListAsync();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return list;
-            }
-        }
-        #endregion
-
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
         public async Task<List<IdName>> GetBelongCompanyList()

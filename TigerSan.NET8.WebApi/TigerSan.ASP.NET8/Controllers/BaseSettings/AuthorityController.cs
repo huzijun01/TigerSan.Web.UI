@@ -16,23 +16,12 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         [HttpPost]
-        [Route("Unused/List")]
-        /// <summary>获取“数据”集合</summary>
-        public override async Task<MyActionResult<List<AuthorityEntity>>> GetList(
-            int? pageSize,
-            int? pageNumber,
-            [FromBody] FilterDto? filter = null)
-        {
-            return MyResults<List<AuthorityEntity>>.ApiUnavailable;
-        }
-
-        [HttpPost]
-        [Route("List")]
-        /// <summary>获取“数据”集合</summary>
-        public async Task<MyActionResult<List<AuthorityEntity>>> GetList(long? role = null, int? pageSize = null, int? pageNumber = null)
+        [Route("ListByRole")]
+        /// <summary>根据“角色”获取“数据”集合</summary>
+        public async Task<MyActionResult<List<AuthorityEntity>>> GetListByRole(long? role = null, int? pageSize = null, int? pageNumber = null)
         {
             var res = MyResults<List<AuthorityEntity>>.OperationSuccess;
-            res.Data = await _service.GetList(role, pageSize, pageNumber);
+            res.Data = await _service.GetListByRole(role, pageSize, pageNumber);
             return res;
         }
         #endregion [查]

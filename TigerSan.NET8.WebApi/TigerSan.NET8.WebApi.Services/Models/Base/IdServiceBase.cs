@@ -116,11 +116,11 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         {
             try
             {
-                var queryable = _dbSet.AsNoTracking().GetPage(pageSize, pageNumber);
+                var queryable = _dbSet.AsNoTracking();
 
                 queryable = await GetFilter(queryable, filter);
 
-                return await queryable.ToListAsync();
+                return await queryable.GetPage(pageSize, pageNumber).ToListAsync();
             }
             catch (Exception e)
             {
