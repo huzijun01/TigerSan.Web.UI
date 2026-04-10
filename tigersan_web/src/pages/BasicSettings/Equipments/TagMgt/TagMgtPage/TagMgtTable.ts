@@ -58,6 +58,12 @@ const tagMgtTable = new TableModel<TagModel>([
         IsAllowWrap: false,
     },
     {
+        _propName: 'battery',
+        Text: '电量',
+        IsReadonly: true,
+        IsAllowWrap: false,
+    },
+    {
         _propName: 'temperature',
         Text: '设备温度',
         IsReadonly: true,
