@@ -1,13 +1,9 @@
-import { IdModel, IdModelHelper } from "./IdModel"
-import { AxiosHelper } from "../../helpers/AxiosHelper"
 import { BigintHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
-import type { KeyValue } from "@/helpers"
-import type { FilterModel } from "@/models"
-
-/** ID名称对 */
-export class IdNameModel extends IdModel {
-    name = ''
-}
+import { KeyValue } from "@/helpers"
+import { FilterModel } from "./FilterModel"
+import { IdModelHelper } from "./IdModel"
+import { IdNameModel } from "./SelectModel"
+import { AxiosHelper } from "../../helpers/AxiosHelper"
 
 export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper<TModel> {
     /** 更新“ID名称对”集合 */
@@ -34,7 +30,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
         return this._idNames.find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
     }
 
-    /** 获取“公司” */
+    /** 获取“数据” */
     readonly GetModel = async (id: bigint): Promise<TModel | undefined> => {
         const model = (await this.GetList({})).find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
 
@@ -65,8 +61,8 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
         this._idNames = await this.GetIdNames()
     }
 
-    /** 获取“筛选框模型” */
-    GetSelectModel(
+    /** 获取“ID名称对”筛选框模型 */
+    GetIdNameSelectModel(
         placeholderCN: string,
         placeholderEN: string,
         width: number = 208): SelectModel<IdNameModel> {

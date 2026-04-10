@@ -5,13 +5,13 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetSelectModel()
+const selectCompany = companyMgtHelper.GetIdNameSelectModel()
 selectCompany._getItemsAsync = async () => await siteMgtHelper.GetBelongCompanyListAsync()
-const selectType = siteTypeMgtHelper.GetSelectModel()
+const selectType = siteTypeMgtHelper.GetIdNameSelectModel()
 selectType._getItemsAsync = async () => await siteMgtHelper.GetBelongSiteTypeListAsync(selectCompany.Value.value?.id)
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetSelectModel()
-const selectTypeForm = siteTypeMgtHelper.GetSelectModel()
+const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
+const selectTypeForm = siteTypeMgtHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectTypeForm.UpdateItemsAsync
 
@@ -145,11 +145,11 @@ async function Refresh() {
     await selectCompany.UpdateItemsAsync()
     await selectType.UpdateItemsAsync()
 
-    pagination.Count.value = await siteMgtHelper.GetCountAsync({
+    pagination.Count.value = await siteMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         type: selectType.Value.value?.id
     })
-    await siteMgtHelper.GetListAsync({
+    await siteMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,

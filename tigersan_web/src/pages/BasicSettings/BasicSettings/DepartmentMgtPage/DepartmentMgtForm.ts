@@ -5,10 +5,10 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetSelectModel()
+const selectCompany = companyMgtHelper.GetIdNameSelectModel()
 selectCompany._getItemsAsync = async () => await departmentMgtHelper.GetBelongCompanyListAsync()
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetSelectModel()
+const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
 
 // 字段:
 /** 分页器 */
@@ -65,7 +65,7 @@ async function Refresh() {
     pagination.Count.value = await departmentMgtHelper.GetCount({
         company: selectCompany.Value.value?.id
     })
-    await departmentMgtHelper.GetListAsync({
+    await departmentMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,

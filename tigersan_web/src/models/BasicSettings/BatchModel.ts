@@ -1,9 +1,9 @@
+import { SelectModel } from "@/0_tigersan_ui/tigerui"
 import { AxiosHelper } from "@/helpers"
+import { IdValueModel } from "../base/SelectModel"
 import { IdModel, IdModelHelper } from "../base/IdModel"
 
-export type BatchEvent = (model: BatchModel) => void
-
-/** "组织机构"模型 */
+/** "批次"模型 */
 export class BatchModel extends IdModel {
     company: bigint = 0n
     scenario: bigint = 0n
@@ -17,10 +17,17 @@ export class BatchModel extends IdModel {
 class BatchMgtHelper extends IdModelHelper<BatchModel> {
     constructor() {
         super('Batch')
+        this._strIdValueList = 'IdBatchIdList'
     }
 
+    /** 获取“筛选框模型” */
+    GetIdNameSelectModel(): SelectModel<IdValueModel> {
+        return super.GetIdValueSelectModel('请选择批次', 'Please select a batch')
+    }
+
+    // 查:
     /** 筛选“总数” */
-    readonly GetCountAsync = async (param: {
+    readonly GetCount = async (param: {
         company?: bigint,
         scenario?: bigint,
         batchId?: string,
@@ -38,7 +45,7 @@ class BatchMgtHelper extends IdModelHelper<BatchModel> {
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (param: {
+    readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,

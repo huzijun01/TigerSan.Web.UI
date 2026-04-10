@@ -1,6 +1,6 @@
 <template>
     <div class="search flex-stretch">
-        <input type="text" v-model="model.Value.value" :placeholder="model.PlaceholderCN.value"
+        <input type="text" v-model="model.Value.value" :placeholder="model.ShowPlaceholder.value"
             :readonly="model.IsReadonly.value" :style="model.styleObj.value" @input="model.OnInput"
             @change="model.OnChange">
         <div class="button-panel flex-center">

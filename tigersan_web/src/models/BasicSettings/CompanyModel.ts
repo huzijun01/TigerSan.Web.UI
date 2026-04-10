@@ -1,7 +1,6 @@
-import { IdNameModel, IdNameModelHelper } from "../base/IdNameModel"
 import { SelectModel, TreeHelper, TreeNodeConfig } from "@/0_tigersan_ui/tigerui"
-
-export type CompanyEvent = (model: CompanyModel) => void
+import { IdNameModel } from "../base/SelectModel"
+import { IdNameModelHelper } from "../base/IdNameModel"
 
 /** "公司"模型 */
 export class CompanyModel extends IdNameModel {
@@ -24,8 +23,8 @@ export class CompanyMgtHelper extends IdNameModelHelper<CompanyModel> {
     }
 
     /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择公司', 'Please select a company')
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择公司', 'Please select a company')
     }
 }
 

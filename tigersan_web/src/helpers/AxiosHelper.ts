@@ -2,7 +2,7 @@
 import { dialog } from "@/0_tigersan_ui/tigerui"
 import { AxiosBase } from "./AxiosBase"
 import { KeyValue } from "./ParamHelper"
-import { FilterModel, IdNameModel, MyActionResult } from "@/models"
+import { FilterModel, IdNameModel, IdValueModel, MyActionResult } from "@/models"
 
 export class AxiosHelper extends AxiosBase {
     // 列表:
@@ -65,10 +65,11 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    static async SelectIdName<T extends IdNameModel>(
+    static async SelectIdValue<T extends IdValueModel>(
         action: string,
         param: {
             isDistinct?: boolean,
+            strIdValueList?: string,
             params?: KeyValue[],
             filter?: FilterModel
         }): Promise<T[]> {
@@ -76,7 +77,37 @@ export class AxiosHelper extends AxiosBase {
             const arrParams: KeyValue[] = [{ key: 'isDistinct', value: param.isDistinct }]
             if (param.params) arrParams.push(...param.params)
 
-            const actionResult = await this.Post(`${action}/SelectIdName`, arrParams, param.filter)
+            const actionResult = await this.Post(`${action}/${param.strIdValueList ?? 'SelectIdValue'}`, arrParams, param.filter)
+
+            if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
+                return []
+            }
+            else if (MyActionResult.IsSuccessNoData(actionResult)) {
+                dialog.ShowWarning('GetList: The data is undefined!')
+                return []
+            }
+
+            return actionResult.data as T[]
+        } catch (error) {
+            console.error(error)
+            return []
+        }
+    }
+
+    static async SelectIdName<T extends IdNameModel>(
+        action: string,
+        param: {
+            isDistinct?: boolean,
+            strIdNameList?: string,
+            params?: KeyValue[],
+            filter?: FilterModel
+        }): Promise<T[]> {
+        try {
+            const arrParams: KeyValue[] = [{ key: 'isDistinct', value: param.isDistinct }]
+            if (param.params) arrParams.push(...param.params)
+
+            const actionResult = await this.Post(`${action}/${param.strIdNameList ?? 'SelectIdName'}`, arrParams, param.filter)
 
             if (!MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)

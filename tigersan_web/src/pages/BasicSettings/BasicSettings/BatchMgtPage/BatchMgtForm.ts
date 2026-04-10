@@ -5,11 +5,11 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetSelectModel()
-const selectScenario = scenarioMgtHelper.GetSelectModel()
+const selectCompany = companyMgtHelper.GetIdNameSelectModel()
+const selectScenario = scenarioMgtHelper.GetIdNameSelectModel()
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetSelectModel()
-const selectScenarioForm = scenarioMgtHelper.GetSelectModel()
+const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
+const selectScenarioForm = scenarioMgtHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectScenarioForm.UpdateItemsAsync
 
@@ -124,12 +124,12 @@ async function Refresh() {
     await selectCompany.UpdateItemsAsync()
     await selectScenario.UpdateItemsAsync()
 
-    pagination.Count.value = await batchMgtHelper.GetCountAsync({
+    pagination.Count.value = await batchMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         scenario: selectScenario.Value.value?.id,
         batchId: searchBatchId.Value.value,
     })
-    await batchMgtHelper.GetListAsync({
+    await batchMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,

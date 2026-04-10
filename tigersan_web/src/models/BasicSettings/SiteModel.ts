@@ -1,8 +1,7 @@
 import { SelectModel } from "@/0_tigersan_ui/tigerui"
 import { AxiosHelper } from "@/helpers"
-import { IdNameModel, IdNameModelHelper } from "../base/IdNameModel"
-
-export type SiteEvent = (model: SiteModel) => void
+import { IdNameModel } from "../base/SelectModel"
+import { IdNameModelHelper } from "../base/IdNameModel"
 
 /** "组织机构"模型 */
 export class SiteModel extends IdNameModel {
@@ -22,12 +21,12 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
 
     // 查:
     /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择场地', 'Please select a site')
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择场地', 'Please select a site')
     }
 
     /** 筛选“总数” */
-    readonly GetCountAsync = async (param: {
+    readonly GetCount = async (param: {
         company?: bigint,
         type?: bigint
     }) => await AxiosHelper.GetCount(this._action,
@@ -41,7 +40,7 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (param: {
+    readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number
         company?: bigint,

@@ -12,6 +12,7 @@ import BaseStationMgtPage from '@/pages/BasicSettings/Equipments/BaseStationMgtP
 import PersonMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
 import AssetMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
 import EnvSensorPage from '@/pages/BasicSettings/Equipments/TagMgt/EnvSensorPage/EnvSensorPage.vue'
+import TagMgtPage from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtPage.vue'
 // TerminalMgt:
 import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
 // Dictionaries:
@@ -100,6 +101,12 @@ export const navBasicSettings: NavFolderConfig = {
             IsOpen: false,
             _authority: Authorities.TagMgtFolder,
             Buttons: [
+                {
+                    Title: "标签管理",
+                    Icon: Icons.Label_2,
+                    _component: TagMgtPage,
+                    _authority: Authorities.TagMgtPage,
+                },
                 {
                     Title: "人员管理标签",
                     Icon: Icons.Person,

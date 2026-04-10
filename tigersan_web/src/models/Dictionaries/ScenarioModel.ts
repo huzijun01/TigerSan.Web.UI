@@ -1,7 +1,6 @@
 import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { IdNameModel, IdNameModelHelper } from "../base/IdNameModel"
-
-export type ScenarioEvent = (model: ScenarioModel) => void
+import { IdNameModel } from "../base/SelectModel"
+import { IdNameModelHelper } from "../base/IdNameModel"
 
 /** "场地类型"模型 */
 export class ScenarioModel extends IdNameModel {
@@ -13,8 +12,8 @@ class ScenarioMgtHelper extends IdNameModelHelper<ScenarioModel> {
     }
 
     /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择场景', 'Please select a scenario')
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择场景', 'Please select a scenario')
     }
 }
 

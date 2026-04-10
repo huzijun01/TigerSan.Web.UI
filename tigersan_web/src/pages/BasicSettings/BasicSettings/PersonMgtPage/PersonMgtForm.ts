@@ -5,17 +5,17 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetSelectModel()
+const selectCompany = companyMgtHelper.GetIdNameSelectModel()
 selectCompany._getItemsAsync = async () => await personMgtHelper.GetBelongCompanyListAsync()
-const selectDepartment = departmentMgtHelper.GetSelectModel()
+const selectDepartment = departmentMgtHelper.GetIdNameSelectModel()
 selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await personMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
-const selectRole = roleMgtHelper.GetSelectModel()
+const selectRole = roleMgtHelper.GetIdNameSelectModel()
 selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await personMgtHelper.GetBelongRoleListAsync(selectDepartment.Value.value?.id) : []
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetSelectModel()
-const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
+const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
+const selectDepartmentForm = departmentMgtHelper.GetIdNameSelectModel()
 selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
-const selectRoleForm = roleMgtHelper.GetSelectModel()
+const selectRoleForm = roleMgtHelper.GetIdNameSelectModel()
 selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? await roleMgtHelper.SelectIdNameByDepartment(selectDepartmentForm.Value.value?.id) : []
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
@@ -164,13 +164,13 @@ async function Refresh() {
     await selectDepartment.UpdateItemsAsync()
     await selectRole.UpdateItemsAsync()
 
-    pagination.Count.value = await personMgtHelper.GetCountAsync({
+    pagination.Count.value = await personMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,
         role: selectRole.Value.value?.id,
         name: searchName.Value.value,
     })
-    await personMgtHelper.GetListAsync({
+    await personMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,

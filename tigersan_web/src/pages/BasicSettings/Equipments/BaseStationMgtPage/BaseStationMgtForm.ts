@@ -18,17 +18,17 @@ switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetSelectModel()
+const selectCompany = companyMgtHelper.GetIdNameSelectModel()
 selectCompany._getItemsAsync = async () => await baseStationMgtHelper.GetBelongCompanyListAsync()
-const selectSite = siteMgtHelper.GetSelectModel()
+const selectSite = siteMgtHelper.GetIdNameSelectModel()
 selectSite._getItemsAsync = async () => selectCompany.Value.value ? await baseStationMgtHelper.GetBelongSiteListAsync(selectCompany.Value.value?.id) : []
-const selectType = stationTypeMgtHelper.GetSelectModel()
+const selectType = stationTypeMgtHelper.GetIdNameSelectModel()
 selectType._getItemsAsync = async () => await baseStationMgtHelper.GetBelongStationTypeListAsync(selectCompany.Value.value?.id, selectSite.Value.value?.id)
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetSelectModel()
-const selectSiteForm = siteMgtHelper.GetSelectModel()
+const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
+const selectSiteForm = siteMgtHelper.GetIdNameSelectModel()
 selectSiteForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await siteMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
-const selectTypeForm = stationTypeMgtHelper.GetSelectModel()
+const selectTypeForm = stationTypeMgtHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectSiteForm.UpdateItemsAsync
 
@@ -36,6 +36,7 @@ const searchMacAddr = new SearchModel()
 searchMacAddr.PlaceholderCN.value = '请输入MAC地址'
 searchMacAddr.PlaceholderEN.value = 'Please enter the MAC'
 searchMacAddr._onSearch = Refresh
+searchMacAddr._onChange = Refresh
 
 const selectState = new SelectModel<OnlineState>()
 selectState.Width.value = 120
@@ -191,7 +192,7 @@ async function Refresh() {
         macAddr: searchMacAddr.Value.value,
     })
     offlineCount.value = pagination.Count.value - onlineCount.value
-    await baseStationMgtHelper.GetListAsync({
+    await baseStationMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,

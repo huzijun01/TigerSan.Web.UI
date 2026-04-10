@@ -88,7 +88,63 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     return MyResults<object>.NameRepeated;
                 }
 
+                // 修改“数据”:
                 find.ShallowCopy(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 修改“多条数据”
+        /// <summary>修改“多条数据”</summary>
+        public override async Task<MyActionResult<object>> EditRange(List<TEntity> entities, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (entities.Count < 1) return res;
+
+                // 检验“名称”是否重复:
+                var names = entities.Select(e => e.Name).ToList();
+                if (await _dbSet.AnyAsync(i => names.Contains(i.Name)))
+                {
+                    return MyResults<object>.NameRepeated;
+                }
+
+                var ids = entities.Select(i => i.Id).ToList();
+
+                // 检验“资源”是否存在:
+                var finds = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+                if (finds.Count < 1)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+                else if (finds.Count < ids.Count)
+                {
+                    return MyResults<object>.SomeResourceNotExist;
+                }
+
+                // 修改“数据”:
+                foreach (var find in finds)
+                {
+                    var entity = entities.FirstOrDefault(i => i.Id == find.Id);
+                    if (entity == null)
+                    {
+                        return MyResults<object>.SomeResourceNotExist;
+                    }
+                    find.ShallowCopy(entity);
+                }
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务

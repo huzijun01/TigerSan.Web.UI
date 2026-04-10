@@ -2,8 +2,6 @@ import { AxiosHelper } from "@/helpers"
 import { IdModel, IdModelHelper } from "../base/IdModel"
 import type { IdNameModel } from "@/models"
 
-export type PersonEvent = (model: PersonModel) => void
-
 /** "组织机构"模型 */
 export class PersonModel extends IdModel {
     company: bigint = 0n
@@ -23,7 +21,7 @@ class PersonMgtHelper extends IdModelHelper<PersonModel> {
     }
 
     /** 筛选“总数” */
-    readonly GetCountAsync = async (param: {
+    readonly GetCount = async (param: {
         company?: bigint,
         department?: bigint,
         role?: bigint,
@@ -47,7 +45,7 @@ class PersonMgtHelper extends IdModelHelper<PersonModel> {
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (param: {
+    readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,

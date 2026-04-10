@@ -9,13 +9,13 @@ authorityHelperForm._tree._configs = authorityHelper._tree._configs
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetSelectModel()
+const selectCompany = companyMgtHelper.GetIdNameSelectModel()
 selectCompany._getItemsAsync = async () => await roleMgtHelper.GetBelongCompanyListAsync()
-const selectDepartment = departmentMgtHelper.GetSelectModel()
+const selectDepartment = departmentMgtHelper.GetIdNameSelectModel()
 selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetSelectModel()
-const selectDepartmentForm = departmentMgtHelper.GetSelectModel()
+const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
+const selectDepartmentForm = departmentMgtHelper.GetIdNameSelectModel()
 selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
@@ -113,11 +113,11 @@ async function Refresh() {
     await selectCompany.UpdateItemsAsync()
     await selectDepartment.UpdateItemsAsync()
 
-    pagination.Count.value = await roleMgtHelper.GetCountAsync({
+    pagination.Count.value = await roleMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,
     })
-    await roleMgtHelper.GetListAsync({
+    await roleMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,

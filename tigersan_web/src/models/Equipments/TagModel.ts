@@ -1,18 +1,21 @@
 import { AxiosHelper } from "@/helpers"
 import { IdModel, IdModelHelper } from "../base/IdModel"
-
-export type TagEvent = (model: TagModel) => void
+import { OnlineState } from "../base/OnlineState"
 
 /** "组织机构"模型 */
 export class TagModel extends IdModel {
-    company: bigint = 0n
-    scenario: bigint = 0n
+    batch: bigint = 0n
+    type: bigint = 0n
+    station?: bigint
     isEnable = false
-    batchId = ''
-    shipmentTime = new Date()
-    manager?: string
-    phone?: string
+    onlineState = OnlineState.Offline
+    tagId = ''
+    brandId? = ''
+    battery?: number
+    temperature?: number
+    signal?: number
     comment?: string
+    lastReportTime?: Date
 }
 
 class TagMgtHelper extends IdModelHelper<TagModel> {
@@ -21,42 +24,50 @@ class TagMgtHelper extends IdModelHelper<TagModel> {
     }
 
     /** 筛选“总数” */
-    readonly GetCountAsync = async (param: {
-        company?: bigint,
-        scenario?: bigint,
-        batchId?: string,
+    readonly GetCount = async (param: {
+        batch?: bigint,
+        type?: bigint,
+        station?: bigint,
+        isEnable?: boolean,
+        state?: OnlineState,
+        tagId?: string,
     }) => await AxiosHelper.GetCount(this._action,
         {
             filter: {
                 filters: [
-                    { propName: 'Scenario', value: param.scenario },
-                    { propName: 'TagId', value: param.batchId },
+                    { propName: 'Batch', value: param.batch },
+                    { propName: 'Type', value: param.type },
+                    { propName: 'Station', value: param.station },
+                    { propName: 'IsEnable', value: param.isEnable },
+                    { propName: 'OnlineState', value: param.state },
+                    { propName: 'TagId', value: param.tagId },
                 ],
-                parent: {
-                    id: param.company,
-                }
             }
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (param: {
+    readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
-        company?: bigint,
-        scenario?: bigint,
-        batchId?: string,
+        batch?: bigint,
+        type?: bigint,
+        station?: bigint,
+        isEnable?: boolean,
+        state?: OnlineState,
+        tagId?: string,
     }) => await AxiosHelper.GetList<TagModel>(this._action,
         {
             pageSize: param.pageSize,
             pageNumber: param.pageNumber,
             filter: {
                 filters: [
-                    { propName: 'Scenario', value: param.scenario },
-                    { propName: 'TagId', value: param.batchId },
+                    { propName: 'Batch', value: param.batch },
+                    { propName: 'Type', value: param.type },
+                    { propName: 'Station', value: param.station },
+                    { propName: 'IsEnable', value: param.isEnable },
+                    { propName: 'OnlineState', value: param.state },
+                    { propName: 'TagId', value: param.tagId },
                 ],
-                parent: {
-                    id: param.company,
-                }
             }
         })
 }

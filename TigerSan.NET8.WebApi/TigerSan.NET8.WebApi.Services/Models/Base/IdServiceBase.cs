@@ -132,13 +132,17 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“字段”集合
         /// <summary>获取“字段”集合</summary>
-        public virtual async Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false)
+        public virtual async Task<List<TField>> Select<TField>(
+            Func<TEntity, TField> selector,
+            bool isDistinct = false,
+            FilterDto? filter = null)
         {
             try
             {
-                var list = _dbSet
-                    .AsNoTracking()
-                    .Select(selector);
+                var queryable = _dbSet.AsNoTracking();
+                queryable = await GetFilter(queryable, filter);
+
+                var list = queryable.Select(selector);
 
                 if (isDistinct)
                 {
@@ -157,15 +161,19 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“ID值对”集合
         /// <summary>获取“ID值对”集合</summary>
-        public virtual async Task<List<IdValue<TField>>> SelectIdValue<TField>(Func<TEntity, IdValue<TField>> selector, bool isDistinct = false)
+        public virtual async Task<List<IdValue<TField>>> SelectIdValue<TField>(
+            Func<TEntity, TField> selector,
+            bool? isDistinct = null,
+            FilterDto? filter = null)
         {
             try
             {
-                var list = _dbSet
-                    .AsNoTracking()
-                    .Select(selector);
+                var queryable = _dbSet.AsNoTracking();
+                queryable = await GetFilter(queryable, filter);
 
-                if (isDistinct)
+                var list = queryable.Select(i => new IdValue<TField>(selector(i), i.Id));
+
+                if (isDistinct ?? false)
                 {
                     list = list.Distinct();
                 }
@@ -266,6 +274,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     return MyResults<object>.ResourceNotExist;
                 }
 
+                // 修改“数据”:
                 find.ShallowCopy(entity);
 
                 await _db.SaveChangesAsync();
@@ -294,6 +303,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
                 var ids = entities.Select(i => i.Id).ToList();
 
+                // 检验“资源”是否存在:
                 var finds = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
                 if (finds.Count < 1)
                 {
@@ -304,6 +314,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     return MyResults<object>.SomeResourceNotExist;
                 }
 
+                // 修改“数据”:
                 foreach (var find in finds)
                 {
                     var entity = entities.FirstOrDefault(i => i.Id == find.Id);

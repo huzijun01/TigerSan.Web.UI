@@ -1,8 +1,7 @@
 import { SelectModel } from "@/0_tigersan_ui/tigerui"
 import { AxiosHelper } from "@/helpers"
-import { IdNameModel, IdNameModelHelper } from "../base/IdNameModel"
-
-export type DepartmentEvent = (model: DepartmentModel) => void
+import { IdNameModel } from "../base/SelectModel"
+import { IdNameModelHelper } from "../base/IdNameModel"
 
 /** "组织机构"模型 */
 export class DepartmentModel extends IdNameModel {
@@ -16,8 +15,8 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
 
     // 查:
     /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择部门', 'Please select a department')
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择部门', 'Please select a department')
     }
 
     /** 筛选“总数” */
@@ -31,11 +30,11 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (param: {
+    readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,
-    }) => await AxiosHelper.GetList(this._action,
+    }) => await AxiosHelper.GetList<DepartmentModel>(this._action,
         {
             pageSize: param.pageSize,
             pageNumber: param.pageNumber,

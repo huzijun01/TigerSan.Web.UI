@@ -15,7 +15,11 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             int? pageNumber = null,
             FilterDto? filter = null);
 
-        public Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false);
+        public Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false, FilterDto? filter = null);
+        public Task<List<IdValue<TField>>> SelectIdValue<TField>(
+            Func<TEntity, TField> selector,
+            bool? isDistinct = null,
+            FilterDto? filter = null);
 
         public Task<bool> IsExists(long id);
 

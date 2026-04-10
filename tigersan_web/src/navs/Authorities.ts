@@ -14,6 +14,7 @@ export class Authorities {
     static BaseStationMgtPage = authorityHelper.GetAuthority()
     /** 标签管理 */
     static TagMgtFolder = authorityHelper.GetAuthority()
+    static TagMgtPage = authorityHelper.GetAuthority()
     static PersonMgtTagPage = authorityHelper.GetAuthority()
     static AssetMgtTagPage = authorityHelper.GetAuthority()
     static EnvSensorPage = authorityHelper.GetAuthority()
@@ -35,5 +36,4 @@ export class Authorities {
     /** 业务类别 1 */
     static BusinessFolder1 = authorityHelper.GetAuthority()
     static Business1 = authorityHelper.GetAuthority()
-    static Business2 = authorityHelper.GetAuthority()
 }

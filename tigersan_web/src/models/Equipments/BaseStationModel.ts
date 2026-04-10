@@ -25,8 +25,8 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
 
     // 查:
     /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择基站', 'Please select a baseStation')
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择基站', 'Please select a baseStation')
     }
 
     /** 筛选“总数” */
@@ -58,7 +58,7 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (
+    readonly GetList = async (
         param: {
             pageSize?: number,
             pageNumber?: number,

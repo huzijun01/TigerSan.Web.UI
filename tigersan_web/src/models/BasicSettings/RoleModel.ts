@@ -1,9 +1,7 @@
-import { SelectModel } from "@/0_tigersan_ui/tigerui"
+import { AuthorityModel, SelectModel } from "@/0_tigersan_ui/tigerui"
 import { AxiosHelper } from "@/helpers"
-import { AuthorityModel } from '../../0_tigersan_ui/src/models/Authority/AuthorityModel'
-import { IdNameModel, IdNameModelHelper } from "../base/IdNameModel"
-
-export type RoleEvent = (model: RoleAuthorityModel) => void
+import { IdNameModel } from "../base/SelectModel"
+import { IdNameModelHelper } from "../base/IdNameModel"
 
 /** "角色"模型 */
 export class RoleAuthorityModel extends IdNameModel {
@@ -18,13 +16,13 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
     }
 
     /** 获取“筛选框模型” */
-    GetSelectModel(): SelectModel<IdNameModel> {
-        return super.GetSelectModel('请选择角色', 'Please select a role')
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择角色', 'Please select a role')
     }
 
     // 查:
     /** 筛选“总数” */
-    readonly GetCountAsync = async (param: {
+    readonly GetCount = async (param: {
         company?: bigint,
         department?: bigint
     }) => await AxiosHelper.GetCount(this._action,
@@ -40,12 +38,12 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
         })
 
     /** 筛选“数据”集合 */
-    readonly GetListAsync = async (param: {
+    readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,
         department?: bigint,
-    }) => await AxiosHelper.GetList(this._action,
+    }) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action,
         {
             pageSize: param.pageSize,
             pageNumber: param.pageNumber,
