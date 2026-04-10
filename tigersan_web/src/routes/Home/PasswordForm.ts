@@ -7,16 +7,13 @@ const passwordEdit = reactive(new PasswordEditModel())
 
 /** 密码框 */
 const password = new PasswordModel()
-password.Width.value = '108px'
 const oldPassword = new PasswordModel()
-password.Width.value = '108px'
 const confirmPassword = new PasswordModel()
-password.Width.value = '108px'
 
 /** “原始密码”项目配置 */
 const configOldPassword: FormItemConfig<PasswordEditModel, string> = {
     _propName: 'oldPassword',
-    PropText: '密码',
+    PropText: '旧密码',
     IsEquired: true,
     Target: oldPassword.Value,
     _isVerifyOk: (source, isEdit) => Verify.IsValidWeekPassword(source.oldPassword)
@@ -25,7 +22,7 @@ const configOldPassword: FormItemConfig<PasswordEditModel, string> = {
 /** “新密码”项目配置 */
 const configPassword: FormItemConfig<PasswordEditModel, string> = {
     _propName: 'password',
-    PropText: '密码',
+    PropText: '新密码',
     IsEquired: true,
     Target: password.Value,
     _isVerifyOk: (source, isEdit) => Verify.IsValidWeekPassword(source.password)
@@ -50,6 +47,8 @@ let configPersonMgtForm: FormConfig<PasswordEditModel> = {
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
         password.IsShowValue.value = false
+        oldPassword.IsShowValue.value = false
+        confirmPassword.IsShowValue.value = false
     },
     _itemConfigs: [
         configPassword,

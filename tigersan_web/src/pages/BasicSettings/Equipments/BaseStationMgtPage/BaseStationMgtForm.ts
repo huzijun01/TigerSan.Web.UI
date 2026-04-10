@@ -13,6 +13,7 @@ pagination.IsShowSelectedRowCount.value = true
 
 // 开关:
 const switchIsEnable = new SwitchModel()
+switchIsEnable.IsEnable.value = false
 watch(baseStationMgtTable.IsSelected, isSelected => switchIsEnable.IsEnable.value = isSelected)
 switchIsEnable._onChange = EditIsEnable
 
