@@ -1,4 +1,5 @@
-import { dialog, FormResult, SubmitResult } from "@/0_tigersan_ui/tigerui"
+import { dialog } from "../stores"
+import { FormResult, SubmitResult } from "./Form/FormModel"
 
 export enum ActionResultCode {
     Success = 0,

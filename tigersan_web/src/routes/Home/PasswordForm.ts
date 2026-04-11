@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
+import { PasswordModel, FormItemConfig, Verify, FormConfig, FormModel, ObjectHelper, GetSubmitResult } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
-import { Verify, ObjectHelper, FormModel, FormConfig, FormItemConfig, PasswordModel } from '@/0_tigersan_ui/tigerui'
-import { GetSubmitResult, PasswordEditModel, UserHelper } from '@/models'
+import { PasswordEditModel, UserHelper } from '@/models'
 
 const passwordEdit = reactive(new PasswordEditModel())
 

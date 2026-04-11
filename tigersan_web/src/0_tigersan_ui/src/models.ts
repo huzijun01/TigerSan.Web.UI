@@ -44,3 +44,9 @@ export * from './models/Tree/TreeModel'
 
 /* Others: */
 export * from './models/DialogModel'
+export * from './models/FilterModel'
+export * from './models/IdModel'
+export * from './models/IdNameModel'
+export * from './models/MyActionResult'
+export * from './models/OnlineState'
+export * from './models/SelectModel'

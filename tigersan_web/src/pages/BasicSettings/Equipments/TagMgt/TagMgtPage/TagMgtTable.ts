@@ -1,15 +1,8 @@
-import { Colors, ObjectHelper, TableModel } from '@/0_tigersan_ui/tigerui'
-import { OnlineState, GetOnlineString, TagModel, batchMgtHelper, baseStationMgtHelper, tagTypeMgtHelper, GetIsEnableString } from '@/models'
+import { Colors, GetIsEnableString, GetOnlineString, ObjectHelper, OnlineState, TableModel } from '@/0_tigersan_ui/tigerui'
+import { TagModel, batchMgtHelper, tagTypeMgtHelper, baseStationMgtHelper } from '@/models'
 
 // 列头:
 const tagMgtTable = new TableModel<TagModel>([
-    // {
-    //     _propName: 'id',
-    //     Text: 'ID',
-    //     Width: 50,
-    //     IsReadonly: true,
-    //     IsAllowWrap: false,
-    // },
     {
         _propName: 'batch',
         Text: '批次',

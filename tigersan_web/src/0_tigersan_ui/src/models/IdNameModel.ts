@@ -1,9 +1,10 @@
-import { BigintHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
-import { KeyValue } from "@/helpers"
-import { FilterModel } from "./FilterModel"
 import { IdModelHelper } from "./IdModel"
+import { FilterModel } from "./FilterModel"
 import { IdNameModel } from "./SelectModel"
-import { AxiosHelper } from "../../helpers/AxiosHelper"
+import { KeyValue } from "../helpers/ParamHelper"
+import { SelectModel } from "./Inputs/SelectModel"
+import { BigintHelper } from "../helpers/BigintHelper"
+import { AxiosHelper } from "../helpers/AxiosHelper/AxiosHelper"
 
 export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper<TModel> {
     /** 更新“ID名称对”集合 */

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { roleMgtTable } from './RoleMgtTable'
-import { GetSubmitResult, IdNameModel, MyActionResult, RoleAuthorityModel, companyMgtHelper, departmentMgtHelper, roleMgtHelper } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper } from '@/0_tigersan_ui/tigerui'
+import { companyMgtHelper, roleMgtHelper, departmentMgtHelper, RoleAuthorityModel } from '@/models'
 
 /** “权限助手”实例 */
 const authorityHelperForm = new AuthorityHelper()

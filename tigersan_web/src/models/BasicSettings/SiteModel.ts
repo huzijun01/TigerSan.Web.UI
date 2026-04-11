@@ -1,7 +1,4 @@
-import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { AxiosHelper } from "@/helpers"
-import { IdNameModel } from "../base/SelectModel"
-import { IdNameModelHelper } from "../base/IdNameModel"
+import { IdNameModel, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "组织机构"模型 */
 export class SiteModel extends IdNameModel {
@@ -29,15 +26,14 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
     readonly GetCount = async (param: {
         company?: bigint,
         type?: bigint
-    }) => await AxiosHelper.GetCount(this._action,
-        {
-            filter: {
-                filters: [
-                    { propName: 'Company', value: param.company },
-                    { propName: 'type', value: param.type },
-                ],
-            }
-        })
+    }) => await AxiosHelper.GetCount(this._action, {
+        filter: {
+            filters: [
+                { propName: 'Company', value: param.company },
+                { propName: 'type', value: param.type },
+            ],
+        }
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -45,17 +41,16 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
         pageNumber?: number
         company?: bigint,
         type?: bigint,
-    }) => await AxiosHelper.GetList<SiteModel>(this._action,
-        {
-            pageSize: param.pageSize,
-            pageNumber: param.pageNumber,
-            filter: {
-                filters: [
-                    { propName: 'Company', value: param.company },
-                    { propName: 'Type', value: param.type },
-                ],
-            }
-        })
+    }) => await AxiosHelper.GetList<SiteModel>(this._action, {
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        filter: {
+            filters: [
+                { propName: 'Company', value: param.company },
+                { propName: 'Type', value: param.type },
+            ],
+        }
+    })
 
     /** 获取“ID名称对”集合 */
     readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await this.GetIdNames({

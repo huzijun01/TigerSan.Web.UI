@@ -1,6 +1,4 @@
-import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { AxiosHelper } from "@/helpers"
-import { IdNameModel, IdNameModelHelper, OnlineState } from "@/models"
+import { IdNameModel, OnlineState, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** “基站”模型 */
 export class BaseStationModel extends IdNameModel {
@@ -39,23 +37,22 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             type?: bigint,
             macAddr?: string,
         }
-    ) => await AxiosHelper.GetCount(this._action,
-        {
-            filter: {
-                filters: [
-                    { propName: 'IsEnable', value: param.isEnable },
-                    { propName: 'OnlineState', value: param.state },
-                    { propName: 'Type', value: param.type },
-                    { propName: 'MacAddr', value: param.macAddr },
-                ],
+    ) => await AxiosHelper.GetCount(this._action, {
+        filter: {
+            filters: [
+                { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'OnlineState', value: param.state },
+                { propName: 'Type', value: param.type },
+                { propName: 'MacAddr', value: param.macAddr },
+            ],
+            parent: {
+                id: param.site,
                 parent: {
-                    id: param.site,
-                    parent: {
-                        id: param.company,
-                    }
+                    id: param.company,
                 }
-            },
-        })
+            }
+        },
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (
@@ -69,26 +66,25 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
             type?: bigint,
             macAddr?: string,
         }
-    ) => await AxiosHelper.GetList<BaseStationModel>(this._action,
-        {
-            pageSize: param.pageSize,
-            pageNumber: param.pageNumber,
-            strList: 'FullList',
-            filter: {
-                filters: [
-                    { propName: 'IsEnable', value: param.isEnable },
-                    { propName: 'OnlineState', value: param.state },
-                    { propName: 'Type', value: param.type },
-                    { propName: 'MacAddr', value: param.macAddr },
-                ],
+    ) => await AxiosHelper.GetList<BaseStationModel>(this._action, {
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        strList: 'FullList',
+        filter: {
+            filters: [
+                { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'OnlineState', value: param.state },
+                { propName: 'Type', value: param.type },
+                { propName: 'MacAddr', value: param.macAddr },
+            ],
+            parent: {
+                id: param.site,
                 parent: {
-                    id: param.site,
-                    parent: {
-                        id: param.company,
-                    }
+                    id: param.company,
                 }
-            },
-        })
+            }
+        },
+    })
 
     /** 获取“所属公司”集合 */
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)

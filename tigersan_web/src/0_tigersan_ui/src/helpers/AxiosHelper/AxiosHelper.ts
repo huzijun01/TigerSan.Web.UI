@@ -1,8 +1,10 @@
 
-import { dialog } from "@/0_tigersan_ui/tigerui"
 import { AxiosBase } from "./AxiosBase"
-import { KeyValue } from "./ParamHelper"
-import { FilterModel, IdNameModel, IdValueModel, MyActionResult } from "@/models"
+import { KeyValue } from "../ParamHelper"
+import { dialog } from "../../stores/dialog"
+import { FilterModel } from "../../models/FilterModel"
+import { MyActionResult } from "../../models/MyActionResult"
+import { IdNameModel, IdValueModel } from "../../models/SelectModel"
 
 export class AxiosHelper extends AxiosBase {
     // 列表:

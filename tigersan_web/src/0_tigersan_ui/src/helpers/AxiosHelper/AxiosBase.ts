@@ -1,7 +1,7 @@
 import { api } from "./AxiosApi"
-import { dialog } from "@/0_tigersan_ui/tigerui"
-import { MyActionResult } from "@/models"
-import { KeyValue, ParamHelper } from "./ParamHelper"
+import { dialog } from "../../stores"
+import { KeyValue, ParamHelper } from "../ParamHelper"
+import { MyActionResult } from "../../models/MyActionResult"
 
 export class AxiosBase {
     static async Get(action: string, params?: KeyValue[]): Promise<MyActionResult> {

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
+import { Colors, dialog, Verify, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, ObjectHelper, GetSubmitResult, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { tagTypeMgtTable } from './TagTypeMgtTable'
-import { GetSubmitResult, MyActionResult, TagTypeModel, tagTypeMgtHelper } from '@/models'
-import { Colors, dialog, Verify, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, ObjectHelper } from '@/0_tigersan_ui/tigerui'
+import { TagTypeModel, tagTypeMgtHelper } from '@/models'
 
 // 字段:
 /** 分页器 */

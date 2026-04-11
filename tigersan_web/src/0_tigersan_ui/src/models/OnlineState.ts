@@ -1,5 +1,5 @@
-import { Texts } from "@/0_tigersan_ui/src/texts"
-import { ObjectHelper } from "@/0_tigersan_ui/tigerui"
+import { Texts } from "../texts"
+import { ObjectHelper } from "../helpers/ObjectHelper"
 
 export enum OnlineState {
     Online = 1,
@@ -25,4 +25,3 @@ export const OnlineState2String = (value: OnlineState) => {
 export const IsEnable2String = (value: boolean) => {
     return value ? Texts.Enable.value : Texts.Disable.value
 }
-

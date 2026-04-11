@@ -1,7 +1,4 @@
-import { AuthorityModel, SelectModel } from "@/0_tigersan_ui/tigerui"
-import { AxiosHelper } from "@/helpers"
-import { IdNameModel } from "../base/SelectModel"
-import { IdNameModelHelper } from "../base/IdNameModel"
+import { IdNameModel, AuthorityModel, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "角色"模型 */
 export class RoleAuthorityModel extends IdNameModel {
@@ -25,17 +22,16 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
     readonly GetCount = async (param: {
         company?: bigint,
         department?: bigint
-    }) => await AxiosHelper.GetCount(this._action,
-        {
-            filter: {
+    }) => await AxiosHelper.GetCount(this._action, {
+        filter: {
+            parent: {
+                id: param.department,
                 parent: {
-                    id: param.department,
-                    parent: {
-                        id: param.company,
-                    }
+                    id: param.company,
                 }
             }
-        })
+        }
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -43,20 +39,19 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
         pageNumber?: number,
         company?: bigint,
         department?: bigint,
-    }) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action,
-        {
-            pageSize: param.pageSize,
-            pageNumber: param.pageNumber,
-            strList: 'FullList',
-            filter: {
+    }) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action, {
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        strList: 'FullList',
+        filter: {
+            parent: {
+                id: param.department,
                 parent: {
-                    id: param.department,
-                    parent: {
-                        id: param.company,
-                    }
+                    id: param.company,
                 }
             }
-        })
+        }
+    })
 
     /** 获取“ID名称对”集合 */
     readonly SelectIdNameByDepartment = async (department?: bigint) => await this.GetIdNames({

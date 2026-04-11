@@ -1,7 +1,4 @@
-import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { AxiosHelper } from "@/helpers"
-import { IdValueModel } from "../base/SelectModel"
-import { IdModel, IdModelHelper } from "../base/IdModel"
+import { IdModel, IdModelHelper, SelectModel, IdValueModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "批次"模型 */
 export class BatchModel extends IdModel {
@@ -31,18 +28,17 @@ class BatchMgtHelper extends IdModelHelper<BatchModel> {
         company?: bigint,
         scenario?: bigint,
         batchId?: string,
-    }) => await AxiosHelper.GetCount(this._action,
-        {
-            filter: {
-                filters: [
-                    { propName: 'Scenario', value: param.scenario },
-                    { propName: 'BatchId', value: param.batchId },
-                ],
-                parent: {
-                    id: param.company,
-                }
+    }) => await AxiosHelper.GetCount(this._action, {
+        filter: {
+            filters: [
+                { propName: 'Scenario', value: param.scenario },
+                { propName: 'BatchId', value: param.batchId },
+            ],
+            parent: {
+                id: param.company,
             }
-        })
+        }
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -51,20 +47,19 @@ class BatchMgtHelper extends IdModelHelper<BatchModel> {
         company?: bigint,
         scenario?: bigint,
         batchId?: string,
-    }) => await AxiosHelper.GetList<BatchModel>(this._action,
-        {
-            pageSize: param.pageSize,
-            pageNumber: param.pageNumber,
-            filter: {
-                filters: [
-                    { propName: 'Scenario', value: param.scenario },
-                    { propName: 'BatchId', value: param.batchId },
-                ],
-                parent: {
-                    id: param.company,
-                }
+    }) => await AxiosHelper.GetList<BatchModel>(this._action, {
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        filter: {
+            filters: [
+                { propName: 'Scenario', value: param.scenario },
+                { propName: 'BatchId', value: param.batchId },
+            ],
+            parent: {
+                id: param.company,
             }
-        })
+        }
+    })
 }
 
 export const batchMgtHelper = new BatchMgtHelper()

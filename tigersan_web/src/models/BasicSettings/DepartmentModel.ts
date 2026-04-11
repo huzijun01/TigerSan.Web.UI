@@ -1,7 +1,4 @@
-import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { AxiosHelper } from "@/helpers"
-import { IdNameModel } from "../base/SelectModel"
-import { IdNameModelHelper } from "../base/IdNameModel"
+import { IdNameModel, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "组织机构"模型 */
 export class DepartmentModel extends IdNameModel {
@@ -22,26 +19,24 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
     /** 筛选“总数” */
     readonly GetCount = async (param: {
         company?: bigint
-    }) => await AxiosHelper.GetCount(this._action,
-        {
-            filter: {
-                filters: [{ propName: 'Company', value: param.company }]
-            }
-        })
+    }) => await AxiosHelper.GetCount(this._action, {
+        filter: {
+            filters: [{ propName: 'Company', value: param.company }]
+        }
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,
-    }) => await AxiosHelper.GetList<DepartmentModel>(this._action,
-        {
-            pageSize: param.pageSize,
-            pageNumber: param.pageNumber,
-            filter: {
-                filters: [{ propName: 'Company', value: param.company }]
-            }
-        })
+    }) => await AxiosHelper.GetList<DepartmentModel>(this._action, {
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        filter: {
+            filters: [{ propName: 'Company', value: param.company }]
+        }
+    })
 
     /** 获取“ID名称对”集合 */
     readonly SelectIdNameByCompanyAsync = async (company?: bigint) => await this.GetIdNames({

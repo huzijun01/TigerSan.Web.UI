@@ -1,7 +1,7 @@
 import { ref } from 'vue'
+import { Colors, dialog, Verify, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, ObjectHelper, GetSubmitResult, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { scenarioMgtTable } from './ScenarioMgtTable'
-import { GetSubmitResult, MyActionResult, ScenarioModel, scenarioMgtHelper } from '@/models'
-import { Colors, dialog, Verify, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, ObjectHelper } from '@/0_tigersan_ui/tigerui'
+import { ScenarioModel, scenarioMgtHelper } from '@/models'
 
 // 字段:
 /** 分页器 */

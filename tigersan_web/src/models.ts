@@ -1,10 +1,3 @@
-// base:
-export * from '@/models/base/FilterModel'
-export * from '@/models/base/IdModel'
-export * from '@/models/base/IdNameModel'
-export * from '@/models/base/MyActionResult'
-export * from '@/models/base/OnlineState'
-export * from '@/models/base/SelectModel'
 // BasicSettings:
 export * from '@/models/BasicSettings/BatchModel'
 export * from '@/models/BasicSettings/CompanyModel'

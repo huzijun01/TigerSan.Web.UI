@@ -1,8 +1,9 @@
-import { KeyValue } from "@/helpers"
-import { FilterModel } from "../base/FilterModel"
-import { AxiosHelper } from "../../helpers/AxiosHelper"
-import { BigintHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
-import type { IdValueModel } from "./SelectModel"
+import { FilterModel } from "./FilterModel"
+import { IdValueModel } from "./SelectModel"
+import { KeyValue } from "../helpers/ParamHelper"
+import { SelectModel } from "./Inputs/SelectModel"
+import { BigintHelper } from "../helpers/BigintHelper"
+import { AxiosHelper } from "../helpers/AxiosHelper/AxiosHelper"
 
 /** "组织机构"模型 */
 export class IdModel {

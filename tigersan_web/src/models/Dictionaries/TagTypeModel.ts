@@ -1,6 +1,4 @@
-import { SelectModel } from "@/0_tigersan_ui/tigerui"
-import { IdNameModel } from "../base/SelectModel"
-import { IdNameModelHelper } from "../base/IdNameModel"
+import { IdNameModel, IdNameModelHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
 
 /** "场地类型"模型 */
 export class TagTypeModel extends IdNameModel {

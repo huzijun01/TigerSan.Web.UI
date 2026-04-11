@@ -1,7 +1,7 @@
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
-import { ActionResultCode, UserHelper, UserInfo } from '@/models'
-import { Verify, FormModel, FormConfig, SubmitResult, FormItemConfig, TextBoxModel, PasswordModel, useRouter, ObjectHelper, FormResult, authorityHelper, PathIsReadonly } from '@/0_tigersan_ui/tigerui'
+import { UserInfo, UserHelper } from '@/models'
 
 // 组件模型:
 const uname = new TextBoxModel()

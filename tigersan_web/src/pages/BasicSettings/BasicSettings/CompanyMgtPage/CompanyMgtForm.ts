@@ -1,8 +1,8 @@
 import { ref } from 'vue'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { navData } from '@/navs/navModel'
-import { CompanyMgtHelper, companyMgtHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/models'
+import { companyMgtHelper, CompanyMgtHelper } from '@/models'
 import { tree, CompanyModel, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 /** “公司名称”项目配置 */
 const configName: FormItemConfig<CompanyModel, string> = {

@@ -3,13 +3,6 @@ import { TagTypeModel } from '@/models'
 
 /** 列头 */
 const tagTypeMgtTable = new TableModel<TagTypeModel>([
-    // {
-    //     _propName: 'id',
-    //     Text: 'ID',
-    //     Width: 50,
-    //     IsReadonly: true,
-    //     IsAllowWrap: false,
-    // },
     {
         _propName: 'name',
         Text: '名称',

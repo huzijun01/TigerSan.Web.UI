@@ -1,7 +1,7 @@
 import { ref } from 'vue'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { departmentMgtTable } from './DepartmentMgtTable'
-import { GetSubmitResult, MyActionResult, DepartmentModel, companyMgtHelper, departmentMgtHelper, IdNameModel } from '@/models'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel } from '@/0_tigersan_ui/tigerui'
+import { companyMgtHelper, departmentMgtHelper, DepartmentModel } from '@/models'
 
 // 选择框:
 /** 筛选 */

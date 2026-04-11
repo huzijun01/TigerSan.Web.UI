@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-import { GetOnlineString, IsOnline, OnlineState } from '@/models'
-import { Colors, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, GetOnlineString, IsOnline, OnlineState, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
 class Terminal4gModel {

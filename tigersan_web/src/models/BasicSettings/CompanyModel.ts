@@ -1,6 +1,4 @@
-import { SelectModel, TreeHelper, TreeNodeConfig } from "@/0_tigersan_ui/tigerui"
-import { IdNameModel } from "../base/SelectModel"
-import { IdNameModelHelper } from "../base/IdNameModel"
+import { IdNameModel, IdNameModelHelper, SelectModel, TreeNodeConfig, TreeHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "公司"模型 */
 export class CompanyModel extends IdNameModel {
@@ -13,6 +11,11 @@ export class CompanyMgtHelper extends IdNameModelHelper<CompanyModel> {
         super('Company')
     }
 
+    /** 获取“筛选框模型” */
+    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+        return super.GetIdNameSelectModel('请选择公司', 'Please select a company')
+    }
+
     /** “公司数组”转“树配置” */
     static Companies2Tree(companies: CompanyModel[]): TreeNodeConfig<CompanyModel>[] {
         return TreeHelper.Array2Tree<CompanyModel>(
@@ -20,11 +23,6 @@ export class CompanyMgtHelper extends IdNameModelHelper<CompanyModel> {
             item => item.name,
             item => item.id ?? 0n,
             item => item.parent)
-    }
-
-    /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdNameModel> {
-        return super.GetIdNameSelectModel('请选择公司', 'Please select a company')
     }
 }
 

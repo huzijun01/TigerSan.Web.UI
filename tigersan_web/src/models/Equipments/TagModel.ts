@@ -1,6 +1,4 @@
-import { AxiosHelper } from "@/helpers"
-import { IdModel, IdModelHelper } from "../base/IdModel"
-import { OnlineState } from "../base/OnlineState"
+import { IdModel, OnlineState, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "组织机构"模型 */
 export class TagModel extends IdModel {
@@ -31,19 +29,18 @@ class TagMgtHelper extends IdModelHelper<TagModel> {
         isEnable?: boolean,
         state?: OnlineState,
         tagId?: string,
-    }) => await AxiosHelper.GetCount(this._action,
-        {
-            filter: {
-                filters: [
-                    { propName: 'Batch', value: param.batch },
-                    { propName: 'Type', value: param.type },
-                    { propName: 'Station', value: param.station },
-                    { propName: 'IsEnable', value: param.isEnable },
-                    { propName: 'OnlineState', value: param.state },
-                    { propName: 'TagId', value: param.tagId },
-                ],
-            }
-        })
+    }) => await AxiosHelper.GetCount(this._action, {
+        filter: {
+            filters: [
+                { propName: 'Batch', value: param.batch },
+                { propName: 'Type', value: param.type },
+                { propName: 'Station', value: param.station },
+                { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'OnlineState', value: param.state },
+                { propName: 'TagId', value: param.tagId },
+            ],
+        }
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -55,21 +52,20 @@ class TagMgtHelper extends IdModelHelper<TagModel> {
         isEnable?: boolean,
         state?: OnlineState,
         tagId?: string,
-    }) => await AxiosHelper.GetList<TagModel>(this._action,
-        {
-            pageSize: param.pageSize,
-            pageNumber: param.pageNumber,
-            filter: {
-                filters: [
-                    { propName: 'Batch', value: param.batch },
-                    { propName: 'Type', value: param.type },
-                    { propName: 'Station', value: param.station },
-                    { propName: 'IsEnable', value: param.isEnable },
-                    { propName: 'OnlineState', value: param.state },
-                    { propName: 'TagId', value: param.tagId },
-                ],
-            }
-        })
+    }) => await AxiosHelper.GetList<TagModel>(this._action, {
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        filter: {
+            filters: [
+                { propName: 'Batch', value: param.batch },
+                { propName: 'Type', value: param.type },
+                { propName: 'Station', value: param.station },
+                { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'OnlineState', value: param.state },
+                { propName: 'TagId', value: param.tagId },
+            ],
+        }
+    })
 }
 
 export const tagMgtHelper = new TagMgtHelper()
