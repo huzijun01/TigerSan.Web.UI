@@ -38,7 +38,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var list = new List<BaseStationDto>();
 
-                var stations = await GetList<BaseStationDto>(pageSize, pageNumber, filter);
+                var stations = await GetList(pageSize, pageNumber, filter);
 
                 // 添加“数据”:
                 foreach (var station in stations)

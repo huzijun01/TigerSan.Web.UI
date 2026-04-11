@@ -2,8 +2,8 @@ import { Texts } from "../texts"
 import { ObjectHelper } from "../helpers/ObjectHelper"
 
 export enum OnlineState {
-    Online = 1,
     Offline = 0,
+    Online = 1,
 }
 
 export const IsOnline = (obj: object, propName: string = 'OnlineState'): boolean => {

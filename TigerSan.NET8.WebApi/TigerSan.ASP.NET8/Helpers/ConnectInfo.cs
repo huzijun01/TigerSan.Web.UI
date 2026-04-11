@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using TigerSan.NET8.WebApi.Share.Dtos;
 
-namespace TigerSan.NET8.WebApi.Models
+namespace TigerSan.NET8.WebApi.Helpers
 {
     public class ConnectInfo
     {

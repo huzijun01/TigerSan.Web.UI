@@ -1,9 +1,6 @@
 import { ref } from 'vue'
+import { FormItemConfig, Verify, FormConfig, FormModel, SubmitResult, ObjectHelper, dialog, DialogMode, Colors, DialogState } from '@/0_tigersan_ui/tigerui'
 import { PersonMgtTagModel, personMgtTagTable } from './PersonMgtTagTable'
-import {
-    Colors, dialog, Verify, ObjectHelper,
-    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
-} from '@/0_tigersan_ui/tigerui'
 
 /** “IMEI”项目配置 */
 const configIMEI: FormItemConfig<PersonMgtTagModel, string> = {

@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid'
 import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
 import { Colors, Theme } from '../../base'
-import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
+import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
 
 export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
 export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
@@ -187,6 +187,29 @@ export class TableModel<TSource extends object> {
         this._checkboxBehavior.InitState()
 
         this._onInitRowModel?.(this.RowDatas)
+    }
+
+    /** 更新“文本”  */
+    readonly UpdateTexts = () => {
+        this.RowModels.forEach(rowModel => {
+            rowModel.ItemModels.forEach(itemModel => {
+                itemModel.UpdateText()
+            })
+        })
+    }
+
+    /** 更新“行数据”集合  */
+    readonly UpdateRowDatas = (newRowDatas: TSource[], predicate: (rowData: TSource, newRowData: TSource) => boolean) => {
+        newRowDatas.forEach(newRowData => {
+            const rowData = this.RowDatas.find(r => predicate(r, newRowData))
+            if (!rowData) {
+                console.warn('The rowData is undefined!')
+                return
+            }
+            ObjectHelper.ShallowSet(newRowData, rowData)
+        })
+
+        this.UpdateTexts()
     }
 
     /** 触发“选中状态”改变

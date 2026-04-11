@@ -115,13 +115,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             {
                 if (entities.Count < 1) return res;
 
-                // 检验“名称”是否重复:
-                var names = entities.Select(e => e.Name).ToList();
-                if (await _dbSet.AnyAsync(i => names.Contains(i.Name)))
-                {
-                    return MyResults<object>.NameRepeated;
-                }
-
                 var ids = entities.Select(i => i.Id).ToList();
 
                 // 检验“资源”是否存在:
@@ -135,7 +128,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     return MyResults<object>.SomeResourceNotExist;
                 }
 
-                // 修改“数据”:
                 foreach (var find in finds)
                 {
                     var entity = entities.FirstOrDefault(i => i.Id == find.Id);
@@ -143,6 +135,14 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     {
                         return MyResults<object>.SomeResourceNotExist;
                     }
+
+                    // 检验“名称”是否重复:
+                    if (await _dbSet.AnyAsync(i => i.Name == entity.Name && i.Id != entity.Id))
+                    {
+                        return MyResults<object>.NameRepeated;
+                    }
+
+                    // 修改“数据”:
                     find.ShallowCopy(entity);
                 }
 

@@ -165,6 +165,22 @@ let configBaseStationForm: FormConfig<BaseStationModel> = {
 /** “基站管理”表单模型 */
 const baseStationForm = new FormModel(configBaseStationForm)
 
+/** 更新“行数据” */
+async function UpdateRowDatas() {
+    await baseStationMgtHelper.GetList({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+        company: selectCompany.Value.value?.id,
+        site: selectSite.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
+        state: selectState.Value.value,
+        type: selectType.Value.value?.id,
+        macAddr: searchMacAddr.Value.value,
+    }).then(arr => {
+        baseStationMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
+    })
+}
+
 /** 查 */
 async function Refresh() {
     InitSelectIsEnableState()
@@ -341,6 +357,7 @@ export default {
     configReportInterval,
     baseStationForm,
     Refresh,
+    UpdateRowDatas,
     Add,
     Edit,
     EditIsEnable,

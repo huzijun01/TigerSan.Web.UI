@@ -31,7 +31,8 @@ else
     app.Urls.Add(SettingHelper.AppSettings.ListenUrl);
 }
 
-//SseInstance.StartListening();
+await SseInstance.InitAsync(app.Services);
+SseInstance.StartListening();
 
 app.UseHttpsRedirection();
 

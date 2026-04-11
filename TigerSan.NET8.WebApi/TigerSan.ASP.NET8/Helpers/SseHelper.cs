@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Headers;
-using TigerSan.NET8.WebApi.Models;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -42,7 +41,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         /// <summary>
         /// 开始监听（异步）
         /// </summary>
-        public async Task StartListeningAsync(Action<string> onDataReceived)
+        public async Task StartListeningAsync(Func<string, Task> onDataReceived)
         {
             Console.WriteLine("Connected to SSE stream. Listening for events...");
 
@@ -73,7 +72,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                         if (line.StartsWith("data:"))
                         {
                             var data = line.Substring(5).Trim();
-                            onDataReceived(data);
+                            await onDataReceived(data);
                         }
                         // 处理其他事件类型（如event: error, retry: 3000等）
                         else if (line.StartsWith("event:"))

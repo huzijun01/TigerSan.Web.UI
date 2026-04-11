@@ -109,7 +109,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“数据”集合
         /// <summary>获取“数据”集合</summary>
-        public virtual async Task<List<TEntity>> GetList<TField>(
+        public virtual async Task<List<TEntity>> GetList(
             int? pageSize = null,
             int? pageNumber = null,
             FilterDto? filter = null)
