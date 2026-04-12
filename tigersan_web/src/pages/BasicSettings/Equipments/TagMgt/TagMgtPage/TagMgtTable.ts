@@ -22,7 +22,7 @@ const tagMgtTable = new TableModel<TagModel>([
         Text: '基站',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => baseStationMgtHelper.GetName(source.station ?? 0n)
+        _getStringAsync: source => baseStationMgtHelper.GetName(source.station)
     },
     {
         _propName: 'isEnable',
@@ -107,8 +107,18 @@ tagMgtTable._initItem = itemModel => {
         }
     }
 
-    if (itemModel._headerModel._propName === 'battery' ||
-        itemModel._headerModel._propName === 'signal') {
+    if (itemModel._headerModel._propName === 'signal') {
+        const signal = itemModel.GetSource() as number
+        if (signal < 30) {
+            itemModel.Color.value = Colors.Success
+        } else if (signal < 90) {
+            itemModel.Color.value = Colors.Warning
+        } else {
+            itemModel.Color.value = Colors.Danger
+        }
+    }
+
+    if (itemModel._headerModel._propName === 'battery') {
         const battery = itemModel.GetSource() as number
         if (battery >= 50) {
             itemModel.Color.value = Colors.Success

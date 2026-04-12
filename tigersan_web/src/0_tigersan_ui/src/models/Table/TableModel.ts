@@ -194,6 +194,7 @@ export class TableModel<TSource extends object> {
         this.RowModels.forEach(rowModel => {
             rowModel.ItemModels.forEach(itemModel => {
                 itemModel.UpdateText()
+                this._initItem?.(itemModel) // 初始化
             })
         })
     }

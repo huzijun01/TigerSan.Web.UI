@@ -92,6 +92,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+    debugger
     timer.Stop()
 })
 </script>

@@ -68,13 +68,17 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("t")]
         public int Temperature { get; set; }
 
-        /// <summary>信号强度</summary>
+        /// <summary>信号强度（原始数据）</summary>
         [JsonProperty("r")]
-        public int Signal { get; set; }
+        public int SignalRaw { get; set; }
 
         /// <summary>纬度</summary>
         [JsonProperty("w")]
         public double Latitude { get; set; }
+
+        /// <summary>信号强度</summary>
+        [JsonIgnore]
+        public int Signal { get => 256 - SignalRaw; }
     }
     #endregion
 }

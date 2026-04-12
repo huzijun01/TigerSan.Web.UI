@@ -132,24 +132,7 @@ let configTagForm: FormConfig<TagModel> = {
 /** “基站管理”表单模型 */
 const tagForm = new FormModel(configTagForm)
 
-/** 更新“行数据” */
-async function UpdateRowDatas() {
-    await tagMgtHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        batch: selectBatch.Value.value?.id,
-        station: selectStation.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: selectState.Value.value,
-        type: selectType.Value.value?.id,
-        tagId: searchTagId.Value.value,
-    }).then(arr => {
-        tagMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
-    })
-}
-
-/** 查 */
-async function Refresh() {
+async function RefreshBase() {
     InitSelectIsEnableState()
 
     await batchMgtHelper.UpdateIdValues()
@@ -176,6 +159,30 @@ async function Refresh() {
         tagId: searchTagId.Value.value,
     })
     offlineCount.value = pagination.Count.value - onlineCount.value
+}
+
+/** 更新“行数据” */
+async function UpdateRowDatas() {
+    RefreshBase()
+
+    await tagMgtHelper.GetList({
+        pageSize: pagination.PageSize.value,
+        pageNumber: pagination.SelectedNum.value,
+        batch: selectBatch.Value.value?.id,
+        station: selectStation.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
+        state: selectState.Value.value,
+        type: selectType.Value.value?.id,
+        tagId: searchTagId.Value.value,
+    }).then(arr => {
+        tagMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
+    })
+}
+
+/** 查 */
+async function Refresh() {
+    RefreshBase()
+    
     await tagMgtHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,

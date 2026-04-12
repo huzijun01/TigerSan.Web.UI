@@ -75,7 +75,7 @@ export class IdModelHelper<TModel extends IdModel> {
     }
 
     /** 获取“值” */
-    readonly GetValue = async (id: bigint, isUpdate: boolean = false): Promise<string> => {
+    readonly GetValue = async (id?: bigint, isUpdate: boolean = false): Promise<string> => {
         if (isUpdate || !this._idValues) {
             this._idValues = await this.GetIdValues()
         }
