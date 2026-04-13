@@ -253,7 +253,7 @@ class PaginationModel {
         this._isInit = true
     }
 
-    /** 更新“是否被选中” */
+    /** 更新“是否选中” */
     private UpdateIsSelected() {
         this._isInit = false
 

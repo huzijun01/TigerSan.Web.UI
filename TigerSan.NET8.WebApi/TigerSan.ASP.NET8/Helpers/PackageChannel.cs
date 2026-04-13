@@ -8,14 +8,6 @@ using TigerSan.TimerHelper;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
-    public static class DateTimeExtensions
-    {
-        public static int TotalSeconds(this DateTime time)
-        {
-            return time.Hour * 3600 + time.Minute * 60 + time.Second;
-        }
-    }
-
     public class PackageChannel
     {
         #region 【Fields】
@@ -165,6 +157,41 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
+        #region 获取“当前UTC时间”
+        /// <summary>当前UTC时间</summary>
+        private DateTime GetUtcNow()
+        {
+            return DateTime.UtcNow.AddHours(8);
+        }
+        #endregion
+
+        #region 获取“UTC时间”
+        /// <summary>UTC时间</summary>
+        private DateTime GetUtc(string strTime)
+        {
+            DateTime time;
+            DateTimeStyles style = DateTimeStyles.RoundtripKind;
+
+            if (DateTime.TryParse(strTime, CultureInfo.InvariantCulture, style, out time))
+            {
+                // 处理不同Kind的转换逻辑
+                return time.Kind switch
+                {
+                    DateTimeKind.Utc => time, // 已是UTC时间
+                    DateTimeKind.Local => time.ToUniversalTime(), // 本地时间转UTC
+                    _ => time // Unspecified视为本地时间处理
+                };
+            }
+            else
+            {
+                time = GetUtcNow();
+                LogHelper.Instance.Warning($"Invalid time format: ${strTime}`");
+            }
+
+            return time;
+        }
+        #endregion
+
         #region 修改“基站”
         /// <summary>修改“基站”</summary>
         public async Task<BaseStationEntity?> EditBaseStationAsync(
@@ -183,16 +210,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return null;
             }
 
-            DateTime time;
-            if (!DateTime.TryParse(
-                ReportTime,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.RoundtripKind,
-                out time))
-            {
-                time = DateTime.Now;
-            }
-            baseStation.LastReportTime = time;
+            baseStation.LastReportTime = GetUtc(ReportTime);
             baseStation.OnlineState = OnlineState.Online;
             updateBaseStation?.Invoke(baseStation);
 
@@ -220,16 +238,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                     return;
                 }
 
-                DateTime time;
-                if (!DateTime.TryParse(
-                    package.ReportTime,
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.RoundtripKind,
-                    out time))
-                {
-                    time = DateTime.Now;
-                }
-                tag.LastReportTime = time;
+                tag.LastReportTime = GetUtc(package.ReportTime);
                 tag.OnlineState = OnlineState.Online;
                 tag.Station = baseStation?.Id;
                 tag.Battery = tagData.Voltage;
@@ -257,16 +266,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                     return;
                 }
 
-                DateTime time;
-                if (!DateTime.TryParse(
-                    package.ReportTime,
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.RoundtripKind,
-                    out time))
-                {
-                    time = DateTime.Now;
-                }
-                tag.LastReportTime = time;
+                tag.LastReportTime = GetUtc(package.ReportTime);
                 tag.OnlineState = OnlineState.Online;
                 tag.Station = baseStation?.Id;
                 tag.Battery = package.Data.Battery;
@@ -287,9 +287,14 @@ namespace TigerSan.NET8.WebApi.Helpers
             foreach (var baseStationCache in _baseStationCaches)
             {
                 var baseStation = baseStationCache.Value;
-                if (baseStation.OnlineState == OnlineState.Offline || baseStation.LastReportTime == null || DateTime.UtcNow.TotalSeconds() - baseStation.LastReportTime.Value.TotalSeconds() <= baseStation.HeartbeatInterval) continue;
-                baseStation.OnlineState = OnlineState.Offline;
-                timeOutBaseStations.Add(baseStation);
+                if (baseStation.OnlineState == OnlineState.Offline) continue;
+
+                if (baseStation.LastReportTime == null ||
+                    (GetUtcNow() - baseStation.LastReportTime.Value).TotalSeconds > baseStation.HeartbeatInterval)
+                {
+                    baseStation.OnlineState = OnlineState.Offline;
+                    timeOutBaseStations.Add(baseStation);
+                }
             }
 
             BaseStationService.EditRange(timeOutBaseStations);
@@ -300,9 +305,14 @@ namespace TigerSan.NET8.WebApi.Helpers
             foreach (var tagCache in _tagCaches)
             {
                 var tag = tagCache.Value;
-                if (tag.OnlineState == OnlineState.Offline || tag.LastReportTime == null || DateTime.UtcNow.TotalSeconds() - tag.LastReportTime.Value.TotalSeconds() <= 3600) continue;
-                tag.OnlineState = OnlineState.Offline;
-                timeOutTags.Add(tag);
+                if (tag.OnlineState == OnlineState.Offline) continue;
+
+                if (tag.LastReportTime == null ||
+                    (GetUtcNow() - tag.LastReportTime.Value).TotalSeconds > 3600)
+                {
+                    tag.OnlineState = OnlineState.Offline;
+                    timeOutTags.Add(tag);
+                }
             }
 
             TagService.EditRange(timeOutTags);

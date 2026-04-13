@@ -1,4 +1,4 @@
-import { computed, ref, type Component } from 'vue'
+import { computed, ref, watch, type Component } from 'vue'
 import { NavBarModel } from './NavBarModel'
 import { NavItemModel } from './NavItemModel'
 import { NavFolderModel } from './NavFolderModel'
@@ -15,9 +15,13 @@ export class NavButtonModel extends NavItemModel {
     ParentFolderModel?: NavFolderModel
     /** 是否显示关闭按钮 */
     IsShowCloseButton = ref(true)
-    /** 是否被选中 */
+    /** 是否选中 */
     IsSelected = computed(() => {
         return this.NavBarModel._SelectedButtonModel.value === this
+    })
+    /** 是否打开 */
+    IsOpened = computed(() => {
+        return this.NavBarModel.OpenedButtonModels.some(b => b === this)
     })
     //#endregion 【Properties】
 
@@ -26,6 +30,8 @@ export class NavButtonModel extends NavItemModel {
     Clicked?: NavButtonHandler
     /** 选中后 */
     Checked?: NavButtonHandler
+    /** “是否选中”改变后 */
+    IsSelectedChanged?: NavButtonHandler
     //#endregion 【Events】
 
     //#region 【Ctor】
@@ -37,6 +43,7 @@ export class NavButtonModel extends NavItemModel {
         super(navModel)
         this._component = component
         this.ParentFolderModel = parentFolderModel
+        watch(this.IsSelected, () => { this.IsSelectedChanged?.(this) })
     }
     //#endregion 【Ctor】
 

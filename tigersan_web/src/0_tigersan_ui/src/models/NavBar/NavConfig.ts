@@ -38,7 +38,7 @@ export class NavButtonConfig extends NavItemConfig {
     _component?: Component
     /** 是否打开 */
     IsOpen?: boolean
-    /** 是否被选中 */
+    /** 是否选中 */
     IsSelected?: boolean
     /** 是否显示关闭按钮 */
     IsShowCloseButton?: boolean
@@ -46,6 +46,8 @@ export class NavButtonConfig extends NavItemConfig {
     Clicked?: NavButtonHandler
     /** 选中后 */
     Checked?: NavButtonHandler
+    /** “是否选中”改变后 */
+    IsSelectedChanged?: NavButtonHandler
 }
 
 export function SetNavItemModel(model: NavItemModel, config: NavItemConfig) {
@@ -70,6 +72,7 @@ export function SetNavButtonModel(model: NavButtonModel, config: NavButtonConfig
     if (config.IsShowCloseButton != undefined) model.IsShowCloseButton.value = config.IsShowCloseButton
     model.Clicked = config.Clicked
     model.Checked = config.Checked
+    model.IsSelectedChanged = config.IsSelectedChanged
 }
 
 export function CreateNavFolderModel(

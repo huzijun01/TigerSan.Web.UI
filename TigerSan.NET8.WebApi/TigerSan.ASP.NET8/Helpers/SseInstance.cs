@@ -1,4 +1,5 @@
 ﻿using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -18,8 +19,26 @@ namespace TigerSan.NET8.WebApi.Helpers
         {
             _instance = this;
             _packageChannel = new PackageChannel(serviceProvider);
-            UpdateBaseStationCachesAsync();
-            UpdateTagCachesAsync();
+            UpdateCachesAsync();
+        }
+        #endregion
+
+        #region 更新“缓存”
+        /// <summary>更新“缓存”</summary>
+        public async void UpdateCachesAsync()
+        {
+            try
+            {
+                var baseTask = UpdateBaseStationCachesAsync();
+                var tagTask = UpdateTagCachesAsync();
+
+                await Task.WhenAll(baseTask, tagTask).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Stop();
+                LogHelper.Instance.Error(e.GetMessage());
+            }
         }
         #endregion
 
@@ -41,16 +60,20 @@ namespace TigerSan.NET8.WebApi.Helpers
         {
             _sseHelper.StartListeningAsync(OnReceiveAsync).ContinueWith(task =>
             {
-                if (task.IsFaulted)
-                {
-                    Console.WriteLine($"Error in SSE listener:");
-                    Console.WriteLine(task.Exception?.GetBaseException().Message);
-                }
+                if (!task.IsFaulted) return;
+                LogHelper.Instance.Error($"Error in SSE listener:");
+                Console.WriteLine(task.Exception?.GetBaseException().Message);
             });
 
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
-            _packageChannel.StartProcessingAsync(_cts.Token);
+            _packageChannel.StartProcessingAsync(_cts.Token).ContinueWith(task =>
+            {
+                if (!task.IsFaulted) return;
+                Stop();
+                var ex = task.Exception?.GetBaseException();
+                LogHelper.Instance.Error(ex?.GetMessage());
+            });
             _packageChannel._onlineStateUpdater.Start();
         }
         #endregion

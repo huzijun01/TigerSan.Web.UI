@@ -136,19 +136,30 @@ export class ObjectHelper {
 
     /** 获取“日期文本” */
     static GetDateString(value?: Date | number | string) {
-        let date: Date
         if (value === undefined
             || value === null
             || typeof value === 'string' && value.trim() === ''
             || typeof value === 'number' && value < 1) {
             return ''
         }
-        else if (value instanceof Date) {
-            date = value
-        } else {
-            date = new Date(value)
+
+        const toLocalDate = (date: Date) => {
+            return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
         }
-        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+
+        if (value instanceof Date) {
+            return toLocalDate(value)
+        }
+
+        // 统一转换为UTC时间对象
+        const utcDate = new Date(
+            typeof value === 'string' && !value.includes('Z')
+                ? value + 'Z'
+                : value
+        )
+
+        // 转换为本地时间
+        return toLocalDate(new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000))
     }
 
     /** 判断“字段文本”是否等于“目标值”  */

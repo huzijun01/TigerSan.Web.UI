@@ -75,25 +75,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount } from 'vue'
 import form from './TagMgtForm'
+import { onMounted } from 'vue'
 import { tagMgtTable } from './TagMgtTable'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, TimerHelper } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = tagMgtTable
-const timer = new TimerHelper(form.UpdateRowDatas, 10000)
 
 // 【过程】:
 onMounted(() => {
     form.Refresh()
-    timer.Start()
-})
-
-onBeforeUnmount(() => {
-    debugger
-    timer.Stop()
 })
 </script>
 

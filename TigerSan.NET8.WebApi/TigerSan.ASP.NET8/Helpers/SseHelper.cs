@@ -1,4 +1,6 @@
 ﻿using System.Net.Http.Headers;
+using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -8,6 +10,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         private Stream? _responseStream;
         private readonly HttpClient _httpClient;
         private readonly ConnectInfo _connectInfo;
+        private volatile bool _isRunning = true;
         #endregion 【Fields】
 
         #region 【Ctor】
@@ -44,12 +47,17 @@ namespace TigerSan.NET8.WebApi.Helpers
         public async Task StartListeningAsync(Func<string, Task> onDataReceived)
         {
             Console.WriteLine("Connected to SSE stream. Listening for events...");
+            _isRunning = true;
 
-            while (true)
+            while (_isRunning)
             {
                 try
                 {
-                    using var response = await _httpClient.GetAsync(_connectInfo.SseUrl, HttpCompletionOption.ResponseHeadersRead);
+                    using var response = await _httpClient.GetAsync(
+                        _connectInfo.SseUrl,
+                        HttpCompletionOption.ResponseHeadersRead,
+                        default
+                    ).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
 
                     // 验证Content-Type
@@ -58,11 +66,11 @@ namespace TigerSan.NET8.WebApi.Helpers
                         throw new Exception("Invalid content type. Expected 'text/event-stream'");
                     }
 
-                    _responseStream = await response.Content.ReadAsStreamAsync();
-                    using var reader = new StreamReader(_responseStream);
+                    _responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                    using var reader = new StreamReader(_responseStream, leaveOpen: true); // 避免提前关闭流
 
                     string? line;
-                    while ((line = await reader.ReadLineAsync()) != null)
+                    while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
                     {
                         // 跳过注释行
                         if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
@@ -72,7 +80,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                         if (line.StartsWith("data:"))
                         {
                             var data = line.Substring(5).Trim();
-                            await onDataReceived(data);
+                            await onDataReceived(data).ConfigureAwait(false);
                         }
                         // 处理其他事件类型（如event: error, retry: 3000等）
                         else if (line.StartsWith("event:"))
@@ -90,24 +98,39 @@ namespace TigerSan.NET8.WebApi.Helpers
                         // 处理ID字段（用于断连后继续）
                         else if (line.StartsWith("id:"))
                         {
-                            var id = line.Substring(3).Trim();
                             // 保存最后收到的ID用于断连续传
+                            var id = line.Substring(3).Trim();
                         }
                     }
+
+                    // 正常连接断开处理
+                    if (_isRunning)
+                    {
+                        LogHelper.Instance.Warning("Connection closed by server.");
+                    }
                 }
-                catch (TaskCanceledException) when (_responseStream == null)
+                catch (TaskCanceledException) when (!_isRunning)
                 {
+                    LogHelper.Instance.Log("Listener stopped gracefully");
                     break; // 主动关闭连接时退出
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Connection error: {ex.Message}. Reconnecting...");
-                    await Task.Delay(3000); // 等待3秒后重连
+                    LogHelper.Instance.Error($"Connection error: {ex.GetMessage()}");
                 }
                 finally
                 {
                     _responseStream?.Dispose();
                     _responseStream = null;
+                }
+
+                // 仅在需要重试且服务运行时等待
+                if (_isRunning)
+                {
+                    var retrySeconds = 10;
+                    Console.WriteLine($"Reconnecting in {retrySeconds} seconds...");
+                    await Task.Delay(retrySeconds * 1000).ConfigureAwait(false); // 等待重连
+                    Console.WriteLine($"Try to reconnect...");
                 }
             }
         }
@@ -119,8 +142,11 @@ namespace TigerSan.NET8.WebApi.Helpers
         /// </summary>
         public void Stop()
         {
+            _isRunning = false;
             _responseStream?.Dispose();
+            _responseStream = null;
             _httpClient.CancelPendingRequests();
+            LogHelper.Instance.Log("SSE listener stopped");
         }
         #endregion
         #endregion 【Functions】
