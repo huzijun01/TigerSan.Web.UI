@@ -10,8 +10,10 @@ export class TagModel extends IdModel {
     tagId = ''
     brandId? = ''
     battery?: number
-    temperature?: number
     signal?: number
+    temperature?: number
+    longitude?: number
+    latitude?: number
     comment?: string
     lastReportTime?: Date
 }

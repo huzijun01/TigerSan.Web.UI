@@ -11,6 +11,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         private readonly HttpClient _httpClient;
         private readonly ConnectInfo _connectInfo;
         private volatile bool _isRunning = true;
+        public bool IsRunning { get => _isRunning; }
         #endregion 【Fields】
 
         #region 【Ctor】

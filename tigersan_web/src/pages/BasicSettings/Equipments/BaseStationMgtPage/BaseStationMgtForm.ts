@@ -186,6 +186,14 @@ async function RefreshBase() {
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
     })
+    offlineCount.value = await baseStationMgtHelper.GetCount({
+        company: selectCompany.Value.value?.id,
+        site: selectSite.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
+        state: OnlineState.Offline,
+        type: selectType.Value.value?.id,
+        macAddr: searchMacAddr.Value.value,
+    })
     pagination.Count.value = await baseStationMgtHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
@@ -194,7 +202,6 @@ async function RefreshBase() {
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
     })
-    offlineCount.value = pagination.Count.value - onlineCount.value
 }
 
 /** 更新“行数据” */

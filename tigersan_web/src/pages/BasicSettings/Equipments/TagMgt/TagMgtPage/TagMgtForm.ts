@@ -153,6 +153,14 @@ async function RefreshBase() {
         state: OnlineState.Online,
         tagId: searchTagId.Value.value,
     })
+    offlineCount.value = await tagMgtHelper.GetCount({
+        batch: selectBatch.Value.value?.id,
+        type: selectType.Value.value?.id,
+        station: selectStation.Value.value?.id,
+        isEnable: selectIsEnable.Value.value,
+        state: OnlineState.Offline,
+        tagId: searchTagId.Value.value,
+    })
     pagination.Count.value = await tagMgtHelper.GetCount({
         batch: selectBatch.Value.value?.id,
         type: selectType.Value.value?.id,
@@ -161,7 +169,6 @@ async function RefreshBase() {
         state: selectState.Value.value,
         tagId: searchTagId.Value.value,
     })
-    offlineCount.value = pagination.Count.value - onlineCount.value
 }
 
 /** 更新“行数据” */

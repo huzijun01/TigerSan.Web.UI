@@ -23,9 +23,13 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public int? Battery { get; set; }
         [SnakeColumn]
+        public int? Signal { get; set; }
+        [SnakeColumn]
         public double? Temperature { get; set; }
         [SnakeColumn]
-        public int? Signal { get; set; }
+        public double? Longitude { get; set; }
+        [SnakeColumn]
+        public double? Latitude { get; set; }
         [SnakeColumn]
         public string? Comment { get; set; }
         [SnakeColumn]
