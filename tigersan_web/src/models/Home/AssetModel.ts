@@ -1,21 +1,32 @@
-import { IdModel, OnlineState, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { AssetStates } from "../base/AssetStates"
 
-/** "资产"模型 */
-export class AssetModel extends IdModel {
+/** "资产基类"模型 */
+class AssetBaseModel extends IdModel {
     department: bigint = 0n
     type: bigint = 0n
-    state: bigint = 0n
-    asset_id = ''
+    state: AssetStates = AssetStates.Offline
+    assetId = ''
     tag?: bigint
     name? = ''
     comment?: string
-    daily_move?: number
-    monthly_move?: number
-    total_move?: number
-    stay_duration?: number
-    unreport_duration?: number
-    travel_duration?: number
-    binding_time?: Date
+    bindingTime?: Date
+}
+
+/** "资产"模型 */
+export class AssetModel extends AssetBaseModel {
+    company: bigint = 0n
+    companyName = ''
+    departmentName = ''
+    typeName = ''
+    stateName = ''
+    tagId? = ''
+    dailyMove?: number
+    monthlyMove?: number
+    totalMove?: number
+    stayDuration?: number
+    unreportDuration?: number
+    travelDuration?: number
 }
 
 class AssetHelper extends IdModelHelper<AssetModel> {
@@ -25,21 +36,23 @@ class AssetHelper extends IdModelHelper<AssetModel> {
 
     /** 筛选“总数” */
     readonly GetCount = async (param: {
-        batch?: bigint,
+        company?: bigint,
+        department?: bigint,
         type?: bigint,
-        station?: bigint,
-        isEnable?: boolean,
-        state?: OnlineState,
-        tagId?: string,
+        state?: bigint,
+        assetId?: string,
     }) => await AxiosHelper.GetCount(this._action, {
         filter: {
+            parent: {
+                id: param.department,
+                parent: {
+                    id: param.company,
+                },
+            },
             filters: [
-                { propName: 'Batch', value: param.batch },
                 { propName: 'Type', value: param.type },
-                { propName: 'Station', value: param.station },
-                { propName: 'IsEnable', value: param.isEnable },
-                { propName: 'OnlineState', value: param.state },
-                { propName: 'AssetId', value: param.tagId },
+                { propName: 'State', value: param.state },
+                { propName: 'AssetId', value: param.assetId },
             ],
         }
     })
@@ -48,23 +61,25 @@ class AssetHelper extends IdModelHelper<AssetModel> {
     readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
-        batch?: bigint,
+        company?: bigint,
+        department?: bigint,
         type?: bigint,
-        station?: bigint,
-        isEnable?: boolean,
-        state?: OnlineState,
-        tagId?: string,
+        state?: bigint,
+        assetId?: string,
     }) => await AxiosHelper.GetList<AssetModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {
+            parent: {
+                id: param.department,
+                parent: {
+                    id: param.company,
+                },
+            },
             filters: [
-                { propName: 'Batch', value: param.batch },
                 { propName: 'Type', value: param.type },
-                { propName: 'Station', value: param.station },
-                { propName: 'IsEnable', value: param.isEnable },
-                { propName: 'OnlineState', value: param.state },
-                { propName: 'AssetId', value: param.tagId },
+                { propName: 'State', value: param.state },
+                { propName: 'AssetId', value: param.assetId },
             ],
         }
     })

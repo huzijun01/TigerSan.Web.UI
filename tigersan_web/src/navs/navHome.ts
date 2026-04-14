@@ -1,20 +1,21 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from './Authorities'
+import AssetMgtPage from '@/pages/Home/AssetMgtPage/AssetMgtPage.vue'
 
 export const navHome: NavFolderConfig = {
     Folders: [
         {
             Title: "资产管理",
-            Icon: Icons.Folder_Linear,
+            Icon: Icons.Asset,
             IsOpen: true,
             _authority: Authorities.BusinessFolder1,
             Buttons: [
                 {
                     Title: "资产台账",
-                    Icon: Icons.File_Linear,
+                    Icon: Icons.Asset,
                     IsSelected: true,
                     IsShowCloseButton: false,
-                    _component: undefined,
+                    _component: AssetMgtPage,
                     _authority: Authorities.Business1,
                 },
                 {

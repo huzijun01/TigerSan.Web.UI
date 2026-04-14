@@ -24,6 +24,7 @@ selectDepartmentForm._onChange = selectRoleForm.UpdateItemsAsync
 /** 搜索框 */
 const searchName = new SearchModel()
 searchName.PlaceholderCN.value = "输入用户名或昵称"
+searchName.PlaceholderEN.value = "Username or nickname"
 searchName._onChange = Refresh
 searchName._onSearch = Refresh
 
@@ -75,7 +76,7 @@ const configUsername: FormItemConfig<PersonModel, string> = {
 }
 
 /** “昵称”项目配置 */
-const configNickname: FormItemConfig<PersonModel, string> = {
+const configTagId: FormItemConfig<PersonModel, string> = {
     _propName: 'nickname',
     PropText: '昵称',
     IsEquired: true,
@@ -105,7 +106,7 @@ const configPhone: FormItemConfig<PersonModel, string> = {
     _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
 }
 
-/** “电话”项目配置 */
+/** “邮箱”项目配置 */
 const configMail: FormItemConfig<PersonModel, string> = {
     _propName: 'mail',
     PropText: '邮箱',
@@ -145,7 +146,7 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
         configDepartment,
         configRole,
         configUsername,
-        configNickname,
+        configTagId,
         configPassword,
         configPhone,
         configMail,
@@ -267,7 +268,7 @@ export default {
     configDepartment,
     configRole,
     configUsername,
-    configNickname,
+    configTagId,
     configPassword,
     configPhone,
     configMail,

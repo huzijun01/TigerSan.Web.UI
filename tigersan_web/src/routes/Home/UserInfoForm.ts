@@ -50,7 +50,7 @@ const configUsername: FormItemConfig<UserInfo, string> = {
 }
 
 /** “昵称”项目配置 */
-const configNickname: FormItemConfig<UserInfo, string> = {
+const configTagId: FormItemConfig<UserInfo, string> = {
     _propName: 'nickname',
     PropText: '昵称',
     IsEquired: true,
@@ -80,7 +80,7 @@ const configPhone: FormItemConfig<UserInfo, string> = {
     _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
 }
 
-/** “电话”项目配置 */
+/** “邮箱”项目配置 */
 const configMail: FormItemConfig<UserInfo, string> = {
     _propName: 'mail',
     PropText: '邮箱',
@@ -106,7 +106,7 @@ let configPersonMgtForm: FormConfig<UserInfo> = {
         configDepartment,
         configRole,
         configUsername,
-        configNickname,
+        configTagId,
         configPassword,
         configPhone,
         configMail,
@@ -141,7 +141,7 @@ export default {
     configDepartment,
     configRole,
     configUsername,
-    configNickname,
+    configTagId,
     configPassword,
     configPhone,
     configMail,

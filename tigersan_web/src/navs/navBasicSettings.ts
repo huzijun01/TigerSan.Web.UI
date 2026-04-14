@@ -18,7 +18,6 @@ import tageForm from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtF
 // TerminalMgt:
 import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
 // Dictionaries:
-import AssetStateMgtPage from '@/pages/BasicSettings/Dictionaries/AssetStateMgtPage.vue'
 import AssetTypeMgtPage from '@/pages/BasicSettings/Dictionaries/AssetTypeMgtPage.vue'
 import ScenarioMgtPage from '@/pages/BasicSettings/Dictionaries/ScenarioMgtPage.vue'
 import SiteTypeMgtPage from '@/pages/BasicSettings/Dictionaries/SiteTypeMgtPage.vue'
@@ -178,13 +177,6 @@ export const navBasicSettings: NavFolderConfig = {
                     Icon: Icons.Asset,
                     IsSelected: false,
                     _component: AssetTypeMgtPage,
-                    _authority: Authorities.SiteType,
-                },
-                {
-                    Title: "资产状态",
-                    Icon: Icons.Asset,
-                    IsSelected: false,
-                    _component: AssetStateMgtPage,
                     _authority: Authorities.SiteType,
                 },
                 {

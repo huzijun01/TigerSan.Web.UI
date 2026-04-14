@@ -6,14 +6,17 @@ import { UserInfo, UserHelper } from '@/models'
 // 组件模型:
 const uname = new TextBoxModel()
 uname.Width.value = "100%"
-uname.PlaceholderCN.value = "用户名/电话/邮箱"
+uname.PlaceholderCN.value = '用户名/电话/邮箱'
+uname.PlaceholderEN.value = 'Username/Phone/Email'
 
 const pwd = new PasswordModel()
 pwd.Width.value = "100%"
-pwd.PlaceholderCN.value = "密码"
+pwd.PlaceholderCN.value = '密码'
+pwd.PlaceholderEN.value = 'Password'
 
 const captcha = new TextBoxModel()
-captcha.PlaceholderCN.value = "验证码"
+captcha.PlaceholderCN.value = '验证码'
+captcha.PlaceholderEN.value = 'Captcha'
 
 // 配置:
 /** “用户名”项目配置 */

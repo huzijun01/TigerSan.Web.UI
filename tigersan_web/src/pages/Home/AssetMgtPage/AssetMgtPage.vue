@@ -7,8 +7,11 @@
                     <div class="row-panel">
                         <Select :model="form.selectCompany"></Select>
                         <Select :model="form.selectDepartment"></Select>
-                        <Select :model="form.selectRole"></Select>
-                        <Search :model="form.searchName"></Search>
+                    </div>
+                    <div class="row-panel">
+                        <Select :model="form.selectAssetType"></Select>
+                        <Select :model="form.selectAssetState"></Select>
+                        <Search :model="form.searchAssetId"></Search>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -22,17 +25,17 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="personMgtTable"></Table>
+            <Table :model="assetMgtTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="personMgtTable.SelectedRowCount.value" />
+                <Pagination :model="pagination" :selectedRowCount="assetMgtTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.personMgtForm">
+    <PopForm :model="form.assetMgtForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -44,13 +47,13 @@
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configRole.ItemModel">
-                <Select :model="form.selectRoleForm"></Select>
+            <FormItem :model="form.configAssetType.ItemModel">
+                <Select :model="form.selectAssetTypeForm"></Select>
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configUsername.ItemModel">
-                <input type="text" v-model="form.configUsername.Target.value">
+            <FormItem :model="form.configAssetId.ItemModel">
+                <input type="text" v-model="form.configAssetId.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
@@ -59,32 +62,27 @@
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configPassword.ItemModel">
-                <Password :model="form.password"></Password>
+            <FormItem :model="form.configName.ItemModel">
+                <input type="text" v-model="form.configName.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configPhone.ItemModel">
-                <input type="text" v-model="form.configPhone.Target.value">
-            </FormItem>
-        </FormRow>
-        <FormRow>
-            <FormItem :model="form.configMail.ItemModel">
-                <input type="text" v-model="form.configMail.Target.value">
+            <FormItem :model="form.configComment.ItemModel">
+                <input type="text" v-model="form.configComment.Target.value">
             </FormItem>
         </FormRow>
     </PopForm>
 </template>
 
 <script lang="ts" setup>
-import form from './PersonMgtForm'
+import form from './AssetMgtForm'
 import { onMounted } from 'vue'
-import { personMgtTable, pagination } from './PersonMgtTable'
+import { assetMgtTable, pagination } from './AssetMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = personMgtTable
+const { IsOnlySelected } = assetMgtTable
 
 // 【过程】:
 onMounted(() => {

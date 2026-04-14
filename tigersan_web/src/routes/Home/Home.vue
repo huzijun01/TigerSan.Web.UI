@@ -66,8 +66,8 @@
       </FormItem>
     </FormRow>
     <FormRow v-if="!userInfo.isAdmin">
-      <FormItem :model="form.configNickname.ItemModel">
-        <input type="text" v-model="form.configNickname.Target.value">
+      <FormItem :model="form.configTagId.ItemModel">
+        <input type="text" v-model="form.configTagId.Target.value">
       </FormItem>
     </FormRow>
     <FormRow v-if="!userInfo.isAdmin">

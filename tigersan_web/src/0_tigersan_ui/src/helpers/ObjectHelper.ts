@@ -135,7 +135,7 @@ export class ObjectHelper {
     }
 
     /** 获取“日期文本” */
-    static GetDateString(value?: Date | number | string) {
+    static GetDateString(value?: Date | number | string): string {
         if (value === undefined
             || value === null
             || typeof value === 'string' && value.trim() === ''

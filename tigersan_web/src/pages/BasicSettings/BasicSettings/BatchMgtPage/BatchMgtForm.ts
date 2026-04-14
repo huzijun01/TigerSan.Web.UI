@@ -15,7 +15,8 @@ selectCompanyForm._onChange = selectScenarioForm.UpdateItemsAsync
 
 /** 搜索框 */
 const searchBatchId = new SearchModel()
-searchBatchId.PlaceholderCN.value = "请输入批次"
+searchBatchId.PlaceholderCN.value = '请输入批次'
+searchBatchId.PlaceholderEN.value = 'Please enter the Batch ID'
 searchBatchId._onChange = Refresh
 searchBatchId._onSearch = Refresh
 
@@ -72,7 +73,7 @@ const configPhone: FormItemConfig<BatchModel, string> = {
     _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
 }
 
-/** “电话”项目配置 */
+/** “备注”项目配置 */
 const configComment: FormItemConfig<BatchModel, string> = {
     _propName: 'comment',
     PropText: '备注',

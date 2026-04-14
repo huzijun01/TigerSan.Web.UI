@@ -25,13 +25,6 @@ INSERT INTO tigersan_web.station_type (id,name) VALUES
 	 (116333028018421844,'DY-AIOT2211'),
 	 (116333030163480681,'DY-GPS智能基站');
 
-INSERT INTO tigersan_web.asset_state (id,name) VALUES
-	 (116400932367171675,'呆滞'),
-	 (116400929313980625,'在库'),
-	 (116400929657585667,'在途'),
-	 (116400932845977806,'在途超时'),
-	 (116400930065481846,'离线');
-
 INSERT INTO tigersan_web.asset_type (id,name) VALUES
 	 (116400902960578780,'ABS阻燃箱'),
 	 (116400902589120514,'三轮车'),

@@ -28,6 +28,12 @@ class Texts {
     static readonly Version = TextModel.Computed('Version: V', '版本：V')
     static readonly IsReadonly = TextModel.Computed('IsReadonly: ', '是否只读：')
     static readonly ChangePassword = TextModel.Computed('Change password ', '修改密码')
+    static readonly Stolid = TextModel.Computed('Stolid', '滞留')
+    static readonly Inbound = TextModel.Computed('Inbound', '入库')
+    static readonly Outbound = TextModel.Computed('Outbound', '出库')
+    static readonly InTransit = TextModel.Computed('InTransit', '在途')
+    static readonly InTransitTimeout = TextModel.Computed('InTransitTimeout', '在途超时')
+    static readonly Unknown = TextModel.Computed('Unknown', '未知')
 }
 
 export {
