@@ -9,7 +9,7 @@ import { ref, watch } from 'vue';
 import { CheckboxGroupModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: CheckboxGroupModel,
         default: () => new CheckboxGroupModel()

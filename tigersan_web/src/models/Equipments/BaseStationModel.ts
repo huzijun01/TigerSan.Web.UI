@@ -16,7 +16,7 @@ export class BaseStationModel extends IdNameModel {
     lastReportTime?: Date
 }
 
-class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
+class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
     constructor() {
         super('BaseStation')
     }
@@ -98,4 +98,4 @@ class BaseStationMgtHelper extends IdNameModelHelper<BaseStationModel> {
         [{ key: 'company', value: company }, { key: 'site', value: site }])
 }
 
-export const baseStationMgtHelper = new BaseStationMgtHelper()
+export const baseStationHelper = new BaseStationHelper()

@@ -6,7 +6,7 @@ export class CompanyModel extends IdNameModel {
     parent?: bigint = undefined
 }
 
-export class CompanyMgtHelper extends IdNameModelHelper<CompanyModel> {
+export class CompanyHelper extends IdNameModelHelper<CompanyModel> {
     constructor() {
         super('Company')
     }
@@ -26,4 +26,4 @@ export class CompanyMgtHelper extends IdNameModelHelper<CompanyModel> {
     }
 }
 
-export const companyMgtHelper = new CompanyMgtHelper()
+export const companyHelper = new CompanyHelper()

@@ -1,17 +1,17 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { siteMgtTable } from './SiteMgtTable'
-import { companyMgtHelper, siteMgtHelper, siteTypeMgtHelper, SiteModel } from '@/models'
+import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await siteMgtHelper.GetBelongCompanyListAsync()
-const selectType = siteTypeMgtHelper.GetIdNameSelectModel()
-selectType._getItemsAsync = async () => await siteMgtHelper.GetBelongSiteTypeListAsync(selectCompany.Value.value?.id)
+const selectCompany = companyHelper.GetIdNameSelectModel()
+selectCompany._getItemsAsync = async () => await siteHelper.GetBelongCompanyListAsync()
+const selectType = siteTypeHelper.GetIdNameSelectModel()
+selectType._getItemsAsync = async () => await siteHelper.GetBelongSiteTypeListAsync(selectCompany.Value.value?.id)
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
-const selectTypeForm = siteTypeMgtHelper.GetIdNameSelectModel()
+const selectCompanyForm = companyHelper.GetIdNameSelectModel()
+const selectTypeForm = siteTypeHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectTypeForm.UpdateItemsAsync
 
@@ -107,7 +107,7 @@ let configSiteMgtForm: FormConfig<SiteModel> = {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectTypeForm.IsEnabled.value = !isEdit
 
-        await companyMgtHelper.UpdateIdNames()
+        await companyHelper.UpdateIdNames()
 
         if (isEdit) {
             const rowData = siteMgtTable.SelectedRowDatas.value[0]
@@ -117,9 +117,9 @@ let configSiteMgtForm: FormConfig<SiteModel> = {
             }
 
             await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
             await selectTypeForm.UpdateItemsAsync()
-            selectTypeForm.Value.value = siteTypeMgtHelper.GetIdName(rowData.type)
+            selectTypeForm.Value.value = siteTypeHelper.GetIdName(rowData.type)
         } else {
         }
     },
@@ -140,16 +140,16 @@ const siteMgtForm = new FormModel(configSiteMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNames()
-    await siteTypeMgtHelper.UpdateIdNames()
+    await companyHelper.UpdateIdNames()
+    await siteTypeHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await selectType.UpdateItemsAsync()
 
-    pagination.Count.value = await siteMgtHelper.GetCount({
+    pagination.Count.value = await siteHelper.GetCount({
         company: selectCompany.Value.value?.id,
         type: selectType.Value.value?.id
     })
-    await siteMgtHelper.GetList({
+    await siteHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -170,7 +170,7 @@ async function Add() {
     siteMgtForm._getSource = AddGetSource
 
     siteMgtForm._onSubmitAsync = async source => {
-        const res = await siteMgtHelper.Add(source)
+        const res = await siteHelper.Add(source)
 
         await Refresh()
         return GetSubmitResult(res, '添加成功')
@@ -195,7 +195,7 @@ async function Edit() {
     }
 
     siteMgtForm._onSubmitAsync = async source => {
-        const res = await siteMgtHelper.Edit(source)
+        const res = await siteHelper.Edit(source)
 
         await Refresh()
         return GetSubmitResult(res, '修改成功')
@@ -224,7 +224,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    siteMgtHelper.Delete(model.id)
+    siteHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

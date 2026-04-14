@@ -1,5 +1,5 @@
 import { TableModel } from '@/0_tigersan_ui/tigerui'
-import { companyMgtHelper, departmentMgtHelper, RoleAuthorityModel } from '@/models'
+import { companyHelper, departmentHelper, RoleAuthorityModel } from '@/models'
 
 /** 列头 */
 const roleMgtTable = new TableModel<RoleAuthorityModel>([
@@ -8,14 +8,14 @@ const roleMgtTable = new TableModel<RoleAuthorityModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'department',
         Text: '部门',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => departmentMgtHelper.GetName(source.department)
+        _getStringAsync: source => departmentHelper.GetName(source.department)
     },
     {
         _propName: 'name',

@@ -7,7 +7,7 @@ export class RoleAuthorityModel extends IdNameModel {
     authorities: AuthorityModel[] = []
 }
 
-class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
+class RoleHelper extends IdNameModelHelper<RoleAuthorityModel> {
     constructor() {
         super('Role')
     }
@@ -67,4 +67,4 @@ class RoleMgtHelper extends IdNameModelHelper<RoleAuthorityModel> {
     readonly GetBelongDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
 }
 
-export const roleMgtHelper = new RoleMgtHelper()
+export const roleHelper = new RoleHelper()

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { roleMgtTable } from './RoleMgtTable'
-import { companyMgtHelper, roleMgtHelper, departmentMgtHelper, RoleAuthorityModel } from '@/models'
+import { companyHelper, roleHelper, departmentHelper, RoleAuthorityModel } from '@/models'
 
 /** “权限助手”实例 */
 const authorityHelperForm = new AuthorityHelper()
@@ -9,14 +9,14 @@ authorityHelperForm._tree._configs = authorityHelper._tree._configs
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await roleMgtHelper.GetBelongCompanyListAsync()
-const selectDepartment = departmentMgtHelper.GetIdNameSelectModel()
-selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
+const selectCompany = companyHelper.GetIdNameSelectModel()
+selectCompany._getItemsAsync = async () => await roleHelper.GetBelongCompanyListAsync()
+const selectDepartment = departmentHelper.GetIdNameSelectModel()
+selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await roleHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
-const selectDepartmentForm = departmentMgtHelper.GetIdNameSelectModel()
-selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
+const selectCompanyForm = companyHelper.GetIdNameSelectModel()
+const selectDepartmentForm = departmentHelper.GetIdNameSelectModel()
+selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 
@@ -76,7 +76,7 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectDepartmentForm.IsEnabled.value = !isEdit
 
-        await companyMgtHelper.UpdateIdNames()
+        await companyHelper.UpdateIdNames()
 
         if (isEdit) {
             const rowData = roleMgtTable.SelectedRowDatas.value[0]
@@ -86,9 +86,9 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
             }
 
             await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
             await selectDepartmentForm.UpdateItemsAsync()
-            selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
+            selectDepartmentForm.Value.value = departmentHelper.GetIdName(rowData.department)
 
             authorityHelperForm.InitTree(rowData.authorities)
         } else {
@@ -108,16 +108,16 @@ const roleMgtForm = new FormModel(configRoleMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNames()
-    await departmentMgtHelper.UpdateIdNames()
+    await companyHelper.UpdateIdNames()
+    await departmentHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await selectDepartment.UpdateItemsAsync()
 
-    pagination.Count.value = await roleMgtHelper.GetCount({
+    pagination.Count.value = await roleHelper.GetCount({
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,
     })
-    await roleMgtHelper.GetList({
+    await roleHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -139,7 +139,7 @@ async function Add() {
 
     roleMgtForm._onSubmitAsync = async source => {
         source.authorities = authorityHelperForm.GetAuthorities()
-        const res = await roleMgtHelper.Add(source)
+        const res = await roleHelper.Add(source)
 
         await Refresh()
         return GetSubmitResult(res, '添加成功')
@@ -165,7 +165,7 @@ async function Edit() {
 
     roleMgtForm._onSubmitAsync = async source => {
         source.authorities = authorityHelperForm.GetAuthorities()
-        const res = await roleMgtHelper.Edit(source)
+        const res = await roleHelper.Edit(source)
 
         await Refresh()
         return GetSubmitResult(res, '修改成功')
@@ -194,7 +194,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    roleMgtHelper.Delete(model.id)
+    roleHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

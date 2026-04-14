@@ -14,7 +14,7 @@
 import { Icons } from '../../base'
 import { SearchModel } from '../../models'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: SearchModel,
         default: () => new SearchModel()

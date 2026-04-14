@@ -1,4 +1,4 @@
-import { companyMgtHelper, DepartmentModel } from '@/models'
+import { companyHelper, DepartmentModel } from '@/models'
 import { TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
@@ -8,7 +8,7 @@ const departmentMgtTable = new TableModel<DepartmentModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'name',

@@ -16,7 +16,7 @@ import { FormConfig } from '../../models'
 import { ObjectHelper } from '../../helpers'
 import { FormModel, FormItemModel } from '../../models/Form/FormModel'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: FormItemModel<any, any>,
         default: () => new FormItemModel(new FormModel(new FormConfig(ObjectHelper.DefaultObjectAction)), '', ref())

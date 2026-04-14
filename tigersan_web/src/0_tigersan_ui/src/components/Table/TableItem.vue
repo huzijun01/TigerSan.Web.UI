@@ -22,7 +22,7 @@ const refRoot = ref<HTMLElement | undefined>()
 const actualWidth = ref(50)
 const actualHeight = ref(18)
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: TableItemModel,
         default: () => new TableItemModel(new TableHeaderModel(new TableModel([]), ''), new TableRowModel(new TableModel([]), {}))

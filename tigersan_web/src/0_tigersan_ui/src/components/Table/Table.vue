@@ -35,7 +35,7 @@ import { TableModel, TableRowModel } from '../../models'
 import { onMounted } from 'vue';
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: TableModel<any>,
         default: () => new TableModel([])

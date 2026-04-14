@@ -11,7 +11,7 @@ export class BatchModel extends IdModel {
     comment?: string
 }
 
-class BatchMgtHelper extends IdModelHelper<BatchModel> {
+class BatchHelper extends IdModelHelper<BatchModel> {
     constructor() {
         super('Batch')
         this._strIdValueList = 'IdBatchIdList'
@@ -62,4 +62,4 @@ class BatchMgtHelper extends IdModelHelper<BatchModel> {
     })
 }
 
-export const batchMgtHelper = new BatchMgtHelper()
+export const batchHelper = new BatchHelper()

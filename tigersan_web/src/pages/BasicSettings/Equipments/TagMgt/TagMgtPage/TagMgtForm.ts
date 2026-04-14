@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, IsEnable2String, MyActionResult, OnlineState, OnlineState2String, TimerHelper } from '@/0_tigersan_ui/tigerui'
 import { TagModel, tagMgtTable } from './TagMgtTable'
-import { batchMgtHelper, tagTypeMgtHelper, baseStationMgtHelper, tagMgtHelper } from '@/models'
+import { batchHelper, tagTypeHelper, baseStationHelper, tagHelper } from '@/models'
 
 // 字段:
 const onlineCount = ref(0)
@@ -22,12 +22,12 @@ switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
-const selectBatch = batchMgtHelper.GetIdNameSelectModel()
-const selectType = tagTypeMgtHelper.GetIdNameSelectModel()
-const selectStation = baseStationMgtHelper.GetIdNameSelectModel()
+const selectBatch = batchHelper.GetIdNameSelectModel()
+const selectType = tagTypeHelper.GetIdNameSelectModel()
+const selectStation = baseStationHelper.GetIdNameSelectModel()
 /** 表单 */
-const selectBatchForm = batchMgtHelper.GetIdNameSelectModel()
-const selectTypeForm = tagTypeMgtHelper.GetIdNameSelectModel()
+const selectBatchForm = batchHelper.GetIdNameSelectModel()
+const selectTypeForm = tagTypeHelper.GetIdNameSelectModel()
 
 const searchTagId = new SearchModel()
 searchTagId.PlaceholderCN.value = '请输入标签ID'
@@ -118,9 +118,9 @@ let configTagForm: FormConfig<TagModel> = {
             }
 
             await selectBatchForm.UpdateItemsAsync()
-            selectBatchForm.Value.value = batchMgtHelper.GetIdValue(rowData.batch)
+            selectBatchForm.Value.value = batchHelper.GetIdValue(rowData.batch)
             await selectTypeForm.UpdateItemsAsync()
-            selectTypeForm.Value.value = baseStationMgtHelper.GetIdName(rowData.type)
+            selectTypeForm.Value.value = baseStationHelper.GetIdName(rowData.type)
         }
     },
     _itemConfigs: [
@@ -138,14 +138,14 @@ const tagForm = new FormModel(configTagForm)
 async function RefreshBase() {
     InitSelectIsEnableState()
 
-    await batchMgtHelper.UpdateIdValues()
+    await batchHelper.UpdateIdValues()
     await selectBatch.UpdateItemsAsync()
-    await tagTypeMgtHelper.UpdateIdNames()
+    await tagTypeHelper.UpdateIdNames()
     await selectType.UpdateItemsAsync()
-    await baseStationMgtHelper.UpdateIdNames()
+    await baseStationHelper.UpdateIdNames()
     await selectStation.UpdateItemsAsync()
 
-    onlineCount.value = await tagMgtHelper.GetCount({
+    onlineCount.value = await tagHelper.GetCount({
         batch: selectBatch.Value.value?.id,
         type: selectType.Value.value?.id,
         station: selectStation.Value.value?.id,
@@ -153,7 +153,7 @@ async function RefreshBase() {
         state: OnlineState.Online,
         tagId: searchTagId.Value.value,
     })
-    offlineCount.value = await tagMgtHelper.GetCount({
+    offlineCount.value = await tagHelper.GetCount({
         batch: selectBatch.Value.value?.id,
         type: selectType.Value.value?.id,
         station: selectStation.Value.value?.id,
@@ -161,7 +161,7 @@ async function RefreshBase() {
         state: OnlineState.Offline,
         tagId: searchTagId.Value.value,
     })
-    pagination.Count.value = await tagMgtHelper.GetCount({
+    pagination.Count.value = await tagHelper.GetCount({
         batch: selectBatch.Value.value?.id,
         type: selectType.Value.value?.id,
         station: selectStation.Value.value?.id,
@@ -175,7 +175,7 @@ async function RefreshBase() {
 async function UpdateRowDatas() {
     RefreshBase()
 
-    await tagMgtHelper.GetList({
+    await tagHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         batch: selectBatch.Value.value?.id,
@@ -193,7 +193,7 @@ async function UpdateRowDatas() {
 async function Refresh() {
     RefreshBase()
 
-    await tagMgtHelper.GetList({
+    await tagHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         batch: selectBatch.Value.value?.id,
@@ -221,7 +221,7 @@ function Add() {
     tagForm._getSource = AddGetSource
 
     tagForm._onSubmitAsync = async source => {
-        const res = await tagMgtHelper.Add(source)
+        const res = await tagHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -245,7 +245,7 @@ function Edit() {
     }
 
     tagForm._onSubmitAsync = async source => {
-        const res = await tagMgtHelper.Edit(source)
+        const res = await tagHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -274,7 +274,7 @@ function EditIsEnable(isEnable: boolean) {
                 rowDatas.push(newRowData)
             })
 
-            tagMgtHelper.EditRange(rowDatas).then(res => {
+            tagHelper.EditRange(rowDatas).then(res => {
                 Refresh().then(InitSelectIsEnableState)
                 MyActionResult.ShowResult(res)
             })
@@ -307,7 +307,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    tagMgtHelper.Delete(rowData.id)
+    tagHelper.Delete(rowData.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

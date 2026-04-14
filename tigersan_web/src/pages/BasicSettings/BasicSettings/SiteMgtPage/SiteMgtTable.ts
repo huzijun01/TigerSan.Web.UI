@@ -1,4 +1,4 @@
-import { companyMgtHelper, siteTypeMgtHelper, SiteModel } from '@/models'
+import { companyHelper, siteTypeHelper, SiteModel } from '@/models'
 import { TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
@@ -8,14 +8,14 @@ const siteMgtTable = new TableModel<SiteModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => siteTypeMgtHelper.GetName(source.type)
+        _getStringAsync: source => siteTypeHelper.GetName(source.type)
     },
     {
         _propName: 'name',

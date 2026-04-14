@@ -1,14 +1,14 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { departmentMgtTable } from './DepartmentMgtTable'
-import { companyMgtHelper, departmentMgtHelper, DepartmentModel } from '@/models'
+import { companyHelper, departmentHelper, DepartmentModel } from '@/models'
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await departmentMgtHelper.GetBelongCompanyListAsync()
+const selectCompany = companyHelper.GetIdNameSelectModel()
+selectCompany._getItemsAsync = async () => await departmentHelper.GetBelongCompanyListAsync()
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
+const selectCompanyForm = companyHelper.GetIdNameSelectModel()
 
 // 字段:
 /** 分页器 */
@@ -46,7 +46,7 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
-        await companyMgtHelper.UpdateIdNames()
+        await companyHelper.UpdateIdNames()
         await selectCompanyForm.UpdateItemsAsync()
     },
     _itemConfigs: [
@@ -60,12 +60,12 @@ const departmentMgtForm = new FormModel(configDepartmentMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNames()
+    await companyHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
-    pagination.Count.value = await departmentMgtHelper.GetCount({
+    pagination.Count.value = await departmentHelper.GetCount({
         company: selectCompany.Value.value?.id
     })
-    await departmentMgtHelper.GetList({
+    await departmentHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -84,7 +84,7 @@ async function Add() {
     departmentMgtForm._getSource = AddGetSource
 
     departmentMgtForm._onSubmitAsync = async source => {
-        const res = await departmentMgtHelper.Add(source)
+        const res = await departmentHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -108,7 +108,7 @@ async function Edit() {
     }
 
     departmentMgtForm._onSubmitAsync = async source => {
-        const res = await departmentMgtHelper.Edit(source)
+        const res = await departmentHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -136,7 +136,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    departmentMgtHelper.Delete(rowData.id)
+    departmentHelper.Delete(rowData.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

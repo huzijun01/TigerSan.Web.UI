@@ -18,7 +18,7 @@ import { Icons } from '../../base'
 import { DrawerBoxModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: DrawerBoxModel,
         default: () => new DrawerBoxModel()

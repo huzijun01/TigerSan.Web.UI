@@ -1,6 +1,6 @@
 import { IdModel, OnlineState, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
-/** "组织机构"模型 */
+/** "标签"模型 */
 export class TagModel extends IdModel {
     batch: bigint = 0n
     type: bigint = 0n
@@ -18,7 +18,7 @@ export class TagModel extends IdModel {
     lastReportTime?: Date
 }
 
-class TagMgtHelper extends IdModelHelper<TagModel> {
+class TagHelper extends IdModelHelper<TagModel> {
     constructor() {
         super('Tag')
     }
@@ -70,4 +70,4 @@ class TagMgtHelper extends IdModelHelper<TagModel> {
     })
 }
 
-export const tagMgtHelper = new TagMgtHelper()
+export const tagHelper = new TagHelper()

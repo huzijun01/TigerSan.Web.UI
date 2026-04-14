@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { CheckboxModel } from '../../models'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: CheckboxModel,
         default: () => new CheckboxModel()

@@ -18,7 +18,7 @@ import { ArrayHelper } from '../../helpers'
 import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: NavButtonModel,
         default: NavBarModel._defaultButtonModel

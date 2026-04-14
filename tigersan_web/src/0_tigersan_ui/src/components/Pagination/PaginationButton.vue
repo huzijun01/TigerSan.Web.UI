@@ -11,7 +11,7 @@ import { computed } from 'vue'
 import { PaginationModel, PaginationButtonModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: PaginationButtonModel,
         default: () => new PaginationButtonModel(new PaginationModel())

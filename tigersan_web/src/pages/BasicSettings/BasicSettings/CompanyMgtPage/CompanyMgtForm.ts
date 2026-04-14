@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { navData } from '@/navs/navModel'
-import { companyMgtHelper, CompanyMgtHelper } from '@/models'
+import { companyHelper, CompanyHelper } from '@/models'
 import { tree, CompanyModel, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
 
 /** “公司名称”项目配置 */
@@ -64,9 +64,9 @@ const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.GetList({}).then(arr => {
+    await companyHelper.GetList({}).then(arr => {
         tree.Nodes.splice(0)
-        tree.Init(CompanyMgtHelper.Companies2Tree(arr))
+        tree.Init(CompanyHelper.Companies2Tree(arr))
     })
 }
 
@@ -77,7 +77,7 @@ async function Add() {
     companyForm._getSource = AddGetSource
 
     companyForm._onSubmitAsync = async source => {
-        const res = await companyMgtHelper.Add(source)
+        const res = await companyHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -100,7 +100,7 @@ async function Edit() {
     }
 
     companyForm._onSubmitAsync = async source => {
-        const res = await companyMgtHelper.Edit(source)
+        const res = await companyHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -128,7 +128,7 @@ function DeleteRowData(state: DialogState) {
         return
     }
 
-    companyMgtHelper.Delete(model.id)
+    companyHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

@@ -1,5 +1,5 @@
 import { Colors, GetIsEnableString, GetOnlineString, ObjectHelper, OnlineState, TableModel } from '@/0_tigersan_ui/tigerui'
-import { TagModel, batchMgtHelper, tagTypeMgtHelper, baseStationMgtHelper } from '@/models'
+import { TagModel, batchHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 列头:
 const tagMgtTable = new TableModel<TagModel>([
@@ -8,21 +8,21 @@ const tagMgtTable = new TableModel<TagModel>([
         Text: '批次',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => batchMgtHelper.GetValue(source.batch)
+        _getStringAsync: source => batchHelper.GetValue(source.batch)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => tagTypeMgtHelper.GetName(source.type)
+        _getStringAsync: source => tagTypeHelper.GetName(source.type)
     },
     {
         _propName: 'station',
         Text: '基站',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => baseStationMgtHelper.GetName(source.station)
+        _getStringAsync: source => baseStationHelper.GetName(source.station)
     },
     {
         _propName: 'isEnable',

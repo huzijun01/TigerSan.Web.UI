@@ -18,10 +18,12 @@ import tageForm from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtF
 // TerminalMgt:
 import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
 // Dictionaries:
-import ScenarioMgtPage from '@/pages/BasicSettings/Dictionaries/ScenarioMgtPage/ScenarioMgtPage.vue'
-import SiteTypeMgtPage from '@/pages/BasicSettings/Dictionaries/SiteTypeMgtPage/SiteTypeMgtPage.vue'
-import StationTypeMgtPage from '@/pages/BasicSettings/Dictionaries/StationTypeMgtPage/StationTypeMgtPage.vue'
-import TagTypeMgtPage from '@/pages/BasicSettings/Dictionaries/TagTypeMgtPage/TagTypeMgtPage.vue'
+import AssetStateMgtPage from '@/pages/BasicSettings/Dictionaries/AssetStateMgtPage.vue'
+import AssetTypeMgtPage from '@/pages/BasicSettings/Dictionaries/AssetTypeMgtPage.vue'
+import ScenarioMgtPage from '@/pages/BasicSettings/Dictionaries/ScenarioMgtPage.vue'
+import SiteTypeMgtPage from '@/pages/BasicSettings/Dictionaries/SiteTypeMgtPage.vue'
+import StationTypeMgtPage from '@/pages/BasicSettings/Dictionaries/StationTypeMgtPage.vue'
+import TagTypeMgtPage from '@/pages/BasicSettings/Dictionaries/TagTypeMgtPage.vue'
 // OperationMgt:
 import OperationRecordPage from '@/pages/BasicSettings/OperationMgt/OperationRecordPage/OperationRecordPage.vue'
 import OperationRetryPage from '@/pages/BasicSettings/OperationMgt/OperationRetryPage/OperationRetryPage.vue'
@@ -171,6 +173,20 @@ export const navBasicSettings: NavFolderConfig = {
             Icon: Icons.Dictionary,
             _authority: Authorities.DictionaryMgtFolder,
             Buttons: [
+                {
+                    Title: "资产类型",
+                    Icon: Icons.Asset,
+                    IsSelected: false,
+                    _component: AssetTypeMgtPage,
+                    _authority: Authorities.SiteType,
+                },
+                {
+                    Title: "资产状态",
+                    Icon: Icons.Asset,
+                    IsSelected: false,
+                    _component: AssetStateMgtPage,
+                    _authority: Authorities.SiteType,
+                },
                 {
                     Title: "场地类型",
                     Icon: Icons.Building_1,

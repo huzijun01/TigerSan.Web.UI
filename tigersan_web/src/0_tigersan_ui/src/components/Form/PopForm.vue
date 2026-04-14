@@ -27,7 +27,7 @@ import { ObjectHelper } from '../../helpers'
 import { FormConfig, FormModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: FormModel<any>,
         default: () => new FormModel(new FormConfig(ObjectHelper.DefaultObjectAction))

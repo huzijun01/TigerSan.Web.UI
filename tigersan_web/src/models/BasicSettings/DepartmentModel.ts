@@ -5,7 +5,7 @@ export class DepartmentModel extends IdNameModel {
     company: bigint = 0n
 }
 
-class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
+class DepartmentHelper extends IdNameModelHelper<DepartmentModel> {
     constructor() {
         super('Department')
     }
@@ -49,4 +49,4 @@ class DepartmentMgtHelper extends IdNameModelHelper<DepartmentModel> {
     readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 }
 
-export const departmentMgtHelper = new DepartmentMgtHelper()
+export const departmentHelper = new DepartmentHelper()

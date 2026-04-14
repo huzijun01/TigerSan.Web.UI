@@ -1,5 +1,5 @@
 import { ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
-import { companyMgtHelper, scenarioMgtHelper, BatchModel } from '@/models'
+import { companyHelper, scenarioHelper, BatchModel } from '@/models'
 
 // 字段:
 /** 分页器 */
@@ -13,14 +13,14 @@ const batchMgtTable = new TableModel<BatchModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'scenario',
         Text: '场景',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => scenarioMgtHelper.GetName(source.scenario)
+        _getStringAsync: source => scenarioHelper.GetName(source.scenario)
     },
     {
         _propName: 'batchId',

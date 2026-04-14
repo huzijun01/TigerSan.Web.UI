@@ -44,6 +44,8 @@ import TableItem from "./components/Table/TableItem.vue"
 import Arrow from "./components/Tree/Arrow.vue"
 import Tree from "./components/Tree/Tree.vue"
 import TreeNode from "./components/Tree/TreeNode.vue"
+// Others:
+import DictionaryPage from "./components/DictionaryPage.vue"
 
 export {
     // Button:
@@ -92,4 +94,6 @@ export {
     Arrow,
     Tree,
     TreeNode,
+    // Others:
+    DictionaryPage
 }

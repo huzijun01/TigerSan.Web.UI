@@ -1,15 +1,15 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { batchMgtTable, pagination } from './BatchMgtTable'
-import { companyMgtHelper, scenarioMgtHelper, BatchModel, batchMgtHelper } from '@/models'
+import { companyHelper, scenarioHelper, BatchModel, batchHelper } from '@/models'
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetIdNameSelectModel()
-const selectScenario = scenarioMgtHelper.GetIdNameSelectModel()
+const selectCompany = companyHelper.GetIdNameSelectModel()
+const selectScenario = scenarioHelper.GetIdNameSelectModel()
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
-const selectScenarioForm = scenarioMgtHelper.GetIdNameSelectModel()
+const selectCompanyForm = companyHelper.GetIdNameSelectModel()
+const selectScenarioForm = scenarioHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectScenarioForm.UpdateItemsAsync
 
@@ -99,9 +99,9 @@ let configBatchMgtForm: FormConfig<BatchModel> = {
             }
 
             await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
             await selectScenarioForm.UpdateItemsAsync()
-            selectScenarioForm.Value.value = scenarioMgtHelper.GetIdName(rowData.scenario)
+            selectScenarioForm.Value.value = scenarioHelper.GetIdName(rowData.scenario)
         }
     },
     _itemConfigs: [
@@ -119,17 +119,17 @@ const batchMgtForm = new FormModel(configBatchMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNames()
-    await scenarioMgtHelper.UpdateIdNames()
+    await companyHelper.UpdateIdNames()
+    await scenarioHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await selectScenario.UpdateItemsAsync()
 
-    pagination.Count.value = await batchMgtHelper.GetCount({
+    pagination.Count.value = await batchHelper.GetCount({
         company: selectCompany.Value.value?.id,
         scenario: selectScenario.Value.value?.id,
         batchId: searchBatchId.Value.value,
     })
-    await batchMgtHelper.GetList({
+    await batchHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -151,7 +151,7 @@ async function Add() {
     batchMgtForm._getSource = AddGetSource
 
     batchMgtForm._onSubmitAsync = async source => {
-        const res = await batchMgtHelper.Add(source)
+        const res = await batchHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -174,7 +174,7 @@ async function Edit() {
     }
 
     batchMgtForm._onSubmitAsync = async source => {
-        const res = await batchMgtHelper.Edit(source)
+        const res = await batchHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -202,7 +202,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    batchMgtHelper.Delete(model.id)
+    batchHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

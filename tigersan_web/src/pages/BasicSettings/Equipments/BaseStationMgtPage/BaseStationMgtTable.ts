@@ -1,5 +1,5 @@
 import { Colors, GetIsEnableString, GetOnlineString, ObjectHelper, OnlineState, TableModel } from '@/0_tigersan_ui/tigerui'
-import { BaseStationModel, companyMgtHelper, siteMgtHelper, stationTypeMgtHelper } from '@/models'
+import { BaseStationModel, companyHelper, siteHelper, stationTypeHelper } from '@/models'
 
 // 列头:
 const baseStationMgtTable = new TableModel<BaseStationModel>([
@@ -8,21 +8,21 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
         Text: '公司',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => companyMgtHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'site',
         Text: '场地',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => siteMgtHelper.GetName(source.site)
+        _getStringAsync: source => siteHelper.GetName(source.site)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
         IsAllowWrap: false,
-        _getStringAsync: source => stationTypeMgtHelper.GetName(source.type)
+        _getStringAsync: source => stationTypeHelper.GetName(source.type)
     },
     {
         _propName: 'macAddr',

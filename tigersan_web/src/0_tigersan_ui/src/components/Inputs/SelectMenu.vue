@@ -14,7 +14,7 @@ import { Texts } from '../../texts'
 import { SelectModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: SelectModel,
         default: () => new SelectModel()

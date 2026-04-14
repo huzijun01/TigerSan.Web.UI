@@ -7,10 +7,7 @@ export * from '@/models/BasicSettings/RoleModel'
 export * from '@/models/BasicSettings/SiteModel'
 export * from '@/models/BasicSettings/UserInfo'
 // Dictionaries:
-export * from '@/models/Dictionaries/ScenarioModel'
-export * from '@/models/Dictionaries/SiteTypeModel'
-export * from '@/models/Dictionaries/StationTypeModel'
-export * from '@/models/Dictionaries/TagTypeModel'
+export * from '@/models/Dictionaries/DictionaryModels'
 // Equipments:
 export * from '@/models/Equipments/BaseStationModel'
 export * from '@/models/Equipments/TagModel'

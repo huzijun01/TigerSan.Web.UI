@@ -10,7 +10,7 @@
 import { ElConfigProvider } from 'element-plus'
 import { DatePickerModel } from '../../models'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: DatePickerModel,
         default: () => new DatePickerModel()

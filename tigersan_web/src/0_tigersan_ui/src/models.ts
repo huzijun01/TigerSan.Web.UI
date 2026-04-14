@@ -44,6 +44,7 @@ export * from './models/Tree/TreeModel'
 
 /* Others: */
 export * from './models/DialogModel'
+export * from './models/DictionaryModel'
 export * from './models/FilterModel'
 export * from './models/IdModel'
 export * from './models/IdNameModel'

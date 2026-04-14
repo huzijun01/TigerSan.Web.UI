@@ -14,7 +14,7 @@
 import { Icons } from '../../base'
 import { PasswordModel } from '../../models'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: PasswordModel,
         default: () => new PasswordModel()

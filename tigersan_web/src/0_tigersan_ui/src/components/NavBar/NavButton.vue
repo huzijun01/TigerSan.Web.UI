@@ -14,7 +14,7 @@ import { NavBarModel, NavButtonModel } from '../../models'
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: NavButtonModel,
         default: NavBarModel._defaultButtonModel

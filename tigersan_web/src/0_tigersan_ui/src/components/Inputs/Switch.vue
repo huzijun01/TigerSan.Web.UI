@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { SwitchModel } from '../../models'
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: SwitchModel,
         default: () => new SwitchModel()

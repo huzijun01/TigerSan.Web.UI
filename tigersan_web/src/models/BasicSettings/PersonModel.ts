@@ -13,7 +13,7 @@ export class PersonModel extends IdModel {
     mail?: string
 }
 
-class PersonMgtHelper extends IdModelHelper<PersonModel> {
+class PersonHelper extends IdModelHelper<PersonModel> {
     constructor() {
         super('Person')
     }
@@ -79,4 +79,4 @@ class PersonMgtHelper extends IdModelHelper<PersonModel> {
     readonly GetBelongRoleListAsync = async (department?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongRoleList`, [{ key: 'department', value: department }])
 }
 
-export const personMgtHelper = new PersonMgtHelper()
+export const personHelper = new PersonHelper()

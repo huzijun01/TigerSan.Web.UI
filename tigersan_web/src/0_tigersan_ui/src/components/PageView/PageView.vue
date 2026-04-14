@@ -10,7 +10,7 @@ import PageContent from './PageContent.vue';
 import { NavBarModel } from '../../models'
 
 // 字段:
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: NavBarModel,
         default: () => new NavBarModel()

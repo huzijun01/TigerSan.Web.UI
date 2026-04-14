@@ -11,7 +11,7 @@ export class SiteModel extends IdNameModel {
     comment? = ''
 }
 
-class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
+class SiteHelper extends IdNameModelHelper<SiteModel> {
     constructor() {
         super('Site')
     }
@@ -67,4 +67,4 @@ class SiteMgtHelper extends IdNameModelHelper<SiteModel> {
         [{ key: 'company', value: company }])
 }
 
-export const siteMgtHelper = new SiteMgtHelper()
+export const siteHelper = new SiteHelper()

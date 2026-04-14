@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable2String, MyActionResult, OnlineState, OnlineState2String, TimerHelper } from '@/0_tigersan_ui/tigerui'
 import { BaseStationModel, baseStationMgtTable } from './BaseStationMgtTable'
-import { companyMgtHelper, baseStationMgtHelper, siteMgtHelper, stationTypeMgtHelper } from '@/models'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper } from '@/models'
 
 // 字段:
 const onlineCount = ref(0)
@@ -22,17 +22,17 @@ switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await baseStationMgtHelper.GetBelongCompanyListAsync()
-const selectSite = siteMgtHelper.GetIdNameSelectModel()
-selectSite._getItemsAsync = async () => selectCompany.Value.value ? await baseStationMgtHelper.GetBelongSiteListAsync(selectCompany.Value.value?.id) : []
-const selectType = stationTypeMgtHelper.GetIdNameSelectModel()
-selectType._getItemsAsync = async () => await baseStationMgtHelper.GetBelongStationTypeListAsync(selectCompany.Value.value?.id, selectSite.Value.value?.id)
+const selectCompany = companyHelper.GetIdNameSelectModel()
+selectCompany._getItemsAsync = async () => await baseStationHelper.GetBelongCompanyListAsync()
+const selectSite = siteHelper.GetIdNameSelectModel()
+selectSite._getItemsAsync = async () => selectCompany.Value.value ? await baseStationHelper.GetBelongSiteListAsync(selectCompany.Value.value?.id) : []
+const selectType = stationTypeHelper.GetIdNameSelectModel()
+selectType._getItemsAsync = async () => await baseStationHelper.GetBelongStationTypeListAsync(selectCompany.Value.value?.id, selectSite.Value.value?.id)
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
-const selectSiteForm = siteMgtHelper.GetIdNameSelectModel()
-selectSiteForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await siteMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
-const selectTypeForm = stationTypeMgtHelper.GetIdNameSelectModel()
+const selectCompanyForm = companyHelper.GetIdNameSelectModel()
+const selectSiteForm = siteHelper.GetIdNameSelectModel()
+selectSiteForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await siteHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
+const selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectSiteForm.UpdateItemsAsync
 
@@ -147,11 +147,11 @@ let configBaseStationForm: FormConfig<BaseStationModel> = {
             }
 
             await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
             await selectSiteForm.UpdateItemsAsync()
-            selectSiteForm.Value.value = siteMgtHelper.GetIdName(rowData.site)
+            selectSiteForm.Value.value = siteHelper.GetIdName(rowData.site)
             await selectTypeForm.UpdateItemsAsync()
-            selectTypeForm.Value.value = stationTypeMgtHelper.GetIdName(rowData.type)
+            selectTypeForm.Value.value = stationTypeHelper.GetIdName(rowData.type)
         }
     },
     _itemConfigs: [
@@ -171,14 +171,14 @@ const baseStationForm = new FormModel(configBaseStationForm)
 async function RefreshBase() {
     InitSelectIsEnableState()
 
-    await companyMgtHelper.UpdateIdNames()
+    await companyHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
-    await siteMgtHelper.UpdateIdNames()
+    await siteHelper.UpdateIdNames()
     await selectSite.UpdateItemsAsync()
-    await stationTypeMgtHelper.UpdateIdNames()
+    await stationTypeHelper.UpdateIdNames()
     await selectType.UpdateItemsAsync()
 
-    onlineCount.value = await baseStationMgtHelper.GetCount({
+    onlineCount.value = await baseStationHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
@@ -186,7 +186,7 @@ async function RefreshBase() {
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
     })
-    offlineCount.value = await baseStationMgtHelper.GetCount({
+    offlineCount.value = await baseStationHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
@@ -194,7 +194,7 @@ async function RefreshBase() {
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
     })
-    pagination.Count.value = await baseStationMgtHelper.GetCount({
+    pagination.Count.value = await baseStationHelper.GetCount({
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
@@ -207,7 +207,7 @@ async function RefreshBase() {
 /** 更新“行数据” */
 async function UpdateRowDatas() {
     await RefreshBase()
-    await baseStationMgtHelper.GetList({
+    await baseStationHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -225,7 +225,7 @@ async function UpdateRowDatas() {
 async function Refresh() {
     await RefreshBase()
 
-    await baseStationMgtHelper.GetList({
+    await baseStationHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -253,7 +253,7 @@ function Add() {
     baseStationForm._getSource = AddGetSource
 
     baseStationForm._onSubmitAsync = async source => {
-        const res = await baseStationMgtHelper.Add(source)
+        const res = await baseStationHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -277,7 +277,7 @@ function Edit() {
     }
 
     baseStationForm._onSubmitAsync = async source => {
-        const res = await baseStationMgtHelper.Edit(source)
+        const res = await baseStationHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -306,7 +306,7 @@ function EditIsEnable(isEnable: boolean) {
                 rowDatas.push(newRowData)
             })
 
-            baseStationMgtHelper.EditRange(rowDatas).then(res => {
+            baseStationHelper.EditRange(rowDatas).then(res => {
                 Refresh().then(InitSelectIsEnableState)
                 MyActionResult.ShowResult(res)
             })
@@ -339,7 +339,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    baseStationMgtHelper.Delete(rowData.id)
+    baseStationHelper.Delete(rowData.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')

@@ -21,7 +21,7 @@ import { NavBarModel, NavFolderModel } from '../../models'
 // 字段:
 const refRoot = ref<HTMLElement | undefined>()
 
-let { model } = defineProps({
+const { model } = defineProps({
     model: {
         type: NavFolderModel,
         default: NavBarModel._defaultFolderModel

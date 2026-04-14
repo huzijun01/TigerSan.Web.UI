@@ -1,22 +1,22 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
 import { personMgtTable, pagination } from './PersonMgtTable'
-import { companyMgtHelper, personMgtHelper, departmentMgtHelper, roleMgtHelper, PersonModel } from '@/models'
+import { companyHelper, personHelper, departmentHelper, roleHelper, PersonModel } from '@/models'
 
 // 选择框:
 /** 筛选 */
-const selectCompany = companyMgtHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await personMgtHelper.GetBelongCompanyListAsync()
-const selectDepartment = departmentMgtHelper.GetIdNameSelectModel()
-selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await personMgtHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
-const selectRole = roleMgtHelper.GetIdNameSelectModel()
-selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await personMgtHelper.GetBelongRoleListAsync(selectDepartment.Value.value?.id) : []
+const selectCompany = companyHelper.GetIdNameSelectModel()
+selectCompany._getItemsAsync = async () => await personHelper.GetBelongCompanyListAsync()
+const selectDepartment = departmentHelper.GetIdNameSelectModel()
+selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await personHelper.GetBelongDepartmentListAsync(selectCompany.Value.value?.id) : []
+const selectRole = roleHelper.GetIdNameSelectModel()
+selectRole._getItemsAsync = async () => selectDepartment.Value.value ? await personHelper.GetBelongRoleListAsync(selectDepartment.Value.value?.id) : []
 /** 表单 */
-const selectCompanyForm = companyMgtHelper.GetIdNameSelectModel()
-const selectDepartmentForm = departmentMgtHelper.GetIdNameSelectModel()
-selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentMgtHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
-const selectRoleForm = roleMgtHelper.GetIdNameSelectModel()
-selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? await roleMgtHelper.SelectIdNameByDepartment(selectDepartmentForm.Value.value?.id) : []
+const selectCompanyForm = companyHelper.GetIdNameSelectModel()
+const selectDepartmentForm = departmentHelper.GetIdNameSelectModel()
+selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
+const selectRoleForm = roleHelper.GetIdNameSelectModel()
+selectRoleForm._getItemsAsync = async () => selectDepartmentForm.Value.value ? await roleHelper.SelectIdNameByDepartment(selectDepartmentForm.Value.value?.id) : []
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 selectDepartmentForm._onChange = selectRoleForm.UpdateItemsAsync
@@ -133,11 +133,11 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
             }
 
             await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyMgtHelper.GetIdName(rowData.company)
+            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
             await selectDepartmentForm.UpdateItemsAsync()
-            selectDepartmentForm.Value.value = departmentMgtHelper.GetIdName(rowData.department)
+            selectDepartmentForm.Value.value = departmentHelper.GetIdName(rowData.department)
             await selectRoleForm.UpdateItemsAsync()
-            selectRoleForm.Value.value = roleMgtHelper.GetIdName(rowData.role)
+            selectRoleForm.Value.value = roleHelper.GetIdName(rowData.role)
         }
     },
     _itemConfigs: [
@@ -157,20 +157,20 @@ const personMgtForm = new FormModel(configPersonMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyMgtHelper.UpdateIdNames()
-    await departmentMgtHelper.UpdateIdNames()
-    await roleMgtHelper.UpdateIdNames()
+    await companyHelper.UpdateIdNames()
+    await departmentHelper.UpdateIdNames()
+    await roleHelper.UpdateIdNames()
     await selectCompany.UpdateItemsAsync()
     await selectDepartment.UpdateItemsAsync()
     await selectRole.UpdateItemsAsync()
 
-    pagination.Count.value = await personMgtHelper.GetCount({
+    pagination.Count.value = await personHelper.GetCount({
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,
         role: selectRole.Value.value?.id,
         name: searchName.Value.value,
     })
-    await personMgtHelper.GetList({
+    await personHelper.GetList({
         pageSize: pagination.PageSize.value,
         pageNumber: pagination.SelectedNum.value,
         company: selectCompany.Value.value?.id,
@@ -194,7 +194,7 @@ async function Add() {
     personMgtForm._getSource = AddGetSource
 
     personMgtForm._onSubmitAsync = async source => {
-        const res = await personMgtHelper.Add(source)
+        const res = await personHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
@@ -219,7 +219,7 @@ async function Edit() {
     }
 
     personMgtForm._onSubmitAsync = async source => {
-        const res = await personMgtHelper.Edit(source)
+        const res = await personHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -247,7 +247,7 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    personMgtHelper.Delete(model.id)
+    personHelper.Delete(model.id)
         .then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
