@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable2String, MyActionResult, OnlineState, OnlineState2String, TimerHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, TimerHelper, OnlineState } from '@/0_tigersan_ui/tigerui'
 import { BaseStationModel, baseStationMgtTable } from './BaseStationMgtTable'
 import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper } from '@/models'
 
@@ -22,6 +22,8 @@ switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
+const selectState = OnlineState.GetSelectModel()
+const selectIsEnable = IsEnable.GetSelectModel()
 const selectCompany = companyHelper.GetIdNameSelectModel()
 selectCompany._getItemsAsync = async () => await baseStationHelper.GetBelongCompanyListAsync()
 const selectSite = siteHelper.GetIdNameSelectModel()
@@ -35,31 +37,14 @@ selectSiteForm._getItemsAsync = async () => selectCompanyForm.Value.value ? awai
 const selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
 // 更新:
 selectCompanyForm._onChange = selectSiteForm.UpdateItemsAsync
+baseStationMgtTable._onSelectStateChange = InitSelectIsEnableState
 
+// 搜索框:
 const searchMacAddr = new SearchModel()
 searchMacAddr.PlaceholderCN.value = '请输入MAC地址'
 searchMacAddr.PlaceholderEN.value = 'Please enter the MAC'
 searchMacAddr._onSearch = Refresh
 searchMacAddr._onChange = Refresh
-
-const selectState = new SelectModel<OnlineState>()
-selectState.Width.value = 120
-selectState.Value.value = undefined
-selectState.IsAllowSearch.value = true
-selectState.PlaceholderCN.value = '在线状态'
-selectState.PlaceholderEN.value = 'OnlineState'
-selectState.Items.push(...[OnlineState.Online, OnlineState.Offline])
-selectState._converter = OnlineState2String
-
-const selectIsEnable = new SelectModel<boolean>()
-selectIsEnable.Width.value = 120
-selectIsEnable.Value.value = undefined
-selectIsEnable.IsAllowSearch.value = true
-selectIsEnable.PlaceholderCN.value = '激活状态'
-selectIsEnable.PlaceholderEN.value = 'IsEnable'
-selectIsEnable.Items.push(...[true, false])
-selectIsEnable._converter = IsEnable2String
-baseStationMgtTable._onSelectStateChange = InitSelectIsEnableState
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<BaseStationModel, IdNameModel> = {
@@ -182,7 +167,7 @@ async function RefreshBase() {
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
-        state: OnlineState.Online,
+        state: OnlineStates.Online,
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
     })
@@ -190,7 +175,7 @@ async function RefreshBase() {
         company: selectCompany.Value.value?.id,
         site: selectSite.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
-        state: OnlineState.Offline,
+        state: OnlineStates.Offline,
         type: selectType.Value.value?.id,
         macAddr: searchMacAddr.Value.value,
     })

@@ -1,4 +1,4 @@
-import { TableModel } from '@/0_tigersan_ui/tigerui'
+import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "操作记录"模型 */
 class OperationRecordModel {
@@ -20,61 +20,61 @@ const operationRecordTable = new TableModel<OperationRecordModel>([
         _propName: 'Index',
         Text: 'ID',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'OperationType',
         Text: '操作类型',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'ProductType',
         Text: '设备类型',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'StartTime',
         Text: '开始时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'StopTime',
         Text: '结束时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'TotalSpentTime',
         Text: '总共用时',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'EqpCount',
         Text: '设备总数',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'SuccessCount',
         Text: '成功个数',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'FailCount',
         Text: '失败个数',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'SuccessRate',
         Text: '成功率',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getString: (obj: object, propName: string) => {
             const record = obj as OperationRecordModel
             return `${record.SuccessRate.toFixed(2)}%`

@@ -15,6 +15,13 @@ export enum TextAlign {
     Justify = 'justify'
 }
 
+/** “项目”类型 */
+export enum ItemType {
+    Link,
+    TextBox,
+    Textarea,
+}
+
 /** “表格”配置 */
 export class TableModel<TSource extends object> {
     //#region 【Fields】
@@ -234,13 +241,13 @@ export class TableModel<TSource extends object> {
 }
 
 /** “行”配置 */
-export class TableRowModel<T extends object> {
+export class TableRowModel<TSource extends object> {
     //#region 【Fields】
     _id = nanoid()
     /** 行数据 */
-    _rowData: T
+    _rowData: TSource
     /** 所属“表格”配置 */
-    _tableModel: TableModel<T>
+    _tableModel: TableModel<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -248,11 +255,11 @@ export class TableRowModel<T extends object> {
     readonly IsChecked = ref(false)
 
     /** “项目模型”集合 */
-    readonly ItemModels: ShallowReactive<TableItemModel<T>[]> = shallowReactive([])
+    readonly ItemModels: ShallowReactive<TableItemModel<TSource>[]> = shallowReactive([])
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(tableModel: TableModel<T>, rowData: T) {
+    constructor(tableModel: TableModel<TSource>, rowData: TSource) {
         this._rowData = rowData
         this._tableModel = tableModel
     }
@@ -281,12 +288,17 @@ export class TableItemModel<TSource extends object> {
     readonly Background = ref(Colors.Transparent)
 
     //#region [computed]
-    /** 类对象 */
-    readonly ClassObj = computed(() => {
-        return {
-            ellipsis: !this._headerModel.IsAllowWrap.value,
-        }
+    /** “省略号”类对象 */
+    readonly EllipsisClass = computed(() => {
+        return { ellipsis: this._headerModel.Type.value != ItemType.Textarea }
     })
+
+    /** 是否为“链接” */
+    readonly IsLink = computed(() => this._headerModel.Type.value === ItemType.Link)
+    /** 是否为“文本框” */
+    readonly IsTextBox = computed(() => this._headerModel.Type.value === ItemType.TextBox)
+    /** 是否为“文本域” */
+    readonly IsTextarea = computed(() => this._headerModel.Type.value === ItemType.Textarea)
     //#endregion [computed]
     //#endregion 【Properties】
 
@@ -356,6 +368,11 @@ export class TableItemModel<TSource extends object> {
     readonly GetSource = (): unknown => {
         return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName, undefined)
     }
+
+    /** 点击后 */
+    readonly OnClick = () => {
+        this._headerModel._onItemClick?.(this)
+    }
     //#endregion 【Functions】
 }
 
@@ -373,6 +390,8 @@ export class TableHeaderModel<TSource extends object> {
     _getStringAsync?: TStringGetterAsync<TSource>
     /** 对象修改方法 */
     _setObject: UnknownSetter = ObjectHelper.DefaultTSetter
+    /** “项目”点击后 */
+    _onItemClick?: (itemModel: TableItemModel<TSource>) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -384,8 +403,8 @@ export class TableHeaderModel<TSource extends object> {
     readonly TextAlign = ref(TextAlign.Center)
     /** 是否只读 */
     readonly IsReadonly = ref(true)
-    /** 是否允许换行 */
-    readonly IsAllowWrap = ref(false)
+    /** 类型 */
+    readonly Type = ref(ItemType.Textarea)
 
     //#region [computed]
     /** 样式对象 */
@@ -415,6 +434,8 @@ export class TableHeaderConfig<TSource extends object> {
     _getStringAsync?: TStringGetterAsync<TSource>
     /** 对象修改方法 */
     _setObject?: UnknownSetter
+    /** “项目”点击后 */
+    _onItemClick?: (itemModel: TableItemModel<TSource>) => void
     /** 文本 */
     Text?: string
     /** 宽度 */
@@ -423,8 +444,8 @@ export class TableHeaderConfig<TSource extends object> {
     TextAlign?: TextAlign
     /** 是否只读 */
     IsReadonly?: boolean
-    /** 是否允许换行 */
-    IsAllowWrap?: boolean
+    /** 类型 */
+    Type?: ItemType
 
     //#region 【Ctor】
     constructor(propName: string) {
@@ -439,9 +460,10 @@ export function SetTableHeaderModel<TSource extends object>(model: TableHeaderMo
     if (config._getString) model._getString = config._getString
     if (config._getStringAsync) model._getStringAsync = config._getStringAsync
     if (config._setObject) model._setObject = config._setObject
+    if (config._onItemClick) model._onItemClick = config._onItemClick
     if (config.Text != undefined) model.Text.value = config.Text
     if (config.Width != undefined) model.Width.value = config.Width
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
-    if (config.IsAllowWrap != undefined) model.IsAllowWrap.value = config.IsAllowWrap
+    if (config.Type != undefined) model.Type.value = config.Type
 }

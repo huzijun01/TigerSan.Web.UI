@@ -1,96 +1,102 @@
-import { Colors, GetIsEnableString, GetOnlineString, ObjectHelper, OnlineState, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, IsEnable, ItemType, ObjectHelper, OnlineState, OnlineStates, TableModel } from '@/0_tigersan_ui/tigerui'
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 列头:
 const tagMgtTable = new TableModel<TagModel>([
     {
+        _propName: 'companyName',
+        Text: '公司',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+    },
+    {
         _propName: 'batch',
         Text: '批次',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => batchHelper.GetValue(source.batch)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => tagTypeHelper.GetName(source.type)
     },
     {
         _propName: 'station',
         Text: '基站',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => baseStationHelper.GetName(source.station)
     },
     {
         _propName: 'isEnable',
         Text: '激活状态',
         IsReadonly: true,
-        IsAllowWrap: false,
-        _getString: GetIsEnableString,
+        Type: ItemType.TextBox,
+        _getString: IsEnable.GetString,
     },
     {
         _propName: 'onlineState',
         Text: '在线状态',
         IsReadonly: true,
-        IsAllowWrap: false,
-        _getString: GetOnlineString,
+        Type: ItemType.TextBox,
+        _getString: OnlineState.GetString,
     },
     {
         _propName: 'tagId',
         Text: '标签ID',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'brandId',
         Text: '标牌ID',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'battery',
         Text: '电量',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'signal',
         Text: '信号强度',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'longitude',
         Text: '经度',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'latitude',
         Text: '维度',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'temperature',
         Text: '设备温度',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'comment',
         Text: '备注',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'lastReportTime',
         Text: '最后上报时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getString: source => ObjectHelper.GetDateString(source.lastReportTime)
     },
 ])
@@ -110,10 +116,10 @@ tagMgtTable._initItem = itemModel => {
     }
 
     if (itemModel._headerModel._propName === 'onlineState') {
-        if (itemModel.GetSource() === OnlineState.Online) {
+        if (itemModel.GetSource() === OnlineStates.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.GetSource() === OnlineState.Offline) {
+        } else {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }

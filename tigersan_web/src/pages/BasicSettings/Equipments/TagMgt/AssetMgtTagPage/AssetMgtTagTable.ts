@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, GetOnlineString, IsOnline, OnlineState, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, OnlineState, ItemType, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
 class AssetMgtTagModel {
@@ -7,7 +7,7 @@ class AssetMgtTagModel {
     macAddr = ''
     EqpType = ''
     Version = ''
-    OnlineState = OnlineState.Offline
+    OnlineState = OnlineStates.Offline
     Battery = 0
     LastMsgTime = ''
     Operation = ''
@@ -27,50 +27,50 @@ const assetMgtTagTable = new TableModel<AssetMgtTagModel>([
         _propName: 'Index',
         Text: 'ID',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'EqpType',
         Text: '设备型号',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'Version',
         Text: '固件版本',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'OnlineState',
         Text: '在线状态',
         IsReadonly: true,
-        IsAllowWrap: false,
-        _getString: GetOnlineString,
+        Type: ItemType.TextBox,
+        _getString: OnlineState.GetString,
     },
     {
         _propName: 'Battery',
         Text: '电量（%）',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'LastMsgTime',
         Text: '最近广播时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'Operation',
         Text: '操作',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
 ])
 
@@ -82,7 +82,7 @@ const arr: AssetMgtTagModel[] =
             macAddr: 'EQP1',
             EqpType: 'Type1',
             Version: '1.0.0',
-            OnlineState: OnlineState.Online,
+            OnlineState: OnlineStates.Online,
             Battery: 100,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作1',
@@ -92,7 +92,7 @@ const arr: AssetMgtTagModel[] =
             macAddr: 'EQP2',
             EqpType: 'Type2',
             Version: '1.0.0',
-            OnlineState: OnlineState.Online,
+            OnlineState: OnlineStates.Online,
             Battery: 45,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作2',
@@ -102,7 +102,7 @@ const arr: AssetMgtTagModel[] =
             macAddr: 'EQP3',
             EqpType: 'Type3',
             Version: '1.0.0',
-            OnlineState: OnlineState.Offline,
+            OnlineState: OnlineStates.Offline,
             Battery: 20,
             LastMsgTime: '2026-01-21 17:33:56',
             Operation: '操作3',
@@ -119,10 +119,10 @@ assetMgtTagTable._initHeader = headerModel => {
 
 assetMgtTagTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'OnlineState') {
-        if (itemModel.GetSource() === OnlineState.Online) {
+        if (itemModel.GetSource() === OnlineStates.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.GetSource() === OnlineState.Offline) {
+        } else {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -142,8 +142,8 @@ assetMgtTagTable._initItem = itemModel => {
 
 assetMgtTagTable._onInitRowModel = rowDatas => {
     pagination.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
-    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
+    onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
+    offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length
 }
 
 export {

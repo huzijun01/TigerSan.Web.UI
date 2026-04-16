@@ -20,8 +20,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="model.pagination"
-                    :selectedRowCount="model.table.SelectedRowCount.value" />
+                <Pagination :model="model.pagination" :selectedRowCount="model.table.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
@@ -50,7 +49,7 @@ import { DictionaryHelper } from '../helpers/DictionaryHelper'
 const { model } = defineProps({
     model: {
         type: DictionaryModel,
-        default: () => new DictionaryModel(new DictionaryHelper('', '', ''))
+        default: () => new DictionaryModel('', new DictionaryHelper('', '', ''))
     }
 })
 

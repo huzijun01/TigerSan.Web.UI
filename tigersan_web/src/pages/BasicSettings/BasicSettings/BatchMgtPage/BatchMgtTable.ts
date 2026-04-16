@@ -1,4 +1,4 @@
-import { ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { ItemType, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, scenarioHelper, BatchModel } from '@/models'
 
 // 字段:
@@ -12,46 +12,46 @@ const batchMgtTable = new TableModel<BatchModel>([
         _propName: 'company',
         Text: '公司',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'scenario',
         Text: '场景',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => scenarioHelper.GetName(source.scenario)
     },
     {
         _propName: 'batchId',
         Text: '批次',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'shipmentTime',
         Text: '出货时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getString: source => ObjectHelper.GetDateString(source.shipmentTime)
     },
     {
         _propName: 'manager',
         Text: '联系人',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'phone',
         Text: '电话',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'comment',
         Text: '备注',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
 ])
 

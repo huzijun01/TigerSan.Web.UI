@@ -69,6 +69,15 @@
 .drawer .size-panel {
   overflow: auto;
 }
+a {
+  cursor: pointer;
+  user-select: text;
+  text-decoration: underline;
+}
+a:hover {
+  font-weight: bold;
+  color: var(--theme-brand);
+}
 .ellipsis {
   overflow: hidden !important;
   white-space: nowrap !important;

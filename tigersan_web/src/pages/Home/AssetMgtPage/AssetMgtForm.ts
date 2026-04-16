@@ -1,10 +1,11 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
 import { assetMgtTable, pagination } from './AssetMgtTable'
 import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel } from '@/models'
 
 // 选择框:
 /** 筛选 */
+const selectOnlineState = OnlineState.GetSelectModel()
 const selectCompany = companyHelper.GetIdNameSelectModel()
 const selectDepartment = departmentHelper.GetIdNameSelectModel()
 selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await departmentHelper.SelectIdNameByCompanyAsync(selectCompany.Value.value?.id) : []
@@ -142,6 +143,8 @@ async function Refresh() {
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,
         type: selectAssetType.Value.value?.id,
+        state: selectAssetState.Value.value,
+        onlineState: selectOnlineState.Value.value,
         assetId: searchAssetId.Value.value,
     })
     await assetHelper.GetList({
@@ -150,6 +153,8 @@ async function Refresh() {
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,
         type: selectAssetType.Value.value?.id,
+        state: selectAssetState.Value.value,
+        onlineState: selectOnlineState.Value.value,
         assetId: searchAssetId.Value.value,
     }).then(arr => {
         ArrayHelper.Set(assetMgtTable.RowDatas, arr)
@@ -160,6 +165,8 @@ pagination._onChange = Refresh
 selectCompany._onChange = Refresh
 selectDepartment._onChange = Refresh
 selectAssetType._onChange = Refresh
+selectAssetState._onChange = Refresh
+selectOnlineState._onChange = Refresh
 
 /** 增 */
 async function Add() {
@@ -219,15 +226,15 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    assetHelper.Delete(model.id)
-        .then(res => {
-            Refresh()
-            MyActionResult.ShowResult(res, '删除成功')
-        })
+    assetHelper.Delete(model.id).then(res => {
+        Refresh()
+        MyActionResult.ShowResult(res, '删除成功')
+    })
 }
 
 export default {
     searchAssetId,
+    selectOnlineState,
     selectCompany,
     selectDepartment,
     selectAssetType,

@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, IsEnable2String, MyActionResult, OnlineState, OnlineState2String, TimerHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, TimerHelper, IsEnable, OnlineState } from '@/0_tigersan_ui/tigerui'
 import { TagModel, tagMgtTable } from './TagMgtTable'
 import { batchHelper, tagTypeHelper, baseStationHelper, tagHelper } from '@/models'
 
@@ -22,37 +22,24 @@ switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
+const selectState = OnlineState.GetSelectModel()
+const selectIsEnable = IsEnable.GetSelectModel()
 const selectBatch = batchHelper.GetIdNameSelectModel()
 const selectType = tagTypeHelper.GetIdNameSelectModel()
 const selectStation = baseStationHelper.GetIdNameSelectModel()
 /** 表单 */
 const selectBatchForm = batchHelper.GetIdNameSelectModel()
 const selectTypeForm = tagTypeHelper.GetIdNameSelectModel()
+// 更新:
+tagMgtTable._onSelectStateChange = InitSelectIsEnableState
 
+// 搜索框:
 const searchTagId = new SearchModel()
 searchTagId.PlaceholderCN.value = '请输入标签ID'
 searchTagId.PlaceholderEN.value = 'Please enter the Tag ID'
 searchTagId._onSearch = Refresh
 searchTagId._onChange = Refresh
 
-const selectState = new SelectModel<OnlineState>()
-selectState.Width.value = 120
-selectState.Value.value = undefined
-selectState.IsAllowSearch.value = true
-selectState.PlaceholderCN.value = '在线状态'
-selectState.PlaceholderEN.value = 'OnlineState'
-selectState.Items.push(...[OnlineState.Online, OnlineState.Offline])
-selectState._converter = OnlineState2String
-
-const selectIsEnable = new SelectModel<boolean>()
-selectIsEnable.Width.value = 120
-selectIsEnable.Value.value = undefined
-selectIsEnable.IsAllowSearch.value = true
-selectIsEnable.PlaceholderCN.value = '激活状态'
-selectIsEnable.PlaceholderEN.value = 'IsEnable'
-selectIsEnable.Items.push(...[true, false])
-selectIsEnable._converter = IsEnable2String
-tagMgtTable._onSelectStateChange = InitSelectIsEnableState
 
 /** “批次”项目配置 */
 const configBatch: FormItemConfig<TagModel, IdValueModel> = {
@@ -150,7 +137,7 @@ async function RefreshBase() {
         type: selectType.Value.value?.id,
         station: selectStation.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
-        state: OnlineState.Online,
+        state: OnlineStates.Online,
         tagId: searchTagId.Value.value,
     })
     offlineCount.value = await tagHelper.GetCount({
@@ -158,7 +145,7 @@ async function RefreshBase() {
         type: selectType.Value.value?.id,
         station: selectStation.Value.value?.id,
         isEnable: selectIsEnable.Value.value,
-        state: OnlineState.Offline,
+        state: OnlineStates.Offline,
         tagId: searchTagId.Value.value,
     })
     pagination.Count.value = await tagHelper.GetCount({

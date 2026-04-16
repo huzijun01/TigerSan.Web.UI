@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -10,19 +11,100 @@ namespace TigerSan.NET8.WebApi.Services.Models
 {
     public class TagService : IdServiceBase<TagEntity>, ITagService
     {
+        #region 【Fields】
+        private readonly IBatchService _batchService;
+        #endregion 【Fields】
+
         #region 【Ctor】
-        public TagService(AppDbContext db) : base(db, db.Tags)
+        public TagService(AppDbContext db, IBatchService batchService) : base(db, db.Tags)
         {
+            _batchService = batchService;
         }
 
         static TagService()
         {
             SetDbSetConfig(nameof(TagEntity.Batch))
-                .SetParent(typeof(BatchEntity), nameof(_db.Batches));
+                .SetParent(typeof(BatchEntity), nameof(_db.Batches), nameof(BatchEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
         }
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        #region 获取“完整数据”集合
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<List<TagDto>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var list = new List<TagDto>();
+
+                var stations = await GetList(pageSize, pageNumber, filter);
+                var batchIds = stations.Select(i => i.Batch).Distinct().ToList();
+                var companyDict = await _batchService.GetCompanyDict(batchIds);
+
+                // 添加“数据”:
+                foreach (var station in stations)
+                {
+                    companyDict.TryGetValue(station.Batch, out var company);
+                    if (company == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(company));
+                        continue;
+                    }
+
+                    var entity = new TagDto();
+                    entity.ShallowCopy(station);
+                    entity.Company = company.Id;
+                    entity.CompanyName = company.Name;
+
+                    list.Add(entity);
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return new List<TagDto>();
+            }
+        }
+        #endregion
+
+        #region 获取“完整数据”集合（tagId、company）
+        /// <summary>获取“完整数据”集合（tagId、company）</summary>
+        public async Task<List<TagDto>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? tagId = null,
+            long? company = null)
+        {
+            return await GetFullList(pageSize, pageNumber, new FilterDto()
+            {
+                Parent = new ParentFilter()
+                {
+                    Parent = new ParentFilter()
+                    {
+                        Id = company,
+                    }
+                },
+                Filters = [new PropFilter() { PropName = nameof(TagEntity.TagId), Value = tagId }],
+            });
+        }
+        #endregion
+
+        #region 获取“完整数据”
+        /// <summary>获取“完整数据”</summary>
+        public async Task<TagDto?> GetFull(string? tagId = null, long? company = null)
+        {
+            return (await GetFullList(1, 1, tagId, company)).FirstOrDefault();
+        }
+        #endregion
+        #endregion [查]
+
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>

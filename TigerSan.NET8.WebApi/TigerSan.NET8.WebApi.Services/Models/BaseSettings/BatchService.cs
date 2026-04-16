@@ -1,9 +1,11 @@
-﻿using TigerSan.NET8.WebApi.Share;
+﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
+using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -22,6 +24,44 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        #region 获取“公司”字典
+        /// <summary>获取“公司”字典</summary>
+        public async Task<Dictionary<long, CompanyEntity>> GetCompanyDict(List<long> ids)
+        {
+            var dict = new Dictionary<long, CompanyEntity>();
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var batch = await _dbSet.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+                    if (batch == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(batch));
+                        continue;
+                    }
+
+                    var company = await _db.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Id == batch.Company);
+                    if (company == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(company));
+                        continue;
+                    }
+
+                    dict.Add(id, company);
+                }
+
+                return dict;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return dict;
+            }
+        }
+        #endregion
+        #endregion [查]
+
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>

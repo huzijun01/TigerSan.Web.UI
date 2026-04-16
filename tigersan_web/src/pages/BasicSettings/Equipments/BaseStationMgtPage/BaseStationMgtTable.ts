@@ -1,4 +1,4 @@
-import { Colors, GetIsEnableString, GetOnlineString, ObjectHelper, OnlineState, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, OnlineState, ItemType, ObjectHelper, OnlineStates, TableModel, IsEnable } from '@/0_tigersan_ui/tigerui'
 import { BaseStationModel, companyHelper, siteHelper, stationTypeHelper } from '@/models'
 
 // 列头:
@@ -7,85 +7,85 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
         _propName: 'company',
         Text: '公司',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => companyHelper.GetName(source.company)
     },
     {
         _propName: 'site',
         Text: '场地',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => siteHelper.GetName(source.site)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getStringAsync: source => stationTypeHelper.GetName(source.type)
     },
     {
         _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'addr',
         Text: '更新时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'name',
         Text: '名称',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'isEnable',
         Text: '激活状态',
         IsReadonly: true,
-        IsAllowWrap: false,
-        _getString: GetIsEnableString,
+        Type: ItemType.TextBox,
+        _getString: IsEnable.GetString,
     },
     {
         _propName: 'onlineState',
         Text: '在线状态',
         IsReadonly: true,
-        IsAllowWrap: false,
-        _getString: GetOnlineString,
+        Type: ItemType.TextBox,
+        _getString: OnlineState.GetString,
     },
     {
         _propName: 'heartbeatInterval',
         Text: '心跳（秒）',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'reportInterval',
         Text: '上报周期（秒）',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'monthOffline',
         Text: '当月离线总时长',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'createTime',
         Text: '创建时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getString: source => ObjectHelper.GetDateString(source.createTime)
     },
     {
         _propName: 'lastReportTime',
         Text: '最后上报时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
         _getString: source => ObjectHelper.GetDateString(source.lastReportTime)
     },
 ])
@@ -105,10 +105,10 @@ baseStationMgtTable._initItem = itemModel => {
     }
 
     if (itemModel._headerModel._propName === 'onlineState') {
-        if (itemModel.GetSource() === OnlineState.Online) {
+        if (itemModel.GetSource() === OnlineStates.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.GetSource() === OnlineState.Offline) {
+        } else {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }

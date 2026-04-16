@@ -211,7 +211,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             }
 
             baseStation.LastReportTime = GetUtc(ReportTime);
-            baseStation.OnlineState = OnlineState.Online;
+            baseStation.OnlineState = OnlineStates.Online;
             updateBaseStation?.Invoke(baseStation);
 
             await baseStationService.Edit(baseStation);
@@ -239,7 +239,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                 }
 
                 tag.LastReportTime = GetUtc(package.ReportTime);
-                tag.OnlineState = OnlineState.Online;
+                tag.OnlineState = OnlineStates.Online;
                 tag.Station = baseStation?.Id;
                 tag.Battery = tagData.Voltage;
                 tag.Temperature = tagData.Temperature;
@@ -267,7 +267,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                 }
 
                 tag.LastReportTime = GetUtc(package.ReportTime);
-                tag.OnlineState = OnlineState.Online;
+                tag.OnlineState = OnlineStates.Online;
                 tag.Station = baseStation?.Id;
                 tag.Battery = package.Data.Battery;
                 tag.Signal = tagData.SignalStrength;
@@ -287,12 +287,12 @@ namespace TigerSan.NET8.WebApi.Helpers
             foreach (var baseStationCache in _baseStationCaches)
             {
                 var baseStation = baseStationCache.Value;
-                if (baseStation.OnlineState == OnlineState.Offline) continue;
+                if (baseStation.OnlineState == OnlineStates.Offline) continue;
 
                 if (baseStation.LastReportTime == null ||
                     (GetUtcNow() - baseStation.LastReportTime.Value).TotalSeconds > baseStation.HeartbeatInterval)
                 {
-                    baseStation.OnlineState = OnlineState.Offline;
+                    baseStation.OnlineState = OnlineStates.Offline;
                     timeOutBaseStations.Add(baseStation);
                 }
             }
@@ -305,12 +305,12 @@ namespace TigerSan.NET8.WebApi.Helpers
             foreach (var tagCache in _tagCaches)
             {
                 var tag = tagCache.Value;
-                if (tag.OnlineState == OnlineState.Offline) continue;
+                if (tag.OnlineState == OnlineStates.Offline) continue;
 
                 if (tag.LastReportTime == null ||
-                    (GetUtcNow() - tag.LastReportTime.Value).TotalSeconds > 3600)
+                    (GetUtcNow() - tag.LastReportTime.Value).TotalSeconds > Constants.Report_Interval_Seconds)
                 {
-                    tag.OnlineState = OnlineState.Offline;
+                    tag.OnlineState = OnlineStates.Offline;
                     timeOutTags.Add(tag);
                 }
             }

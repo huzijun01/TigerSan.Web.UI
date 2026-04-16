@@ -1,4 +1,4 @@
-import { IdModel, OnlineState, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdModel, OnlineStates, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** "标签"模型 */
 export class TagModel extends IdModel {
@@ -6,7 +6,7 @@ export class TagModel extends IdModel {
     type: bigint = 0n
     station?: bigint
     isEnable = false
-    onlineState = OnlineState.Offline
+    onlineState = OnlineStates.Offline
     tagId = ''
     brandId? = ''
     battery?: number
@@ -16,6 +16,9 @@ export class TagModel extends IdModel {
     latitude?: number
     comment?: string
     lastReportTime?: Date
+    // 附加:
+    company?: bigint
+    companyName?: string
 }
 
 class TagHelper extends IdModelHelper<TagModel> {
@@ -25,16 +28,22 @@ class TagHelper extends IdModelHelper<TagModel> {
 
     /** 筛选“总数” */
     readonly GetCount = async (param: {
+        company?: bigint,
         batch?: bigint,
         type?: bigint,
         station?: bigint,
         isEnable?: boolean,
-        state?: OnlineState,
+        state?: OnlineStates,
         tagId?: string,
     }) => await AxiosHelper.GetCount(this._action, {
         filter: {
+            parent: {
+                id: param.batch,
+                parent: {
+                    id: param.company,
+                },
+            },
             filters: [
-                { propName: 'Batch', value: param.batch },
                 { propName: 'Type', value: param.type },
                 { propName: 'Station', value: param.station },
                 { propName: 'IsEnable', value: param.isEnable },
@@ -48,18 +57,25 @@ class TagHelper extends IdModelHelper<TagModel> {
     readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
+        company?: bigint,
         batch?: bigint,
         type?: bigint,
         station?: bigint,
         isEnable?: boolean,
-        state?: OnlineState,
+        state?: OnlineStates,
         tagId?: string,
     }) => await AxiosHelper.GetList<TagModel>(this._action, {
+        strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {
+            parent: {
+                id: param.batch,
+                parent: {
+                    id: param.company,
+                },
+            },
             filters: [
-                { propName: 'Batch', value: param.batch },
                 { propName: 'Type', value: param.type },
                 { propName: 'Station', value: param.station },
                 { propName: 'IsEnable', value: param.isEnable },

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, GetOnlineString, IsOnline, OnlineState, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, OnlineState, ItemType, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
 class Terminal4gModel {
@@ -7,7 +7,7 @@ class Terminal4gModel {
     IMEI = ''
     EqpName = ''
     EqpType = ''
-    OnlineState = OnlineState.Offline
+    OnlineState = OnlineStates.Offline
     BluetoothFirmware = ''
     KeyEvent = ''
     TriggerEvent = ''
@@ -29,62 +29,62 @@ const terminal4gTable = new TableModel<Terminal4gModel>([
         _propName: 'Index',
         Text: 'ID',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'IMEI',
         Text: 'IMEI',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'EqpName',
         Text: '设备名称',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'EqpType',
         Text: '设备型号',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'OnlineState',
         Text: '在线状态',
         IsReadonly: true,
-        IsAllowWrap: false,
-        _getString: GetOnlineString,
+        Type: ItemType.TextBox,
+        _getString: OnlineState.GetString,
     },
     {
         _propName: 'Battery',
         Text: '电量（%）',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'BluetoothFirmware',
         Text: '蓝牙固件',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'LastMsgTime',
         Text: '最近通讯时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'KeyEvent',
         Text: '按键事件',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'TriggerEvent',
         Text: '触发事件',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
 ])
 
@@ -96,7 +96,7 @@ const arr: Terminal4gModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP1',
             EqpType: 'g1-e-grapes',
-            OnlineState: OnlineState.Online,
+            OnlineState: OnlineStates.Online,
             BluetoothFirmware: '固件1',
             KeyEvent: '事件1',
             TriggerEvent: '触发1',
@@ -108,7 +108,7 @@ const arr: Terminal4gModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP2',
             EqpType: 'g1-e-grapes',
-            OnlineState: OnlineState.Online,
+            OnlineState: OnlineStates.Online,
             BluetoothFirmware: '固件2',
             KeyEvent: '事件2',
             TriggerEvent: '触发2',
@@ -120,7 +120,7 @@ const arr: Terminal4gModel[] =
             IMEI: '863184079495485',
             EqpName: 'EQP3',
             EqpType: 'g1-e-grapes',
-            OnlineState: OnlineState.Offline,
+            OnlineState: OnlineStates.Offline,
             BluetoothFirmware: '固件3',
             KeyEvent: '事件3',
             TriggerEvent: '触发3',
@@ -141,10 +141,10 @@ terminal4gTable._initHeader = headerModel => {
 
 terminal4gTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'OnlineState') {
-        if (itemModel.GetSource() === OnlineState.Online) {
+        if (itemModel.GetSource() === OnlineStates.Online) {
             itemModel.Color.value = Colors.Success
             itemModel.Background.value = Colors.Success10
-        } else if (itemModel.GetSource() === OnlineState.Offline) {
+        } else {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
@@ -164,8 +164,8 @@ terminal4gTable._initItem = itemModel => {
 
 terminal4gTable._onInitRowModel = rowDatas => {
     pagination.Count.value = rowDatas.length
-    onlineCount.value = rowDatas.filter(r => IsOnline(r)).length
-    offlineCount.value = rowDatas.filter(r => !IsOnline(r)).length
+    onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
+    offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length
 }
 
 export {

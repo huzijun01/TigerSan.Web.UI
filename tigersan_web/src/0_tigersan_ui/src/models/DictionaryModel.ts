@@ -3,7 +3,7 @@ import { Colors } from '../base'
 import { dialog } from '../stores'
 import { IdNameModel } from './SelectModel'
 import { FormModel } from './Form/FormModel'
-import { TableModel } from './Table/TableModel'
+import { ItemType, TableModel } from './Table/TableModel'
 import { DialogMode, DialogState } from './DialogModel'
 import { PaginationModel } from './Pagination/PaginationModel'
 import { FormConfig, FormItemConfig } from './Form/FormConfig'
@@ -55,7 +55,7 @@ export class DictionaryModel {
             _propName: 'name',
             Text: '名称',
             IsReadonly: true,
-            IsAllowWrap: false,
+            Type: ItemType.TextBox,
         },
     ])
 

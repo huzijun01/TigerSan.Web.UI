@@ -1,4 +1,4 @@
-import { IdNameModel, OnlineState, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, OnlineStates, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
 /** “基站”模型 */
 export class BaseStationModel extends IdNameModel {
@@ -8,7 +8,7 @@ export class BaseStationModel extends IdNameModel {
     isEnable = false
     macAddr = ''
     addr = ''
-    onlineState = OnlineState.Offline
+    onlineState = OnlineStates.Offline
     heartbeatInterval = 0
     reportInterval = 0
     monthOffline: bigint = 0n
@@ -33,7 +33,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
             company?: bigint,
             site?: bigint,
             isEnable?: boolean,
-            state?: OnlineState,
+            state?: OnlineStates,
             type?: bigint,
             macAddr?: string,
         }
@@ -62,7 +62,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
             company?: bigint,
             site?: bigint,
             isEnable?: boolean,
-            state?: OnlineState,
+            state?: OnlineStates,
             type?: bigint,
             macAddr?: string,
         }

@@ -1,0 +1,19 @@
+﻿using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities;
+
+namespace TigerSan.NET8.WebApi.Interfaces.Models
+{
+    public interface IAssetService : IIdServiceBase<AssetEntity>
+    {
+        public Task<List<AssetDto>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null);
+
+        public Task<MyActionResult<AssetEntity>> Calculate(long id, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> Add(AssetDto dto, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> AddRange(List<AssetDto> dtos, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> Edit(AssetDto dto, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> EditRange(List<AssetDto> dtos, bool isBeginTransaction = true);
+    }
+}

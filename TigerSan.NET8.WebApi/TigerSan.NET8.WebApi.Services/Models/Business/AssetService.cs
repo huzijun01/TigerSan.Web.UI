@@ -1,0 +1,545 @@
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share;
+using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
+
+namespace TigerSan.NET8.WebApi.Services.Models
+{
+    public class AssetService : IdServiceBase<AssetEntity>, IAssetService
+    {
+        #region 【Fields】
+        private readonly ITagService _tagService;
+        private readonly IDepartmentService _departmentService;
+        private readonly IAssetRecordService _assetRecordService;
+        #endregion 【Fields】
+
+        #region 【Ctor】
+        static AssetService()
+        {
+            SetDbSetConfig(nameof(AssetEntity.Department))
+                .SetParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
+        public AssetService(
+            AppDbContext db,
+            ITagService tagService,
+            IDepartmentService departmentService,
+            IAssetRecordService assetRecordService) : base(db, db.Assets)
+        {
+            _tagService = tagService;
+            _departmentService = departmentService;
+            _assetRecordService = assetRecordService;
+        }
+        #endregion 【Ctor】
+
+        #region 【Functions】
+        #region [查]
+        #region 获取“完整数据”集合
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<List<AssetDto>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var dtos = new List<AssetDto>();
+
+                // 获取“实体”集合:
+                var queryable = _dbSet.AsNoTracking();
+                queryable = await GetFilter(queryable, filter);
+                var entites = await queryable.GetPage(pageSize, pageNumber).ToListAsync();
+
+                // 添加“其它数据”:
+                var departmentIds = entites.Select(e => e.Department).Distinct().ToList();
+                var departmentInfoDic = await _departmentService.GetDepartmentInfoDict(departmentIds);
+                var types = await _db.AssetTypes.AsNoTracking().ToListAsync();
+
+                foreach (var entity in entites)
+                {
+                    var dto = new AssetDto();
+                    dtos.Add(dto);
+                    dto.ShallowCopy(entity);
+
+                    // 添加“部门企业信息”:
+                    var departmentInfo = departmentInfoDic.GetValueOrDefault(entity.Department);
+                    if (departmentInfo == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(departmentInfo));
+                    }
+                    else
+                    {
+                        dto.DepartmentName = departmentInfo.DepartmentName;
+                        dto.Company = departmentInfo.Company;
+                        dto.CompanyName = departmentInfo.CompanyName;
+                    }
+
+                    // 添加“类型名”:
+                    var type = types.FirstOrDefault(t => t.Id == entity.Type);
+                    if (type == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(type));
+                    }
+                    else
+                    {
+                        dto.TypeName = type.Name;
+                    }
+
+                    if (dto.Tag != null)
+                    {
+                        var tag = await _tagService.Get(dto.Tag.Value);
+                        if (tag == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(tag));
+                        }
+                        else
+                        {
+                            dto.TagId = tag.TagId;
+                        }
+                    }
+
+                    // 获取“最新记录”:
+                    var lastRecord = await _assetRecordService.GetLast(entity.Id);
+
+                    dto.OnlineState = lastRecord != null && lastRecord.OnlineState == OnlineStates.Online
+                        ? OnlineStates.Online : OnlineStates.Offline;
+
+                    // 重新计算:
+                    if (lastRecord != null &&
+                        (dto.LastRecord == null ||
+                        dto.CalculationTime == null ||
+                        dto.LastRecord != lastRecord.Id ||
+                        (DateTime.Now - dto.CalculationTime.Value).TotalSeconds > Constants.Calculation_Interval_Seconds))
+                    {
+                        dto.CalculationTime = DateTime.Now;
+                        var res = await Calculate(entity.Id, false);
+                        if (res.IsError || res.Data == null)
+                        {
+                            LogHelper.Instance.Warning($"Calculation failed! (Id = {entity.Id})");
+                            continue;
+                        }
+
+                        dto.ShallowCopy(res.Data);
+                    }
+                }
+
+                return dtos;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return new List<AssetDto>();
+            }
+        }
+        #endregion
+        #endregion [查]
+
+        #region [增]
+        #region 添加“单条数据”
+        /// <summary>添加“单条数据”</summary>
+        public async Task<MyActionResult<object>> Add(AssetDto dto, bool isBeginTransaction = true)
+        {
+            if (!string.IsNullOrEmpty(dto.TagId))
+            {
+                dto.BindingTime = DateTime.Now;
+
+                // 修改“标签ID”:
+                var tag = await _tagService.GetFull(dto.TagId, dto.Company);
+                if (tag == null)
+                {
+                    return MyResults<object>.TagNotFound(dto.TagId);
+                }
+                dto.Tag = tag.Id;
+
+                // 检验“标签”是否重复:
+                if (dto.Tag != null && await _dbSet.AnyAsync(i => i.Tag == dto.Tag))
+                {
+                    return MyResults<object>.TagRepeated;
+                }
+            }
+
+            return await base.Add(dto, isBeginTransaction);
+        }
+        #endregion
+
+        #region 添加“多条数据”
+        /// <summary>添加“多条数据”</summary>
+        public async Task<MyActionResult<object>> AddRange(List<AssetDto> dtos, bool isBeginTransaction = true)
+        {
+            // 转为“实体”:
+            var entities = new List<AssetEntity>();
+            foreach (var dto in dtos)
+            {
+                if (!string.IsNullOrEmpty(dto.TagId))
+                {
+                    dto.BindingTime = DateTime.Now;
+
+                    // 修改“标签ID”:
+                    var tag = await _tagService.GetFull(dto.TagId, dto.Company);
+                    if (tag == null)
+                    {
+                        return MyResults<object>.TagNotFound(dto.TagId);
+                    }
+                    dto.Tag = tag.Id;
+                }
+
+                var entity = new AssetEntity();
+                entity.ShallowCopy(dto);
+                entities.Add(entity);
+            }
+
+            // 检验“标签”是否重复:
+            var tags = entities.Where(e => e.Tag != null).Select(e => e.Tag).ToList();
+            if (await _dbSet.AnyAsync(i => tags.Contains(i.Tag)))
+            {
+                return MyResults<object>.TagRepeated;
+            }
+
+            return await base.AddRange(entities, isBeginTransaction);
+        }
+        #endregion
+        #endregion [增]
+
+        #region [改]
+        #region 修改“单条数据”
+        /// <summary>修改“单条数据”</summary>
+        public async Task<MyActionResult<object>> Edit(AssetDto dto, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 检验“资源”是否存在:
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == dto.Id);
+                if (find == null)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+
+                // 修改“标签ID”:
+                if (string.IsNullOrEmpty(dto.TagId))
+                {
+                    dto.Tag = null;
+                    dto.BindingTime = null;
+                }
+                else
+                {
+                    dto.BindingTime = DateTime.Now;
+
+                    var tag = await _tagService.GetFull(dto.TagId, dto.Company);
+                    if (tag == null)
+                    {
+                        return MyResults<object>.TagNotFound(dto.TagId);
+                    }
+                    dto.Tag = tag.Id;
+                }
+
+                // 检验“标签”是否重复:
+                if (dto.Tag != null && await _dbSet.AnyAsync(i => i.Tag == dto.Tag && i.Id != dto.Id))
+                {
+                    return MyResults<object>.TagRepeated;
+                }
+
+                // 修改“数据”:
+                find.ShallowCopy(dto);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 修改“多条数据”
+        /// <summary>修改“多条数据”</summary>
+        public async Task<MyActionResult<object>> EditRange(List<AssetDto> dtos, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 转为“实体”:
+                var entities = new List<AssetEntity>();
+                foreach (var dto in dtos)
+                {
+                    // 修改“标签ID”:
+                    if (string.IsNullOrEmpty(dto.TagId))
+                    {
+                        dto.Tag = null;
+                        dto.BindingTime = null;
+                    }
+                    else
+                    {
+                        dto.BindingTime = DateTime.Now;
+
+                        var tag = await _tagService.GetFull(dto.TagId, dto.Company);
+                        if (tag == null)
+                        {
+                            return MyResults<object>.TagNotFound(dto.TagId);
+                        }
+                        dto.Tag = tag.Id;
+                    }
+
+                    var entity = new AssetEntity();
+                    entity.ShallowCopy(dto);
+                    entities.Add(entity);
+                }
+
+                if (entities.Count < 1) return res;
+
+                var ids = entities.Select(i => i.Id).ToList();
+
+                // 检验“资源”是否存在:
+                var finds = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+                if (finds.Count < 1)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+                else if (finds.Count < ids.Count)
+                {
+                    return MyResults<object>.SomeResourceNotExist;
+                }
+
+                foreach (var find in finds)
+                {
+                    var entity = entities.FirstOrDefault(i => i.Id == find.Id);
+                    if (entity == null)
+                    {
+                        return MyResults<object>.SomeResourceNotExist;
+                    }
+
+                    // 检验“标签”是否重复:
+                    if (entity.Tag != null && await _dbSet.AnyAsync(i => i.Tag == entity.Tag && i.Id != entity.Id))
+                    {
+                        return MyResults<object>.TagRepeated;
+                    }
+
+                    // 修改“数据”:
+                    find.ShallowCopy(entity);
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 计算
+        /// <summary>计算</summary>
+        public async Task<MyActionResult<AssetEntity>> Calculate(long id, bool isBeginTransaction = true)
+        {
+            var res = MyResults<AssetEntity>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 检验“资源”是否存在:
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
+                if (find == null)
+                {
+                    return MyResults<AssetEntity>.ResourceNotExist;
+                }
+                res.Data = find;
+
+                var records = await _db.AssetRecords.Where(r => r.Asset == id).OrderByDescending(r => r.ReportTime).ToListAsync();
+
+                // 设置“状态”:
+                find.State = records.FirstOrDefault()?.State ?? AssetStates.NoRecord;
+
+                // 计算“周转”:
+                var now = DateTime.Now;
+                var todayStart = now.Date; // 当日0点
+                var monthStart = new DateTime(now.Year, now.Month, 1); // 当月1日0点
+                find.DailyMove = records.Count(r => r.ReportTime > todayStart && r.State == AssetStates.InTransit);
+                find.MonthlyMove = records.Count(r => r.ReportTime > monthStart && r.State == AssetStates.InTransit);
+                find.TotalMove = records.Count(r => r.State == AssetStates.InTransit);
+
+                // 计算“时长”:
+                find.StayDuration = GetStayDuration(records);
+                find.TravelDuration = GetTravelDuration(records);
+                find.OfflineDuration = GetOfflineDuration(records);
+
+                // 计算时间:
+                find.CalculationTime = DateTime.Now;
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<AssetEntity>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
+
+        #region 获取“在库时长”
+        /// <summary>获取“在库时长”</summary>
+        private double GetStayDuration(List<AssetRecordEntity> records)
+        {
+            double duration = 0;
+
+            var sortedRecords = records.OrderBy(r => r.ReportTime);
+
+            AssetRecordEntity? inbound = null;
+
+            foreach (var record in sortedRecords)
+            {
+                if (inbound != null && inbound.Station == record.Station)
+                {
+                    continue;
+                }
+                else if (record.State == AssetStates.Inbound)
+                {
+                    if (inbound != null)
+                    {
+                        LogHelper.Instance.Warning("Repeated inbound records!");
+                        return -1;
+                    }
+
+                    inbound = record;
+                }
+                else if (record.State == AssetStates.Outbound)
+                {
+                    if (inbound == null)
+                    {
+                        LogHelper.Instance.Warning("Outbound record without corresponding inbound!");
+                        return -1;
+                    }
+
+                    duration += (record.ReportTime - inbound.ReportTime).TotalHours;
+                    inbound = null;
+                }
+            }
+
+            if (inbound != null)
+            {
+                duration += (DateTime.Now - inbound.ReportTime).TotalHours;
+            }
+
+            return duration;
+        }
+        #endregion
+
+        #region 获取“在途时长”
+        /// <summary>获取“在途时长”</summary>
+        private double GetTravelDuration(List<AssetRecordEntity> records)
+        {
+            double duration = 0;
+
+            var sortedRecords = records.OrderBy(r => r.ReportTime);
+
+            AssetRecordEntity? outbound = null;
+
+            foreach (var record in sortedRecords)
+            {
+                if (outbound != null && outbound.Station == record.Station)
+                {
+                    continue;
+                }
+                else if (record.State == AssetStates.Outbound)
+                {
+                    if (outbound != null)
+                    {
+                        LogHelper.Instance.Warning("Repeated outbound records!");
+                        return -1;
+                    }
+
+                    outbound = record;
+                }
+                else if (record.State == AssetStates.Inbound)
+                {
+                    if (outbound == null)
+                    {
+                        LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
+                        return -1;
+                    }
+
+                    duration += (record.ReportTime - outbound.ReportTime).TotalHours;
+                    outbound = null;
+                }
+            }
+
+            if (outbound != null)
+            {
+                duration += (DateTime.Now - outbound.ReportTime).TotalHours;
+            }
+
+            return duration;
+        }
+        #endregion
+
+        #region 获取“离线时长”
+        /// <summary>获取“离线时长”</summary>
+        private double GetOfflineDuration(List<AssetRecordEntity> records)
+        {
+            double duration = 0;
+
+            var sortedRecords = records.OrderBy(r => r.ReportTime);
+
+            AssetRecordEntity? offline = null;
+
+            foreach (var record in sortedRecords)
+            {
+                if (offline != null && offline.OnlineState == record.OnlineState)
+                {
+                    continue;
+                }
+                else if (record.OnlineState == OnlineStates.Offline)
+                {
+                    if (offline != null)
+                    {
+                        LogHelper.Instance.Warning("Repeated offline records!");
+                        return -1;
+                    }
+
+                    offline = record;
+                }
+                else if (record.OnlineState == OnlineStates.Online)
+                {
+                    if (offline == null)
+                    {
+                        LogHelper.Instance.Warning("Online record without corresponding offline!");
+                        return -1;
+                    }
+
+                    duration += (record.ReportTime - offline.ReportTime).TotalHours;
+                    offline = null;
+                }
+            }
+
+            if (offline != null)
+            {
+                duration += (DateTime.Now - offline.ReportTime).TotalHours;
+            }
+
+            return duration;
+        }
+        #endregion
+        #endregion 【Functions】
+    }
+}

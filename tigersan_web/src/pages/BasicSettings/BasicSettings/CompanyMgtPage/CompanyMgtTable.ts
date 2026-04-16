@@ -1,5 +1,5 @@
 import { companyHelper, CompanyModel } from '@/models'
-import { ArrayHelper, BigintHelper, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
+import { ArrayHelper, BigintHelper, ItemType, TableModel, TreeModel } from '@/0_tigersan_ui/tigerui'
 
 /** 树 */
 const tree = new TreeModel<CompanyModel>()
@@ -47,13 +47,13 @@ const companyMgtTable = new TableModel<CompanyModel>([
         _propName: 'Name',
         Text: '公司名称',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'Addr',
         Text: '公司地址',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
 ])
 companyMgtTable.IsAllowMultiSelect.value = false

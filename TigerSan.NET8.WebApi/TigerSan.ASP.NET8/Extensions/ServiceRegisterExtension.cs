@@ -67,6 +67,9 @@ namespace TigerSan.NET8.WebApi.Extensions
             services.AddTransient<ISiteService, SiteService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IBatchService, BatchService>();
+            // Business:
+            services.AddTransient<IAssetService, AssetService>();
+            services.AddTransient<IAssetRecordService, AssetRecordService>();
             // Dictionaries:
             services.AddTransient<IAssetTypeService, AssetTypeService>();
             services.AddTransient<IScenarioService, ScenarioService>();

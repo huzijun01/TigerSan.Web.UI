@@ -7,6 +7,7 @@
                     <div class="row-panel">
                         <Select :model="form.selectCompany"></Select>
                         <Select :model="form.selectDepartment"></Select>
+                        <Select :model="form.selectOnlineState"></Select>
                     </div>
                     <div class="row-panel">
                         <Select :model="form.selectAssetType"></Select>

@@ -1,31 +1,36 @@
-import { IdModel, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, AxiosHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
 import { AssetStates } from "../base/AssetStates"
 
 /** "资产基类"模型 */
 class AssetBaseModel extends IdModel {
     department: bigint = 0n
     type: bigint = 0n
-    state: AssetStates = AssetStates.Offline
     assetId = ''
+    state: AssetStates = AssetStates.NoRecord
+    onlineState: OnlineStates = OnlineStates.Offline
     tag?: bigint
+    lastRecord?: bigint
     name? = ''
     comment?: string
     bindingTime?: Date
+    calculationTime?: Date
 }
 
 /** "资产"模型 */
 export class AssetModel extends AssetBaseModel {
+    // 附加:
     company: bigint = 0n
     companyName = ''
     departmentName = ''
     typeName = ''
     stateName = ''
     tagId? = ''
+    // 计算:
     dailyMove?: number
     monthlyMove?: number
     totalMove?: number
     stayDuration?: number
-    unreportDuration?: number
+    offlineDuration?: number
     travelDuration?: number
 }
 
@@ -39,7 +44,8 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         company?: bigint,
         department?: bigint,
         type?: bigint,
-        state?: bigint,
+        state?: number,
+        onlineState?: OnlineStates,
         assetId?: string,
     }) => await AxiosHelper.GetCount(this._action, {
         filter: {
@@ -52,6 +58,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
             filters: [
                 { propName: 'Type', value: param.type },
                 { propName: 'State', value: param.state },
+                { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'AssetId', value: param.assetId },
             ],
         }
@@ -64,9 +71,11 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         company?: bigint,
         department?: bigint,
         type?: bigint,
-        state?: bigint,
+        state?: number,
+        onlineState?: OnlineStates,
         assetId?: string,
     }) => await AxiosHelper.GetList<AssetModel>(this._action, {
+        strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {
@@ -79,6 +88,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
             filters: [
                 { propName: 'Type', value: param.type },
                 { propName: 'State', value: param.state },
+                { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'AssetId', value: param.assetId },
             ],
         }

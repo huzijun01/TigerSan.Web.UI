@@ -1,5 +1,16 @@
 @import './panels.less';
 
+a {
+    cursor: pointer;
+    user-select: text;
+    text-decoration: underline;
+
+    &:hover {
+        font-weight: bold;
+        color: var(--theme-brand);
+    }
+}
+
 .ellipsis {
     overflow: hidden !important;
     white-space: nowrap !important;

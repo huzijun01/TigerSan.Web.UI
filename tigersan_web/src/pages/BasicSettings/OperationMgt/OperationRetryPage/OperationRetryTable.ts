@@ -1,4 +1,4 @@
-import { TableModel } from '@/0_tigersan_ui/tigerui'
+import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "操作重试"模型 */
 class OperationRetryModel {
@@ -16,37 +16,37 @@ const operationRetryTable = new TableModel<OperationRetryModel>([
         _propName: 'Index',
         Text: 'ID',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'macAddr',
         Text: 'MAC地址',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'EqpType',
         Text: '设备型号',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'OperationType',
         Text: '操作类型',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'OperationTime',
         Text: '操作时间',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'Operation',
         Text: '操作',
         IsReadonly: true,
-        IsAllowWrap: false,
+        Type: ItemType.TextBox,
     },
 ])
 

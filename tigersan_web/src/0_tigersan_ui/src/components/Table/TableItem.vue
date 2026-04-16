@@ -1,14 +1,16 @@
 <template>
     <div class="table-item" ref="refRoot">
         <div class="size-panel">
-            <div class="size" :class="model.ClassObj.value" v-html="formattedText"></div>
+            <div class="size" :class="model.EllipsisClass.value" v-html="formattedText"></div>
             <span class="placeholder">*</span>
         </div>
-        <textarea v-if="model._headerModel.IsAllowWrap.value" class="input" :style="inputStyleObj"
-            :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput"
-            @change="OnChange"></textarea>
-        <input type="text" v-if="!model._headerModel.IsAllowWrap.value" class="input ellipsis" :style="inputStyleObj"
-            :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput" @change="OnChange"></input>
+        <a v-if="model.IsLink.value" class="input ellipsis" :style="inputStyleObj" @click="model.OnClick">
+            {{ model.Text.value }}
+        </a>
+        <input type="text" v-if="model.IsTextBox.value" class="input ellipsis" :style="inputStyleObj"
+            :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput" @change="OnChange" />
+        <textarea v-if="model.IsTextarea.value" class="input" :style="inputStyleObj" :readonly="model.IsReadonly.value"
+            v-model="model.Text.value" @input="OnInput" @change="OnChange"></textarea>
     </div>
 </template>
 
@@ -40,7 +42,7 @@ const inputStyleObj = computed(() => {
 })
 
 const formattedText = computed(() => {
-    return model._headerModel.IsAllowWrap.value
+    return model.IsTextarea.value
         ? StringHelper.StringToHtml(model.Text.value) :
         StringHelper.StringToHtml(model.Text.value, '')
 })

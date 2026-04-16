@@ -15,6 +15,21 @@ namespace TigerSan.NET8.WebApi.Controllers
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [查]
+        [HttpPost]
+        [Route("FullList")]
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<MyActionResult<List<TagDto>>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            var res = MyResults<List<TagDto>>.OperationSuccess;
+            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
+            return res;
+        }
+        #endregion [查]
+
         #region [增]
         [HttpPost]
         /// <summary>添加“单条数据”</summary>

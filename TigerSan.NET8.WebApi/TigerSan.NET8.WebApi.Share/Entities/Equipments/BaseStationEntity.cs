@@ -13,7 +13,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public bool IsEnable { get; set; } = false;
         [SnakeColumn]
-        public OnlineState OnlineState { get; set; } = OnlineState.Offline;
+        public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
         [SnakeColumn]
         public string MacAddr { get; set; } = string.Empty;
         [SnakeColumn]

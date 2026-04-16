@@ -58,6 +58,41 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“部门信息”字典
+        /// <summary>获取“部门信息”字典</summary>
+        public async Task<Dictionary<long, DepartmentInfo>> GetDepartmentInfoDict(List<long> ids)
+        {
+            var dict = new Dictionary<long, DepartmentInfo>();
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var department = await _dbSet.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+                    if (department != null)
+                    {
+                        var company = await _db.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Id == department.Company);
+                        if (company != null)
+                        {
+                            dict[id] = new DepartmentInfo
+                            {
+                                DepartmentName = department.Name,
+                                Company = company.Id,
+                                CompanyName = company.Name
+                            };
+                        }
+                    }
+                }
+
+                return dict;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return dict;
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]
