@@ -109,6 +109,26 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“数据”集合
         /// <summary>获取“数据”集合</summary>
+        public virtual async Task<List<TEntity>> GetList(List<long> ids)
+        {
+            try
+            {
+                var queryable = _dbSet.AsNoTracking();
+
+                queryable = queryable.Where(i => ids.Contains(i.Id));
+
+                return await queryable.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return new List<TEntity>();
+            }
+        }
+        #endregion
+
+        #region 获取“数据”集合
+        /// <summary>获取“数据”集合</summary>
         public virtual async Task<List<TEntity>> GetList(
             int? pageSize = null,
             int? pageNumber = null,

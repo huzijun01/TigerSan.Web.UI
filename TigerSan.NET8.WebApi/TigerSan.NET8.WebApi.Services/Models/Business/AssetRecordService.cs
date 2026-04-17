@@ -48,6 +48,26 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“最新入库数据”
+        /// <summary>获取“最新入库数据”</summary>
+        public async Task<AssetRecordEntity?> GetLastInbound(long asset)
+        {
+            try
+            {
+                return await _dbSet
+                    .AsNoTracking()
+                    .Where(ar => ar.Asset == asset && ar.State == AssetStates.Inbound)
+                    .OrderByDescending(ar => ar.ReportTime)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return null;
+            }
+        }
+        #endregion
         #endregion [查]
         #endregion 【Functions】
     }

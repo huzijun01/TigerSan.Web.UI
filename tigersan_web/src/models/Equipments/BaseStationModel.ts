@@ -13,7 +13,7 @@ export class BaseStationModel extends IdNameModel {
     reportInterval = 0
     monthOffline: bigint = 0n
     createTime: Date = new Date()
-    lastReportTime?: Date
+    reportTime?: Date
 }
 
 class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
@@ -24,7 +24,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
     // 查:
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdNameModel> {
-        return super.GetIdNameSelectModel('请选择基站', 'Please select a baseStation')
+        return super.GetIdNameSelectModel('基站', 'Base Station')
     }
 
     /** 筛选“总数” */

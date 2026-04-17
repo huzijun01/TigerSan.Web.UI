@@ -19,7 +19,7 @@ class BatchHelper extends IdModelHelper<BatchModel> {
 
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdValueModel> {
-        return super.GetIdValueSelectModel('请选择批次', 'Please select a batch')
+        return super.GetIdValueSelectModel('批次', 'Batch')
     }
 
     // 查:

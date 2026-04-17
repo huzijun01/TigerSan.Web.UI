@@ -15,6 +15,7 @@ pwd.PlaceholderCN.value = '密码'
 pwd.PlaceholderEN.value = 'Password'
 
 const captcha = new TextBoxModel()
+captcha.Width.value = '100%'
 captcha.PlaceholderCN.value = '验证码'
 captcha.PlaceholderEN.value = 'Captcha'
 

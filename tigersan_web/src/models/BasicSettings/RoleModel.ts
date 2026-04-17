@@ -14,7 +14,7 @@ class RoleHelper extends IdNameModelHelper<RoleAuthorityModel> {
 
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdNameModel> {
-        return super.GetIdNameSelectModel('请选择角色', 'Please select a role')
+        return super.GetIdNameSelectModel('角色', 'Role')
     }
 
     // 查:

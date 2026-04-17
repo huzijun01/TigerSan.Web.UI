@@ -19,6 +19,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string TagId { get; set; } = string.Empty;
         [SnakeColumn]
+        public long? Asset { get; set; }
+        [SnakeColumn]
         public string? BrandId { get; set; } = string.Empty;
         [SnakeColumn]
         public int? Battery { get; set; }
@@ -33,6 +35,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string? Comment { get; set; }
         [SnakeColumn]
-        public DateTime? LastReportTime { get; set; } = null;
+        public DateTime? ReportTime { get; set; } = null;
     }
 }

@@ -1,5 +1,5 @@
-import { Colors, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
-import { AssetModel, AssetState, AssetStates } from '@/models'
+import { Battery, Colors, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
 
 // 字段:
 /** 分页器 */
@@ -34,6 +34,12 @@ const assetMgtTable = new TableModel<AssetModel>([
         Type: ItemType.TextBox,
     },
     {
+        _propName: 'siteName',
+        Text: '场地',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+    },
+    {
         _propName: 'name',
         Text: '名称',
         IsReadonly: true,
@@ -58,6 +64,19 @@ const assetMgtTable = new TableModel<AssetModel>([
         IsReadonly: true,
         Type: ItemType.TextBox,
         _getString: source => OnlineState.ToString(source.onlineState)
+    },
+    {
+        _propName: 'errorType',
+        Text: '异常类型',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: source => ErrorType.GetName(source.errorType)
+    },
+    {
+        _propName: 'battery',
+        Text: '标签电量',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
     },
     {
         _propName: 'comment',
@@ -149,6 +168,10 @@ assetMgtTable._initItem = itemModel => {
             itemModel.Color.value = Colors.Danger
             itemModel.Background.value = Colors.Danger10
         }
+    }
+
+    if (itemModel._headerModel._propName === 'battery') {
+        itemModel.Color.value = Battery.GetColor(itemModel.GetSource() as number)
     }
 }
 

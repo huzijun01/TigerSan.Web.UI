@@ -23,8 +23,8 @@ selectDepartmentForm._onChange = selectRoleForm.UpdateItemsAsync
 
 /** 搜索框 */
 const searchName = new SearchModel()
-searchName.PlaceholderCN.value = "输入用户名或昵称"
-searchName.PlaceholderEN.value = "Username or nickname"
+searchName.PlaceholderCN.value = "用户名/昵称"
+searchName.PlaceholderEN.value = "Username/Nickname"
 searchName._onChange = Refresh
 searchName._onSearch = Refresh
 

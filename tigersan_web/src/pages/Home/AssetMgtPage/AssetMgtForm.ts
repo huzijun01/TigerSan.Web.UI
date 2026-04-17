@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
 import { assetMgtTable, pagination } from './AssetMgtTable'
-import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel } from '@/models'
+import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel, ErrorType } from '@/models'
 
 // 选择框:
 /** 筛选 */
@@ -11,6 +11,7 @@ const selectDepartment = departmentHelper.GetIdNameSelectModel()
 selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await departmentHelper.SelectIdNameByCompanyAsync(selectCompany.Value.value?.id) : []
 const selectAssetType = assetTypeHelper.GetIdNameSelectModel()
 const selectAssetState = AssetState.GetSelectModel()
+const selectErrorType = ErrorType.GetSelectModel()
 /** 表单 */
 const selectCompanyForm = companyHelper.GetIdNameSelectModel()
 const selectDepartmentForm = departmentHelper.GetIdNameSelectModel()
@@ -21,8 +22,8 @@ selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 
 /** 搜索框 */
 const searchAssetId = new SearchModel()
-searchAssetId.PlaceholderCN.value = '请输入资产ID'
-searchAssetId.PlaceholderEN.value = 'Please enter the Asset ID'
+searchAssetId.PlaceholderCN.value = '资产ID'
+searchAssetId.PlaceholderEN.value = 'Asset ID'
 searchAssetId._onChange = Refresh
 searchAssetId._onSearch = Refresh
 
@@ -145,6 +146,7 @@ async function Refresh() {
         type: selectAssetType.Value.value?.id,
         state: selectAssetState.Value.value,
         onlineState: selectOnlineState.Value.value,
+        errorType: selectErrorType.Value.value,
         assetId: searchAssetId.Value.value,
     })
     await assetHelper.GetList({
@@ -155,6 +157,7 @@ async function Refresh() {
         type: selectAssetType.Value.value?.id,
         state: selectAssetState.Value.value,
         onlineState: selectOnlineState.Value.value,
+        errorType: selectErrorType.Value.value,
         assetId: searchAssetId.Value.value,
     }).then(arr => {
         ArrayHelper.Set(assetMgtTable.RowDatas, arr)
@@ -167,6 +170,7 @@ selectDepartment._onChange = Refresh
 selectAssetType._onChange = Refresh
 selectAssetState._onChange = Refresh
 selectOnlineState._onChange = Refresh
+selectErrorType._onChange = Refresh
 
 /** 增 */
 async function Add() {
@@ -239,6 +243,7 @@ export default {
     selectDepartment,
     selectAssetType,
     selectAssetState,
+    selectErrorType,
     selectCompanyForm,
     selectDepartmentForm,
     selectAssetTypeForm,

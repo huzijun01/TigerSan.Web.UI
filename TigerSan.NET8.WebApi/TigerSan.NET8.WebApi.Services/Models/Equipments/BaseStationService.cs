@@ -180,6 +180,72 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“场地”
+        /// <summary>获取“场地”</summary>
+        public async Task<SiteEntity?> GetSite(long id)
+        {
+            try
+            {
+                var station = await _dbSet.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+                if (station == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(station));
+                    return null;
+                }
+
+                var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == station.Site);
+                if (site == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(site));
+                    return null;
+                }
+
+                return site;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return null;
+            }
+        }
+        #endregion
+
+        #region 获取“场地”字典
+        /// <summary>获取“场地”字典</summary>
+        public async Task<Dictionary<long, SiteEntity>> GetSiteDict(List<long> ids)
+        {
+            var dict = new Dictionary<long, SiteEntity>();
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var station = await _dbSet.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+                    if (station == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(station));
+                        continue;
+                    }
+
+                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == station.Site);
+                    if (site == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(site));
+                        continue;
+                    }
+
+                    dict.Add(id, site);
+                }
+
+                return dict;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return dict;
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]
@@ -194,7 +260,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 entity.UpdateId();
                 entity.CreateTime = DateTime.Now;
-                entity.LastReportTime = null;
+                entity.ReportTime = null;
                 _dbSet.Add(entity);
 
                 await _db.SaveChangesAsync();
@@ -219,7 +285,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                entities.UpdateId(i => { i.CreateTime = DateTime.Now; i.LastReportTime = null; });
+                entities.UpdateId(i => { i.CreateTime = DateTime.Now; i.ReportTime = null; });
                 await _dbSet.AddRangeAsync(entities);
 
                 await _db.SaveChangesAsync();

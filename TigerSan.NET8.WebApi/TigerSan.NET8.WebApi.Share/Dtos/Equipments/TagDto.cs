@@ -6,5 +6,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
     {
         public long? Company { get; set; }
         public string? CompanyName { get; set; } = string.Empty;
+        public long? Site { get; set; }
+        public string? SiteName { get; set; } = string.Empty;
     }
 }

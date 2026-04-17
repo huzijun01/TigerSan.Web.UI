@@ -11,13 +11,12 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long Tag { get; set; }
         [SnakeColumn]
-        public AssetStates State { get; set; }
-        [SnakeColumn]
-        public OnlineStates OnlineState { get; set; }
-        [SnakeColumn]
-        public DateTime ReportTime { get; set; }
+        public AssetStates State { get; set; } = AssetStates.NoRecord;
+        // Tag:
         [SnakeColumn]
         public long? Site { get; set; }
+        [SnakeColumn]
+        public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
         [SnakeColumn]
         public long? Station { get; set; }
         [SnakeColumn]
@@ -30,5 +29,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public double? Longitude { get; set; }
         [SnakeColumn]
         public double? Latitude { get; set; }
+        [SnakeColumn]
+        public DateTime ReportTime { get; set; }
     }
 }

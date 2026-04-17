@@ -74,7 +74,7 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     //#endregion [内部维护]
 
     /** 宽度 */
-    readonly Width = ref(200)
+    readonly Width = ref(208)
     /** 是否“充满父容器” */
     readonly IsFull = ref(false)
     /** 菜单最大高度 */

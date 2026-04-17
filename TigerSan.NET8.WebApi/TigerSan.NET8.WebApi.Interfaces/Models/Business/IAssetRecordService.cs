@@ -5,5 +5,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
     public interface IAssetRecordService : IIdServiceBase<AssetRecordEntity>
     {
         public Task<AssetRecordEntity?> GetLast(long asset);
+        public Task<AssetRecordEntity?> GetLastInbound(long asset);
     }
 }

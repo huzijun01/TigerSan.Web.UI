@@ -41,8 +41,8 @@ baseStationMgtTable._onSelectStateChange = InitSelectIsEnableState
 
 // 搜索框:
 const searchMacAddr = new SearchModel()
-searchMacAddr.PlaceholderCN.value = '请输入MAC地址'
-searchMacAddr.PlaceholderEN.value = 'Please enter the MAC'
+searchMacAddr.PlaceholderCN.value = 'MAC地址'
+searchMacAddr.PlaceholderEN.value = 'MAC Addr'
 searchMacAddr._onSearch = Refresh
 searchMacAddr._onChange = Refresh
 

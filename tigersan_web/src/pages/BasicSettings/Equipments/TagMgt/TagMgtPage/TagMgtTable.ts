@@ -31,6 +31,12 @@ const tagMgtTable = new TableModel<TagModel>([
         _getStringAsync: source => baseStationHelper.GetName(source.station)
     },
     {
+        _propName: 'siteName',
+        Text: '场地',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+    },
+    {
         _propName: 'isEnable',
         Text: '激活状态',
         IsReadonly: true,
@@ -93,11 +99,11 @@ const tagMgtTable = new TableModel<TagModel>([
         Type: ItemType.TextBox,
     },
     {
-        _propName: 'lastReportTime',
-        Text: '最后上报时间',
+        _propName: 'reportTime',
+        Text: '上报时间',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getString: source => ObjectHelper.GetDateString(source.lastReportTime)
+        _getString: source => ObjectHelper.GetDateString(source.reportTime)
     },
 ])
 

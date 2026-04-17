@@ -39,10 +39,10 @@ export class AssetState {
     /** 获取“筛选框模型” */
     static GetSelectModel(): SelectModel<AssetStates> {
         const select = new SelectModel<AssetStates>()
-        select.Width.value = 208
+        select.Width.value = 120
         select.IsAllowSearch.value = true
-        select.PlaceholderCN.value = '请选择状态'
-        select.PlaceholderEN.value = 'Please select a state'
+        select.PlaceholderCN.value = '资产状态'
+        select.PlaceholderEN.value = 'Asset State'
         select.Items.push(...[0, 1, 2, 3, 4, 5])
         select._converter = this.GetName
         return select
@@ -60,7 +60,9 @@ export enum ErrorTypes {
 }
 
 export class ErrorType {
-    static GetName(state: ErrorTypes): string {
+    static GetName(state?: ErrorTypes): string {
+        if (state === undefined || state === null) return ''
+
         switch (state) {
             case ErrorTypes.NoSignal:
                 return Texts.NoSignal.value
@@ -76,11 +78,11 @@ export class ErrorType {
     /** 获取“筛选框模型” */
     static GetSelectModel(): SelectModel<ErrorTypes> {
         const select = new SelectModel<ErrorTypes>()
-        select.Width.value = 208
+        select.Width.value = 120
         select.IsAllowSearch.value = true
-        select.PlaceholderCN.value = '请选择异常类型'
-        select.PlaceholderEN.value = 'Please select a errorType'
-        select.Items.push(...[0, 1, 2, 3, 4, 5])
+        select.PlaceholderCN.value = '异常类型'
+        select.PlaceholderEN.value = 'Error Type'
+        select.Items.push(...[0, 1, 2])
         select._converter = this.GetName
         return select
     }

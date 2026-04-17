@@ -97,6 +97,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
+        #region [缓存]
         #region 更新“基站”缓存
         /// <summary>更新“基站”缓存</summary>
         public static async Task UpdateBaseStationCachesAsync()
@@ -122,6 +123,59 @@ namespace TigerSan.NET8.WebApi.Helpers
             await _instance._packageChannel.UpdateTagCachesAsync();
         }
         #endregion
+
+        #region 更新“单个标签”缓存
+        /// <summary>更新“单个标签”缓存</summary>
+        public static async Task UpdateTagCacheAsync(string tagId)
+        {
+            if (_instance == null)
+            {
+                LogHelper.Instance.IsNull(nameof(_instance));
+                return;
+            }
+            await _instance._packageChannel.UpdateTagCacheAsync(tagId);
+        }
+        #endregion
+
+        #region 更新“多个标签”缓存
+        /// <summary>更新“多个标签”缓存</summary>
+        public static async Task UpdateTagCacheRangeAsync(List<long> ids)
+        {
+            if (_instance == null)
+            {
+                LogHelper.Instance.IsNull(nameof(_instance));
+                return;
+            }
+            await _instance._packageChannel.UpdateTagCacheRangeAsync(ids);
+        }
+        #endregion
+
+        #region 删除“单个标签”缓存
+        /// <summary>删除“单个标签”缓存</summary>
+        public static async Task DeleteTagCacheAsync(long id)
+        {
+            if (_instance == null)
+            {
+                LogHelper.Instance.IsNull(nameof(_instance));
+                return;
+            }
+            await _instance._packageChannel.DeleteTagCacheAsync(id);
+        }
+        #endregion
+
+        #region 删除“多个标签”缓存
+        /// <summary>删除“多个标签”缓存</summary>
+        public static async Task DeleteTagCacheRangeAsync(List<long> ids)
+        {
+            if (_instance == null)
+            {
+                LogHelper.Instance.IsNull(nameof(_instance));
+                return;
+            }
+            await _instance._packageChannel.DeleteTagCacheRangeAsync(ids);
+        }
+        #endregion
+        #endregion [缓存]
         #endregion 【Functions】
     }
 }

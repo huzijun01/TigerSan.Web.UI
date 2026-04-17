@@ -13,7 +13,7 @@ export class CompanyHelper extends IdNameModelHelper<CompanyModel> {
 
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdNameModel> {
-        return super.GetIdNameSelectModel('请选择公司', 'Please select a company')
+        return super.GetIdNameSelectModel('公司', 'Company')
     }
 
     /** “公司数组”转“树配置” */

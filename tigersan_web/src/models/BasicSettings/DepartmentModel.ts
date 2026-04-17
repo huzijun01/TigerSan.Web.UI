@@ -13,7 +13,7 @@ class DepartmentHelper extends IdNameModelHelper<DepartmentModel> {
     // 查:
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdNameModel> {
-        return super.GetIdNameSelectModel('请选择部门', 'Please select a department')
+        return super.GetIdNameSelectModel('部门', 'Department')
     }
 
     /** 筛选“总数” */

@@ -35,8 +35,8 @@ tagMgtTable._onSelectStateChange = InitSelectIsEnableState
 
 // 搜索框:
 const searchTagId = new SearchModel()
-searchTagId.PlaceholderCN.value = '请输入标签ID'
-searchTagId.PlaceholderEN.value = 'Please enter the Tag ID'
+searchTagId.PlaceholderCN.value = '标签ID'
+searchTagId.PlaceholderEN.value = 'Tag ID'
 searchTagId._onSearch = Refresh
 searchTagId._onChange = Refresh
 

@@ -15,10 +15,12 @@ export class TagModel extends IdModel {
     longitude?: number
     latitude?: number
     comment?: string
-    lastReportTime?: Date
+    reportTime?: Date
     // 附加:
     company?: bigint
     companyName?: string
+    site?: bigint
+    siteName?: string
 }
 
 class TagHelper extends IdModelHelper<TagModel> {

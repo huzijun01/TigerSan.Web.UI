@@ -25,6 +25,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public DateTime CreateTime { get; set; } = DateTime.Now;
         [SnakeColumn]
-        public DateTime? LastReportTime { get; set; } = null;
+        public DateTime? ReportTime { get; set; } = null;
     }
 }

@@ -7,12 +7,13 @@
                     <div class="row-panel">
                         <Select :model="form.selectCompany"></Select>
                         <Select :model="form.selectDepartment"></Select>
-                        <Select :model="form.selectOnlineState"></Select>
+                        <Select :model="form.selectAssetState"></Select>
                     </div>
                     <div class="row-panel">
                         <Select :model="form.selectAssetType"></Select>
-                        <Select :model="form.selectAssetState"></Select>
                         <Search :model="form.searchAssetId"></Search>
+                        <Select :model="form.selectOnlineState"></Select>
+                        <Select :model="form.selectErrorType"></Select>
                     </div>
                 </div>
                 <div class="button-panel">

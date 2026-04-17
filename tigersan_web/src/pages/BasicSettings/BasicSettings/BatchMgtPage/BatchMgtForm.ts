@@ -15,8 +15,8 @@ selectCompanyForm._onChange = selectScenarioForm.UpdateItemsAsync
 
 /** 搜索框 */
 const searchBatchId = new SearchModel()
-searchBatchId.PlaceholderCN.value = '请输入批次'
-searchBatchId.PlaceholderEN.value = 'Please enter the Batch ID'
+searchBatchId.PlaceholderCN.value = '批次'
+searchBatchId.PlaceholderEN.value = 'Batch ID'
 searchBatchId._onChange = Refresh
 searchBatchId._onSearch = Refresh
 

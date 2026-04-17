@@ -12,5 +12,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<List<IdName>> GetBelongCompanyList();
         public Task<List<IdName>> GetBelongSiteList(long? company = null);
         public Task<List<IdName>> GetBelongStationTypeList(long? company = null, long? site = null);
+        public Task<SiteEntity?> GetSite(long id);
+        public Task<Dictionary<long, SiteEntity>> GetSiteDict(List<long> ids);
     }
 }

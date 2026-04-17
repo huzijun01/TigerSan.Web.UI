@@ -36,7 +36,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<object>> Add([FromBody] TagEntity entity)
         {
             var res = await _service.Add(entity);
-            await SseInstance.UpdateTagCachesAsync();
+            await SseInstance.UpdateTagCacheAsync(entity.TagId);
             return res;
         }
 
@@ -46,7 +46,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<object>> AddRange([FromBody] List<TagEntity> entities)
         {
             var res = await _service.AddRange(entities);
-            await SseInstance.UpdateTagCachesAsync();
+            await SseInstance.UpdateTagCacheRangeAsync(entities.Select(e => e.Id).ToList());
             return res;
         }
         #endregion [增]
@@ -57,7 +57,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<object>> Edit([FromBody] TagEntity entity)
         {
             var res = await _service.Edit(entity);
-            await SseInstance.UpdateTagCachesAsync();
+            await SseInstance.UpdateTagCacheAsync(entity.TagId);
             return res;
         }
 
@@ -67,7 +67,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<object>> EditRange([FromBody] List<TagEntity> entities)
         {
             var res = await _service.EditRange(entities);
-            await SseInstance.UpdateTagCachesAsync();
+            await SseInstance.UpdateTagCacheRangeAsync(entities.Select(e => e.Id).ToList());
             return res;
         }
         #endregion [改]
@@ -79,7 +79,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<object>> Remove(long id)
         {
             var res = await _service.Remove(id);
-            await SseInstance.UpdateTagCachesAsync();
+            await SseInstance.DeleteTagCacheAsync(id);
             return res;
         }
 
@@ -89,7 +89,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         public override async Task<MyActionResult<object>> RemoveRange([FromBody] List<long> ids)
         {
             var res = await _service.RemoveRange(ids);
-            await SseInstance.UpdateTagCachesAsync();
+            await SseInstance.DeleteTagCacheRangeAsync(ids);
             return res;
         }
         #endregion [删]

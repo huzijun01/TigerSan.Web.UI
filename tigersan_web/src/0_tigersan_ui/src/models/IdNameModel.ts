@@ -66,7 +66,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
     GetIdNameSelectModel(
         placeholderCN: string,
         placeholderEN: string,
-        width: number = 208): SelectModel<IdNameModel> {
+        width: number = 200): SelectModel<IdNameModel> {
         const select = new SelectModel<IdNameModel>()
         select.Width.value = width
         select.IsAllowSearch.value = true

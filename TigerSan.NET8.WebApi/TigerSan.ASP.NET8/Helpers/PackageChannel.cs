@@ -1,9 +1,11 @@
 ﻿using System.Globalization;
 using System.Threading.Channels;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.TimerHelper;
 
 namespace TigerSan.NET8.WebApi.Helpers
@@ -20,13 +22,17 @@ namespace TigerSan.NET8.WebApi.Helpers
         /// <summary>“在线状态”更新定时器</summary>
         public ActionTimer _onlineStateUpdater = new ActionTimer(5000, true);
         /// <summary>“标签”缓存</summary>
-        private Dictionary<string, TagEntity> _tagCaches = new Dictionary<string, TagEntity>();
+        private Dictionary<string, TagDto> _tagCaches = new Dictionary<string, TagDto>();
         /// <summary>“基站”缓存</summary>
         private Dictionary<string, BaseStationEntity> _baseStationCaches = new Dictionary<string, BaseStationEntity>();
         /// <summary>“标签”服务</summary>
         private ITagService TagService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ITagService>(); }
         /// <summary>“基站”服务</summary>
         private IBaseStationService BaseStationService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IBaseStationService>(); }
+        /// <summary>“资产”服务</summary>
+        private IAssetService AssetService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IAssetService>(); }
+        /// <summary>“资产记录”服务</summary>
+        private IAssetRecordService AssetRecordService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IAssetRecordService>(); }
         #endregion 【Fields】
 
         #region 【Ctor】
@@ -44,119 +50,8 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion 【Ctor】
 
-        #region 生产
-        /// <summary>生产</summary>
-        public async ValueTask Publish(string data) => await _channel.Writer.WriteAsync(data);
-        #endregion
-
-        #region 消费
-        /// <summary>消费</summary>
-        public async Task StartProcessingAsync(CancellationToken ct)
-        {
-            var buffer = new List<string>(BatchSize);
-            while (await _channel.Reader.WaitToReadAsync(ct))
-            {
-                while (buffer.Count < BatchSize && _channel.Reader.TryRead(out var item))
-                {
-                    buffer.Add(item);
-                }
-
-                if (buffer.Any())
-                {
-                    await SaveToDbAsync(buffer);
-                    buffer.Clear();
-                }
-            }
-        }
-        #endregion
-
-        #region 保存到DB
-        /// <summary>保存到DB</summary>
-        private async Task SaveToDbAsync(List<string> datas)
-        {
-            Console.WriteLine($"Received SSE data:");
-            foreach (var data in datas)
-            {
-                var pkgBase = PackageBase.Deserialize(data);
-                if (pkgBase == null)
-                {
-                    LogHelper.Instance.IsNull(nameof(pkgBase));
-                    return;
-                }
-
-                if (Equals(pkgBase.Type, PackageType.BluetoothTag))
-                {
-                    var pkgBluetoothTag = BluetoothTagPackage.Deserialize(data);
-                    if (pkgBluetoothTag == null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(pkgBluetoothTag));
-                        return;
-                    }
-
-                    await EditBaseStationAndTagAsync(pkgBluetoothTag);
-                    //Console.WriteLine(pkgBluetoothTag.Serialize());
-                }
-                else if (Equals(pkgBase.Type, PackageType.Locator4g))
-                {
-                    var pkgBluetoothTag = Locator4gPackage.Deserialize(data);
-                    if (pkgBluetoothTag == null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(pkgBluetoothTag));
-                        return;
-                    }
-
-                    await EditBaseStationAndTagAsync(pkgBluetoothTag);
-                    //Console.WriteLine(pkgBluetoothTag.Serialize());
-                }
-                else
-                {
-                    LogHelper.Instance.Warning($"Unknown package type: {pkgBase.Type}");
-                }
-            }
-        }
-        #endregion
-
-        #region 更新“基站”缓存
-        /// <summary>更新“基站”缓存</summary>
-        public async Task UpdateBaseStationCachesAsync()
-        {
-            var baseStationService = BaseStationService;
-            if (baseStationService == null)
-            {
-                LogHelper.Instance.IsNull(nameof(baseStationService));
-                return;
-            }
-
-            var baseStations = await baseStationService.GetList();
-
-            _baseStationCaches.Clear();
-            foreach (var baseStation in baseStations)
-            {
-                _baseStationCaches.Add(baseStation.MacAddr, baseStation);
-            }
-        }
-        #endregion
-
-        #region 更新“标签”缓存
-        /// <summary>更新“标签”缓存</summary>
-        public async Task UpdateTagCachesAsync()
-        {
-            var tagService = TagService;
-            if (tagService == null)
-            {
-                LogHelper.Instance.IsNull(nameof(tagService));
-                return;
-            }
-
-            var tags = await tagService.GetList();
-            _tagCaches.Clear();
-            foreach (var tag in tags)
-            {
-                _tagCaches.Add(tag.TagId, tag);
-            }
-        }
-        #endregion
-
+        #region 【Functions】
+        #region [Private]
         #region 获取“当前UTC时间”
         /// <summary>当前UTC时间</summary>
         private DateTime GetUtcNow()
@@ -191,6 +86,207 @@ namespace TigerSan.NET8.WebApi.Helpers
             return time;
         }
         #endregion
+        #endregion [Private]
+
+        #region [管道]
+        #region 生产
+        /// <summary>生产</summary>
+        public async ValueTask Publish(string data) => await _channel.Writer.WriteAsync(data);
+        #endregion
+
+        #region 消费
+        /// <summary>消费</summary>
+        public async Task StartProcessingAsync(CancellationToken ct)
+        {
+            var buffer = new List<string>(BatchSize);
+            while (await _channel.Reader.WaitToReadAsync(ct))
+            {
+                while (buffer.Count < BatchSize && _channel.Reader.TryRead(out var item))
+                {
+                    buffer.Add(item);
+                }
+
+                if (buffer.Any())
+                {
+                    await SaveToDbAsync(buffer);
+                    buffer.Clear();
+                }
+            }
+        }
+        #endregion
+        #endregion [管道]
+
+        #region [缓存]
+        #region 更新“基站”缓存
+        /// <summary>更新“基站”缓存</summary>
+        public async Task UpdateBaseStationCachesAsync()
+        {
+            var baseStationService = BaseStationService;
+            if (baseStationService == null)
+            {
+                LogHelper.Instance.IsNull(nameof(baseStationService));
+                return;
+            }
+
+            var baseStations = await baseStationService.GetList();
+
+            _baseStationCaches.Clear();
+            foreach (var baseStation in baseStations)
+            {
+                _baseStationCaches.Add(baseStation.MacAddr, baseStation);
+            }
+        }
+        #endregion
+
+        #region 更新“标签”缓存
+        /// <summary>更新“标签”缓存</summary>
+        public async Task UpdateTagCachesAsync()
+        {
+            var tagService = TagService;
+            if (tagService == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tagService));
+                return;
+            }
+
+            var tags = await tagService.GetFullList();
+            _tagCaches.Clear();
+            foreach (var tag in tags)
+            {
+                _tagCaches.Add(tag.TagId, tag);
+            }
+        }
+        #endregion
+
+        #region 删除“多个标签”缓存
+        /// <summary>删除“多个标签”缓存</summary>
+        public async Task DeleteTagCacheRangeAsync(List<long> ids)
+        {
+            var tagService = TagService;
+            if (tagService == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tagService));
+                return;
+            }
+
+            var tags = await tagService.GetList(ids);
+            foreach (var tag in tags)
+            {
+                _tagCaches.Remove(tag.TagId);
+            }
+        }
+        #endregion
+
+        #region 删除“单个标签”缓存
+        /// <summary>删除“单个标签”缓存</summary>
+        public async Task DeleteTagCacheAsync(long id)
+        {
+            var tagService = TagService;
+            if (tagService == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tagService));
+                return;
+            }
+
+            var tag = await tagService.Get(id);
+            if (tag == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tag));
+                return;
+            }
+
+            _tagCaches.Remove(tag.TagId);
+        }
+        #endregion
+
+        #region 更新“单个标签”缓存
+        /// <summary>更新“单个标签”缓存</summary>
+        public async Task UpdateTagCacheAsync(string tagId)
+        {
+            var tagService = TagService;
+            if (tagService == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tagService));
+                return;
+            }
+
+            var tag = await tagService.GetFull(tagId);
+            if (tag == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tag));
+                return;
+            }
+
+            _tagCaches[tagId] = tag;
+        }
+        #endregion
+
+        #region 更新“多个标签”缓存
+        /// <summary>更新“多个标签”缓存</summary>
+        public async Task UpdateTagCacheRangeAsync(List<long> ids)
+        {
+            var tagService = TagService;
+            if (tagService == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tagService));
+                return;
+            }
+
+            var tags = await tagService.GetFullList(ids);
+            foreach (var tag in tags)
+            {
+                _tagCaches[tag.TagId] = tag;
+            }
+        }
+        #endregion
+        #endregion [缓存]
+
+        #region [DB]
+        #region 保存到DB
+        /// <summary>保存到DB</summary>
+        private async Task SaveToDbAsync(List<string> datas)
+        {
+            Console.WriteLine($"Received SSE data:");
+            foreach (var data in datas)
+            {
+                var pkgBase = PackageBase.Deserialize(data);
+                if (pkgBase == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(pkgBase));
+                    return;
+                }
+
+                if (Equals(pkgBase.Type, PackageType.BluetoothTag))
+                {
+                    var pkgBluetoothTag = BluetoothTagPackage.Deserialize(data);
+                    if (pkgBluetoothTag == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(pkgBluetoothTag));
+                        return;
+                    }
+
+                    await EditBaseStationAndTagAsync(pkgBluetoothTag);
+                    //Console.WriteLine(pkgBluetoothTag.Serialize());
+                }
+                else if (Equals(pkgBase.Type, PackageType.Locator4g))
+                {
+                    var pkgLocator4g = Locator4gPackage.Deserialize(data);
+                    if (pkgLocator4g == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(pkgLocator4g));
+                        return;
+                    }
+
+                    await EditBaseStationAndTagAsync(pkgLocator4g);
+                    //Console.WriteLine(pkgBluetoothTag.Serialize());
+                }
+                else
+                {
+                    LogHelper.Instance.Warning($"Unknown package type: {pkgBase.Type}");
+                }
+            }
+        }
+        #endregion
 
         #region 修改“基站”
         /// <summary>修改“基站”</summary>
@@ -210,7 +306,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return null;
             }
 
-            baseStation.LastReportTime = GetUtc(ReportTime);
+            baseStation.ReportTime = GetUtc(ReportTime);
             baseStation.OnlineState = OnlineStates.Online;
             updateBaseStation?.Invoke(baseStation);
 
@@ -220,8 +316,8 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
-        #region 修改“基站”和“标签”
-        /// <summary>修改“基站”和“标签”</summary>
+        #region 修改“基站”和“标签”（蓝牙）
+        /// <summary>修改“基站”和“标签”（蓝牙）</summary>
         public async Task EditBaseStationAndTagAsync(BluetoothTagPackage package)
         {
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
@@ -238,18 +334,25 @@ namespace TigerSan.NET8.WebApi.Helpers
                     return;
                 }
 
-                tag.LastReportTime = GetUtc(package.ReportTime);
-                tag.OnlineState = OnlineStates.Online;
-                tag.Station = baseStation?.Id;
-                tag.Battery = tagData.Voltage;
-                tag.Temperature = tagData.Temperature;
-                tag.Signal = tagData.Signal;
+                var newTag = new TagDto();
+                newTag.ShallowCopy(tag);
+                newTag.ReportTime = GetUtc(package.ReportTime);
+                newTag.OnlineState = OnlineStates.Online;
+                newTag.Station = baseStation?.Id;
+                newTag.Battery = tagData.Voltage;
+                newTag.Temperature = tagData.Temperature;
+                newTag.Signal = tagData.Signal;
 
-                await tagService.Edit(tag);
+                await tagService.Edit(newTag);
+                _tagCaches[tagData.TagId] = newTag;
+
+                await EditAssetRecordAsync(tag, newTag);
             }
         }
+        #endregion
 
-        /// <summary>修改“基站”和“标签”</summary>
+        #region 修改“基站”和“标签”（4G）
+        /// <summary>修改“基站”和“标签”（4G）</summary>
         public async Task EditBaseStationAndTagAsync(Locator4gPackage package)
         {
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
@@ -266,13 +369,75 @@ namespace TigerSan.NET8.WebApi.Helpers
                     return;
                 }
 
-                tag.LastReportTime = GetUtc(package.ReportTime);
-                tag.OnlineState = OnlineStates.Online;
-                tag.Station = baseStation?.Id;
-                tag.Battery = package.Data.Battery;
-                tag.Signal = tagData.SignalStrength;
+                var newTag = new TagDto();
+                newTag.ShallowCopy(tag);
+                newTag.ReportTime = GetUtc(package.ReportTime);
+                newTag.OnlineState = OnlineStates.Online;
+                newTag.Station = baseStation?.Id;
+                newTag.Battery = package.Data.Battery;
+                newTag.Signal = tagData.SignalStrength;
 
-                await tagService.Edit(tag);
+                await tagService.Edit(newTag);
+                _tagCaches[tagData.MacAddr] = newTag;
+
+                await EditAssetRecordAsync(tag, newTag);
+            }
+        }
+        #endregion
+
+        #region 修改“资产记录”
+        /// <summary>修改“资产记录”</summary>
+        public async Task EditAssetRecordAsync(TagDto oldTag, TagDto newTag)
+        {
+            if (oldTag.Asset == null || newTag.Asset == null) return;
+
+            var asset = AssetService.Get(oldTag.Asset.Value);
+            var lastRecord = await AssetRecordService.GetLast(asset.Id);
+
+            if (lastRecord == null) // 首条记录，新增“在库”记录
+            {
+                lastRecord = new AssetRecordEntity()
+                {
+                    Asset = newTag.Asset.Value,
+                    Tag = newTag.Id,
+                    State = AssetStates.InStore,
+                };
+                lastRecord.ShallowCopy(newTag);
+
+                await AssetRecordService.Add(lastRecord);
+                return;
+            }
+            else if (oldTag.Site != newTag.Site && newTag.Site != null) // 场地变更，新增“入库”记录
+            {
+                lastRecord.ShallowCopy(newTag);
+                lastRecord.State = AssetStates.Inbound;
+                await AssetRecordService.Add(lastRecord);
+                return;
+            }
+            else // 同一场地
+            {
+                lastRecord.ShallowCopy(newTag);
+
+                // 判断是否“滞留”:
+                var lastInboundRecord = await AssetRecordService.GetLastInbound(asset.Id);
+                if (lastInboundRecord == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(lastInboundRecord));
+                    return;
+                }
+
+                lastRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours > Constants.Stolid_Threshold_Hours
+                    ? AssetStates.Stolid : AssetStates.InStore;
+
+                if (lastRecord.State == AssetStates.Inbound) // 新增“在库”记录
+                {
+                    await AssetRecordService.Add(lastRecord);
+                }
+                else // 更新“在库”记录
+                {
+                    await AssetRecordService.Edit(lastRecord);
+                }
+                return;
             }
         }
         #endregion
@@ -289,8 +454,8 @@ namespace TigerSan.NET8.WebApi.Helpers
                 var baseStation = baseStationCache.Value;
                 if (baseStation.OnlineState == OnlineStates.Offline) continue;
 
-                if (baseStation.LastReportTime == null ||
-                    (GetUtcNow() - baseStation.LastReportTime.Value).TotalSeconds > baseStation.HeartbeatInterval)
+                if (baseStation.ReportTime == null ||
+                    (GetUtcNow() - baseStation.ReportTime.Value).TotalSeconds > baseStation.HeartbeatInterval)
                 {
                     baseStation.OnlineState = OnlineStates.Offline;
                     timeOutBaseStations.Add(baseStation);
@@ -304,19 +469,26 @@ namespace TigerSan.NET8.WebApi.Helpers
 
             foreach (var tagCache in _tagCaches)
             {
-                var tag = tagCache.Value;
-                if (tag.OnlineState == OnlineStates.Offline) continue;
+                var newTag = new TagDto();
+                newTag.ShallowCopy(tagCache.Value);
+                if (newTag.OnlineState == OnlineStates.Offline) continue;
 
-                if (tag.LastReportTime == null ||
-                    (GetUtcNow() - tag.LastReportTime.Value).TotalSeconds > Constants.Report_Interval_Seconds)
+                if (newTag.ReportTime == null ||
+                    (GetUtcNow() - newTag.ReportTime.Value).TotalSeconds > Constants.Report_Interval_Seconds)
                 {
-                    tag.OnlineState = OnlineStates.Offline;
-                    timeOutTags.Add(tag);
+                    newTag.OnlineState = OnlineStates.Offline;
+                    timeOutTags.Add(newTag);
                 }
+
+                EditAssetRecordAsync(tagCache.Value, newTag);
+
+                _tagCaches[newTag.TagId] = newTag;
             }
 
             TagService.EditRange(timeOutTags);
         }
         #endregion
+        #endregion [DB]
+        #endregion 【Functions】
     }
 }

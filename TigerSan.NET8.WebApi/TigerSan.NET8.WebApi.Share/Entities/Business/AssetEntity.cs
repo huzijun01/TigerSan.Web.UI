@@ -3,7 +3,8 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
-    public class AssetBaseEntity : IdEntityBase
+    [Table("asset")]
+    public class AssetEntity : IdEntityBase
     {
         [SnakeColumn]
         public long Department { get; set; }
@@ -16,6 +17,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public OnlineStates OnlineState { get; set; }
         [SnakeColumn]
+        public ErrorTypes? ErrorType { get; set; }
+        [SnakeColumn]
         public long? Tag { get; set; }
         [SnakeColumn]
         public long? LastRecord { get; set; }
@@ -27,11 +30,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public DateTime? BindingTime { get; set; }
         [SnakeColumn]
         public DateTime? CalculationTime { get; set; }
-    }
-
-    [Table("asset")]
-    public class AssetEntity : AssetBaseEntity
-    {
         [SnakeColumn]
         public int? DailyMove { get; set; }
         [SnakeColumn]

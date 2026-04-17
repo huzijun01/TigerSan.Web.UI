@@ -10,6 +10,8 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 
         public Task<int> GetCount(FilterDto? filter = null);
 
+        public Task<List<TEntity>> GetList(List<long> ids);
+
         public Task<List<TEntity>> GetList(
             int? pageSize = null,
             int? pageNumber = null,

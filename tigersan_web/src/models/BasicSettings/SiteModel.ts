@@ -19,7 +19,7 @@ class SiteHelper extends IdNameModelHelper<SiteModel> {
     // 查:
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdNameModel> {
-        return super.GetIdNameSelectModel('请选择场地', 'Please select a site')
+        return super.GetIdNameSelectModel('场地', 'Site')
     }
 
     /** 筛选“总数” */

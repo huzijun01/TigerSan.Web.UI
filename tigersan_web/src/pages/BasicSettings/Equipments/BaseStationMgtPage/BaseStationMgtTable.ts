@@ -1,4 +1,4 @@
-import { Colors, OnlineState, ItemType, ObjectHelper, OnlineStates, TableModel, IsEnable } from '@/0_tigersan_ui/tigerui'
+import { Colors, OnlineState, ItemType, ObjectHelper, OnlineStates, TableModel, IsEnable, Battery } from '@/0_tigersan_ui/tigerui'
 import { BaseStationModel, companyHelper, siteHelper, stationTypeHelper } from '@/models'
 
 // 列头:
@@ -82,11 +82,11 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
         _getString: source => ObjectHelper.GetDateString(source.createTime)
     },
     {
-        _propName: 'lastReportTime',
-        Text: '最后上报时间',
+        _propName: 'reportTime',
+        Text: '上报时间',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getString: source => ObjectHelper.GetDateString(source.lastReportTime)
+        _getString: source => ObjectHelper.GetDateString(source.reportTime)
     },
 ])
 
@@ -115,14 +115,7 @@ baseStationMgtTable._initItem = itemModel => {
     }
 
     if (itemModel._headerModel._propName === 'battery') {
-        const battery = itemModel.GetSource() as number
-        if (battery >= 50) {
-            itemModel.Color.value = Colors.Success
-        } else if (battery >= 25) {
-            itemModel.Color.value = Colors.Warning
-        } else {
-            itemModel.Color.value = Colors.Danger
-        }
+        itemModel.Color.value = Battery.GetColor(itemModel.GetSource() as number)
     }
 }
 

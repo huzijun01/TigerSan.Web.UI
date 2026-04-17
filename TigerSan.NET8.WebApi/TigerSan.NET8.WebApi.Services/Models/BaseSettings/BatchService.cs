@@ -25,6 +25,36 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
+        #region 获取“公司”
+        /// <summary>获取“公司”</summary>
+        public async Task<CompanyEntity?> GetCompany(long id)
+        {
+            try
+            {
+                var batch = await _dbSet.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+                if (batch == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(batch));
+                    return null;
+                }
+
+                var company = await _db.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Id == batch.Company);
+                if (company == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(company));
+                    return null;
+                }
+
+                return company;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return null;
+            }
+        }
+        #endregion
+
         #region 获取“公司”字典
         /// <summary>获取“公司”字典</summary>
         public async Task<Dictionary<long, CompanyEntity>> GetCompanyDict(List<long> ids)

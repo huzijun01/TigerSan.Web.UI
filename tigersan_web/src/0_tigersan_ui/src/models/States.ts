@@ -1,6 +1,7 @@
 import { Texts } from "../texts"
 import { SelectModel } from "./Inputs/SelectModel"
 import { ObjectHelper } from "../helpers/ObjectHelper"
+import { Colors } from "../base"
 
 export enum OnlineStates {
     Offline = 0,
@@ -52,5 +53,18 @@ export class IsEnable {
         select.Items.push(...[true, false])
         select._converter = IsEnable.ToString
         return select
+    }
+}
+
+
+export class Battery {
+    static readonly GetColor = (battery: number) => {
+        if (battery >= 50) {
+            return Colors.Success
+        } else if (battery >= 25) {
+            return Colors.Warning
+        } else {
+            return Colors.Danger
+        }
     }
 }

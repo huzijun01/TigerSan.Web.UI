@@ -1,5 +1,5 @@
 import { IdModel, IdModelHelper, AxiosHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
-import { AssetStates } from "../base/AssetStates"
+import { AssetStates, ErrorTypes } from "../base/AssetStates"
 
 /** "资产基类"模型 */
 class AssetBaseModel extends IdModel {
@@ -8,6 +8,7 @@ class AssetBaseModel extends IdModel {
     assetId = ''
     state: AssetStates = AssetStates.NoRecord
     onlineState: OnlineStates = OnlineStates.Offline
+    errorType?: ErrorTypes
     tag?: bigint
     lastRecord?: bigint
     name? = ''
@@ -25,6 +26,8 @@ export class AssetModel extends AssetBaseModel {
     typeName = ''
     stateName = ''
     tagId? = ''
+    siteName? = ''
+    battery? = ''
     // 计算:
     dailyMove?: number
     monthlyMove?: number
@@ -46,6 +49,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         type?: bigint,
         state?: number,
         onlineState?: OnlineStates,
+        errorType?: ErrorTypes,
         assetId?: string,
     }) => await AxiosHelper.GetCount(this._action, {
         filter: {
@@ -59,6 +63,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
                 { propName: 'Type', value: param.type },
                 { propName: 'State', value: param.state },
                 { propName: 'OnlineState', value: param.onlineState },
+                { propName: 'ErrorType', value: param.errorType },
                 { propName: 'AssetId', value: param.assetId },
             ],
         }
@@ -73,6 +78,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         type?: bigint,
         state?: number,
         onlineState?: OnlineStates,
+        errorType?: ErrorTypes,
         assetId?: string,
     }) => await AxiosHelper.GetList<AssetModel>(this._action, {
         strList: 'FullList',
@@ -89,6 +95,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
                 { propName: 'Type', value: param.type },
                 { propName: 'State', value: param.state },
                 { propName: 'OnlineState', value: param.onlineState },
+                { propName: 'ErrorType', value: param.errorType },
                 { propName: 'AssetId', value: param.assetId },
             ],
         }
