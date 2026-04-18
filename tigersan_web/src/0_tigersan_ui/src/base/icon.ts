@@ -56,10 +56,13 @@ export class Icons {
     static Eye = ""
     static EQP = ""
     static Edit = ""
+    static Error = ""
+    static Exchange = ""
     static Eye_Close = ""
     static Environment = ""
 
     // F:
+    static Flowchart = ""
     static File_New = ""
     static File_Linear = ""
     static File_Planar = ""
@@ -101,6 +104,7 @@ export class Icons {
     static Lightning = ""
     static Love_Linea = ""
     static Love_Planar = ""
+    static Log_Exchange = ""
     static Loading_Dot = ""
     static Loading_Circle = ""
 
@@ -108,6 +112,7 @@ export class Icons {
     static Mute = ""
     static Menu = ""
     static Memory = ""
+    static MindMap = ""
     static Monitor = ""
     static Maximize = ""
     static Minimize = ""
@@ -173,6 +178,7 @@ export class Icons {
     static Table = ""
     static Tools = ""
     static Topmost = ""
+    static Transfer = ""
     static Transport = ""
     static TextBox_A = ""
     static TextBox_T = ""

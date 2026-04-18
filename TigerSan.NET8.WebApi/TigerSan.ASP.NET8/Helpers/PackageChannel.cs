@@ -1,12 +1,12 @@
 ﻿using System.Globalization;
 using System.Threading.Channels;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.TimerHelper;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Share.Packages;
-using TigerSan.TimerHelper;
+using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -394,50 +394,59 @@ namespace TigerSan.NET8.WebApi.Helpers
             var asset = AssetService.Get(oldTag.Asset.Value);
             var lastRecord = await AssetRecordService.GetLast(asset.Id);
 
-            if (lastRecord == null) // 首条记录，新增“在库”记录
+            if (lastRecord == null) // 首条记录，新增“入库记录”
             {
                 lastRecord = new AssetRecordEntity()
                 {
                     Asset = newTag.Asset.Value,
                     Tag = newTag.Id,
-                    State = AssetStates.InStore,
+                    State = AssetStates.Inbound,
                 };
                 lastRecord.ShallowCopy(newTag);
 
                 await AssetRecordService.Add(lastRecord);
-                return;
             }
-            else if (oldTag.Site != newTag.Site && newTag.Site != null) // 场地变更，新增“入库”记录
+            else if (oldTag.Site != newTag.Site) // “场地”改变，新增“入库记录”
             {
+                if (lastRecord.State != AssetStates.Outbound) // 无“出库记录”
+                {
+                    // 将“最新记录”改为“出库记录”：
+                    lastRecord.ShallowCopy(newTag);
+                    lastRecord.State = AssetStates.Outbound;
+                    await AssetRecordService.Edit(lastRecord);
+                }
+
                 lastRecord.ShallowCopy(newTag);
                 lastRecord.State = AssetStates.Inbound;
                 await AssetRecordService.Add(lastRecord);
-                return;
             }
             else // 同一场地
             {
                 lastRecord.ShallowCopy(newTag);
 
-                // 判断是否“滞留”:
-                var lastInboundRecord = await AssetRecordService.GetLastInbound(asset.Id);
-                if (lastInboundRecord == null)
+                if (lastRecord.State == AssetStates.InStore) // 在库
                 {
-                    LogHelper.Instance.IsNull(nameof(lastInboundRecord));
-                    return;
+                    // 判断是否“滞留”:
+                    var lastInboundRecord = await AssetRecordService.GetLastInbound(asset.Id);
+                    if (lastInboundRecord == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(lastInboundRecord));
+                        return;
+                    }
+
+                    lastRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours
+                        > Constants.Stolid_Threshold_Hours
+                        ? AssetStates.Stolid : AssetStates.InStore;
                 }
 
-                lastRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours > Constants.Stolid_Threshold_Hours
-                    ? AssetStates.Stolid : AssetStates.InStore;
-
-                if (lastRecord.State == AssetStates.Inbound) // 新增“在库”记录
+                if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变，新增记录
                 {
                     await AssetRecordService.Add(lastRecord);
                 }
-                else // 更新“在库”记录
+                else // 更新记录
                 {
                     await AssetRecordService.Edit(lastRecord);
                 }
-                return;
             }
         }
         #endregion
@@ -480,7 +489,13 @@ namespace TigerSan.NET8.WebApi.Helpers
                     timeOutTags.Add(newTag);
                 }
 
-                EditAssetRecordAsync(tagCache.Value, newTag);
+                // 修改“资产记录”:
+                EditAssetRecordAsync(tagCache.Value, newTag).ContinueWith(task =>
+                {
+                    if (!task.IsFaulted) return;
+                    var ex = task.Exception?.GetBaseException();
+                    LogHelper.Instance.Error(ex?.GetMessage());
+                });
 
                 _tagCaches[newTag.TagId] = newTag;
             }
