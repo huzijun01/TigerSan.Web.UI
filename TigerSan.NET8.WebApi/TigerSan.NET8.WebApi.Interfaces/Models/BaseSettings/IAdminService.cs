@@ -5,6 +5,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IAdminService : IIdNameServiceBase<AdminEntity>
     {
-        public Task<MyActionResult<AdminEntity>> GetByName(string name, string password);
+        public Task<MyActionResult<AdminEntity>> GetByName(string name, bool clearPassword = true);
     }
 }

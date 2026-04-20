@@ -74,13 +74,16 @@
             </FormItem>
         </FormRow>
     </PopForm>
+
+    <!-- 弹窗 -->
+    <PopWindow :model="assetDetail">123</PopWindow>
 </template>
 
 <script lang="ts" setup>
 import form from './AssetMgtForm'
 import { onMounted } from 'vue'
-import { assetMgtTable, pagination } from './AssetMgtTable'
-import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
+import { assetMgtTable, pagination, assetDetail } from './AssetMgtTable'
+import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

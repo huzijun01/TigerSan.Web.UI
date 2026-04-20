@@ -10,8 +10,10 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public string Username { get; set; } = string.Empty;
         [SnakeColumn]
         public string Nickname { get; set; } = string.Empty;
-        [SnakeColumn]
+        [NotMapped]
         public string Password { get; set; } = string.Empty;
+        [Column("password")]
+        public string PasswordHash { get; set; } = string.Empty;
         [SnakeColumn]
         public string? Avatar { get; set; }
         [SnakeColumn]

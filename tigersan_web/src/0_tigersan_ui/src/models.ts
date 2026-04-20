@@ -2,6 +2,9 @@
 export * from "./models/Authority/AuthorityModel"
 export * from "./models/Authority/AuthorityVerify"
 
+/* Dialog: */
+export * from './models/Dialog/PopWindowModel'
+
 /* Drawer: */
 export * from './models/Drawer/DrawerBoxModel'
 

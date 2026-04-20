@@ -5,6 +5,7 @@ import Lottie from "./components/Content/Lottie.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
 import Pop from "./components/Dialog/Pop.vue"
+import PopWindow from "./components/Dialog/PopWindow.vue"
 // Drawer:
 import DrawerBox from "./components/Drawer/DrawerBox.vue"
 // Form:
@@ -55,6 +56,7 @@ export {
     // Dialog:
     Dialog,
     Pop,
+    PopWindow,
     // Drawer:
     DrawerBox,
     // Form:

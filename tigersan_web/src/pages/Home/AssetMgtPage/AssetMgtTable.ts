@@ -1,7 +1,9 @@
-import { Battery, Colors, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
 
 // 字段:
+const assetDetail = new PopWindowModel()
+assetDetail.Title.value = '资产详情'
 /** 分页器 */
 const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
@@ -25,7 +27,7 @@ const assetMgtTable = new TableModel<AssetModel>([
         Text: '资产ID',
         IsReadonly: true,
         Type: ItemType.Link,
-        _onItemClick: () => { }
+        _onItemClick: assetDetail.Show
     },
     {
         _propName: 'tagId',
@@ -176,6 +178,7 @@ assetMgtTable._initItem = itemModel => {
 }
 
 export {
+    assetDetail,
     pagination,
     assetMgtTable,
 }

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -28,12 +29,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 【Functions】
         #region [private]
         /// <summary>获取“完整数据”</summary>
-        private async Task<PersonFullEntity> GetPersonFullEntity(PersonEntity person)
+        private async Task<PersonFullEntity> GetPersonFullEntity(PersonEntity person, bool clearPassword = true)
         {
             var entity = new PersonFullEntity();
 
             entity.ShallowCopy(person);
-            entity.Password = "";
+            if (clearPassword) entity.PasswordHash = string.Empty;
             entity.Department = await _db.Roles.Where(r => r.Id == person.Role).Select(r => r.Department).FirstOrDefaultAsync();
             entity.Company = await _db.Departments.Where(d => d.Id == entity.Department).Select(d => d.Company).FirstOrDefaultAsync();
 
@@ -43,13 +44,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [查]
         #region 获取“完整登录数据”
-        /// <summary>
-        /// 获取“完整登录数据”
-        /// </summary>
+        /// <summary>获取“完整登录数据”</summary>
         /// <param name="search">用户名/电话/邮箱</param>
-        /// <param name="password">密码</param>
         /// <returns></returns>
-        public async Task<MyActionResult<PersonFullEntity>> GetLoginFull(string search, string password)
+        public async Task<MyActionResult<PersonFullEntity>> GetLoginFull(string search, bool clearPassword = true)
         {
             var res = MyResults<PersonFullEntity>.OperationSuccess;
 
@@ -60,12 +58,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     return MyResults<PersonFullEntity>.UserNotExist;
                 }
-                else if (entity.Password != password)
-                {
-                    return MyResults<PersonFullEntity>.PasswordIncorrect;
-                }
 
-                res.Data = await GetPersonFullEntity(entity);
+                res.Data = await GetPersonFullEntity(entity, clearPassword);
             }
             catch (Exception e)
             {
@@ -245,6 +239,34 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
         #endregion [查]
 
+        #region [增]
+        #region 添加“单条数据”
+        /// <summary>添加“单条数据”</summary>
+        public override async Task<MyActionResult<object>> Add(PersonEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                entity.UpdateId();
+                entity.PasswordHash = new PasswordHasher<PersonEntity>().HashPassword(entity, entity.Password);
+                _dbSet.Add(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [增]
+
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
@@ -264,7 +286,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 if (entity.Password.Trim() == "")
                 {
-                    entity.Password = find.Password; // 保持原密码不变
+                    entity.PasswordHash = find.PasswordHash; // 保持原密码不变
+                }
+                else
+                {
+                    entity.PasswordHash = new PasswordHasher<PersonEntity>().HashPassword(entity, entity.Password);
                 }
 
                 find.ShallowCopy(entity);

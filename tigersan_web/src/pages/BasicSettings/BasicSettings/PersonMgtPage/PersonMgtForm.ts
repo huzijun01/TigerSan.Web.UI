@@ -29,7 +29,6 @@ searchName._onChange = Refresh
 searchName._onSearch = Refresh
 
 /** 密码框 */
-let isPasswordChanged = false
 const password = new PasswordModel()
 password.Width.value = '108px'
 
@@ -90,9 +89,8 @@ const configPassword: FormItemConfig<PersonModel, string> = {
     PropText: '密码',
     IsEquired: true,
     Target: password.Value,
-    _onChange: () => isPasswordChanged = true,
     _isVerifyOk: (source, isEdit) => {
-        if (isEdit && !isPasswordChanged) return Verify.GetOK()
+        if (isEdit && source.password === '') return Verify.GetOK()
         return Verify.IsValidWeekPassword(source.password)
     }
 }
@@ -124,7 +122,6 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
-        isPasswordChanged = false
         password.IsShowValue.value = false
         if (isEdit) {
             const rowData = personMgtTable.SelectedRowDatas.value[0]

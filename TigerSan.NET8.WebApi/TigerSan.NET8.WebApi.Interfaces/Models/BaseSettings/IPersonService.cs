@@ -5,7 +5,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IPersonService : IIdServiceBase<PersonEntity>
     {
-        public Task<MyActionResult<PersonFullEntity>> GetLoginFull(string search, string password);
+        public Task<MyActionResult<PersonFullEntity>> GetLoginFull(string search, bool clearPassword = true);
         public Task<List<PersonFullEntity>> GetFullList(
             string? name = null,
             int? pageSize = null,

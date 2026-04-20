@@ -5,6 +5,7 @@ using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -129,34 +130,40 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                var resPerson = await _personService.GetLoginFull(search, password);
-                if (Equals(resPerson.Message, MyResults<UserInfo>.PasswordIncorrect.Message))
-                {
-                    return MyResults<UserInfo>.PasswordIncorrect;
-                }
-                else if (resPerson.IsSuccess)
+                var resPerson = await _personService.GetLoginFull(search, false);
+                if (resPerson.IsSuccess)
                 {
                     var person = resPerson.Data;
                     if (person == null)
                     {
                         return MyResults<UserInfo>.Error("The person is null");
                     }
+                    else if (new PasswordHasher<PersonEntity>().VerifyHashedPassword(person, person.PasswordHash, password)
+                        == PasswordVerificationResult.Failed)
+                    {
+                        return MyResults<UserInfo>.PasswordIncorrect;
+                    }
 
                     res.Data = await GetUserInfoAsync(person);
                     return res;
                 }
 
-                var resAdmin = await _adminService.GetByName(search, password);
-                if (Equals(resAdmin.Message, MyResults<UserInfo>.PasswordIncorrect.Message))
+                var resAdmin = await _adminService.GetByName(search, false);
+                if (!resAdmin.IsSuccess)
                 {
-                    return MyResults<UserInfo>.PasswordIncorrect;
+                    return MyResults<UserInfo>.UserNotExist;
                 }
-                else if (resAdmin.IsSuccess)
+                else
                 {
                     var admin = resAdmin.Data;
                     if (admin == null)
                     {
                         return MyResults<UserInfo>.Error("The admin is null");
+                    }
+                    else if (new PasswordHasher<AdminEntity>().VerifyHashedPassword(admin, admin.PasswordHash, password)
+                        == PasswordVerificationResult.Failed)
+                    {
+                        return MyResults<UserInfo>.PasswordIncorrect;
                     }
 
                     res.Data = await GetUserInfoAsync(admin);
@@ -188,21 +195,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 if (admin != null)
                 {
-                    if (!Equals(admin.Password, edit.OldPassword))
+                    var hasher = new PasswordHasher<AdminEntity>();
+                    if (hasher.VerifyHashedPassword(admin, admin.PasswordHash, edit.OldPassword)
+                        == PasswordVerificationResult.Failed)
                     {
                         return MyResults<object>.PasswordIncorrect;
                     }
 
-                    admin.Password = edit.Password;
+                    admin.PasswordHash = hasher.HashPassword(admin, edit.Password);
                 }
                 else if (person != null)
                 {
-                    if (!Equals(person.Password, edit.OldPassword))
+                    var hasher = new PasswordHasher<PersonEntity>();
+                    if (hasher.VerifyHashedPassword(person, person.PasswordHash, edit.OldPassword)
+                        == PasswordVerificationResult.Failed)
                     {
                         return MyResults<object>.PasswordIncorrect;
                     }
 
-                    person.Password = edit.Password;
+                    person.PasswordHash = hasher.HashPassword(person, edit.Password);
                 }
                 else
                 {
