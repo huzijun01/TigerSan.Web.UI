@@ -1,6 +1,6 @@
 <template>
   <div class="login-form-panel">
-    <div class="title flex-center">{{ AppConfig.Title }}</div>
+    <div class="title flex-center ellipsis">{{ AppConfig.Title }}</div>
     <div class="content-panel flex-stretch">
       <Form :marginH="0">
         <FormRow>

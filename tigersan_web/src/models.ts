@@ -15,3 +15,4 @@ export * from '@/models/Equipments/BaseStationModel'
 export * from '@/models/Equipments/TagModel'
 // Home:
 export * from '@/models/Home/AssetModel'
+export * from '@/models/Home/AssetRecordModel'

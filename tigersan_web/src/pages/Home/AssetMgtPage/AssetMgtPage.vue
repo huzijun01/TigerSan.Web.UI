@@ -76,15 +76,17 @@
     </PopForm>
 
     <!-- 弹窗 -->
-    <PopWindow :model="assetDetail">123</PopWindow>
+    <PopWindow :model="assetDetail">
+        <AssetRecordPage :model="recordPage"></AssetRecordPage>
+    </PopWindow>
 </template>
 
 <script lang="ts" setup>
 import form from './AssetMgtForm'
+import AssetRecordPage from './AssetRecordPage.vue'
 import { onMounted } from 'vue'
-import { assetMgtTable, pagination, assetDetail } from './AssetMgtTable'
+import { assetMgtTable, pagination, assetDetail, recordPage } from './AssetMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
-
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = assetMgtTable

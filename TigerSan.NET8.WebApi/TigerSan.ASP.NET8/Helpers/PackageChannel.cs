@@ -13,6 +13,8 @@ namespace TigerSan.NET8.WebApi.Helpers
     public class PackageChannel
     {
         #region 【Fields】
+        /// <summary>正在修改的标签</summary>
+        private Dictionary<long, TagDto> _editingTags = new Dictionary<long, TagDto>();
         /// <summary>管道</summary>
         private readonly Channel<string> _channel;
         /// <summary>批量阈值</summary>
@@ -318,20 +320,21 @@ namespace TigerSan.NET8.WebApi.Helpers
 
         #region 修改“基站”和“标签”（蓝牙）
         /// <summary>修改“基站”和“标签”（蓝牙）</summary>
-        public async Task EditBaseStationAndTagAsync(BluetoothTagPackage package)
+        public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BluetoothTagPackage package)
         {
+            var res = MyResults<object>.OperationSuccess;
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
 
             foreach (var tagData in package.Data.TagDatas)
             {
                 _tagCaches.TryGetValue(tagData.TagId, out var tag);
-                if (tag == null) return;
+                if (tag == null) return MyResults<object>.ResourceNotExist;
 
                 var tagService = TagService;
                 if (tagService == null)
                 {
                     LogHelper.Instance.IsNull(nameof(tagService));
-                    return;
+                    return MyResults<object>.ResourceNotExist;
                 }
 
                 var newTag = new TagDto();
@@ -339,15 +342,28 @@ namespace TigerSan.NET8.WebApi.Helpers
                 newTag.ReportTime = GetUtc(package.ReportTime);
                 newTag.OnlineState = OnlineStates.Online;
                 newTag.Station = baseStation?.Id;
+                newTag.Longitude = package.Data.Longitude;
+                newTag.Latitude = tagData.Latitude;
                 newTag.Battery = tagData.Voltage;
                 newTag.Temperature = tagData.Temperature;
                 newTag.Signal = tagData.Signal;
 
-                await tagService.Edit(newTag);
+                var resEdit = await tagService.Edit(newTag);
+                if (!resEdit.IsSuccess)
+                {
+                    LogHelper.Instance.Error(resEdit.Message);
+                    res = resEdit;
+                }
                 _tagCaches[tagData.TagId] = newTag;
 
-                await EditAssetRecordAsync(tag, newTag);
+                var resAsset = await EditAssetRecordAsync(tag, newTag);
+                if (!resAsset.IsSuccess)
+                {
+                    LogHelper.Instance.Error(resAsset.Message);
+                    res = resAsset;
+                }
             }
+            return res;
         }
         #endregion
 
@@ -387,66 +403,120 @@ namespace TigerSan.NET8.WebApi.Helpers
 
         #region 修改“资产记录”
         /// <summary>修改“资产记录”</summary>
-        public async Task EditAssetRecordAsync(TagDto oldTag, TagDto newTag)
+        public async Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag)
         {
-            if (oldTag.Asset == null || newTag.Asset == null) return;
-
-            var asset = AssetService.Get(oldTag.Asset.Value);
-            var lastRecord = await AssetRecordService.GetLast(asset.Id);
-
-            if (lastRecord == null) // 首条记录，新增“入库记录”
+            try
             {
-                lastRecord = new AssetRecordEntity()
-                {
-                    Asset = newTag.Asset.Value,
-                    Tag = newTag.Id,
-                    State = AssetStates.Inbound,
-                };
-                lastRecord.ShallowCopy(newTag);
+                _editingTags.TryGetValue(newTag.Id, out var editingTag);
+                if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
+                _editingTags.Add(newTag.Id, newTag);
 
-                await AssetRecordService.Add(lastRecord);
-            }
-            else if (oldTag.Site != newTag.Site) // “场地”改变，新增“入库记录”
-            {
-                if (lastRecord.State != AssetStates.Outbound) // 无“出库记录”
-                {
-                    // 将“最新记录”改为“出库记录”：
-                    lastRecord.ShallowCopy(newTag);
-                    lastRecord.State = AssetStates.Outbound;
-                    await AssetRecordService.Edit(lastRecord);
-                }
+                var lastRecord = await AssetRecordService.GetLast(newTag.Asset.Value);
 
-                lastRecord.ShallowCopy(newTag);
-                lastRecord.State = AssetStates.Inbound;
-                await AssetRecordService.Add(lastRecord);
-            }
-            else // 同一场地
-            {
-                lastRecord.ShallowCopy(newTag);
-
-                if (lastRecord.State == AssetStates.InStore) // 在库
+                if (lastRecord == null) // 首条记录，新增“入库记录”
                 {
-                    // 判断是否“滞留”:
-                    var lastInboundRecord = await AssetRecordService.GetLastInbound(asset.Id);
-                    if (lastInboundRecord == null)
+                    lastRecord = new AssetRecordEntity()
                     {
-                        LogHelper.Instance.IsNull(nameof(lastInboundRecord));
-                        return;
+                        Asset = newTag.Asset.Value,
+                        Tag = newTag.Id,
+                        State = AssetStates.Inbound,
+                    };
+                    lastRecord.ShallowCopy(newTag);
+                    lastRecord.ReportTime = newTag.ReportTime ?? GetUtcNow();
+
+                    var res = await AssetRecordService.Add(lastRecord);
+                    if (res.IsError)
+                    {
+                        LogHelper.Instance.Error(res.Message);
+                        return res;
                     }
 
-                    lastRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours
-                        > Constants.Stolid_Threshold_Hours
-                        ? AssetStates.Stolid : AssetStates.InStore;
+                    return MyResults<object>.OperationSuccess;
                 }
 
-                if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变，新增记录
+                var id = lastRecord.Id;
+                lastRecord.ShallowCopy(newTag);
+                lastRecord.Id = id;
+                lastRecord.ReportTime = newTag.ReportTime ?? GetUtcNow();
+
+                if (oldTag.Station != newTag.Station) // “场地”改变，新增“入库记录”
                 {
-                    await AssetRecordService.Add(lastRecord);
+                    // 添加“场地”:
+                    if (newTag.Station != null)
+                    {
+                        var site = await BaseStationService.GetSite(newTag.Station.Value);
+                        if (site == null)
+                        {
+                            return MyResults<object>.ResourceNotExist;
+                        }
+                        else
+                        {
+                            lastRecord.Site = site.Id;
+                        }
+                    }
+
+                    if (lastRecord.State != AssetStates.Outbound) // 无“出库记录”
+                    {
+                        // 将“最新记录”改为“出库记录”：
+                        lastRecord.State = AssetStates.Outbound;
+                        var resEdit = await AssetRecordService.Edit(lastRecord);
+                        if (resEdit.IsError)
+                        {
+                            LogHelper.Instance.Error(resEdit.Message);
+                            return resEdit;
+                        }
+                    }
+
+                    lastRecord.State = AssetStates.Inbound;
+                    var res = await AssetRecordService.Add(lastRecord);
+                    if (res.IsError)
+                    {
+                        LogHelper.Instance.Error(res.Message);
+                        return res;
+                    }
                 }
-                else // 更新记录
+                else // 同一场地
                 {
-                    await AssetRecordService.Edit(lastRecord);
+                    if (lastRecord.State == AssetStates.InStore) // 在库
+                    {
+                        // 判断是否“滞留”:
+                        var lastInboundRecord = await AssetRecordService.GetLastInbound(newTag.Asset.Value);
+                        if (lastInboundRecord == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(lastInboundRecord));
+                            return MyResults<object>.ResourceNotExist;
+                        }
+
+                        lastRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours
+                            > Constants.Stolid_Threshold_Hours
+                            ? AssetStates.Stolid : AssetStates.InStore;
+                    }
+
+                    if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变，新增记录
+                    {
+                        var res = await AssetRecordService.Add(lastRecord);
+                        if (res.IsError)
+                        {
+                            LogHelper.Instance.Error(res.Message);
+                            return res;
+                        }
+                    }
+                    else // 更新记录
+                    {
+                        var res = await AssetRecordService.Edit(lastRecord);
+                        if (res.IsError)
+                        {
+                            LogHelper.Instance.Error(res.Message);
+                            return res;
+                        }
+                    }
                 }
+
+                return MyResults<object>.OperationSuccess;
+            }
+            finally
+            {
+                _editingTags.Remove(newTag.Id);
             }
         }
         #endregion
@@ -485,17 +555,18 @@ namespace TigerSan.NET8.WebApi.Helpers
                 if (newTag.ReportTime == null ||
                     (GetUtcNow() - newTag.ReportTime.Value).TotalSeconds > Constants.Report_Interval_Seconds)
                 {
+                    newTag.ReportTime = GetUtcNow();
                     newTag.OnlineState = OnlineStates.Offline;
                     timeOutTags.Add(newTag);
-                }
 
-                // 修改“资产记录”:
-                EditAssetRecordAsync(tagCache.Value, newTag).ContinueWith(task =>
-                {
-                    if (!task.IsFaulted) return;
-                    var ex = task.Exception?.GetBaseException();
-                    LogHelper.Instance.Error(ex?.GetMessage());
-                });
+                    // 修改“资产记录”:
+                    EditAssetRecordAsync(tagCache.Value, newTag).ContinueWith(task =>
+                    {
+                        if (!task.IsFaulted) return;
+                        var ex = task.Exception?.GetBaseException();
+                        LogHelper.Instance.Error(ex?.GetMessage());
+                    });
+                }
 
                 _tagCaches[newTag.TagId] = newTag;
             }

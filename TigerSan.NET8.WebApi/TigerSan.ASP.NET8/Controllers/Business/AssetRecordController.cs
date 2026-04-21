@@ -1,14 +1,81 @@
+using Microsoft.AspNetCore.Mvc;
+using TigerSan.NET8.WebApi.Helpers;
+using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.CsvLog;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
     public class AssetRecordController : IdControllerBase<AssetRecordEntity, IAssetRecordService>
     {
+        private readonly ITagService _tagService;
+        private readonly IAssetService _assetService;
+        private readonly IBaseStationService _baseStationService;
+
         #region 【Ctor】
-        public AssetRecordController(IAssetRecordService service) : base(service)
+        public AssetRecordController(
+            IAssetRecordService service,
+            ITagService tagService,
+            IAssetService assetService,
+            IBaseStationService baseStationService) : base(service)
         {
+            _tagService = tagService;
+            _assetService = assetService;
+            _baseStationService = baseStationService;
         }
         #endregion 【Ctor】
+
+        #region 【Functions】
+        #region [增]
+        [HttpPost("ByPackage")]
+        /// <summary>添加“单条数据”</summary>
+        public async Task<MyActionResult<object>> AddByPackage([FromBody] AssetRecordEntity entity)
+        {
+            var asset = await _assetService.Get(entity.Asset);
+            if (asset == null)
+            {
+                LogHelper.Instance.IsNull(nameof(asset));
+                return MyResults<object>.ResourceNotExist;
+            }
+
+            if (asset.Tag == null)
+            {
+                LogHelper.Instance.IsNull(nameof(asset.Tag));
+                return MyResults<object>.AssetNotBoundTag;
+            }
+
+            var tag = await _tagService.Get(asset.Tag.Value);
+            if (tag == null)
+            {
+                LogHelper.Instance.IsNull(nameof(tag));
+                return MyResults<object>.ResourceNotExist;
+            }
+
+            var station = await _baseStationService.Get(entity.Station ?? 0);
+            if (station == null)
+            {
+                LogHelper.Instance.IsNull(nameof(station));
+                return MyResults<object>.ResourceNotExist;
+            }
+
+            BluetoothTagPackage package = new BluetoothTagPackage();
+            package.ReportTime = DateTime.Now.ToLocalTime().ToString();
+            package.Data.Topic = station.MacAddr;
+            package.Data.Longitude = entity.Longitude ?? 0;
+            package.Data.TagDatas.Add(new BluetoothTagData
+            {
+                TagId = tag.TagId,
+                Voltage = entity.Battery ?? 0,
+                Temperature = entity.Temperature ?? 0,
+                SignalRaw = entity.Signal ?? 0,
+                Latitude = entity.Latitude ?? 0,
+            });
+
+            return await SseInstance.EditBaseStationAndTagAsync(package);
+        }
+        #endregion [增]
+        #endregion 【Functions】
     }
 }

@@ -1,5 +1,7 @@
 ﻿using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Share.Packages;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -176,6 +178,21 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
         #endregion [缓存]
+
+        #region [DB]
+        #region 修改“基站”和“标签”（蓝牙）
+        /// <summary>修改“基站”和“标签”（蓝牙）</summary>
+        public static async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BluetoothTagPackage package)
+        {
+            if (_instance == null)
+            {
+                LogHelper.Instance.IsNull(nameof(_instance));
+                return MyResults<object>.ResourceNotExist;
+            }
+            return await _instance._packageChannel.EditBaseStationAndTagAsync(package);
+        }
+        #endregion
+        #endregion [DB]
         #endregion 【Functions】
     }
 }

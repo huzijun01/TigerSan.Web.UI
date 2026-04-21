@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -109,7 +109,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     var lastRecord = await _assetRecordService.GetLast(entity.Id);
                     if (lastRecord != null)
                     {
+                        var id = entity.Id;
                         dto.ShallowCopy(lastRecord);
+                        dto.Id = id;
+                        dto.LastRecord = lastRecord.Id;
 
                         // 添加“场地名”:
                         if (dto.Site != null)
@@ -574,7 +577,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 duration += (DateTime.Now - inbound.ReportTime).TotalHours;
             }
 
-            return duration;
+            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
         }
         #endregion
 
@@ -585,6 +588,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             double duration = 0;
 
             var sortedRecords = records.OrderBy(r => r.ReportTime);
+            var first = sortedRecords.FirstOrDefault();
 
             AssetRecordEntity? outbound = null;
 
@@ -606,14 +610,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else if (record.State == AssetStates.Inbound)
                 {
-                    if (outbound == null)
+                    if (record == first)
                     {
-                        LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
-                        return -1;
+                        continue;
                     }
+                    else
+                    {
+                        if (outbound == null)
+                        {
+                            LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
+                            return -1;
+                        }
 
-                    duration += (record.ReportTime - outbound.ReportTime).TotalHours;
-                    outbound = null;
+                        duration += (record.ReportTime - outbound.ReportTime).TotalHours;
+                        outbound = null;
+                    }
                 }
             }
 
@@ -622,7 +633,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 duration += (DateTime.Now - outbound.ReportTime).TotalHours;
             }
 
-            return duration;
+            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
         }
         #endregion
 
@@ -633,6 +644,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             double duration = 0;
 
             var sortedRecords = records.OrderBy(r => r.ReportTime);
+            var first = sortedRecords.FirstOrDefault();
 
             AssetRecordEntity? offline = null;
 
@@ -654,14 +666,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else if (record.OnlineState == OnlineStates.Online)
                 {
-                    if (offline == null)
+                    if (record == first)
                     {
-                        LogHelper.Instance.Warning("Online record without corresponding offline!");
-                        return -1;
+                        continue;
                     }
+                    else
+                    {
+                        if (offline == null)
+                        {
+                            LogHelper.Instance.Warning("Online record without corresponding offline!");
+                            return -1;
+                        }
 
-                    duration += (record.ReportTime - offline.ReportTime).TotalHours;
-                    offline = null;
+                        duration += (record.ReportTime - offline.ReportTime).TotalHours;
+                        offline = null;
+                    }
                 }
             }
 
@@ -670,7 +689,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 duration += (DateTime.Now - offline.ReportTime).TotalHours;
             }
 
-            return duration;
+            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
         }
         #endregion
         #endregion 【Functions】

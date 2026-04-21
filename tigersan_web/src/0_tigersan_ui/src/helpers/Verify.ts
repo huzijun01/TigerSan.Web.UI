@@ -81,10 +81,14 @@ export class Verify {
     }
 
     /** 是否“大于”（bigint） */
-    static IsBigintGreaterThan(num: bigint, min: bigint = 0n, error?: string): VerifyResult {
+    static IsBigintGreaterThan(num?: bigint, min: bigint = 0n, error?: string): VerifyResult {
         const res = new VerifyResult()
 
-        if (num <= min) {
+        if (num === undefined) {
+            res.VerifyText = '不能为空'
+            res.VerifyState = FormResult.Error
+        }
+        else if (num <= min) {
             res.VerifyText = error ?? `不可小于${min.toString()}`
             res.VerifyState = FormResult.Error
         }

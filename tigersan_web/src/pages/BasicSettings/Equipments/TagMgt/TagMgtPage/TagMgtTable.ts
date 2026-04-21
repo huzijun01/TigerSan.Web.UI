@@ -2,7 +2,7 @@ import { Colors, IsEnable, ItemType, ObjectHelper, OnlineState, OnlineStates, Ta
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 列头:
-const tagMgtTable = new TableModel<TagModel>([
+export const tagMgtTable = new TableModel<TagModel>([
     {
         _propName: 'companyName',
         Text: '公司',
@@ -70,7 +70,7 @@ const tagMgtTable = new TableModel<TagModel>([
     },
     {
         _propName: 'signal',
-        Text: '信号强度',
+        Text: '信号',
         IsReadonly: true,
         Type: ItemType.TextBox,
     },
@@ -152,9 +152,4 @@ tagMgtTable._initItem = itemModel => {
             itemModel.Color.value = Colors.Danger
         }
     }
-}
-
-export {
-    TagModel,
-    tagMgtTable,
 }

@@ -34,6 +34,7 @@ const { model } = defineProps({
 .pop-window {
     display: flex;
     flex-direction: column;
+    max-width: 95vw;
     max-height: 95vh;
     border-radius: 10px;
     background-color: var(--theme-card-background);

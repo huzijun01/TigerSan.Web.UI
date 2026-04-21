@@ -14,9 +14,9 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public AssetStates State { get; set; } = AssetStates.NoRecord;
         // Tag:
         [SnakeColumn]
-        public long? Site { get; set; }
-        [SnakeColumn]
         public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
+        [SnakeColumn]
+        public long? Site { get; set; }
         [SnakeColumn]
         public long? Station { get; set; }
         [SnakeColumn]

@@ -1,15 +1,17 @@
 import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
+import { AssetRecordPageModel } from './AssetRecordPageModel'
 
 // 字段:
-const assetDetail = new PopWindowModel()
+export const recordPage = new AssetRecordPageModel()
+export const assetDetail = new PopWindowModel()
 assetDetail.Title.value = '资产详情'
 /** 分页器 */
-const pagination = new PaginationModel()
+export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
-const assetMgtTable = new TableModel<AssetModel>([
+export const assetMgtTable = new TableModel<AssetModel>([
     {
         _propName: 'companyName',
         Text: '公司',
@@ -27,7 +29,12 @@ const assetMgtTable = new TableModel<AssetModel>([
         Text: '资产ID',
         IsReadonly: true,
         Type: ItemType.Link,
-        _onItemClick: assetDetail.Show
+        _onItemClick: itemModel => {
+            debugger
+            recordPage._asset = itemModel._rowModel._rowData.id
+            recordPage.Refresh()
+            assetDetail.Show()
+        }
     },
     {
         _propName: 'tagId',
@@ -65,7 +72,7 @@ const assetMgtTable = new TableModel<AssetModel>([
         Text: '在线状态',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getString: source => OnlineState.ToString(source.onlineState)
+        _getString: OnlineState.GetString,
     },
     {
         _propName: 'errorType',
@@ -120,7 +127,7 @@ const assetMgtTable = new TableModel<AssetModel>([
     },
     {
         _propName: 'stayDuration',
-        Text: '在库停留时长（时）',
+        Text: '在库时长（时）',
         IsReadonly: true,
         Type: ItemType.TextBox,
     },
@@ -175,10 +182,4 @@ assetMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'battery') {
         itemModel.Color.value = Battery.GetColor(itemModel.GetSource() as number)
     }
-}
-
-export {
-    assetDetail,
-    pagination,
-    assetMgtTable,
 }

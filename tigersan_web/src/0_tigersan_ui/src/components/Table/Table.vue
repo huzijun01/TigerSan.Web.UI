@@ -49,7 +49,6 @@ let styleObj = {
 // 过程:
 onMounted(() => {
     model.Refresh(true)
-    console.log(model)
 })
 
 // 方法:

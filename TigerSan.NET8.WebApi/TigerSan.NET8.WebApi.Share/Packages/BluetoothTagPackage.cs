@@ -66,7 +66,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
 
         /// <summary>温度</summary>
         [JsonProperty("t")]
-        public int Temperature { get; set; }
+        public double Temperature { get; set; }
 
         /// <summary>信号强度（原始数据）</summary>
         [JsonProperty("r")]

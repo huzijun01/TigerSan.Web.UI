@@ -24,6 +24,7 @@
         public static MyActionResult<TData> TagRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The Tag cannot be repeated!"); }
         public static MyActionResult<TData> UserNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "User does not exist!"); }
         public static MyActionResult<TData> PasswordIncorrect { get => new MyActionResult<TData>(ActionResultCode.Error, "The password is incorrect!"); }
+        public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
 
         #region 【Functions】
         public static MyActionResult<TData> Success(string msg) { return new MyActionResult<TData>(ActionResultCode.Success, msg); }
