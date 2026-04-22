@@ -18,6 +18,10 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
+                        <button class="bg-success" :disabled="!IsAllowInbound" @click="form.Refresh">入库</button>
+                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Refresh">出库</button>
+                    </div>
+                    <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 新增</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
@@ -85,7 +89,7 @@
 import form from './AssetMgtForm'
 import AssetRecordPage from './AssetRecordPage.vue'
 import { onMounted } from 'vue'
-import { assetMgtTable, pagination, assetDetail, recordPage } from './AssetMgtTable'
+import { assetMgtTable, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:

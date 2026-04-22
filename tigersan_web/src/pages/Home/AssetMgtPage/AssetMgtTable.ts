@@ -1,6 +1,7 @@
 import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
 import { AssetRecordPageModel } from './AssetRecordPageModel'
+import { computed } from 'vue'
 
 // 字段:
 export const recordPage = new AssetRecordPageModel()
@@ -30,7 +31,6 @@ export const assetMgtTable = new TableModel<AssetModel>([
         IsReadonly: true,
         Type: ItemType.Link,
         _onItemClick: itemModel => {
-            debugger
             recordPage._asset = itemModel._rowModel._rowData.id
             recordPage.Refresh()
             assetDetail.Show()
@@ -146,7 +146,7 @@ export const assetMgtTable = new TableModel<AssetModel>([
 ])
 
 // 初始化:
-assetMgtTable.IsAllowMultiSelect.value = false
+assetMgtTable.IsAllowMultiSelect.value = true
 
 assetMgtTable._initItem = itemModel => {
     if (itemModel._headerModel._propName === 'state') {
@@ -183,3 +183,12 @@ assetMgtTable._initItem = itemModel => {
         itemModel.Color.value = Battery.GetColor(itemModel.GetSource() as number)
     }
 }
+
+/** 是否允许入库 */
+export const IsAllowInbound = computed(() =>
+    assetMgtTable.IsSelected.value
+    && assetMgtTable.SelectedRowDatas.value.every(r => r.state === AssetStates.Inbound))
+/** 是否允许出库 */
+export const IsAllowOutbound = computed(() =>
+    assetMgtTable.IsSelected.value
+    && assetMgtTable.SelectedRowDatas.value.every(r => r.state === AssetStates.Outbound))

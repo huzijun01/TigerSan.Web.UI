@@ -7,6 +7,6 @@
         /// <summary>上报间隔（秒）</summary>
         public readonly static double Report_Interval_Seconds = 3600;
         /// <summary>计算间隔（秒）</summary>
-        public readonly static double Calculation_Interval_Seconds = 3600;
+        public readonly static double Calculation_Interval_Seconds = 600;
     }
 }

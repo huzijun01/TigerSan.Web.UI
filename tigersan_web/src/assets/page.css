@@ -62,6 +62,13 @@
   flex-grow: 0;
   flex-shrink: 0;
 }
+.drawer {
+  overflow: hidden;
+  transition: var(--Global-Transition);
+}
+.drawer .size-panel {
+  overflow: auto;
+}
 .child-margin-bottom > div:not(:last-child) {
   margin-bottom: 10px;
 }

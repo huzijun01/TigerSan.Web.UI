@@ -39,6 +39,231 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [Private]
+        #region 获取“在库时长”
+        /// <summary>获取“在库时长”</summary>
+        private double GetStayDuration(List<AssetRecordEntity> records)
+        {
+            double duration = 0;
+
+            // 过滤掉“重复记录”和“无关记录”:
+            var sortedRecords = records.OrderBy(r => r.ReportTime).ToList();
+            var filteredRecords = new List<AssetRecordEntity>();
+            AssetRecordEntity? preRecord = null;
+            foreach (var record in sortedRecords)
+            {
+                if (preRecord == null)
+                {
+                    if (record.State != AssetStates.Inbound)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        preRecord = record;
+                        filteredRecords.Add(record);
+                    }
+                }
+                else
+                {
+                    if (preRecord.State == record.State
+                        || record.State != AssetStates.Inbound && record.State != AssetStates.Outbound)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        preRecord = record;
+                        filteredRecords.Add(record);
+                    }
+                }
+            }
+
+            // 计算:
+            AssetRecordEntity? inbound = null;
+
+            foreach (var record in filteredRecords)
+            {
+                if (record.State == AssetStates.Inbound)
+                {
+                    if (inbound != null)
+                    {
+                        LogHelper.Instance.Warning("Repeated inbound records!");
+                        return -1;
+                    }
+                    inbound = record;
+                }
+                else
+                {
+                    if (inbound == null)
+                    {
+                        LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
+                        return -1;
+                    }
+                    duration += (record.ReportTime - inbound.ReportTime).TotalHours;
+                    inbound = null;
+                }
+            }
+
+            if (inbound != null)
+            {
+                duration += (DateTime.Now - inbound.ReportTime).TotalHours;
+            }
+
+            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
+        }
+        #endregion
+
+        #region 获取“在途时长”
+        /// <summary>获取“在途时长”</summary>
+        private double GetTravelDuration(List<AssetRecordEntity> records)
+        {
+            double duration = 0;
+
+            // 过滤掉“重复记录”和“无关记录”:
+            var sortedRecords = records.OrderBy(r => r.ReportTime).ToList();
+            var filteredRecords = new List<AssetRecordEntity>();
+            AssetRecordEntity? preRecord = null;
+            foreach (var record in sortedRecords)
+            {
+                if (preRecord == null)
+                {
+                    if (record.State != AssetStates.Outbound)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        preRecord = record;
+                        filteredRecords.Add(record);
+                    }
+                }
+                else
+                {
+                    if (preRecord.State == record.State
+                        || record.State != AssetStates.Inbound && record.State != AssetStates.Outbound)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        preRecord = record;
+                        filteredRecords.Add(record);
+                    }
+                }
+            }
+
+            // 计算:
+            AssetRecordEntity? outbound = null;
+
+            foreach (var record in filteredRecords)
+            {
+                if (record.State == AssetStates.Outbound)
+                {
+                    if (outbound != null)
+                    {
+                        LogHelper.Instance.Warning("Repeated outbound records!");
+                        return -1;
+                    }
+                    outbound = record;
+                }
+                else
+                {
+                    if (outbound == null)
+                    {
+                        LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
+                        return -1;
+                    }
+                    duration += (record.ReportTime - outbound.ReportTime).TotalHours;
+                    outbound = null;
+                }
+            }
+
+            if (outbound != null)
+            {
+                duration += (DateTime.Now - outbound.ReportTime).TotalHours;
+            }
+
+            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
+        }
+        #endregion
+
+        #region 获取“离线时长”
+        /// <summary>获取“离线时长”</summary>
+        private double GetOfflineDuration(List<AssetRecordEntity> records)
+        {
+            double duration = 0;
+
+            // 过滤掉“重复记录”:
+            var sortedRecords = records.OrderBy(r => r.ReportTime).ToList();
+            var filteredRecords = new List<AssetRecordEntity>();
+            AssetRecordEntity? preRecord = null;
+            foreach (var record in sortedRecords)
+            {
+                if (preRecord == null)
+                {
+                    if (record.OnlineState != OnlineStates.Offline)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        preRecord = record;
+                        filteredRecords.Add(record);
+                    }
+                }
+                else
+                {
+                    if (preRecord.OnlineState == record.OnlineState)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        preRecord = record;
+                        filteredRecords.Add(record);
+                    }
+                }
+            }
+
+            // 计算:
+            AssetRecordEntity? offline = null;
+
+            foreach (var record in filteredRecords)
+            {
+                if (record.OnlineState == OnlineStates.Offline)
+                {
+                    if (offline != null)
+                    {
+                        LogHelper.Instance.Warning("Repeated offline records!");
+                        return -1;
+                    }
+
+                    offline = record;
+                }
+                else
+                {
+                    if (offline == null)
+                    {
+                        LogHelper.Instance.Warning("Online record without corresponding offline!");
+                        return -1;
+                    }
+
+                    duration += (record.ReportTime - offline.ReportTime).TotalHours;
+                    offline = null;
+                }
+            }
+
+            if (offline != null)
+            {
+                duration += (DateTime.Now - offline.ReportTime).TotalHours;
+            }
+
+            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
+        }
+        #endregion
+        #endregion [Private]
+
         #region [查]
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
@@ -532,166 +757,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [改]
-
-        #region 获取“在库时长”
-        /// <summary>获取“在库时长”</summary>
-        private double GetStayDuration(List<AssetRecordEntity> records)
-        {
-            double duration = 0;
-
-            var sortedRecords = records.OrderBy(r => r.ReportTime);
-
-            AssetRecordEntity? inbound = null;
-
-            foreach (var record in sortedRecords)
-            {
-                if (inbound != null && inbound.Station == record.Station)
-                {
-                    continue;
-                }
-                else if (record.State == AssetStates.Inbound)
-                {
-                    if (inbound != null)
-                    {
-                        LogHelper.Instance.Warning("Repeated inbound records!");
-                        return -1;
-                    }
-
-                    inbound = record;
-                }
-                else if (record.State == AssetStates.Outbound)
-                {
-                    if (inbound == null)
-                    {
-                        LogHelper.Instance.Warning("Outbound record without corresponding inbound!");
-                        return -1;
-                    }
-
-                    duration += (record.ReportTime - inbound.ReportTime).TotalHours;
-                    inbound = null;
-                }
-            }
-
-            if (inbound != null)
-            {
-                duration += (DateTime.Now - inbound.ReportTime).TotalHours;
-            }
-
-            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
-        }
-        #endregion
-
-        #region 获取“在途时长”
-        /// <summary>获取“在途时长”</summary>
-        private double GetTravelDuration(List<AssetRecordEntity> records)
-        {
-            double duration = 0;
-
-            var sortedRecords = records.OrderBy(r => r.ReportTime);
-            var first = sortedRecords.FirstOrDefault();
-
-            AssetRecordEntity? outbound = null;
-
-            foreach (var record in sortedRecords)
-            {
-                if (outbound != null && outbound.Station == record.Station)
-                {
-                    continue;
-                }
-                else if (record.State == AssetStates.Outbound)
-                {
-                    if (outbound != null)
-                    {
-                        LogHelper.Instance.Warning("Repeated outbound records!");
-                        return -1;
-                    }
-
-                    outbound = record;
-                }
-                else if (record.State == AssetStates.Inbound)
-                {
-                    if (record == first)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        if (outbound == null)
-                        {
-                            LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
-                            return -1;
-                        }
-
-                        duration += (record.ReportTime - outbound.ReportTime).TotalHours;
-                        outbound = null;
-                    }
-                }
-            }
-
-            if (outbound != null)
-            {
-                duration += (DateTime.Now - outbound.ReportTime).TotalHours;
-            }
-
-            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
-        }
-        #endregion
-
-        #region 获取“离线时长”
-        /// <summary>获取“离线时长”</summary>
-        private double GetOfflineDuration(List<AssetRecordEntity> records)
-        {
-            double duration = 0;
-
-            var sortedRecords = records.OrderBy(r => r.ReportTime);
-            var first = sortedRecords.FirstOrDefault();
-
-            AssetRecordEntity? offline = null;
-
-            foreach (var record in sortedRecords)
-            {
-                if (offline != null && offline.OnlineState == record.OnlineState)
-                {
-                    continue;
-                }
-                else if (record.OnlineState == OnlineStates.Offline)
-                {
-                    if (offline != null)
-                    {
-                        LogHelper.Instance.Warning("Repeated offline records!");
-                        return -1;
-                    }
-
-                    offline = record;
-                }
-                else if (record.OnlineState == OnlineStates.Online)
-                {
-                    if (record == first)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        if (offline == null)
-                        {
-                            LogHelper.Instance.Warning("Online record without corresponding offline!");
-                            return -1;
-                        }
-
-                        duration += (record.ReportTime - offline.ReportTime).TotalHours;
-                        offline = null;
-                    }
-                }
-            }
-
-            if (offline != null)
-            {
-                duration += (DateTime.Now - offline.ReportTime).TotalHours;
-            }
-
-            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
-        }
-        #endregion
         #endregion 【Functions】
     }
 }

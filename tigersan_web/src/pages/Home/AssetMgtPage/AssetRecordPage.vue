@@ -1,29 +1,27 @@
 <template>
-    <PageCard>
-        <div class="table-page">
-            <!-- 顶部: -->
-            <div class="top-panel flex-between">
-                <div class="filter-panel">
-                </div>
-                <div class="button-panel">
-                    <div class="row-panel">
-                        <button class="bg-success" @click="model.Refresh">刷新</button>
-                        <button @click="model.Add">+ 新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
-                    </div>
-                </div>
+    <div class="table-page">
+        <!-- 顶部: -->
+        <div class="top-panel flex-between">
+            <div class="filter-panel">
             </div>
-
-            <!-- 表格: -->
-            <Table :model="assetRecordTable"></Table>
-
-            <!-- 底部: -->
-            <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="assetRecordTable.SelectedRowCount.value" />
+            <div class="button-panel">
+                <div class="row-panel">
+                    <button class="bg-success" @click="model.Refresh">刷新</button>
+                    <button @click="model.Add">+ 新增</button>
+                    <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
+                    <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
+                </div>
             </div>
         </div>
-    </PageCard>
+
+        <!-- 表格: -->
+        <Table :model="assetRecordTable"></Table>
+
+        <!-- 底部: -->
+        <div class="bottom-panel flex-center ">
+            <Pagination :model="pagination" :selectedRowCount="assetRecordTable.SelectedRowCount.value" />
+        </div>
+    </div>
 
     <!-- 表单: -->
     <PopForm :model="model.assetRecordForm">
@@ -49,12 +47,12 @@
 import { onMounted } from 'vue'
 import { AssetRecordPageModel } from './AssetRecordPageModel'
 import { assetRecordTable, pagination } from './AssetRecordTable'
-import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
+import { Select, Table, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 
 const { model } = defineProps({
     model: {
         type: AssetRecordPageModel,
-        default: () => new AssetRecordPageModel(0n)
+        default: () => new AssetRecordPageModel()
     }
 })
 
@@ -72,4 +70,8 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
+
+.table-page{
+    max-height: calc(95vh - 160px);
+}
 </style>
