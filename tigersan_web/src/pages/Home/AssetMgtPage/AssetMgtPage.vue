@@ -18,8 +18,8 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" :disabled="!IsAllowInbound" @click="form.Refresh">入库</button>
-                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Refresh">出库</button>
+                        <button class="bg-success" :disabled="!IsAllowInbound" @click="form.Inbound">入库</button>
+                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Outbound">出库</button>
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>

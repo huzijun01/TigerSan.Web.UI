@@ -50,12 +50,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         continue;
                     }
 
-                    var entity = new BaseStationDto();
-                    entity.ShallowCopy(station);
-                    entity.Company = siteEntity.Company;
-                    entity.Addr = siteEntity.Addr;
+                    var dto = new BaseStationDto();
+                    dto.ShallowCopy(station);
+                    dto.Company = siteEntity.Company;
+                    dto.Addr = siteEntity.Addr;
+                    dto.AddrDetail = siteEntity.AddrDetail;
 
-                    list.Add(entity);
+                    list.Add(dto);
                 }
 
                 return list;

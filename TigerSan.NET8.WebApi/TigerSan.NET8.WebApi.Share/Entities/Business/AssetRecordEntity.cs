@@ -18,6 +18,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long? Site { get; set; }
         [SnakeColumn]
+        public long? TargetSite { get; set; }
+        [SnakeColumn]
         public long? Station { get; set; }
         [SnakeColumn]
         public int? Battery { get; set; }

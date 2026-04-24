@@ -9,6 +9,7 @@ export class AssetRecordModel extends IdModel {
     // Tag:
     onlineState: OnlineStates = OnlineStates.Offline
     site?: bigint = 0n
+    targetSite?: bigint = 0n
     station?: bigint = 0n
     battery?: number
     signal?: number
@@ -17,6 +18,14 @@ export class AssetRecordModel extends IdModel {
     latitude?: number
     comment?: string
     reportTime?: Date
+    // 附加:
+    siteName?: string
+    targetSiteName?: string
+    stationName?: string
+    addr? = ''
+    addrDetail? = ''
+    manager? = ''
+    phone? = ''
 }
 
 class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
@@ -52,6 +61,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         station?: bigint,
         onlineState?: OnlineStates,
     }) => await AxiosHelper.GetList<AssetRecordModel>(this._action, {
+        strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {

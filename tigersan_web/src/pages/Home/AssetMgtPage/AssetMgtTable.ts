@@ -149,25 +149,7 @@ export const assetMgtTable = new TableModel<AssetModel>([
 assetMgtTable.IsAllowMultiSelect.value = true
 
 assetMgtTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'state') {
-        const source = itemModel.GetSource()
-        if (source === AssetStates.InTransit) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else if (source === AssetStates.Stolid) {
-            itemModel.Color.value = Colors.Warning
-            itemModel.Background.value = Colors.Warning10
-        } else if (source === AssetStates.Outbound) {
-            itemModel.Color.value = Colors.Info
-            itemModel.Background.value = Colors.Info10
-        } else if (source === AssetStates.NoRecord) {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        } else {
-            itemModel.Color.value = Colors.Brand
-            itemModel.Background.value = Colors.Brand10
-        }
-    }
+    AssetState.InitItemModel(itemModel)
 
     if (itemModel._headerModel._propName === 'onlineState') {
         if (itemModel.GetSource() === OnlineStates.Online) {
@@ -191,4 +173,4 @@ export const IsAllowInbound = computed(() =>
 /** 是否允许出库 */
 export const IsAllowOutbound = computed(() =>
     assetMgtTable.IsSelected.value
-    && assetMgtTable.SelectedRowDatas.value.every(r => r.state === AssetStates.Outbound))
+    && assetMgtTable.SelectedRowDatas.value.every(r => r.state === AssetStates.InStore || r.state === AssetStates.Stolid))

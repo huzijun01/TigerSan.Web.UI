@@ -757,6 +757,130 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [改]
+
+        #region [Other]
+        #region 入库
+        /// <summary>入库</summary>
+        public async Task<MyActionResult<object>> Inbound(List<long> ids, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (ids.Count < 1) return res;
+
+                var entities = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+
+                var count = entities.Count;
+                if (count < 1)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+                else if (count < ids.Count)
+                {
+                    return MyResults<object>.SomeResourceNotExist;
+                }
+
+                foreach (var entity in entities)
+                {
+                    if (entity.LastRecord == null)
+                    {
+                        return MyResults<object>.NoAssetRecord(entity.AssetId);
+                    }
+
+                    var lastRecord = await _assetRecordService.Get(entity.LastRecord.Value);
+                    if (lastRecord == null)
+                    {
+                        return MyResults<object>.NoAssetRecord(entity.AssetId);
+                    }
+                    else if (lastRecord.State != AssetStates.Inbound)
+                    {
+                        return MyResults<object>.NotInbound(entity.AssetId);
+                    }
+
+                    var inStore = new AssetRecordEntity();
+                    inStore.ShallowCopy(lastRecord);
+                    inStore.UpdateId();
+                    inStore.State = AssetStates.InStore;
+                    inStore.ReportTime = DateTime.Now;
+                    await _db.AssetRecords.AddAsync(inStore);
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 出库
+        /// <summary>出库</summary>
+        public async Task<MyActionResult<object>> Outbound(List<long> ids, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (ids.Count < 1) return res;
+
+                var entities = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+
+                var count = entities.Count;
+                if (count < 1)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+                else if (count < ids.Count)
+                {
+                    return MyResults<object>.SomeResourceNotExist;
+                }
+
+                foreach (var entity in entities)
+                {
+                    if (entity.LastRecord == null)
+                    {
+                        return MyResults<object>.NoAssetRecord(entity.AssetId);
+                    }
+
+                    var lastRecord = await _assetRecordService.GetLast(entity.Id);
+                    if (lastRecord == null)
+                    {
+                        return MyResults<object>.NoAssetRecord(entity.AssetId);
+                    }
+                    else if (lastRecord.State != AssetStates.InStore && lastRecord.State != AssetStates.Stolid)
+                    {
+                        return MyResults<object>.NotInStoreOrStolid(entity.AssetId);
+                    }
+
+                    var inTransit = new AssetRecordEntity();
+                    inTransit.ShallowCopy(lastRecord);
+                    inTransit.UpdateId();
+                    inTransit.State = AssetStates.Outbound;
+                    inTransit.ReportTime = DateTime.Now;
+                    await _db.AssetRecords.AddAsync(inTransit);
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [Other]
         #endregion 【Functions】
     }
 }

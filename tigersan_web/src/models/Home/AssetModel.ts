@@ -100,6 +100,14 @@ class AssetHelper extends IdModelHelper<AssetModel> {
             ],
         }
     })
+    
+    /** 入库 */
+    readonly Inbound = async (ids: number[] | bigint[]) =>
+        await AxiosHelper.Put(`${this._action}/Inbound`, ids)
+    
+    /** 出库 */
+    readonly Outbound = async (ids: number[] | bigint[]) =>
+        await AxiosHelper.Put(`${this._action}/Outbound`, ids)
 }
 
 export const assetHelper = new AssetHelper()

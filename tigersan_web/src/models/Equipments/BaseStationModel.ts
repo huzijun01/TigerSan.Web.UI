@@ -8,6 +8,7 @@ export class BaseStationModel extends IdNameModel {
     isEnable = false
     macAddr = ''
     addr = ''
+    addrDetail = ''
     onlineState = OnlineStates.Offline
     heartbeatInterval = 0
     reportInterval = 0

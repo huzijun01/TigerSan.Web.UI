@@ -15,5 +15,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<object>> AddRange(List<AssetDto> dtos, bool isBeginTransaction = true);
         public Task<MyActionResult<object>> Edit(AssetDto dto, bool isBeginTransaction = true);
         public Task<MyActionResult<object>> EditRange(List<AssetDto> dtos, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> Inbound(List<long> ids, bool isBeginTransaction = true);
+        public Task<MyActionResult<object>> Outbound(List<long> ids, bool isBeginTransaction = true);
     }
 }

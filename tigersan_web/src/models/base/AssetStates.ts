@@ -1,4 +1,4 @@
-import { SelectModel, Texts } from "@/0_tigersan_ui/tigerui"
+import { Colors, SelectModel, TableItemModel, Texts } from "@/0_tigersan_ui/tigerui"
 
 /** 资产状态 */
 export enum AssetStates {
@@ -46,6 +46,32 @@ export class AssetState {
         select.Items.push(...[0, 1, 2, 3, 4, 5])
         select._converter = this.GetName
         return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'state') {
+        if (itemModel._headerModel._propName === propName) {
+            const source = itemModel.GetSource()
+            if (source === AssetStates.Inbound) {
+                itemModel.Color.value = Colors.Warning
+                itemModel.Background.value = Colors.Warning10
+            } else if (source === AssetStates.InStore) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else if (source === AssetStates.Stolid) {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            } else if (source === AssetStates.Outbound) {
+                itemModel.Color.value = Colors.Info
+                itemModel.Background.value = Colors.Info10
+            } else if (source === AssetStates.NoRecord) {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            } else {
+                itemModel.Color.value = Colors.Brand
+                itemModel.Background.value = Colors.Brand10
+            }
+        }
     }
 }
 

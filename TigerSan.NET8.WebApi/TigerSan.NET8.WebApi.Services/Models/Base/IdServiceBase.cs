@@ -369,7 +369,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
             try
             {
-                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
                 if (entity == null)
                 {
                     return MyResults<object>.ResourceNotExist;
@@ -400,7 +400,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             {
                 if (ids.Count < 1) return res;
 
-                var entities = _dbSet.Where(i => ids.Contains(i.Id));
+                var entities = _dbSet.AsNoTracking().Where(i => ids.Contains(i.Id));
 
                 var count = await entities.CountAsync();
                 if (count < 1)

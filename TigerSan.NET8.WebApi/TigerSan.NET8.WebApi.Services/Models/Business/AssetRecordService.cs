@@ -32,7 +32,134 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [Private]
+        #region 初始化“场地”
+        /// <summary>初始化“场地”</summary>
+        private async Task<MyActionResult<object>> InitSiteAsync(AssetRecordEntity entity)
+        {
+            try
+            {
+                if (entity.Station == null)
+                {
+                    entity.Site = null;
+                }
+                else
+                {
+                    var site = await _baseStationService.GetSite(entity.Station.Value);
+                    if (site == null)
+                    {
+                        return MyResults<object>.SiteNotExist;
+                    }
+                    else
+                    {
+                        entity.Site = site.Id;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return MyResults<object>.Error(e.GetMessage());
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+
+        #region 更新“最新记录”
+        /// <summary>更新“最新记录”</summary>
+        private async Task<MyActionResult<object>> UpdateLastRecordAsync(AssetRecordEntity entity)
+        {
+            try
+            {
+                // 更新“资产”的“最新记录”:
+                var asset = await _db.Assets.FirstOrDefaultAsync(a => a.Id == entity.Asset);
+                if (asset == null)
+                {
+                    return MyResults<object>.AssetNotExist;
+                }
+
+                asset.LastRecord = entity.Id;
+            }
+            catch (Exception e)
+            {
+                return MyResults<object>.Error(e.GetMessage());
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+        #endregion [Private]
+
         #region [查]
+        #region 获取“完整数据”集合
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<List<AssetRecordDto>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var list = new List<AssetRecordDto>();
+
+                var records = await GetList(pageSize, pageNumber, filter);
+
+                // 添加“数据”:
+                foreach (var record in records)
+                {
+                    var dto = new AssetRecordDto();
+                    dto.ShallowCopy(record);
+
+                    if (record.Site != null)
+                    {
+                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
+                        if (site == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(site));
+                            continue;
+                        }
+                        dto.SiteName = site.Name;
+                        dto.Addr = site.Addr;
+                        dto.AddrDetail = site.AddrDetail;
+                        dto.Manager = site.Manager;
+                        dto.Phone = site.Phone;
+                    }
+
+                    if (record.TargetSite != null)
+                    {
+                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.TargetSite);
+                        if (site == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(site));
+                            continue;
+                        }
+                        dto.TargetSiteName = site.Name;
+                    }
+
+                    if (record.Station != null)
+                    {
+                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
+                        if (station == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(station));
+                            continue;
+                        }
+                        dto.StationName = station.Name;
+                    }
+
+                    list.Add(dto);
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return new List<AssetRecordDto>();
+            }
+        }
+        #endregion
+
         #region 获取“最新数据”
         /// <summary>获取“最新数据”</summary>
         public async Task<AssetRecordEntity?> GetLast(long asset)
@@ -74,8 +201,198 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
         #endregion [查]
 
-        #region [改]
+        #region [增]
+        #region 添加“单条数据”
+        /// <summary>添加“单条数据”</summary>
+        public override async Task<MyActionResult<object>> Add(AssetRecordEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
+            try
+            {
+                // 更新“ID”:
+                entity.UpdateId();
+
+                // 初始化“场地”:
+                var resInit = await InitSiteAsync(entity);
+                if (resInit.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resInit;
+                }
+
+                // 更新“最新记录”:
+                var resUpdate = await UpdateLastRecordAsync(entity);
+                if (resUpdate.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resUpdate;
+                }
+
+                // 添加数据:
+                _dbSet.Add(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 添加“多条数据”
+        /// <summary>添加“多条数据”</summary>
+        public override async Task<MyActionResult<object>> AddRange(List<AssetRecordEntity> entities, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    // 更新“ID”:
+                    entity.UpdateId();
+
+                    // 初始化“场地”:
+                    var resInit = await InitSiteAsync(entity);
+                    if (resInit.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return resInit;
+                    }
+
+                    // 更新“最新记录”:
+                    var resUpdate = await UpdateLastRecordAsync(entity);
+                    if (resUpdate.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return resUpdate;
+                    }
+                }
+
+                // 添加数据:
+                await _dbSet.AddRangeAsync(entities);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [增]
+
+        #region [改]
+        #region 修改“单条数据”
+        /// <summary>修改“单条数据”</summary>
+        public override async Task<MyActionResult<object>> Edit(AssetRecordEntity entity, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 检验“资源”是否存在:
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                if (find == null)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+
+                // 修改“数据”:
+                find.ShallowCopy(entity);
+
+                // 初始化“场地”:
+                var resInit = await InitSiteAsync(entity);
+                if (resInit.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resInit;
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 修改“多条数据”
+        /// <summary>修改“多条数据”</summary>
+        public override async Task<MyActionResult<object>> EditRange(List<AssetRecordEntity> entities, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (entities.Count < 1) return res;
+
+                var ids = entities.Select(i => i.Id).ToList();
+
+                // 检验“资源”是否存在:
+                var finds = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+                if (finds.Count < 1)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+                else if (finds.Count < ids.Count)
+                {
+                    return MyResults<object>.SomeResourceNotExist;
+                }
+
+                // 修改“数据”:
+                foreach (var find in finds)
+                {
+                    var entity = entities.FirstOrDefault(i => i.Id == find.Id);
+                    if (entity == null)
+                    {
+                        return MyResults<object>.SomeResourceNotExist;
+                    }
+                    find.ShallowCopy(entity);
+
+                    // 初始化“场地”:
+                    var resInit = await InitSiteAsync(entity);
+                    if (resInit.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return resInit;
+                    }
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
+
+        #region [Other]
         #region 修改“资产记录”
         /// <summary>修改“资产记录”</summary>
         public async Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag)
@@ -109,10 +426,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.OperationSuccess;
                 }
 
-                var id = lastRecord.Id;
-                lastRecord.ShallowCopy(newTag);
-                lastRecord.Id = id;
-                lastRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+                var newRecord = new AssetRecordEntity();
+                newRecord.ShallowCopy(lastRecord);
+                newRecord.ShallowCopy(newTag);
+                newRecord.Id = lastRecord.Id;
 
                 if (oldTag.Station != newTag.Station) // “场地”改变，新增“入库记录”
                 {
@@ -126,24 +443,41 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
                         else
                         {
-                            lastRecord.Site = site.Id;
+                            newRecord.Site = site.Id;
                         }
                     }
 
-                    if (lastRecord.State != AssetStates.Outbound) // 无“出库记录”
+                    if (lastRecord.State != AssetStates.Outbound
+                        || lastRecord.State != AssetStates.InTransit) // 无“出库记录”
                     {
-                        // 将“最新记录”改为“出库记录”：
+                        MyActionResult<object> resOutbound;
                         lastRecord.State = AssetStates.Outbound;
-                        var resEdit = await Edit(lastRecord);
-                        if (resEdit.IsError)
+                        lastRecord.TargetSite = newRecord.Site;
+
+                        if (lastRecord.State == AssetStates.InStore
+                            && lastRecord.OnlineState == OnlineStates.Offline) // “在库”且“离线”
                         {
-                            LogHelper.Instance.Error(resEdit.Message);
-                            return resEdit;
+                            // 将“最新记录”改为“出库记录”：
+                            resOutbound = await Edit(lastRecord);
+                        }
+                        else
+                        {
+                            // 新增“出库记录”：
+                            resOutbound = await Add(lastRecord);
+                        }
+
+                        if (resOutbound.IsError)
+                        {
+                            LogHelper.Instance.Error(resOutbound.Message);
+                            return resOutbound;
                         }
                     }
 
-                    lastRecord.State = AssetStates.Inbound;
-                    var res = await Add(lastRecord);
+                    // 新增“入库记录”：
+                    newRecord.TargetSite = null;
+                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+                    newRecord.State = AssetStates.Inbound;
+                    var res = await Add(newRecord);
                     if (res.IsError)
                     {
                         LogHelper.Instance.Error(res.Message);
@@ -162,23 +496,40 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             return MyResults<object>.ResourceNotExist;
                         }
 
-                        lastRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours
+                        newRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours
                             > Constants.Stolid_Threshold_Hours
                             ? AssetStates.Stolid : AssetStates.InStore;
                     }
 
-                    if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变，新增记录
+                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+
+                    if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变
                     {
-                        var res = await Add(lastRecord);
+                        if (lastRecord.State == AssetStates.Outbound
+                            && newTag.OnlineState == OnlineStates.Offline)
+                        {
+                            newRecord = new AssetRecordEntity()
+                            {
+                                Asset = lastRecord.Asset,
+                                Tag = lastRecord.Tag,
+                                TargetSite = lastRecord.TargetSite,
+                                State = AssetStates.InTransit,
+                                ReportTime = DateTime.Now
+                            };
+                        }
+
+                        // 新增记录:
+                        var res = await Add(newRecord);
                         if (res.IsError)
                         {
                             LogHelper.Instance.Error(res.Message);
                             return res;
                         }
                     }
-                    else // 更新记录
+                    else
                     {
-                        var res = await Edit(lastRecord);
+                        // 更新记录:
+                        var res = await Edit(newRecord);
                         if (res.IsError)
                         {
                             LogHelper.Instance.Error(res.Message);
@@ -194,12 +545,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 _editingTags.Remove(newTag.Id);
             }
         }
-        #endregion
-        #endregion [改]
-
-        #region [Other]
-        #region 入库
-
         #endregion
         #endregion [Other]
         #endregion 【Functions】

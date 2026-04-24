@@ -236,6 +236,52 @@ function DeleteRowData(state: DialogState) {
     })
 }
 
+/** 入库 */
+async function Inbound() {
+    dialog.ShowDialog(
+        '确认',
+        '是否确定入库？',
+        undefined,
+        InboundRowData,
+        DialogMode.YesOrNo,
+        Colors.Warning)
+}
+
+function InboundRowData(state: DialogState) {
+    if (state != DialogState.Yes) return
+
+    const rowDatas = assetMgtTable.SelectedRowDatas.value
+    if (rowDatas.length < 1) return
+
+    assetHelper.Inbound(rowDatas.map(r => r.id)).then(res => {
+        Refresh()
+        MyActionResult.ShowResult(res, '入库成功')
+    })
+}
+
+/** 出库 */
+async function Outbound() {
+    dialog.ShowDialog(
+        '确认',
+        '是否确定入库？',
+        undefined,
+        OutboundRowData,
+        DialogMode.YesOrNo,
+        Colors.Warning)
+}
+
+function OutboundRowData(state: DialogState) {
+    if (state != DialogState.Yes) return
+
+    const rowDatas = assetMgtTable.SelectedRowDatas.value
+    if (rowDatas.length < 1) return
+
+    assetHelper.Outbound(rowDatas.map(r => r.id)).then(res => {
+        Refresh()
+        MyActionResult.ShowResult(res, '出库成功')
+    })
+}
+
 export default {
     searchAssetId,
     selectOnlineState,
@@ -259,4 +305,6 @@ export default {
     Add,
     Edit,
     Delete,
+    Inbound,
+    Outbound,
 }

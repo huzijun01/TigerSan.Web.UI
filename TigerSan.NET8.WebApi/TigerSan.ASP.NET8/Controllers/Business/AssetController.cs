@@ -108,6 +108,24 @@ namespace TigerSan.NET8.WebApi.Controllers
             return await _service.EditRange(dtos);
         }
         #endregion [改]
+
+        #region [Other]
+        [HttpPut]
+        [Route("Inbound")]
+        /// <summary>入库</summary>
+        public async Task<MyActionResult<object>> Inbound([FromBody] List<long> ids)
+        {
+            return await _service.Inbound(ids);
+        }
+
+        [HttpPut]
+        [Route("Outbound")]
+        /// <summary>出库</summary>
+        public async Task<MyActionResult<object>> Outbound([FromBody] List<long> ids)
+        {
+            return await _service.Outbound(ids);
+        }
+        #endregion [Other]
         #endregion 【Functions】
     }
 }
