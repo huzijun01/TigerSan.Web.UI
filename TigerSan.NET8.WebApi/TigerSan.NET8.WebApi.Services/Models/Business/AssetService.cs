@@ -754,9 +754,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var now = DateTime.Now;
                 var todayStart = now.Date; // 当日0点
                 var monthStart = new DateTime(now.Year, now.Month, 1); // 当月1日0点
-                find.DailyMove = records.Count(r => r.ReportTime > todayStart && r.State == AssetStates.InTransit);
-                find.MonthlyMove = records.Count(r => r.ReportTime > monthStart && r.State == AssetStates.InTransit);
-                find.TotalMove = records.Count(r => r.State == AssetStates.InTransit);
+                find.DailyMove = records.Count(r => r.ReportTime > todayStart && r.State == AssetStates.Inbound);
+                find.MonthlyMove = records.Count(r => r.ReportTime > monthStart && r.State == AssetStates.Inbound);
+                find.TotalMove = records.Count(r => r.State == AssetStates.Inbound);
 
                 // 计算“时长”:
                 find.StayDuration = GetStayDuration(records);
