@@ -405,8 +405,8 @@ namespace TigerSan.NET8.WebApi.Helpers
                 var baseStation = baseStationCache.Value;
                 if (baseStation.OnlineState == OnlineStates.Offline) continue;
 
-                if (baseStation.ReportTime == null ||
-                    (DateTimeHelper.GetUtcNow() - baseStation.ReportTime.Value).TotalSeconds > baseStation.HeartbeatInterval)
+                if (baseStation.ReportTime == null
+                    || (DateTimeHelper.GetUtcNow() - baseStation.ReportTime.Value).TotalSeconds > baseStation.HeartbeatInterval)
                 {
                     baseStation.OnlineState = OnlineStates.Offline;
                     timeOutBaseStations.Add(baseStation);
@@ -424,8 +424,8 @@ namespace TigerSan.NET8.WebApi.Helpers
                 newTag.ShallowCopy(tagCache.Value);
                 if (newTag.OnlineState == OnlineStates.Offline) continue;
 
-                if (newTag.ReportTime == null ||
-                    (DateTimeHelper.GetUtcNow() - newTag.ReportTime.Value).TotalSeconds > Constants.Report_Interval_Seconds)
+                if (newTag.ReportTime == null
+                    || (DateTimeHelper.GetUtcNow() - newTag.ReportTime.Value).TotalSeconds > Constants.Report_Interval_Seconds)
                 {
                     newTag.ReportTime = DateTimeHelper.GetUtcNow();
                     newTag.OnlineState = OnlineStates.Offline;

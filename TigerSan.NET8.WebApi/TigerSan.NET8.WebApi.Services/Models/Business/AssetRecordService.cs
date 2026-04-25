@@ -64,30 +64,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return MyResults<object>.OperationSuccess;
         }
         #endregion
-
-        #region 更新“最新记录”
-        /// <summary>更新“最新记录”</summary>
-        private async Task<MyActionResult<object>> UpdateLastRecordAsync(AssetRecordEntity entity)
-        {
-            try
-            {
-                // 更新“资产”的“最新记录”:
-                var asset = await _db.Assets.FirstOrDefaultAsync(a => a.Id == entity.Asset);
-                if (asset == null)
-                {
-                    return MyResults<object>.AssetNotExist;
-                }
-
-                asset.LastRecord = entity.Id;
-            }
-            catch (Exception e)
-            {
-                return MyResults<object>.Error(e.GetMessage());
-            }
-
-            return MyResults<object>.OperationSuccess;
-        }
-        #endregion
         #endregion [Private]
 
         #region [查]
@@ -121,8 +97,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         dto.SiteName = site.Name;
                         dto.Addr = site.Addr;
                         dto.AddrDetail = site.AddrDetail;
-                        dto.Manager = site.Manager;
-                        dto.Phone = site.Phone;
                     }
 
                     if (record.TargetSite != null)
@@ -134,6 +108,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             continue;
                         }
                         dto.TargetSiteName = site.Name;
+                        dto.TargetAddr = site.Addr;
+                        dto.TargetAddrDetail = site.AddrDetail;
                     }
 
                     if (record.Station != null)
@@ -222,14 +198,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return resInit;
                 }
 
-                // 更新“最新记录”:
-                var resUpdate = await UpdateLastRecordAsync(entity);
-                if (resUpdate.IsError)
-                {
-                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                    return resUpdate;
-                }
-
                 // 添加数据:
                 _dbSet.Add(entity);
 
@@ -266,14 +234,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         return resInit;
-                    }
-
-                    // 更新“最新记录”:
-                    var resUpdate = await UpdateLastRecordAsync(entity);
-                    if (resUpdate.IsError)
-                    {
-                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        return resUpdate;
                     }
                 }
 
@@ -448,7 +408,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     if (lastRecord.State != AssetStates.Outbound
-                        || lastRecord.State != AssetStates.InTransit) // 无“出库记录”
+                        && lastRecord.State != AssetStates.InTransit) // 无“出库记录”
                     {
                         MyActionResult<object> resOutbound;
                         lastRecord.State = AssetStates.Outbound;

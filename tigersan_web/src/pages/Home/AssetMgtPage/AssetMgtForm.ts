@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
 import { assetMgtTable, pagination } from './AssetMgtTable'
-import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel, ErrorType } from '@/models'
+import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel, ErrorType, siteHelper } from '@/models'
 
 // 选择框:
 /** 筛选 */
@@ -17,8 +17,13 @@ const selectCompanyForm = companyHelper.GetIdNameSelectModel()
 const selectDepartmentForm = departmentHelper.GetIdNameSelectModel()
 selectDepartmentForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await departmentHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
 const selectAssetTypeForm = assetTypeHelper.GetIdNameSelectModel()
+// 出库:
+const selectCompanyOutboundForm = companyHelper.GetIdNameSelectModel()
+const selectSiteOutboundForm = siteHelper.GetIdNameSelectModel()
+selectSiteOutboundForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await siteHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
+selectCompanyOutboundForm._onChange = selectSiteOutboundForm.UpdateItemsAsync
 
 /** 搜索框 */
 const searchAssetId = new SearchModel()
@@ -236,6 +241,63 @@ function DeleteRowData(state: DialogState) {
     })
 }
 
+class OutboundModel {
+    company: bigint = 0n
+    site: bigint = 0n
+}
+
+/** “公司”项目配置 */
+const configOutboundCompany: FormItemConfig<OutboundModel, IdNameModel> = {
+    _propName: 'company',
+    PropText: '公司',
+    IsEquired: true,
+    Target: selectCompanyOutboundForm.Value,
+    _getValue: source => selectCompanyOutboundForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
+}
+
+/** “场地”项目配置 */
+const configSite: FormItemConfig<OutboundModel, IdNameModel> = {
+    _propName: 'site',
+    PropText: '场地',
+    IsEquired: true,
+    Target: selectSiteOutboundForm.Value,
+    _getValue: source => selectSiteOutboundForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.site)),
+    _setValue: (source, propName, value) => source.site = value && value.id != undefined ? value.id : 0n,
+    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, '不可为空')
+}
+
+/** “出库”表单配置 */
+let configOutbundForm: FormConfig<OutboundModel> = {
+    CancelText: '取消',
+    SubmitText: '确定',
+    _getSource: () => new OutboundModel(),
+    _beforeInitAsync: async isEdit => {
+        if (isEdit) {
+            const rowData = assetMgtTable.SelectedRowDatas.value[0]
+            if (!rowData) {
+                console.warn('The rowData is undefined!')
+                return
+            }
+
+            await selectCompanyForm.UpdateItemsAsync()
+            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
+            await selectDepartmentForm.UpdateItemsAsync()
+            selectDepartmentForm.Value.value = departmentHelper.GetIdName(rowData.department)
+            await selectAssetTypeForm.UpdateItemsAsync()
+            selectAssetTypeForm.Value.value = assetTypeHelper.GetIdName(rowData.type)
+        }
+    },
+    _itemConfigs: [
+        configOutboundCompany,
+        configSite,
+    ]
+}
+
+/** “出库”表单模型 */
+const assetOutbundForm = new FormModel(configOutbundForm)
+
 /** 入库 */
 async function Inbound() {
     dialog.ShowDialog(
@@ -261,25 +323,18 @@ function InboundRowData(state: DialogState) {
 
 /** 出库 */
 async function Outbound() {
-    dialog.ShowDialog(
-        '确认',
-        '是否确定入库？',
-        undefined,
-        OutboundRowData,
-        DialogMode.YesOrNo,
-        Colors.Warning)
-}
-
-function OutboundRowData(state: DialogState) {
-    if (state != DialogState.Yes) return
-
     const rowDatas = assetMgtTable.SelectedRowDatas.value
     if (rowDatas.length < 1) return
 
-    assetHelper.Outbound(rowDatas.map(r => r.id)).then(res => {
-        Refresh()
-        MyActionResult.ShowResult(res, '出库成功')
-    })
+    assetOutbundForm.Title.value = '出库'
+
+    assetOutbundForm._onSubmitAsync = async source => {
+        const res = await assetHelper.Outbound(source.site, rowDatas.map(r => r.id))
+        await Refresh()
+        return GetSubmitResult(res, '出库成功')
+    }
+
+    assetOutbundForm.Show(true)
 }
 
 export default {
@@ -293,6 +348,8 @@ export default {
     selectCompanyForm,
     selectDepartmentForm,
     selectAssetTypeForm,
+    selectCompanyOutboundForm,
+    selectSiteOutboundForm,
     configCompany,
     configDepartment,
     configAssetType,
@@ -301,6 +358,10 @@ export default {
     configName,
     configComment,
     assetMgtForm,
+    configOutboundCompany,
+    configSite,
+    configOutbundForm,
+    assetOutbundForm,
     Refresh,
     Add,
     Edit,

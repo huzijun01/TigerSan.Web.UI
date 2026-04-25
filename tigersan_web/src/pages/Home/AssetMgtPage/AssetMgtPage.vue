@@ -18,7 +18,7 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" :disabled="!IsAllowInbound" @click="form.Inbound">入库</button>
+                        <button :disabled="!IsAllowInbound" @click="form.Inbound">入库</button>
                         <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Outbound">出库</button>
                     </div>
                     <div class="row-panel">
@@ -75,6 +75,20 @@
         <FormRow>
             <FormItem :model="form.configComment.ItemModel">
                 <input type="text" v-model="form.configComment.Target.value">
+            </FormItem>
+        </FormRow>
+    </PopForm>
+
+    <!-- 表单（出库）: -->
+    <PopForm :model="form.assetOutbundForm">
+        <FormRow>
+            <FormItem :model="form.configOutboundCompany.ItemModel">
+                <Select :model="form.selectCompanyOutboundForm"></Select>
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configSite.ItemModel">
+                <Select :model="form.selectSiteOutboundForm"></Select>
             </FormItem>
         </FormRow>
     </PopForm>

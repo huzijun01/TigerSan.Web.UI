@@ -1,5 +1,5 @@
 import { IdModel, IdModelHelper, AxiosHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
-import { AssetStates, ErrorTypes } from "../base/AssetStates"
+import { AssetStates } from "../base/AssetStates"
 
 /** "资产基类"模型 */
 export class AssetRecordModel extends IdModel {
@@ -20,12 +20,12 @@ export class AssetRecordModel extends IdModel {
     reportTime?: Date
     // 附加:
     siteName?: string
-    targetSiteName?: string
     stationName?: string
     addr? = ''
     addrDetail? = ''
-    manager? = ''
-    phone? = ''
+    targetSiteName?: string
+    targetAddr? = ''
+    targetAddrDetail? = ''
 }
 
 class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {

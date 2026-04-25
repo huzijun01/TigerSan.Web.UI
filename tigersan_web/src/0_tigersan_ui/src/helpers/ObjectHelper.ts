@@ -136,30 +136,35 @@ export class ObjectHelper {
 
     /** 获取“日期文本” */
     static GetDateString(value?: Date | number | string): string {
-        if (value === undefined
-            || value === null
-            || typeof value === 'string' && value.trim() === ''
-            || typeof value === 'number' && value < 1) {
+        let date: Date
+
+        // 处理输入值
+        if (value === undefined) {
+            date = new Date()
+        } else if (value instanceof Date) {
+            date = value
+        } else if (typeof value === 'number' || typeof value === 'string') {
+            date = new Date(value)
+        } else {
+            console.warn('Invalid parameter type!')
             return ''
         }
 
-        const toLocalDate = (date: Date) => {
-            return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+        // 验证日期有效性
+        if (isNaN(date.getTime())) {
+            console.warn('Incorrect date format!')
+            return ''
         }
 
-        if (value instanceof Date) {
-            return toLocalDate(value)
-        }
+        // 格式化各部分并补零
+        const year = date.getFullYear()
+        const month = (date.getMonth() + 1).toString().padStart(2, '0')
+        const day = date.getDate().toString().padStart(2, '0')
+        const hours = date.getHours().toString().padStart(2, '0')
+        const minutes = date.getMinutes().toString().padStart(2, '0')
+        const seconds = date.getSeconds().toString().padStart(2, '0')
 
-        // 统一转换为UTC时间对象
-        const utcDate = new Date(
-            typeof value === 'string' && !value.includes('Z')
-                ? value + 'Z'
-                : value
-        )
-
-        // 转换为本地时间
-        return toLocalDate(new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000))
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
     /** 判断“字段文本”是否等于“目标值”  */

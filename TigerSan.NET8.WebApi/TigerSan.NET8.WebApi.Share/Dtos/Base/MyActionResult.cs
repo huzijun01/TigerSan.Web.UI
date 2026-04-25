@@ -37,6 +37,7 @@
         public static Func<string, MyActionResult<TData>> NoAssetRecord = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"No asset record! ({assetId})");
         public static Func<string, MyActionResult<TData>> NotInbound = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the Inbound state! ({assetId})");
         public static Func<string, MyActionResult<TData>> NotInStoreOrStolid = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the InStore or Stolid state! ({assetId})");
+        public static Func<string, MyActionResult<TData>> TargetSiteSameAsCurrent = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The target site cannot be the same as the current site! ({assetId})");
         #endregion 【Functions】
     }
     #endregion

@@ -9,12 +9,6 @@ pagination.IsShowSelectedRowCount.value = true
 /** 列头 */
 export const assetRecordTable = new TableModel<AssetRecordModel>([
     {
-        _propName: 'targetSiteName',
-        Text: '目标场地',
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-    },
-    {
         _propName: 'siteName',
         Text: '所在场地',
         IsReadonly: true,
@@ -39,14 +33,20 @@ export const assetRecordTable = new TableModel<AssetRecordModel>([
         Type: ItemType.TextBox,
     },
     {
-        _propName: 'manager',
-        Text: '联系人',
+        _propName: 'targetSiteName',
+        Text: '目标场地',
         IsReadonly: true,
         Type: ItemType.TextBox,
     },
     {
-        _propName: 'phone',
-        Text: '电话',
+        _propName: 'targetAddr',
+        Text: '目标地址',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'targetAddrDetail',
+        Text: '目标详址',
         IsReadonly: true,
         Type: ItemType.TextBox,
     },

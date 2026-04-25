@@ -362,10 +362,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                     // 重新计算:
                     if (lastRecord != null &&
-                        (dto.LastRecord == null ||
-                        dto.CalculationTime == null ||
-                        dto.LastRecord != lastRecord.Id ||
-                        (DateTime.Now - dto.CalculationTime.Value).TotalSeconds > Constants.Calculation_Interval_Seconds))
+                        (dto.LastRecord == null
+                        || dto.CalculationTime == null
+                        || dto.LastRecord != lastRecord.Id
+                        || (DateTime.Now - dto.CalculationTime.Value).TotalSeconds > Constants.Calculation_Interval_Seconds)
+                        || lastRecord == null && dto.LastRecord != null)
                     {
                         dto.CalculationTime = DateTime.Now;
                         var res = await Calculate(entity.Id, false);
@@ -724,9 +725,30 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 res.Data = find;
 
                 var records = await _db.AssetRecords.Where(r => r.Asset == id).OrderByDescending(r => r.ReportTime).ToListAsync();
+                var lastRecord = records.FirstOrDefault();
 
                 // 设置“状态”:
-                find.State = records.FirstOrDefault()?.State ?? AssetStates.NoRecord;
+                find.LastRecord = lastRecord?.Id;
+                find.State = lastRecord?.State ?? AssetStates.NoRecord;
+
+                // 是否滞留:
+                if (lastRecord != null && lastRecord.State == AssetStates.InStore)
+                {
+                    var lastInbound = records.LastOrDefault(r => r.State == AssetStates.Inbound);
+                    if (lastInbound == null)
+                    {
+                        LogHelper.Instance.Warning("Inbound record not found for asset in store!");
+                    }
+                    else if ((DateTime.Now - lastInbound.ReportTime).TotalHours > Constants.Stolid_Threshold_Hours)
+                    {
+                        var stolid = new AssetRecordEntity();
+                        stolid.ShallowCopy(lastRecord);
+                        stolid.UpdateId();
+                        stolid.ReportTime = DateTime.Now;
+                        find.State = stolid.State = AssetStates.Stolid;
+                        await _db.AssetRecords.AddAsync(stolid);
+                    }
+                }
 
                 // 计算“周转”:
                 var now = DateTime.Now;
@@ -784,12 +806,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 foreach (var entity in entities)
                 {
-                    if (entity.LastRecord == null)
-                    {
-                        return MyResults<object>.NoAssetRecord(entity.AssetId);
-                    }
-
-                    var lastRecord = await _assetRecordService.Get(entity.LastRecord.Value);
+                    var lastRecord = await _assetRecordService.GetLast(entity.Id);
                     if (lastRecord == null)
                     {
                         return MyResults<object>.NoAssetRecord(entity.AssetId);
@@ -822,13 +839,18 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 出库
         /// <summary>出库</summary>
-        public async Task<MyActionResult<object>> Outbound(List<long> ids, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> Outbound(long site, List<long> ids, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
             {
+                if (!_db.Sites.AsNoTracking().Any(s => s.Id == site))
+                {
+                    return MyResults<object>.SiteNotExist;
+                }
+
                 if (ids.Count < 1) return res;
 
                 var entities = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
@@ -845,19 +867,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 foreach (var entity in entities)
                 {
-                    if (entity.LastRecord == null)
-                    {
-                        return MyResults<object>.NoAssetRecord(entity.AssetId);
-                    }
-
                     var lastRecord = await _assetRecordService.GetLast(entity.Id);
                     if (lastRecord == null)
                     {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         return MyResults<object>.NoAssetRecord(entity.AssetId);
                     }
                     else if (lastRecord.State != AssetStates.InStore && lastRecord.State != AssetStates.Stolid)
                     {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         return MyResults<object>.NotInStoreOrStolid(entity.AssetId);
+                    }
+                    else if (lastRecord.Site == site)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return MyResults<object>.TargetSiteSameAsCurrent(entity.AssetId);
                     }
 
                     var inTransit = new AssetRecordEntity();
@@ -865,6 +889,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     inTransit.UpdateId();
                     inTransit.State = AssetStates.Outbound;
                     inTransit.ReportTime = DateTime.Now;
+                    inTransit.TargetSite = site;
                     await _db.AssetRecords.AddAsync(inTransit);
                 }
 

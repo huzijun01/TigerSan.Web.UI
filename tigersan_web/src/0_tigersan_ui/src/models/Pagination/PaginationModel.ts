@@ -11,7 +11,7 @@ class PaginationModel {
     /** 默认“页大小” */
     static Default_Page_Size = 10
     /** 默认“页大小”集合 */
-    static Default_Page_Sizes = [10, 20, 30, 40, 50]
+    static Default_Page_Sizes = [10, 20, 30, 40, 50, 100]
     /** 改变时 */
     _onChange?: (pageSize: number, selectedNum: number) => void
     //#endregion 【Fields】

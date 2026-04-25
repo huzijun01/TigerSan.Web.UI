@@ -119,11 +119,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("Outbound")]
+        [Route("Outbound/{site}")]
         /// <summary>出库</summary>
-        public async Task<MyActionResult<object>> Outbound([FromBody] List<long> ids)
+        public async Task<MyActionResult<object>> Outbound(long site, [FromBody] List<long> ids)
         {
-            return await _service.Outbound(ids);
+            return await _service.Outbound(site, ids);
         }
         #endregion [Other]
         #endregion 【Functions】
