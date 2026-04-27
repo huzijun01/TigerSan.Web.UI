@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -18,19 +19,32 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region 【Functions】
         #region [查]
         /// <summary>获取“ID名称对”集合</summary>
-        public async Task<List<IdName>> SelectIdName(bool? isDistinct = null, FilterDto? filter = null)
+        public async Task<MyActionResult<List<IdName>>> SelectIdName(bool? isDistinct = null, FilterDto? filter = null)
         {
-            var queryable = _dbSet.AsNoTracking();
-            queryable = await GetFilter(queryable, filter);
-
-            var select = queryable.Select(i => new IdName(i));
-
-            if (isDistinct ?? false)
+            try
             {
-                select = select.Distinct();
-            }
+                var queryable = _dbSet.AsNoTracking();
+                var res = await GetFilter(queryable, filter);
+                if (res.Data == null)
+                {
+                    return MyResults<List<IdName>>.Error(res.Message);
+                }
+                queryable = res.Data;
 
-            return await select.ToListAsync();
+                var select = queryable.Select(i => new IdName(i));
+
+                if (isDistinct ?? false)
+                {
+                    select = select.Distinct();
+                }
+
+                return MyResults<List<IdName>>.Success(null, await select.ToListAsync());
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return MyResults<List<IdName>>.Error(e.GetMessage());
+            }
         }
         #endregion [查]
 

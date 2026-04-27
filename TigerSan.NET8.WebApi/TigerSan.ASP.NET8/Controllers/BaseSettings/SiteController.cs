@@ -20,9 +20,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongCompanyList();
-            return res;
+            return await _service.GetBelongCompanyList();
         }
 
         [HttpGet]
@@ -30,9 +28,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongSiteTypeList(long? company = null)
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongSiteTypeList(company);
-            return res;
+            return await _service.GetBelongSiteTypeList(company);
         }
         #endregion [查]
         #endregion 【Functions】

@@ -6,26 +6,28 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
     public interface IIdServiceBase<TEntity> where TEntity : IdEntityBase
     {
         // 查:
-        public Task<TEntity?> Get(long id);
+        public Task<MyActionResult<TEntity>> Get(long id);
 
-        public Task<int> GetCount(FilterDto? filter = null);
+        public Task<MyActionResult<int>> GetCount(FilterDto? filter = null);
 
-        public Task<List<TEntity>> GetList(List<long> ids);
+        public Task<MyActionResult<List<TEntity>>> GetList(List<long> ids);
 
-        public Task<List<TEntity>> GetList(
+        public Task<MyActionResult<List<TEntity>>> GetList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? propName = null,
+            bool? ascending = null,
             FilterDto? filter = null);
 
-        public Task<List<TField>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false, FilterDto? filter = null);
-        public Task<List<IdValue<TField>>> SelectIdValue<TField>(
+        public Task<MyActionResult<List<TField>>> Select<TField>(Func<TEntity, TField> selector, bool isDistinct = false, FilterDto? filter = null);
+        public Task<MyActionResult<List<IdValue<TField>>>> SelectIdValue<TField>(
             Func<TEntity, TField> selector,
             bool? isDistinct = null,
             FilterDto? filter = null);
 
-        public Task<bool> IsExists(long id);
+        public Task<MyActionResult<bool>> IsExists(long id);
 
-        public Task<bool> IsExistsRange(List<long> ids);
+        public Task<MyActionResult<bool>> IsExistsRange(List<long> ids);
 
         // 增:
         public Task<MyActionResult<object>> Add(TEntity entity, bool isBeginTransaction = true);

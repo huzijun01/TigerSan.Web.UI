@@ -1,7 +1,7 @@
-﻿using System.Reflection;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -26,6 +26,18 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
 
     public static class IQueryableExtendion
     {
+        #region 【OrderBy】
+        /// <summary>排序</summary>
+        public static MethodInfo? OrderBy(bool ascending = true)
+        {
+            var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
+
+            return typeof(Queryable)
+                .GetMethods()
+                .FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2);
+        }
+        #endregion 【OrderBy】
+
         #region 【Where】
         private static readonly Lazy<MethodInfo?> _cachedWhereMethod = new Lazy<MethodInfo?>(GetWhereMethod, true);
 
@@ -60,12 +72,12 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             }
             catch (TargetInvocationException tie)
             {
-                LogHelper.Instance.Warning($"The execution of the Where method failed:{Environment.NewLine}{tie.GetMessage()}");
+                LogHelper.Instance.Error($"The execution of the Where method failed:{Environment.NewLine}{tie.GetMessage()}");
                 return null;
             }
             catch (ArgumentException ae)
             {
-                LogHelper.Instance.Warning($"Type parameter mismatch:{Environment.NewLine}{ae.GetMessage()}");
+                LogHelper.Instance.Error($"Type parameter mismatch:{Environment.NewLine}{ae.GetMessage()}");
                 return null;
             }
         }
@@ -151,8 +163,78 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
         }
         #endregion
 
+        #region 获取“单页数据”
+        /// <summary>获取“单页数据”</summary>
+        public static IQueryable<TEntity> GetPage<TEntity>(this IQueryable<TEntity> queryable, int? pageSize, int? pageNumber) where TEntity : IdEntityBase
+        {
+            if (pageSize == null || pageNumber == null) return queryable;
+            return queryable
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value);
+        }
+        #endregion
+
+        #region 获取“排序数据”
+        /// <summary>获取“排序数据”</summary>
+        public static MyActionResult<IQueryable<TEntity>> Sort<TEntity>(
+            this IQueryable<TEntity> queryable,
+            string? propName = null,
+            bool? ascending = null) where TEntity : IdEntityBase
+        {
+            if (string.IsNullOrEmpty(propName)) return MyResults<IQueryable<TEntity>>.Success(null, queryable);
+
+            try
+            {
+                // 获取实体类型元数据
+                var entityType = typeof(TEntity);
+
+                // 获取“属性信息”:
+                var propertyInfo = entityType.GetProperty(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                if (propertyInfo == null)
+                {
+                    var error = $"Property '{propName}' not found on type '{entityType.Name}'";
+                    LogHelper.Instance.Error(error);
+                    return MyResults<IQueryable<TEntity>>.Error(error);
+                }
+
+                // 创建“x”表达式:
+                var parameter = Expression.Parameter(entityType, "x");
+                // 创建“x.prop”表达式:
+                var property = Expression.Property(parameter, propertyInfo);
+                var propertyType = propertyInfo.PropertyType;
+
+                // 创建“=”表达式:
+                var propertyAccess = Expression.Property(parameter, propName);
+                var keySelector = Expression.Lambda(propertyAccess, parameter);
+
+                // 动态调用OrderBy方法
+                var orderByMethod = OrderBy(ascending ?? true);
+                if (orderByMethod == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(orderByMethod));
+                    return MyResults<IQueryable<TEntity>>.Error($"The {nameof(orderByMethod)} is null!");
+                }
+
+                var sortedQuery = orderByMethod.MakeGenericMethod(entityType, propertyType).Invoke(null, [queryable, keySelector]);
+
+                if (sortedQuery == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(sortedQuery));
+                    return MyResults<IQueryable<TEntity>>.Error($"The {nameof(sortedQuery)} is null!");
+                }
+
+                return MyResults<IQueryable<TEntity>>.Success(null, (IQueryable<TEntity>)sortedQuery);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return MyResults<IQueryable<TEntity>>.Error(e.GetMessage());
+            }
+        }
+        #endregion
+
         #region 获取“过滤器数据”
-        public static IQueryable GetFilter(Type entityType, IQueryable queryable, PropFilter filter)
+        public static MyActionResult<IQueryable> GetFilter(Type entityType, IQueryable queryable, PropFilter filter)
         {
             try
             {
@@ -167,14 +249,16 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 }
 
                 // 验证过滤器参数的有效性:
-                if (filter.Values == null || filter.Values.Count() < 1 || string.IsNullOrEmpty(filter.PropName)) return queryable;
+                if (filter.Values == null || filter.Values.Count() < 1 || string.IsNullOrEmpty(filter.PropName))
+                    return MyResults<IQueryable>.Success(null, queryable);
 
                 // 获取“属性信息”:
                 var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                 if (propertyInfo == null)
                 {
-                    LogHelper.Instance.Warning($"Property '{filter.PropName}' not found on type '{entityType.Name}'");
-                    return queryable.False();
+                    var error = $"Property '{filter.PropName}' not found on type '{entityType.Name}'";
+                    LogHelper.Instance.Error(error);
+                    return MyResults<IQueryable>.Error(error);
                 }
 
                 // 创建“x”表达式:
@@ -187,7 +271,9 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 Func<object, Expression> selector;
                 if (propertyType == typeof(string))
                 {
-                    if (string.IsNullOrEmpty(filter.Value?.ToString())) return queryable;
+                    if (string.IsNullOrEmpty(filter.Value?.ToString()))
+                        return MyResults<IQueryable>.Success(null, queryable);
+
                     selector = obj => Expression.Equal(
                         Expression.Call(property, MethodPicker.ToLower),
                         Expression.Constant(obj.ToString()?.ToLower(), typeof(string))
@@ -219,7 +305,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 if (newQueryable == null)
                 {
                     LogHelper.Instance.IsNull(nameof(newQueryable));
-                    return queryable.False();
+                    return MyResults<IQueryable>.Error($"The {nameof(newQueryable)} is null!");
                 }
 
                 queryable = newQueryable;
@@ -229,46 +315,49 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 LogHelper.Instance.Error(e.GetMessage());
             }
 
-            return queryable;
-        }
-        #endregion
-
-        #region 获取“单页数据”
-        /// <summary>获取“单页数据”</summary>
-        public static IQueryable<TEntity> GetPage<TEntity>(this IQueryable<TEntity> queryable, int? pageSize, int? pageNumber) where TEntity : IdEntityBase
-        {
-            if (pageSize == null || pageNumber == null) return queryable;
-            return queryable
-                    .Skip((pageNumber.Value - 1) * pageSize.Value)
-                    .Take(pageSize.Value);
+            return MyResults<IQueryable>.Success(null, queryable);
         }
         #endregion
 
         #region 获取“单过滤器数据”
         /// <summary>获取“单过滤器数据”</summary>
-        public static IQueryable<TEntity> GetOnlyFilter<TEntity>(this IQueryable<TEntity> queryable, PropFilter? filters) where TEntity : IdEntityBase
+        public static MyActionResult<IQueryable<TEntity>> GetOnlyFilter<TEntity>(this IQueryable<TEntity> queryable, PropFilter? filters) where TEntity : IdEntityBase
         {
-            if (filters == null) return queryable;
-            return (IQueryable<TEntity>)GetFilter(typeof(TEntity), queryable, filters);
+            if (filters == null) return MyResults<IQueryable<TEntity>>.Success(null, queryable);
+            var res = GetFilter(typeof(TEntity), queryable, filters);
+            if (res.Data == null)
+            {
+                LogHelper.Instance.Error(res.Message);
+                return MyResults<IQueryable<TEntity>>.Error(res.Message);
+            }
+
+            return MyResults<IQueryable<TEntity>>.Success(null, (IQueryable<TEntity>)res.Data);
         }
         #endregion
 
         #region 获取“多过滤器数据”
         /// <summary>获取“多过滤器数据”</summary>
-        public static IQueryable<TEntity> GetFilters<TEntity>(this IQueryable<TEntity> queryable, List<PropFilter> filters) where TEntity : IdEntityBase
+        public static MyActionResult<IQueryable<TEntity>> GetFilters<TEntity>(this IQueryable<TEntity> queryable, List<PropFilter> filters) where TEntity : IdEntityBase
         {
             foreach (var filter in filters)
             {
-                queryable = (IQueryable<TEntity>)GetFilter(typeof(TEntity), queryable, filter);
+                var res = GetFilter(typeof(TEntity), queryable, filter);
+                if (res.Data == null)
+                {
+                    LogHelper.Instance.Error(res.Message);
+                    return MyResults<IQueryable<TEntity>>.Error(res.Message);
+                }
+
+                queryable = (IQueryable<TEntity>)res.Data;
             }
 
-            return queryable;
+            return MyResults<IQueryable<TEntity>>.Success(null, queryable);
         }
         #endregion
 
         #region 获取“父表过滤器数据”
         /// <summary>获取“父表过滤器数据”</summary>
-        public async static Task<IQueryable<TEntity>> GetParentFilter<TEntity>(
+        public async static Task<MyActionResult<IQueryable<TEntity>>> GetParentFilter<TEntity>(
             this IQueryable<TEntity> queryable,
             string? parentIdPropName,
             AppDbContext db,
@@ -278,12 +367,12 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             if (config == null)
             {
                 LogHelper.Instance.IsNull(nameof(config));
-                return queryable.False();
+                return MyResults<IQueryable<TEntity>>.Error($"The {nameof(config)} is null!");
             }
             if (parentIdPropName == null)
             {
                 LogHelper.Instance.IsNull(nameof(parentIdPropName));
-                return queryable.False();
+                return MyResults<IQueryable<TEntity>>.Error($"The {nameof(parentIdPropName)} is null!");
             }
 
             var parentIds = await GetParentIds(
@@ -291,13 +380,21 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 config,
                 parent);
 
-            queryable = queryable.GetOnlyFilter(new PropFilter()
+            var res = queryable.GetOnlyFilter(new PropFilter()
             {
                 PropName = parentIdPropName,
                 Values = parentIds.Cast<object>().ToList()
             });
 
-            return queryable;
+            if (res.Data == null)
+            {
+                LogHelper.Instance.Error(res.Message);
+                return MyResults<IQueryable<TEntity>>.Error(res.Message);
+            }
+
+            queryable = res.Data;
+
+            return MyResults<IQueryable<TEntity>>.Success(null, queryable);
         }
         #endregion
 

@@ -26,12 +26,16 @@ export class IdModelHelper<TModel extends IdModel> {
 
     readonly GetList = async (param: {
         pageSize?: number,
-        pageNumber?:
-        number, strList?:
-        string, params?: KeyValue[]
+        pageNumber?: number,
+        sort?: string,
+        ascending?: boolean,
+        strList?: string,
+        params?: KeyValue[]
     }) => await AxiosHelper.GetList<TModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
+        sort: param.sort,
+        ascending: param.ascending,
         strList: param.strList,
         params: param.params
     })

@@ -1,13 +1,14 @@
 ﻿using System.Globalization;
 using System.Threading.Channels;
 using TigerSan.CsvLog;
-using TigerSan.TimerHelper;
-using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Helpers;
-using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Share.Packages;
-using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models;
+using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Share.Helpers;
+using TigerSan.NET8.WebApi.Share.Packages;
+using TigerSan.TimerHelper;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -122,7 +123,13 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return;
             }
 
-            var baseStations = await baseStationService.GetList();
+            var resGetList = await baseStationService.GetList();
+            var baseStations = resGetList.Data;
+            if (baseStations == null)
+            {
+                LogHelper.Instance.Warning(resGetList.Message);
+                return;
+            }
 
             _baseStationCaches.Clear();
             foreach (var baseStation in baseStations)
@@ -143,7 +150,14 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return;
             }
 
-            var tags = await tagService.GetFullList();
+            var resGetFullList = await tagService.GetFullList();
+            var tags = resGetFullList.Data;
+            if (tags == null)
+            {
+                LogHelper.Instance.Warning(resGetFullList.Message);
+                return;
+            }
+
             _tagCaches.Clear();
             foreach (var tag in tags)
             {
@@ -163,7 +177,14 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return;
             }
 
-            var tags = await tagService.GetList(ids);
+            var resGetList = await tagService.GetList();
+            var tags = resGetList.Data;
+            if (tags == null)
+            {
+                LogHelper.Instance.Warning(resGetList.Message);
+                return;
+            }
+
             foreach (var tag in tags)
             {
                 _tagCaches.Remove(tag.TagId);
@@ -182,10 +203,11 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return;
             }
 
-            var tag = await tagService.Get(id);
+            var resGet = await tagService.Get(id);
+            var tag = resGet.Data;
             if (tag == null)
             {
-                LogHelper.Instance.IsNull(nameof(tag));
+                LogHelper.Instance.Warning(resGet.Message);
                 return;
             }
 
@@ -204,10 +226,11 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return;
             }
 
-            var tag = await tagService.GetFull(tagId);
+            var resGetFull = await tagService.GetFull(tagId);
+            var tag = resGetFull.Data;
             if (tag == null)
             {
-                LogHelper.Instance.IsNull(nameof(tag));
+                LogHelper.Instance.Warning(resGetFull.Message);
                 return;
             }
 
@@ -226,7 +249,14 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return;
             }
 
-            var tags = await tagService.GetFullList(ids);
+            var resGetFullList = await tagService.GetFullList();
+            var tags = resGetFullList.Data;
+            if (tags == null)
+            {
+                LogHelper.Instance.Warning(resGetFullList.Message);
+                return;
+            }
+
             foreach (var tag in tags)
             {
                 _tagCaches[tag.TagId] = tag;

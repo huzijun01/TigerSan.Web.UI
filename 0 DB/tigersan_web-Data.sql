@@ -1,4 +1,4 @@
-INSERT INTO tigersan_web.admin_mgt (id,company,name,password,is_root) VALUES
+INSERT INTO tigersan_web.admin (id,company,name,password,is_root) VALUES
 	 (0,NULL,'admin','AQAAAAIAAYagAAAAEB5GDKHRZakKnu/RAYmdkdc8Dwy0vOVjgcyiFT4rz8c/6gOhFFMZtOLpvRhhi5neJQ==',1);
 
 INSERT INTO tigersan_web.site_type (id,name) VALUES

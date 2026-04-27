@@ -22,11 +22,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<List<BaseStationDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<BaseStationDto>>.OperationSuccess;
-            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
-            return res;
+            return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
 
         [HttpGet]
@@ -34,9 +34,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongCompanyList();
-            return res;
+            return await _service.GetBelongCompanyList();
         }
 
         [HttpGet]
@@ -44,9 +42,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属场地”集合</summary>
         public async Task<MyActionResult<List<IdName>>> BelongSiteList(long? company = null)
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongSiteList(company);
-            return res;
+            return await _service.GetBelongSiteList(company);
         }
 
         [HttpGet]
@@ -54,9 +50,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属场地”集合</summary>
         public async Task<MyActionResult<List<IdName>>> BelongStationTypeList(long? company = null, long? site = null)
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongStationTypeList(company, site);
-            return res;
+            return await _service.GetBelongStationTypeList(company, site);
         }
         #endregion [查]
 

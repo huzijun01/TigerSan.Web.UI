@@ -45,10 +45,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else
                 {
-                    var site = await _baseStationService.GetSite(entity.Station.Value);
+                    var resGetSite = await _baseStationService.GetSite(entity.Station.Value);
+                    var site = resGetSite.Data;
                     if (site == null)
                     {
-                        return MyResults<object>.SiteNotExist;
+                        return MyResults<object>.Error(resGetSite.Message);
                     }
                     else
                     {
@@ -69,16 +70,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<AssetRecordDto>> GetFullList(
+        public async Task<MyActionResult<List<AssetRecordDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
             try
             {
                 var list = new List<AssetRecordDto>();
 
-                var records = await GetList(pageSize, pageNumber, filter);
+                var res = await GetList(pageSize, pageNumber, sort, ascending, filter);
+                if (res.Data == null)
+                {
+                    return MyResults<List<AssetRecordDto>>.Error(res.Message);
+                }
+                var records = res.Data;
 
                 // 添加“数据”:
                 foreach (var record in records)
@@ -126,52 +134,68 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     list.Add(dto);
                 }
 
-                return list;
+                return MyResults<List<AssetRecordDto>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<AssetRecordDto>();
+                return MyResults<List<AssetRecordDto>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“最新数据”
         /// <summary>获取“最新数据”</summary>
-        public async Task<AssetRecordEntity?> GetLast(long asset)
+        public async Task<MyActionResult<AssetRecordEntity>> GetLast(long asset)
         {
             try
             {
-                return await _dbSet
+                var entity = await _dbSet
                     .AsNoTracking()
                     .Where(ar => ar.Asset == asset)
                     .OrderByDescending(ar => ar.ReportTime)
                     .FirstOrDefaultAsync();
+
+                if (entity == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(entity));
+                    return MyResults<AssetRecordEntity>.Error("Entity not found");
+                }
+
+                return MyResults<AssetRecordEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return null;
+                return MyResults<AssetRecordEntity>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“最新入库数据”
         /// <summary>获取“最新入库数据”</summary>
-        public async Task<AssetRecordEntity?> GetLastInbound(long asset)
+        public async Task<MyActionResult<AssetRecordEntity>> GetLastInbound(long asset)
         {
             try
             {
-                return await _dbSet
+                var entity = await _dbSet
                     .AsNoTracking()
                     .Where(ar => ar.Asset == asset && ar.State == AssetStates.Inbound)
                     .OrderByDescending(ar => ar.ReportTime)
                     .FirstOrDefaultAsync();
+
+                if (entity == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(entity));
+                    return MyResults<AssetRecordEntity>.Error("Entity not found");
+                }
+
+                return MyResults<AssetRecordEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return null;
+                return MyResults<AssetRecordEntity>.Error(e.GetMessage());
             }
         }
         #endregion
@@ -363,7 +387,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
                 _editingTags.Add(newTag.Id, newTag);
 
-                var lastRecord = await GetLast(newTag.Asset.Value);
+                var resLast = await GetLast(newTag.Asset.Value);
+                if (resLast.IsError)
+                {
+                    return MyResults<object>.Error(resLast.Message);
+                }
+                var lastRecord = resLast.Data;
 
                 if (lastRecord == null) // 首条记录，新增“入库记录”
                 {
@@ -396,7 +425,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     // 添加“场地”:
                     if (newTag.Station != null)
                     {
-                        var site = await _baseStationService.GetSite(newTag.Station.Value);
+                        var site = await _db.BaseStations.FirstOrDefaultAsync(b => b.Id == newTag.Station.Value);
                         if (site == null)
                         {
                             return MyResults<object>.ResourceNotExist;
@@ -449,11 +478,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (lastRecord.State == AssetStates.InStore) // 在库
                     {
                         // 判断是否“滞留”:
-                        var lastInboundRecord = await GetLastInbound(newTag.Asset.Value);
+                        var resLastInbound = await GetLastInbound(newTag.Asset.Value);
+                        var lastInboundRecord = resLastInbound.Data;
                         if (lastInboundRecord == null)
                         {
-                            LogHelper.Instance.IsNull(nameof(lastInboundRecord));
-                            return MyResults<object>.ResourceNotExist;
+                            LogHelper.Instance.Error(resLastInbound.Message);
+                            return MyResults<object>.Error(resLastInbound.Message);
                         }
 
                         newRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours

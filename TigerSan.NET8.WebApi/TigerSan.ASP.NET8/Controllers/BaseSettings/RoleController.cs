@@ -21,11 +21,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<List<RoleAuthorityEntity>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
-            var res = MyResults<List<RoleAuthorityEntity>>.OperationSuccess;
-            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
-            return res;
+            return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
 
         [HttpGet]
@@ -33,9 +33,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongCompanyList();
-            return res;
+            return await _service.GetBelongCompanyList();
         }
 
         [HttpGet]
@@ -43,9 +41,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属部门”集合</summary>
         public async Task<MyActionResult<List<IdName>>> BelongDepartmentList(long? company = null)
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.GetBelongDepartmentList(company);
-            return res;
+            return await _service.GetBelongDepartmentList(company);
         }
         #endregion [查]
 

@@ -6,13 +6,15 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
     public interface IPersonService : IIdServiceBase<PersonEntity>
     {
         public Task<MyActionResult<PersonFullEntity>> GetLoginFull(string search, bool clearPassword = true);
-        public Task<List<PersonFullEntity>> GetFullList(
+        public Task<MyActionResult<List<PersonFullEntity>>> GetFullList(
             string? name = null,
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null);
-        public Task<List<IdName>> GetBelongCompanyList();
-        public Task<List<IdName>> GetBelongDepartmentList(long? company = null);
-        public Task<List<IdName>> GetBelongRoleList(long? department = null);
+        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList();
+        public Task<MyActionResult<List<IdName>>> GetBelongDepartmentList(long? company = null);
+        public Task<MyActionResult<List<IdName>>> GetBelongRoleList(long? department = null);
     }
 }

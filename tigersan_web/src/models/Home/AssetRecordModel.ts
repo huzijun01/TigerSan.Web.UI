@@ -64,6 +64,8 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
+        sort: 'ReportTime',
+        ascending: false,
         filter: {
             parent: {
                 id: param.asset,

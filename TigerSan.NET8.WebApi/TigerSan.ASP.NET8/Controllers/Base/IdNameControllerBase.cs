@@ -21,9 +21,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“ID名称对”集合</summary>
         public virtual async Task<MyActionResult<List<IdName>>> SelectIdName(bool? isDistinct, [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<IdName>>.OperationSuccess;
-            res.Data = await _service.SelectIdName(isDistinct, filter);
-            return res;
+            return await _service.SelectIdName(isDistinct, filter);
         }
         #endregion 【Functions】
     }

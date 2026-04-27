@@ -39,6 +39,8 @@ export class AxiosHelper extends AxiosBase {
             pageSize?: number,
             pageNumber?: number,
             strList?: string,
+            sort?: string,
+            ascending?: boolean,
             params?: KeyValue[],
             filter?: FilterModel
         }): Promise<T[]> {
@@ -46,6 +48,8 @@ export class AxiosHelper extends AxiosBase {
             const arrParams: KeyValue[] = [
                 { key: 'pageSize', value: param.pageSize },
                 { key: 'pageNumber', value: param.pageNumber },
+                { key: 'sort', value: param.sort },
+                { key: 'ascending', value: param.ascending },
             ]
             if (param.params) arrParams.push(...param.params)
 

@@ -22,11 +22,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<List<TagDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<TagDto>>.OperationSuccess;
-            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
-            return res;
+            return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
         #endregion [查]
 

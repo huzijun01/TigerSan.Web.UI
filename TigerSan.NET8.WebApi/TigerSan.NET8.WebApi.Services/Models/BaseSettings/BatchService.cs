@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -27,7 +27,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“公司”
         /// <summary>获取“公司”</summary>
-        public async Task<CompanyEntity?> GetCompany(long id)
+        public async Task<MyActionResult<CompanyEntity>> GetCompany(long id)
         {
             try
             {
@@ -35,29 +35,29 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (batch == null)
                 {
                     LogHelper.Instance.IsNull(nameof(batch));
-                    return null;
+                    return MyResults<CompanyEntity>.ResourceNotExist;
                 }
 
                 var company = await _db.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Id == batch.Company);
                 if (company == null)
                 {
                     LogHelper.Instance.IsNull(nameof(company));
-                    return null;
+                    return MyResults<CompanyEntity>.ResourceNotExist;
                 }
 
-                return company;
+                return MyResults<CompanyEntity>.Success(null, company);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return null;
+                return MyResults<CompanyEntity>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“公司”字典
         /// <summary>获取“公司”字典</summary>
-        public async Task<Dictionary<long, CompanyEntity>> GetCompanyDict(List<long> ids)
+        public async Task<MyActionResult<Dictionary<long, CompanyEntity>>> GetCompanyDict(List<long> ids)
         {
             var dict = new Dictionary<long, CompanyEntity>();
             try
@@ -81,12 +81,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     dict.Add(id, company);
                 }
 
-                return dict;
+                return MyResults<Dictionary<long, CompanyEntity>>.Success(null, dict);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return dict;
+                return MyResults<Dictionary<long, CompanyEntity>>.Error(e.GetMessage());
             }
         }
         #endregion

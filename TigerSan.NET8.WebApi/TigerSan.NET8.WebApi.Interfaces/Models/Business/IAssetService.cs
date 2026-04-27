@@ -5,9 +5,11 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IAssetService : IIdServiceBase<AssetEntity>
     {
-        public Task<List<AssetDto>> GetFullList(
+        public Task<MyActionResult<List<AssetDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null);
 
         public Task<MyActionResult<AssetEntity>> Calculate(long id, bool isBeginTransaction = true);

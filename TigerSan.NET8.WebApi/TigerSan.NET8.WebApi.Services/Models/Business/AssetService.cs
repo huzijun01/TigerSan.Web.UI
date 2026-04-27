@@ -267,9 +267,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<AssetDto>> GetFullList(
+        public async Task<MyActionResult<List<AssetDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
             try
@@ -277,9 +279,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var dtos = new List<AssetDto>();
 
                 // 获取“实体”集合:
-                var queryable = _dbSet.AsNoTracking();
-                queryable = await GetFilter(queryable, filter);
-                var entites = await queryable.GetPage(pageSize, pageNumber).ToListAsync();
+                var res = await base.GetList(pageSize, pageNumber, sort, ascending, filter);
+                var entites = res.Data;
+                if (entites == null)
+                {
+                    return MyResults<List<AssetDto>>.Error(res.Message);
+                }
 
                 // 添加“其它数据”:
                 var departmentIds = entites.Select(e => e.Department).Distinct().ToList();
@@ -319,7 +324,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                     if (dto.Tag != null)
                     {
-                        var tag = await _tagService.Get(dto.Tag.Value);
+                        var tag = await _db.Tags.FirstOrDefaultAsync(t => t.Id == dto.Tag.Value);
                         if (tag == null)
                         {
                             LogHelper.Instance.IsNull(nameof(tag));
@@ -331,7 +336,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     // 获取“最新记录”:
-                    var lastRecord = await _assetRecordService.GetLast(entity.Id);
+                    var resGetLast = await _assetRecordService.GetLast(entity.Id);
+                    if (resGetLast.IsError)
+                    {
+                        LogHelper.Instance.Error(resGetLast.Message);
+                        continue;
+                    }
+                    var lastRecord = resGetLast.Data;
                     if (lastRecord != null)
                     {
                         var id = entity.Id;
@@ -369,23 +380,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         || lastRecord == null && dto.LastRecord != null)
                     {
                         dto.CalculationTime = DateTime.Now;
-                        var res = await Calculate(entity.Id, false);
-                        if (res.IsError || res.Data == null)
+                        var resCalculate = await Calculate(entity.Id, false);
+                        if (resCalculate.IsError || resCalculate.Data == null)
                         {
                             LogHelper.Instance.Warning($"Calculation failed! (Id = {entity.Id})");
                             continue;
                         }
 
-                        dto.ShallowCopy(res.Data);
+                        dto.ShallowCopy(resCalculate.Data);
                     }
                 }
 
-                return dtos;
+                return MyResults<List<AssetDto>>.Success(null, dtos);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<AssetDto>();
+                return MyResults<List<AssetDto>>.Error(e.GetMessage());
             }
         }
         #endregion
@@ -406,11 +417,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     dto.BindingTime = DateTime.Now;
 
                     // 修改“标签ID”:
-                    var tag = await _tagService.GetFull(dto.TagId, dto.Company);
-                    if (tag == null)
+                    var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                    if (resGetFull.Data == null)
                     {
                         return MyResults<object>.TagNotFound(dto.TagId);
                     }
+                    var tag = resGetFull.Data;
                     // 绑定“标签”:
                     dto.Tag = tag.Id;
 
@@ -464,11 +476,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         dto.BindingTime = DateTime.Now;
 
                         // 修改“标签ID”:
-                        var tag = await _tagService.GetFull(dto.TagId, dto.Company);
-                        if (tag == null)
+                        var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                        if (resGetFull.Data == null)
                         {
                             return MyResults<object>.TagNotFound(dto.TagId);
                         }
+                        var tag = resGetFull.Data;
                         // 绑定“标签”:
                         dto.Tag = tag.Id;
 
@@ -534,7 +547,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (find.Tag != null)
                     {
                         // “标签”解绑“资产”:
-                        var tag = await _tagService.Get(find.Tag.Value);
+                        var tag = await _db.Tags.FirstOrDefaultAsync(t => t.Id == find.Tag.Value);
                         if (tag != null)
                         {
                             tag.Asset = null;
@@ -554,7 +567,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     dto.BindingTime = DateTime.Now;
 
-                    var tag = await _tagService.GetFull(dto.TagId, dto.Company);
+                    var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                    if (resGetFull.IsError)
+                    {
+                        return MyResults<object>.Error(resGetFull.Message);
+                    }
+                    var tag = resGetFull.Data;
                     if (tag == null)
                     {
                         return MyResults<object>.TagNotFound(dto.TagId);
@@ -615,7 +633,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         if (dto.Tag != null)
                         {
                             // “标签”解绑“资产”:
-                            var tag = await _tagService.Get(dto.Tag.Value);
+                            var tag = await _db.Tags.FirstOrDefaultAsync(t => t.Id == dto.Tag.Value);
                             if (tag != null)
                             {
                                 tag.Asset = null;
@@ -636,7 +654,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         dto.BindingTime = DateTime.Now;
 
-                        var tag = await _tagService.GetFull(dto.TagId, dto.Company);
+                        var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                        if (resGetFull.IsError)
+                        {
+                            return MyResults<object>.Error(resGetFull.Message);
+                        }
+                        var tag = resGetFull.Data;
                         if (tag == null)
                         {
                             return MyResults<object>.TagNotFound(dto.TagId);
@@ -806,7 +829,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 foreach (var entity in entities)
                 {
-                    var lastRecord = await _assetRecordService.GetLast(entity.Id);
+                    var resGetLast = await _assetRecordService.GetLast(entity.Id);
+                    if (resGetLast.IsError)
+                    {
+                        return MyResults<object>.Error(resGetLast.Message);
+                    }
+
+                    var lastRecord = resGetLast.Data;
                     if (lastRecord == null)
                     {
                         return MyResults<object>.NoAssetRecord(entity.AssetId);
@@ -867,7 +896,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 foreach (var entity in entities)
                 {
-                    var lastRecord = await _assetRecordService.GetLast(entity.Id);
+                    var resGetLast = await _assetRecordService.GetLast(entity.Id);
+                    if (resGetLast.IsError)
+                    {
+                        return MyResults<object>.Error(resGetLast.Message);
+                    }
+
+                    var lastRecord = resGetLast.Data;
                     if (lastRecord == null)
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作

@@ -21,11 +21,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<List<AssetDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<AssetDto>>.OperationSuccess;
-            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
-            return res;
+            return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
 
         [HttpPost]
@@ -33,9 +33,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“ID资产ID对”集合</summary>
         public async Task<MyActionResult<List<IdValue<string>>>> GetIdAssetIdList(bool? isDistinct = null, [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<IdValue<string>>>.OperationSuccess;
-            res.Data = await _service.SelectIdValue(i => i.AssetId, isDistinct, filter);
-            return res;
+            return await _service.SelectIdValue(i => i.AssetId, isDistinct, filter);
         }
         #endregion [查]
 

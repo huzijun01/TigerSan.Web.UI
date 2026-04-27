@@ -35,11 +35,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<List<AssetRecordDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<AssetRecordDto>>.OperationSuccess;
-            res.Data = await _service.GetFullList(pageSize, pageNumber, filter);
-            return res;
+            return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
         #endregion [查]
 
@@ -48,27 +48,21 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>添加“单条数据”</summary>
         public async Task<MyActionResult<object>> AddByPackage([FromBody] AssetRecordEntity entity)
         {
-            var asset = await _assetService.Get(entity.Asset);
+            var asset = (await _assetService.Get(entity.Asset)).Data;
             if (asset == null)
-            {
-                LogHelper.Instance.IsNull(nameof(asset));
-                return MyResults<object>.ResourceNotExist;
-            }
-
-            if (asset.Tag == null)
             {
                 LogHelper.Instance.IsNull(nameof(asset.Tag));
                 return MyResults<object>.AssetNotBoundTag;
             }
 
-            var tag = await _tagService.Get(asset.Tag.Value);
+            var tag = (await _tagService.Get(asset.Tag ?? 0)).Data;
             if (tag == null)
             {
                 LogHelper.Instance.IsNull(nameof(tag));
                 return MyResults<object>.ResourceNotExist;
             }
 
-            var station = await _baseStationService.Get(entity.Station ?? 0);
+            var station = (await _baseStationService.Get(entity.Station ?? 0)).Data;
             if (station == null)
             {
                 LogHelper.Instance.IsNull(nameof(station));

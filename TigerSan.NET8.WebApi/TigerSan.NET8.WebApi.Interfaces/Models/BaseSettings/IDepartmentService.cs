@@ -5,7 +5,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IDepartmentService : IIdNameServiceBase<DepartmentEntity>
     {
-        public Task<List<IdName>> GetBelongCompanyList();
+        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList();
         public Task<Dictionary<long, DepartmentInfo>> GetDepartmentInfoDict(List<long> ids);
     }
 }

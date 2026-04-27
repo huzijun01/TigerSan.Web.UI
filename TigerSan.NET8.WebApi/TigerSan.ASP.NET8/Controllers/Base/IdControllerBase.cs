@@ -27,15 +27,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“单条数据”</summary>
         public virtual async Task<MyActionResult<TEntity>> Get(long id)
         {
-            var entity = await _service.Get(id);
-            if (entity == null)
-            {
-                return MyResults<TEntity>.ResourceNotFound;
-            }
-
-            var res = MyResults<TEntity>.OperationSuccess;
-            res.Data = entity;
-            return res;
+            return await _service.Get(id);
         }
 
         [HttpPost]
@@ -43,9 +35,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“总数”</summary>
         public virtual async Task<MyActionResult<int>> GetCount([FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<int>.OperationSuccess;
-            res.Data = await _service.GetCount(filter);
-            return res;
+            return await _service.GetCount(filter);
         }
 
         [HttpPost]
@@ -54,11 +44,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         public virtual async Task<MyActionResult<List<TEntity>>> GetList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = MyResults<List<TEntity>>.OperationSuccess;
-            res.Data = await _service.GetList(pageSize, pageNumber, filter);
-            return res;
+            return await _service.GetList(pageSize, pageNumber, sort, ascending, filter);
         }
         #endregion [查]
 

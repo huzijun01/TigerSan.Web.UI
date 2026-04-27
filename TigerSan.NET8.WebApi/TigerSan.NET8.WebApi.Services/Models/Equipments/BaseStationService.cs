@@ -29,16 +29,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<BaseStationDto>> GetFullList(
+        public async Task<MyActionResult<List<BaseStationDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
             try
             {
                 var list = new List<BaseStationDto>();
 
-                var stations = await GetList(pageSize, pageNumber, filter);
+                var resFilter = await GetList(pageSize, pageNumber, sort, ascending, filter);
+                if (resFilter.Data == null)
+                {
+                    return MyResults<List<BaseStationDto>>.Error(resFilter.Message);
+                }
+                var stations = resFilter.Data;
 
                 // 添加“数据”:
                 foreach (var station in stations)
@@ -59,21 +66,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     list.Add(dto);
                 }
 
-                return list;
+                return MyResults<List<BaseStationDto>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<BaseStationDto>();
+                return MyResults<List<BaseStationDto>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<List<IdName>> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var list = new List<IdName>();
             try
             {
                 var sites = await _dbSet
@@ -82,7 +88,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (sites.Count < 1) return list;
+                if (sites.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var companys = await _db.Sites
                     .AsNoTracking()
@@ -91,27 +97,28 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (companys.Count < 1) return list;
+                if (companys.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
-                return await _db.Companies
+                var list = await _db.Companies
                     .AsNoTracking()
                     .Where(i => companys.Contains(i.Id))
                     .Select(i => new IdName(i.Id, i.Name))
                     .ToListAsync();
+
+                return MyResults<List<IdName>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return list;
+                return MyResults<List<IdName>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“所属场地”集合
         /// <summary>获取“所属场地”集合</summary>
-        public async Task<List<IdName>> GetBelongSiteList(long? company = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongSiteList(long? company = null)
         {
-            var list = new List<IdName>();
             try
             {
                 var sites = await _dbSet
@@ -120,7 +127,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (sites.Count < 1) return list;
+                if (sites.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var queryable = _db.Sites
                     .AsNoTracking()
@@ -131,23 +138,24 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     queryable = queryable.Where(i => i.Company == company);
                 }
 
-                return await queryable
+                var list = await queryable
                     .Select(i => new IdName(i.Id, i.Name))
                     .ToListAsync();
+
+                return MyResults<List<IdName>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return list;
+                return MyResults<List<IdName>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“所属基站类型”集合
         /// <summary>获取“所属基站类型”集合</summary>
-        public async Task<List<IdName>> GetBelongStationTypeList(long? company = null, long? site = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongStationTypeList(long? company = null, long? site = null)
         {
-            var list = new List<IdName>();
             try
             {
                 var queryable = _dbSet.AsNoTracking();
@@ -168,23 +176,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Select(i => i.Type)
                     .ToListAsync();
 
-                if (types.Count < 1) return list;
+                if (types.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
-                return await _db.StationTypes
+                var list = await _db.StationTypes
                     .Select(i => new IdName(i.Id, i.Name))
                     .ToListAsync();
+
+                return MyResults<List<IdName>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return list;
+                return MyResults<List<IdName>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“场地”
         /// <summary>获取“场地”</summary>
-        public async Task<SiteEntity?> GetSite(long id)
+        public async Task<MyActionResult<SiteEntity>> GetSite(long id)
         {
             try
             {
@@ -192,29 +202,29 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (station == null)
                 {
                     LogHelper.Instance.IsNull(nameof(station));
-                    return null;
+                    return MyResults<SiteEntity>.Error("Station not found");
                 }
 
                 var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == station.Site);
                 if (site == null)
                 {
                     LogHelper.Instance.IsNull(nameof(site));
-                    return null;
+                    return MyResults<SiteEntity>.Error("Site not found");
                 }
 
-                return site;
+                return MyResults<SiteEntity>.Success(null, site);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return null;
+                return MyResults<SiteEntity>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“场地”字典
         /// <summary>获取“场地”字典</summary>
-        public async Task<Dictionary<long, SiteEntity>> GetSiteDict(List<long> ids)
+        public async Task<MyActionResult<Dictionary<long, SiteEntity>>> GetSiteDict(List<long> ids)
         {
             var dict = new Dictionary<long, SiteEntity>();
             try
@@ -238,12 +248,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     dict.Add(id, site);
                 }
 
-                return dict;
+                return MyResults<Dictionary<long, SiteEntity>>.Success(null, dict);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return dict;
+                return MyResults<Dictionary<long, SiteEntity>>.Error(e.GetMessage());
             }
         }
         #endregion

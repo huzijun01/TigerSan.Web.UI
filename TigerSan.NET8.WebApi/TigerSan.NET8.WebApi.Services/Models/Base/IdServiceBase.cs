@@ -39,7 +39,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region 获取“过滤器数据”
         /// <summary>获取“过滤器数据”</summary>
-        public virtual async Task<IQueryable<TEntity>> GetFilter(IQueryable<TEntity> queryable, FilterDto? filter = null)
+        public virtual async Task<MyActionResult<IQueryable<TEntity>>> GetFilter(IQueryable<TEntity> queryable, FilterDto? filter = null)
         {
             try
             {
@@ -47,25 +47,35 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 {
                     if (filter.Filters != null)
                     {
-                        queryable = queryable.GetFilters(filter.Filters);
+                        var res = queryable.GetFilters(filter.Filters);
+                        if (res.Data == null)
+                        {
+                            return MyResults<IQueryable<TEntity>>.Error(res.Message);
+                        }
+                        queryable = res.Data;
                     }
 
                     if (filter.Parent != null)
                     {
-                        queryable = await queryable.GetParentFilter(
+                        var res = await queryable.GetParentFilter(
                             _dbSetConfig.ParentIdPropName,
                             _db,
                             _dbSetConfig.Parent,
                             filter.Parent);
+                        if (res.Data == null)
+                        {
+                            return MyResults<IQueryable<TEntity>>.Error(res.Message);
+                        }
+                        queryable = res.Data;
                     }
                 }
 
-                return queryable;
+                return MyResults<IQueryable<TEntity>>.Success(null, queryable);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return queryable;
+                return MyResults<IQueryable<TEntity>>.Error(e.GetMessage());
             }
         }
         #endregion
@@ -73,43 +83,53 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
-        public virtual async Task<TEntity?> Get(long id)
+        public virtual async Task<MyActionResult<TEntity>> Get(long id)
         {
             try
             {
-                return await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+                if (entity == null)
+                {
+                    return MyResults<TEntity>.ResourceNotFound;
+                }
+                return MyResults<TEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return null;
+                return MyResults<TEntity>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“总数”
         /// <summary>获取“总数”</summary>
-        public virtual async Task<int> GetCount(FilterDto? filter = null)
+        public virtual async Task<MyActionResult<int>> GetCount(FilterDto? filter = null)
         {
             try
             {
                 var queryable = _dbSet.AsNoTracking();
 
-                queryable = await GetFilter(queryable, filter);
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<int>.Error(res.Message);
+                }
 
-                return await queryable.CountAsync();
+                return MyResults<int>.Success(null, await queryable.CountAsync());
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return 0;
+                return MyResults<int>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“数据”集合
         /// <summary>获取“数据”集合</summary>
-        public virtual async Task<List<TEntity>> GetList(List<long> ids)
+        public virtual async Task<MyActionResult<List<TEntity>>> GetList(List<long> ids)
         {
             try
             {
@@ -117,42 +137,56 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
                 queryable = queryable.Where(i => ids.Contains(i.Id));
 
-                return await queryable.ToListAsync();
+                return MyResults<List<TEntity>>.Success(null, await queryable.ToListAsync());
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<TEntity>();
+                return MyResults<List<TEntity>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“数据”集合
         /// <summary>获取“数据”集合</summary>
-        public virtual async Task<List<TEntity>> GetList(
+        public virtual async Task<MyActionResult<List<TEntity>>> GetList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
             try
             {
                 var queryable = _dbSet.AsNoTracking();
 
-                queryable = await GetFilter(queryable, filter);
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<TEntity>>.Error(res.Message);
+                }
 
-                return await queryable.GetPage(pageSize, pageNumber).ToListAsync();
+                var resSort = queryable.Sort(sort, ascending);
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<TEntity>>.Error(resSort.Message);
+                }
+
+                return MyResults<List<TEntity>>.Success(null, await queryable.GetPage(pageSize, pageNumber).ToListAsync());
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<TEntity>();
+                return MyResults<List<TEntity>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“字段”集合
         /// <summary>获取“字段”集合</summary>
-        public virtual async Task<List<TField>> Select<TField>(
+        public virtual async Task<MyActionResult<List<TField>>> Select<TField>(
             Func<TEntity, TField> selector,
             bool isDistinct = false,
             FilterDto? filter = null)
@@ -160,7 +194,12 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             try
             {
                 var queryable = _dbSet.AsNoTracking();
-                queryable = await GetFilter(queryable, filter);
+                var res = await GetFilter(queryable, filter);
+                if (res.Data == null)
+                {
+                    return MyResults<List<TField>>.Error(res.Message);
+                }
+                queryable = res.Data;
 
                 var list = queryable.Select(selector);
 
@@ -169,19 +208,19 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     list = list.Distinct();
                 }
 
-                return list.ToList();
+                return MyResults<List<TField>>.Success(null, list.ToList());
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<TField>();
+                return MyResults<List<TField>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“ID值对”集合
         /// <summary>获取“ID值对”集合</summary>
-        public virtual async Task<List<IdValue<TField>>> SelectIdValue<TField>(
+        public virtual async Task<MyActionResult<List<IdValue<TField>>>> SelectIdValue<TField>(
             Func<TEntity, TField> selector,
             bool? isDistinct = null,
             FilterDto? filter = null)
@@ -189,7 +228,12 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             try
             {
                 var queryable = _dbSet.AsNoTracking();
-                queryable = await GetFilter(queryable, filter);
+                var res = await GetFilter(queryable, filter);
+                if (res.Data == null)
+                {
+                    return MyResults<List<IdValue<TField>>>.Error(res.Message);
+                }
+                queryable = res.Data;
 
                 var list = queryable.Select(i => new IdValue<TField>(selector(i), i.Id));
 
@@ -198,29 +242,47 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     list = list.Distinct();
                 }
 
-                return list.ToList();
+                return MyResults<List<IdValue<TField>>>.Success(null, list.ToList());
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<IdValue<TField>>();
+                return MyResults<List<IdValue<TField>>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region “单条数据”是否存在
         /// <summary>“单条数据”是否存在</summary>
-        public virtual async Task<bool> IsExists(long id)
+        public virtual async Task<MyActionResult<bool>> IsExists(long id)
         {
-            return await _dbSet.AsNoTracking().AnyAsync(i => i.Id == id);
+            try
+            {
+                var exists = await _dbSet.AsNoTracking().AnyAsync(i => i.Id == id);
+                return MyResults<bool>.Success(null, exists);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return MyResults<bool>.Error(e.GetMessage());
+            }
         }
         #endregion
 
         #region “多条数据”是否存在
         /// <summary>“多条数据”是否存在</summary>
-        public virtual async Task<bool> IsExistsRange(List<long> ids)
+        public virtual async Task<MyActionResult<bool>> IsExistsRange(List<long> ids)
         {
-            return await _dbSet.AsNoTracking().AnyAsync(i => ids.Contains(i.Id));
+            try
+            {
+                var exists = await _dbSet.AsNoTracking().AnyAsync(i => ids.Contains(i.Id));
+                return MyResults<bool>.Success(null, exists);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return MyResults<bool>.Error(e.GetMessage());
+            }
         }
         #endregion
         #endregion [查]

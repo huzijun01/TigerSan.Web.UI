@@ -35,41 +35,47 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“单条数据”
         /// <summary>获取“单条数据”</summary>
-        public async Task<TagEntity?> Get(string tagId)
-        {
-            try
-            {
-                return await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.TagId == tagId);
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-                return null;
-            }
-        }
-        #endregion
-
-        #region 获取“单条完整数据”
-        /// <summary>获取“单条完整数据”</summary>
-        public async Task<TagDto?> GetFull(string tagId)
+        public async Task<MyActionResult<TagEntity>> Get(string tagId)
         {
             try
             {
                 var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.TagId == tagId);
                 if (entity == null)
                 {
-                    return null;
+                    return MyResults<TagEntity>.Error("Tag not found!");
+                }
+                return MyResults<TagEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Instance.Error(e.GetMessage());
+                return MyResults<TagEntity>.Error(e.GetMessage());
+            }
+        }
+        #endregion
+
+        #region 获取“单条完整数据”
+        /// <summary>获取“单条完整数据”</summary>
+        public async Task<MyActionResult<TagDto>> GetFull(string tagId)
+        {
+            try
+            {
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.TagId == tagId);
+                if (entity == null)
+                {
+                    return MyResults<TagDto>.Error("Tag not found!");
                 }
 
                 var dto = new TagDto();
                 dto.ShallowCopy(entity);
 
                 // 添加“公司”:
-                var company = await _batchService.GetCompany(entity.Batch);
+                var resGetCompany = await _batchService.GetCompany(entity.Batch);
+                var company = resGetCompany.Data;
                 if (company == null)
                 {
                     LogHelper.Instance.IsNull(nameof(company));
-                    return null;
+                    return MyResults<TagDto>.Error("Company not found!");
                 }
                 else
                 {
@@ -80,11 +86,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 添加“场地”:
                 if (entity.Station != null)
                 {
-                    var site = await _baseStationService.GetSite(entity.Station.Value);
+                    var resGetSite = await _baseStationService.GetSite(entity.Station.Value);
+                    var site = resGetSite.Data;
                     if (site == null)
                     {
                         LogHelper.Instance.IsNull(nameof(site));
-                        return null;
+                        return MyResults<TagDto>.Error("Site not found!");
                     }
                     else
                     {
@@ -93,29 +100,51 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                 }
 
-                return dto;
+                return MyResults<TagDto>.Success(null, dto);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return null;
+                return MyResults<TagDto>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“完整数据”集合（根据ID列表）
         /// <summary>获取“完整数据”集合（根据ID列表）</summary>
-        public async Task<List<TagDto>> GetFullList(List<long> ids)
+        public async Task<MyActionResult<List<TagDto>>> GetFullList(List<long> ids)
         {
             try
             {
                 var list = new List<TagDto>();
 
-                var tags = await GetList(ids);
+                // 获取“数据”集合:
+                var resGetList = await GetList(ids);
+                if (resGetList.Data == null)
+                {
+                    return MyResults<List<TagDto>>.Error(resGetList.Message);
+                }
+                var tags = resGetList.Data;
+
+                // 获取“批次”ID列表:
                 var batchIds = tags.Select(i => i.Batch).Distinct().ToList();
-                var companyDict = await _batchService.GetCompanyDict(batchIds);
+
+                // 获取“公司”字典:
+                var resGetCompanyDict = await _batchService.GetCompanyDict(batchIds);
+                if (resGetCompanyDict.Data == null)
+                {
+                    return MyResults<List<TagDto>>.Error(resGetCompanyDict.Message);
+                }
+                var companyDict = resGetCompanyDict.Data;
+
+                // 获取“场地”字典:
                 List<long> stationIds = tags.Where(i => i.Station != null).Select(i => i.Station ?? 0).Distinct().ToList();
-                var siteDict = await _baseStationService.GetSiteDict(stationIds);
+                var resGetSiteDict = await _baseStationService.GetSiteDict(stationIds);
+                if (resGetSiteDict.Data == null)
+                {
+                    return MyResults<List<TagDto>>.Error(resGetSiteDict.Message);
+                }
+                var siteDict = resGetSiteDict.Data;
 
                 // 添加“数据”:
                 foreach (var station in tags)
@@ -153,32 +182,56 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     list.Add(entity);
                 }
 
-                return list;
+                return MyResults<List<TagDto>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<TagDto>();
+                return MyResults<List<TagDto>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<TagDto>> GetFullList(
+        public async Task<MyActionResult<List<TagDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
             try
             {
                 var list = new List<TagDto>();
 
-                var tags = await GetList(pageSize, pageNumber, filter);
+                // 获取“数据”集合:
+                var resGetList = await GetList(pageSize, pageNumber, sort, ascending, filter);
+                if (resGetList.Data == null)
+                {
+                    return MyResults<List<TagDto>>.Error(resGetList.Message);
+                }
+                var tags = resGetList.Data;
+
+                // 获取“批次”ID列表:
                 var batchIds = tags.Select(i => i.Batch).Distinct().ToList();
-                var companyDict = await _batchService.GetCompanyDict(batchIds);
+
+                // 获取“公司”字典:
+                var resGetCompanyDict = await _batchService.GetCompanyDict(batchIds);
+                if (resGetCompanyDict.Data == null)
+                {
+                    return MyResults<List<TagDto>>.Error(resGetCompanyDict.Message);
+                }
+                var companyDict = resGetCompanyDict.Data;
+
+                // 获取“场地”字典:
                 List<long> stationIds = tags.Where(i => i.Station != null).Select(i => i.Station ?? 0).Distinct().ToList();
-                var siteDict = await _baseStationService.GetSiteDict(stationIds);
+                var resGetSiteDict = await _baseStationService.GetSiteDict(stationIds);
+                if (resGetSiteDict.Data == null)
+                {
+                    return MyResults<List<TagDto>>.Error(resGetSiteDict.Message);
+                }
+                var siteDict = resGetSiteDict.Data;
 
                 // 添加“数据”:
                 foreach (var station in tags)
@@ -216,25 +269,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     list.Add(entity);
                 }
 
-                return list;
+                return MyResults<List<TagDto>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<TagDto>();
+                return MyResults<List<TagDto>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“完整数据”集合（tagId、company）
         /// <summary>获取“完整数据”集合（tagId、company）</summary>
-        public async Task<List<TagDto>> GetFullList1(
+        public async Task<MyActionResult<List<TagDto>>> GetFullList1(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             string? tagId = null,
             long? company = null)
         {
-            return await GetFullList(pageSize, pageNumber, new FilterDto()
+            return await GetFullList(pageSize, pageNumber, sort, ascending, new FilterDto()
             {
                 Parent = new ParentFilter()
                 {
@@ -250,9 +305,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“完整数据”
         /// <summary>获取“完整数据”</summary>
-        public async Task<TagDto?> GetFull(string? tagId = null, long? company = null)
+        public async Task<MyActionResult<TagDto>> GetFull(
+            string? tagId = null,
+            long? company = null)
         {
-            return (await GetFullList1(1, 1, tagId, company)).FirstOrDefault();
+            var res = await GetFullList1(1, 1, null, null, tagId, company);
+            if (res.Data == null)
+            {
+                return MyResults<TagDto>.Error(res.Message);
+            }
+            return MyResults<TagDto>.Success(null, res.Data.FirstOrDefault());
         }
         #endregion
         #endregion [查]

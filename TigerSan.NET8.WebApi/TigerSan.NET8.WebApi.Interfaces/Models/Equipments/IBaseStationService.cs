@@ -5,14 +5,16 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IBaseStationService : IIdNameServiceBase<BaseStationEntity>
     {
-        public Task<List<BaseStationDto>> GetFullList(
+        public Task<MyActionResult<List<BaseStationDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null);
-        public Task<List<IdName>> GetBelongCompanyList();
-        public Task<List<IdName>> GetBelongSiteList(long? company = null);
-        public Task<List<IdName>> GetBelongStationTypeList(long? company = null, long? site = null);
-        public Task<SiteEntity?> GetSite(long id);
-        public Task<Dictionary<long, SiteEntity>> GetSiteDict(List<long> ids);
+        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList();
+        public Task<MyActionResult<List<IdName>>> GetBelongSiteList(long? company = null);
+        public Task<MyActionResult<List<IdName>>> GetBelongStationTypeList(long? company = null, long? site = null);
+        public Task<MyActionResult<SiteEntity>> GetSite(long id);
+        public Task<MyActionResult<Dictionary<long, SiteEntity>>> GetSiteDict(List<long> ids);
     }
 }

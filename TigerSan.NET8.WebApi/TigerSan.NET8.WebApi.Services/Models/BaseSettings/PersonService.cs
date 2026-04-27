@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Services.Models.Base;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -72,10 +72,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<List<PersonFullEntity>> GetFullList(
+        public async Task<MyActionResult<List<PersonFullEntity>>> GetFullList(
             string? name = null,
             int? pageSize = null,
             int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
             FilterDto? filter = null)
         {
             try
@@ -84,11 +86,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 var queryable = _dbSet.AsNoTracking();
 
-                queryable = await GetFilter(queryable, filter);
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<PersonFullEntity>>.Error(res.Message);
+                }
 
                 if (name != null && name.Trim() != "")
                 {
                     queryable = queryable.Where(i => i.Username.Contains(name) || i.Nickname.Contains(name));
+                }
+
+                var resSort = queryable.Sort(sort, ascending);
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<PersonFullEntity>>.Error(resSort.Message);
                 }
 
                 var persons = await queryable.GetPage(pageSize, pageNumber).ToListAsync();
@@ -100,21 +114,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     list.Add(entity);
                 }
 
-                return list;
+                return MyResults<List<PersonFullEntity>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return new List<PersonFullEntity>();
+                return MyResults<List<PersonFullEntity>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<List<IdName>> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            var list = new List<IdName>();
             try
             {
                 var roles = await _dbSet
@@ -123,7 +136,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (roles.Count < 1) return list;
+                if (roles.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var departments = await _db.Roles
                     .AsNoTracking()
@@ -132,7 +145,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (departments.Count < 1) return list;
+                if (departments.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var companys = await _db.Departments
                     .AsNoTracking()
@@ -141,27 +154,28 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (companys.Count < 1) return list;
+                if (companys.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
-                return await _db.Companies
+                var list = await _db.Companies
                     .AsNoTracking()
                     .Where(i => companys.Contains(i.Id))
                     .Select(i => new IdName(i.Id, i.Name))
                     .ToListAsync();
+
+                return MyResults<List<IdName>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return list;
+                return MyResults<List<IdName>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“所属部门”集合
         /// <summary>获取“所属部门”集合</summary>
-        public async Task<List<IdName>> GetBelongDepartmentList(long? company = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongDepartmentList(long? company = null)
         {
-            var list = new List<IdName>();
             try
             {
                 var roles = await _dbSet
@@ -170,7 +184,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (roles.Count < 1) return list;
+                if (roles.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var departments = await _db.Roles
                     .AsNoTracking()
@@ -179,7 +193,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (departments.Count < 1) return list;
+                if (departments.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var queryable = _db.Departments
                     .AsNoTracking()
@@ -190,23 +204,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     queryable = queryable.Where(i => i.Company == company);
                 }
 
-                return await queryable
+                var list = await queryable
                     .Select(i => new IdName(i.Id, i.Name))
                     .ToListAsync();
+                return MyResults<List<IdName>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return list;
+                return MyResults<List<IdName>>.Error(e.GetMessage());
             }
         }
         #endregion
 
         #region 获取“所属角色”集合
         /// <summary>获取“所属角色”集合</summary>
-        public async Task<List<IdName>> GetBelongRoleList(long? department = null)
+        public async Task<MyActionResult<List<IdName>>> GetBelongRoleList(long? department = null)
         {
-            var list = new List<IdName>();
             try
             {
                 var roles = await _dbSet
@@ -215,7 +229,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Distinct()
                     .ToListAsync();
 
-                if (roles.Count < 1) return list;
+                if (roles.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
 
                 var queryable = _db.Roles
                     .AsNoTracking()
@@ -226,14 +240,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     queryable = queryable.Where(i => i.Department == department);
                 }
 
-                return await queryable
+                var list = await queryable
                     .Select(i => new IdName(i.Id, i.Name))
                     .ToListAsync();
+                return MyResults<List<IdName>>.Success(null, list);
             }
             catch (Exception e)
             {
                 LogHelper.Instance.Error(e.GetMessage());
-                return list;
+                return MyResults<List<IdName>>.Error(e.GetMessage());
             }
         }
         #endregion
