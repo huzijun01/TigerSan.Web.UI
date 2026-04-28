@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace TigerSan.NET8.WebApi.Services.Models
 {
@@ -114,13 +115,19 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return userInfo;
         }
         #endregion
+
+        #region 初始化
+        private void InitToken(UserInfo userInfo)
+        {
+            userInfo.Token = TokenGenerator.GenerateJwtToken(userInfo.Username, Constants.Token_Validity_Period, Constants.SecretKey);
+            MemoryCacheHelper.SetRelative(userInfo.Token, userInfo, Constants.Token_Validity_Period);
+        }
+        #endregion
         #endregion [private]
 
         #region [查]
         #region 登录
-        /// <summary>
-        /// 登录
-        /// </summary>
+        /// <summary>登录</summary>
         /// <param name="search">用户名/电话/邮箱</param>
         /// <param name="password">密码</param>
         /// <returns></returns>
@@ -145,6 +152,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     res.Data = await GetUserInfoAsync(person);
+                    InitToken(res.Data);
                     return res;
                 }
 
@@ -167,6 +175,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     res.Data = await GetUserInfoAsync(admin);
+                    InitToken(res.Data);
                     return res;
                 }
             }

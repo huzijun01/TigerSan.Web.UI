@@ -17,6 +17,7 @@ export class UserInfo {
     department = new IdNameModel()
     role = new IdNameModel()
     authorities: AuthorityModel[] = []
+    token: string = ''
 
     constructor(
         uname: string = '',

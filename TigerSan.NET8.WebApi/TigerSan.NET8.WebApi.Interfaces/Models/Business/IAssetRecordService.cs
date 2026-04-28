@@ -13,6 +13,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             FilterDto? filter = null);
         public Task<MyActionResult<AssetRecordEntity>> GetLast(long asset);
         public Task<MyActionResult<AssetRecordEntity>> GetLastInbound(long asset);
-        public Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag);
+        public Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag, bool isBeginTransaction = true);
     }
 }

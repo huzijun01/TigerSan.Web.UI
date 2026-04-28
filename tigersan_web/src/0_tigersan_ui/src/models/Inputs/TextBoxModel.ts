@@ -11,7 +11,7 @@ class TextBoxModel {
 
     //#region 【Properties】
     readonly Value = ref('')
-    readonly Width = ref('200px')
+    readonly Width = ref('208px')
     readonly IsReadonly = ref(false)
     /** 占位文本（英文） */
     readonly PlaceholderEN = ref('')

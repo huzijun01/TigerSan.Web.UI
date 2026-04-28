@@ -1,4 +1,4 @@
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
 import { UserInfo, UserHelper } from '@/models'
@@ -81,6 +81,9 @@ const OnSubmitAsync = async (source: object) => {
     } else {
         authorityHelper.SetAuthorities(userInfo.authorities)
     }
+
+    // 设置Token:
+    SetAuthorization(userInfo.token)
 
     // 初始化“导航栏”:
     navData.InitBasicSettings()

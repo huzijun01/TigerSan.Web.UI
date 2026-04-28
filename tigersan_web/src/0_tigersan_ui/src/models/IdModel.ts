@@ -102,7 +102,7 @@ export class IdModelHelper<TModel extends IdModel> {
     GetIdValueSelectModel(
         placeholderCN: string,
         placeholderEN: string,
-        width: number = 200): SelectModel<IdValueModel> {
+        width: number = 208): SelectModel<IdValueModel> {
         const select = new SelectModel<IdValueModel>()
         select.Width.value = width
         select.IsAllowSearch.value = true

@@ -3,6 +3,7 @@ using TigerSan.NET8.WebApi.Filters;
 using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Services.Models;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Attributes;
 
 namespace TigerSan.NET8.WebApi.Extensions
 {
@@ -17,7 +18,10 @@ namespace TigerSan.NET8.WebApi.Extensions
             {
                 if (builder.Environment.IsDevelopment())
                 {
-                    option.Filters.Add<MyAsyncActionFilterAttribute>();
+                    option.Filters.Add<ConsoleLogFilterAttribute>();
+                    option.Filters.Add<ApiAuthorizeFilter>();
+                    option.Filters.Add<NeedAuthorizeAttribute>();
+                    option.Filters.Add<NoNeedAuthorizeAttribute>();
                 }
             });
         }

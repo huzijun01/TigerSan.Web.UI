@@ -379,8 +379,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [Other]
         #region 修改“资产记录”
         /// <summary>修改“资产记录”</summary>
-        public async Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag)
+        public async Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag, bool isBeginTransaction = true)
         {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
             try
             {
                 _editingTags.TryGetValue(newTag.Id, out var editingTag);
@@ -390,6 +392,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var resLast = await GetLast(newTag.Asset.Value);
                 if (resLast.IsError)
                 {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    LogHelper.Instance.Error(resLast.Message);
                     return MyResults<object>.Error(resLast.Message);
                 }
                 var lastRecord = resLast.Data;
@@ -405,13 +409,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     lastRecord.ShallowCopy(newTag);
                     lastRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
 
-                    var res = await Add(lastRecord);
+                    var res = await Add(lastRecord, false);
                     if (res.IsError)
                     {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         LogHelper.Instance.Error(res.Message);
                         return res;
                     }
 
+                    await _db.SaveChangesAsync();
+                    if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
                     return MyResults<object>.OperationSuccess;
                 }
 
@@ -425,14 +432,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     // 添加“场地”:
                     if (newTag.Station != null)
                     {
-                        var site = await _db.BaseStations.FirstOrDefaultAsync(b => b.Id == newTag.Station.Value);
-                        if (site == null)
+                        var station = await _db.BaseStations.FirstOrDefaultAsync(b => b.Id == newTag.Station.Value);
+                        if (station == null)
                         {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.IsNull(nameof(transaction));
                             return MyResults<object>.ResourceNotExist;
                         }
                         else
                         {
-                            newRecord.Site = site.Id;
+                            newRecord.Site = station.Site;
                         }
                     }
 
@@ -443,20 +452,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         lastRecord.State = AssetStates.Outbound;
                         lastRecord.TargetSite = newRecord.Site;
 
-                        if (lastRecord.State == AssetStates.InStore
+                        if ((lastRecord.State == AssetStates.InStore || lastRecord.State == AssetStates.Stolid)
                             && lastRecord.OnlineState == OnlineStates.Offline) // “在库”且“离线”
                         {
                             // 将“最新记录”改为“出库记录”：
-                            resOutbound = await Edit(lastRecord);
+                            resOutbound = await Edit(lastRecord, false);
                         }
                         else
                         {
                             // 新增“出库记录”：
-                            resOutbound = await Add(lastRecord);
+                            resOutbound = await Add(lastRecord, false);
                         }
 
                         if (resOutbound.IsError)
                         {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             LogHelper.Instance.Error(resOutbound.Message);
                             return resOutbound;
                         }
@@ -466,9 +476,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     newRecord.TargetSite = null;
                     newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
                     newRecord.State = AssetStates.Inbound;
-                    var res = await Add(newRecord);
+                    var res = await Add(newRecord, false);
                     if (res.IsError)
                     {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         LogHelper.Instance.Error(res.Message);
                         return res;
                     }
@@ -482,6 +493,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         var lastInboundRecord = resLastInbound.Data;
                         if (lastInboundRecord == null)
                         {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             LogHelper.Instance.Error(resLastInbound.Message);
                             return MyResults<object>.Error(resLastInbound.Message);
                         }
@@ -509,9 +521,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
 
                         // 新增记录:
-                        var res = await Add(newRecord);
+                        var res = await Add(newRecord, false);
                         if (res.IsError)
                         {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             LogHelper.Instance.Error(res.Message);
                             return res;
                         }
@@ -519,16 +532,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     else
                     {
                         // 更新记录:
-                        var res = await Edit(newRecord);
+                        var res = await Edit(newRecord, false);
                         if (res.IsError)
                         {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             LogHelper.Instance.Error(res.Message);
                             return res;
                         }
                     }
                 }
 
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
                 return MyResults<object>.OperationSuccess;
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                LogHelper.Instance.Error(ex.GetMessage());
+                return MyResults<object>.Error(ex.GetMessage());
             }
             finally
             {

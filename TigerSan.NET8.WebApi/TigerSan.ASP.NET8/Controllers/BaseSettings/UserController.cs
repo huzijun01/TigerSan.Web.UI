@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Attributes;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
@@ -22,6 +23,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         [HttpGet]
         [Route("Login")]
+        [NoNeedAuthorize]
         /// <summary>登录</summary>
         public async Task<MyActionResult<UserInfo>> Login(string search, string password)
         {

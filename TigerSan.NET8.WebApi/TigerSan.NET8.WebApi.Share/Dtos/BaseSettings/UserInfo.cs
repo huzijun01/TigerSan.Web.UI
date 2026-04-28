@@ -11,5 +11,6 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public IdName Department { get; set; } = new IdName();
         public new IdName Role { get; set; } = new IdName();
         public List<AuthorityEntity> Authorities { get; set; } = new List<AuthorityEntity>();
+        public string Token { get; set; } = string.Empty;
     }
 }

@@ -12,8 +12,9 @@
     #region 结果类
     public class MyResults<TData>
     {
+        public static MyActionResult<List<IdName>> EmptyIdNameList { get => MyResults<List<IdName>>.Success(null, new List<IdName>()); }
         public static MyActionResult<TData> OperationSuccess { get => new MyActionResult<TData>(ActionResultCode.Success, "Operation successful!"); }
-        public static MyActionResult<TData> ApiUnavailable { get => new MyActionResult<TData>(ActionResultCode.Warning, "This API is unavailable!"); }
+        public static MyActionResult<TData> ApiUnavailable { get => new MyActionResult<TData>(ActionResultCode.Error, "This API is unavailable!"); }
         public static MyActionResult<TData> ResourceNotFound { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource not found!"); }
         public static MyActionResult<TData> SomeResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "Some resources do not exist!"); }
         public static MyActionResult<TData> ResourceExists { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource already exist!"); }
@@ -27,7 +28,8 @@
         public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
         public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
         public static MyActionResult<TData> AssetNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset do not exist!"); }
-        public static MyActionResult<List<IdName>> EmptyIdNameList { get => MyResults<List<IdName>>.Success(null, new List<IdName>()); }
+        public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.Error, "Authorization header is missing!"); }
+        public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.Error, "Invalid or expired token!"); }
 
         #region 【Functions】
         public static MyActionResult<TData> Success(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Success, msg ?? OperationSuccess.Message, data); }
