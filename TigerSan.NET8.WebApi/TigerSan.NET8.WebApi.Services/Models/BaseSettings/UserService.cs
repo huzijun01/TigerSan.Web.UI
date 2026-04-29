@@ -134,6 +134,55 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
         #endregion [private]
 
+        #region [查]
+        #region 获取“用户信息”
+        /// <summary>获取“用户信息”</summary>
+        /// <param name="search">用户名/电话/邮箱</param>
+        /// <returns>用户信息</returns>
+        public async Task<MyActionResult<UserInfo>> GetUserInfo(string search)
+        {
+            var res = MyResults<UserInfo>.OperationSuccess;
+
+            try
+            {
+                var resPerson = await _personService.GetLoginFull(search, false);
+                if (resPerson.IsSuccess)
+                {
+                    var person = resPerson.Data;
+                    if (person == null)
+                    {
+                        return MyResults<UserInfo>.Error("The person is null");
+                    }
+
+                    res.Data = await GetUserInfoAsync(person);
+                    return res;
+                }
+
+                var resAdmin = await _adminService.GetByName(search, false);
+                if (!resAdmin.IsSuccess)
+                {
+                    return MyResults<UserInfo>.UserNotExist;
+                }
+                else
+                {
+                    var admin = resAdmin.Data;
+                    if (admin == null)
+                    {
+                        return MyResults<UserInfo>.Error("The admin is null");
+                    }
+
+                    res.Data = await GetUserInfoAsync(admin);
+                    return res;
+                }
+            }
+            catch (Exception e)
+            {
+                return MyResults<UserInfo>.Error(e.GetMessage());
+            }
+        }
+        #endregion
+        #endregion [查]
+
         #region [改]
         #region 修改“密码”
         /// <summary>修改“密码”</summary>
@@ -190,7 +239,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>登录</summary>
         /// <param name="search">用户名/电话/邮箱</param>
         /// <param name="password">密码</param>
-        /// <returns></returns>
+        /// <returns>用户信息</returns>
         public async Task<MyActionResult<UserInfo>> Login(string search, string password)
         {
             var res = MyResults<UserInfo>.OperationSuccess;

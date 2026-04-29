@@ -36,6 +36,8 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
     /** 筛选“总数” */
     readonly GetCount = async (param: {
         asset?: bigint,
+        company?: bigint,
+        department?: bigint,
         state?: number,
         station?: bigint,
         onlineState?: OnlineStates,
@@ -43,6 +45,12 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         filter: {
             parent: {
                 id: param.asset,
+                parent: {
+                    id: param.department,
+                    parent: {
+                        id: param.company,
+                    }
+                }
             },
             filters: [
                 { propName: 'State', value: param.state },
@@ -57,6 +65,8 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         pageSize?: number,
         pageNumber?: number,
         asset?: bigint,
+        company?: bigint,
+        department?: bigint,
         state?: number,
         station?: bigint,
         onlineState?: OnlineStates,
@@ -69,6 +79,12 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         filter: {
             parent: {
                 id: param.asset,
+                parent: {
+                    id: param.department,
+                    parent: {
+                        id: param.company,
+                    }
+                }
             },
             filters: [
                 { propName: 'State', value: param.state },

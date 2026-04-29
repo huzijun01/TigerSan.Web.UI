@@ -13,15 +13,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
     public class BaseStationService : IdNameServiceBase<BaseStationEntity>, IBaseStationService
     {
         #region 【Ctor】
-        public BaseStationService(AppDbContext db) : base(db, db.BaseStations)
-        {
-        }
-
         static BaseStationService()
         {
             SetDbSetConfig(nameof(BaseStationEntity.Site))
                 .SetParent(typeof(SiteEntity), nameof(_db.Sites), nameof(SiteEntity.Company))
                 .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
+        public BaseStationService(AppDbContext db) : base(db, db.BaseStations)
+        {
         }
         #endregion 【Ctor】
 

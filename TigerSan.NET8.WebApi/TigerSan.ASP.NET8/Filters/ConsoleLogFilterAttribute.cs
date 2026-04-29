@@ -10,6 +10,7 @@ namespace TigerSan.NET8.WebApi.Filters
 {
     public class ConsoleLogFilterAttribute : Attribute, IAsyncActionFilter
     {
+        #region [Private]
         #region 获取“请求体”字符串
         private static async Task<string> GetRequestBodyAsync(HttpRequest request)
         {
@@ -96,6 +97,7 @@ namespace TigerSan.NET8.WebApi.Filters
             return strRes;
         }
         #endregion
+        #endregion [Private]
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {

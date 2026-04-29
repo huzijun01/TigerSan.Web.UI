@@ -11,4 +11,9 @@ namespace TigerSan.NET8.WebApi.Attributes
     public class NoNeedAuthorizeAttribute : Attribute, IFilterMetadata
     {
     }
+
+    /// <summary>按公司分类</summary>
+    public class ClassifyByCompanyAttribute : Attribute, IFilterMetadata
+    {
+    }
 }

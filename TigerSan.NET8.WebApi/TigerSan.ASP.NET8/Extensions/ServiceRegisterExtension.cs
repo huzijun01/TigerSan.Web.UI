@@ -1,9 +1,9 @@
 ﻿using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Filters;
 using TigerSan.NET8.WebApi.Helpers;
+using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Services.Models;
 using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.NET8.WebApi.Attributes;
 
 namespace TigerSan.NET8.WebApi.Extensions
 {
@@ -16,12 +16,15 @@ namespace TigerSan.NET8.WebApi.Extensions
 
             services.AddControllersWithViews(option =>
             {
+                option.Filters.Add<ApiAuthorizeFilter>();
+                option.Filters.Add<CompanyClassifyFilter>();
+                option.Filters.Add<NeedAuthorizeAttribute>();
+                option.Filters.Add<NoNeedAuthorizeAttribute>();
+                option.Filters.Add<ClassifyByCompanyAttribute>();
+
                 if (builder.Environment.IsDevelopment())
                 {
                     option.Filters.Add<ConsoleLogFilterAttribute>();
-                    option.Filters.Add<ApiAuthorizeFilter>();
-                    option.Filters.Add<NeedAuthorizeAttribute>();
-                    option.Filters.Add<NoNeedAuthorizeAttribute>();
                 }
             });
         }

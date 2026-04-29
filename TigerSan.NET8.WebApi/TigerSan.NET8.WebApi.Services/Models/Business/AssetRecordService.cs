@@ -22,7 +22,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         static AssetRecordService()
         {
             SetDbSetConfig(nameof(AssetRecordEntity.Asset))
-                .SetParent(typeof(AssetEntity), nameof(_db.Assets));
+                .SetParent(typeof(AssetEntity), nameof(_db.Assets), nameof(AssetEntity.Department))
+                .SetParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
         }
 
         public AssetRecordService(AppDbContext db, IBaseStationService baseStationService) : base(db, db.AssetRecords)

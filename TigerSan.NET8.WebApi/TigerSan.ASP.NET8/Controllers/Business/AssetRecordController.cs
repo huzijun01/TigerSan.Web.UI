@@ -1,18 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Helpers;
+using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.CsvLog;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
+    [ClassifyByCompany]
     public class AssetRecordController : IdControllerBase<AssetRecordEntity, IAssetRecordService>
     {
+        #region 【Fields】
         private readonly ITagService _tagService;
         private readonly IAssetService _assetService;
         private readonly IBaseStationService _baseStationService;
+        #endregion 【Fields】
 
         #region 【Ctor】
         public AssetRecordController(

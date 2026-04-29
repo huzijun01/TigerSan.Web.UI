@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Helpers;
+using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
+    [ClassifyByCompany]
     public class BaseStationController : IdNameControllerBase<BaseStationEntity, IBaseStationService>
     {
         #region 【Ctor】

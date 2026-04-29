@@ -17,17 +17,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Fields】
 
         #region 【Ctor】
-        public TagService(AppDbContext db, IBatchService batchService, IBaseStationService baseStationService) : base(db, db.Tags)
-        {
-            _batchService = batchService;
-            _baseStationService = baseStationService;
-        }
-
         static TagService()
         {
             SetDbSetConfig(nameof(TagEntity.Batch))
                 .SetParent(typeof(BatchEntity), nameof(_db.Batches), nameof(BatchEntity.Company))
                 .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
+        public TagService(AppDbContext db, IBatchService batchService, IBaseStationService baseStationService) : base(db, db.Tags)
+        {
+            _batchService = batchService;
+            _baseStationService = baseStationService;
         }
         #endregion 【Ctor】
 
