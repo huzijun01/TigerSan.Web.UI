@@ -116,16 +116,76 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 初始化
-        private void InitToken(UserInfo userInfo)
+        #region 初始化“Token”
+        /// <summary>初始化“Token”</summary>
+        private bool InitToken(UserInfo userInfo)
         {
-            userInfo.Token = TokenGenerator.GenerateJwtToken(userInfo.Username, Constants.Token_Validity_Period, Constants.SecretKey);
-            MemoryCacheHelper.SetRelative(userInfo.Token, userInfo, Constants.Token_Validity_Period);
+            userInfo.Token = TokenGenerator.GetToken(userInfo.Username, Constants.Token_Validity_Period, Constants.SecretKey);
+            if (userInfo.Token == null)
+            {
+                LogHelper.Instance.Error($"Failed to generate token for user {userInfo.Username}");
+                return false;
+            }
+
+            MemoryCacheHelper.SetRelative(userInfo.Username, userInfo.Token, Constants.Token_Validity_Period);
+
+            return true;
         }
         #endregion
         #endregion [private]
 
-        #region [查]
+        #region [改]
+        #region 修改“密码”
+        /// <summary>修改“密码”</summary>
+        public async Task<MyActionResult<object>> EditPassword(PasswordEdit edit)
+        {
+            var res = MyResults<object>.OperationSuccess;
+
+            try
+            {
+                var admin = await _db.Admins.FirstOrDefaultAsync(i => i.Id == edit.Id);
+                var person = admin == null ? await _db.Persons.FirstOrDefaultAsync(i => i.Id == edit.Id) : null;
+
+                if (admin != null)
+                {
+                    var hasher = new PasswordHasher<AdminEntity>();
+                    if (hasher.VerifyHashedPassword(admin, admin.PasswordHash, edit.OldPassword)
+                        == PasswordVerificationResult.Failed)
+                    {
+                        return MyResults<object>.PasswordIncorrect;
+                    }
+
+                    admin.PasswordHash = hasher.HashPassword(admin, edit.Password);
+                }
+                else if (person != null)
+                {
+                    var hasher = new PasswordHasher<PersonEntity>();
+                    if (hasher.VerifyHashedPassword(person, person.PasswordHash, edit.OldPassword)
+                        == PasswordVerificationResult.Failed)
+                    {
+                        return MyResults<object>.PasswordIncorrect;
+                    }
+
+                    person.PasswordHash = hasher.HashPassword(person, edit.Password);
+                }
+                else
+                {
+                    return MyResults<object>.UserNotExist;
+                }
+
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(e.GetMessage());
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
+
+        #region [Other]
         #region 登录
         /// <summary>登录</summary>
         /// <param name="search">用户名/电话/邮箱</param>
@@ -181,65 +241,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<UserInfo>.Error(e.GetMessage());
+                return MyResults<UserInfo>.Error(e.GetMessage());
             }
-
-            res = MyResults<UserInfo>.UserNotExist;
-            return res;
         }
         #endregion
-        #endregion [查]
 
-        #region [改]
-        #region 修改“密码”
-        /// <summary>修改“密码”</summary>
-        public async Task<MyActionResult<object>> EditPassword(PasswordEdit edit)
+        #region 登出
+        /// <summary>登出</summary>
+        public async Task<MyActionResult<object>> Logout(string username)
         {
-            var res = MyResults<object>.OperationSuccess;
-
             try
             {
-                var admin = await _db.Admins.FirstOrDefaultAsync(i => i.Id == edit.Id);
-                var person = admin == null ? await _db.Persons.FirstOrDefaultAsync(i => i.Id == edit.Id) : null;
-
-                if (admin != null)
-                {
-                    var hasher = new PasswordHasher<AdminEntity>();
-                    if (hasher.VerifyHashedPassword(admin, admin.PasswordHash, edit.OldPassword)
-                        == PasswordVerificationResult.Failed)
-                    {
-                        return MyResults<object>.PasswordIncorrect;
-                    }
-
-                    admin.PasswordHash = hasher.HashPassword(admin, edit.Password);
-                }
-                else if (person != null)
-                {
-                    var hasher = new PasswordHasher<PersonEntity>();
-                    if (hasher.VerifyHashedPassword(person, person.PasswordHash, edit.OldPassword)
-                        == PasswordVerificationResult.Failed)
-                    {
-                        return MyResults<object>.PasswordIncorrect;
-                    }
-
-                    person.PasswordHash = hasher.HashPassword(person, edit.Password);
-                }
-                else
-                {
-                    return MyResults<object>.UserNotExist;
-                }
-
-                await _db.SaveChangesAsync();
+                MemoryCacheHelper.Remove(username);
+                return MyResults<object>.OperationSuccess;
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                return MyResults<object>.Error(e.GetMessage());
             }
-
-            return res;
         }
         #endregion
-        #endregion [改]
+        #endregion [Other]
         #endregion 【Functions】
     }
 }

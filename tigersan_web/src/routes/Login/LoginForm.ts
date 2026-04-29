@@ -1,4 +1,4 @@
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization, DialogState, dialog, DialogMode, Colors } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
 import { UserInfo, UserHelper } from '@/models'
@@ -110,6 +110,31 @@ let configLoginForm: FormConfig<UserInfo> = {
 const loginForm = new FormModel(configLoginForm)
 loginForm._isShowSuccessResult = false
 
+
+function Logout() {
+    dialog.ShowDialog(
+        '确认',
+        '是否要退出登录？',
+        undefined,
+        FnLogout,
+        DialogMode.YesOrNo,
+        Colors.Warning)
+}
+
+async function FnLogout(state: DialogState) {
+    if (state != DialogState.Yes) return
+    const userInfo = useUserInfo()
+
+    // 发送“登出请求”:
+    var res = await UserHelper.LogoutAsync(userInfo.username)
+    if (res.code == ActionResultCode.Error) {
+        return new SubmitResult(res.message, FormResult.Error)
+    }
+
+    ObjectHelper.ShallowSet(new UserInfo(), userInfo)
+    useRouter().GoTo('/')
+}
+
 export default {
     uname,
     pwd,
@@ -118,4 +143,5 @@ export default {
     configPassword,
     configCaptcha,
     loginForm,
+    Logout,
 }

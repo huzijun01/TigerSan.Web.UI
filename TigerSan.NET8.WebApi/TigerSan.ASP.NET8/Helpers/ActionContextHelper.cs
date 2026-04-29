@@ -16,5 +16,13 @@ namespace TigerSan.NET8.WebApi.Helpers
                    actionDescriptor.MethodInfo.GetCustomAttributes(typeof(TAttribute), inherit: true).Any();
         }
         #endregion
+
+        #region 获取“Authorization头”
+        /// <summary>获取“Authorization头”</summary>
+        public static string? GetAuthorization(this ActionContext context)
+        {
+            return context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+        }
+        #endregion
     }
 }

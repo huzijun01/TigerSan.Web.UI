@@ -17,7 +17,7 @@ export class UserInfo {
     department = new IdNameModel()
     role = new IdNameModel()
     authorities: AuthorityModel[] = []
-    token: string = ''
+    token?: string
 
     constructor(
         uname: string = '',
@@ -43,10 +43,12 @@ export class PasswordEditModel {
 export class UserHelper {
     static _action = 'User'
 
-    /** 筛选“总数” */
-    static readonly LoginAsync = async (search: string, password: string) => await AxiosHelper.Get(`${this._action}/Login`, [{ key: 'search', value: search }, { key: 'password', value: password }])
     /** 修改“密码” */
     static readonly EditPassword = async (edit: PasswordEditModel) => await AxiosHelper.Put(`${this._action}/Password`, edit)
+    /** 登录 */
+    static readonly LoginAsync = async (search: string, password: string) => await AxiosHelper.Get(`${this._action}/Login`, [{ key: 'search', value: search }, { key: 'password', value: password }])
+    /** 登出 */
+    static readonly LogoutAsync = async (username: string) => await AxiosHelper.Get(`${this._action}/Logout`, [{ key: 'username', value: username }])
 
     static IsUserInfoVerifyOk(user: UserInfo): boolean {
         return StringHelper.IsNotEmpty(user.username)

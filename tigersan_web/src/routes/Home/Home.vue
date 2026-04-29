@@ -27,7 +27,7 @@
           <IconButton :icon="Icons.Question" :text="Texts.Help.value"></IconButton>
           <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value"></IconButton>
           <IconButton :icon="Icons.User" :text="userInfo.nickname" :click="form.Edit"></IconButton>
-          <IconButton :icon="Icons.Output" text="" :click="OnExit"></IconButton>
+          <IconButton :icon="Icons.Output" text="" :click="loginForm.Logout"></IconButton>
         </div>
       </div>
 
@@ -107,13 +107,14 @@
 
 <script lang="ts" setup>
 import form from './UserInfoForm'
+import loginForm from '@/routes/Login/LoginForm'
 import passwordForm from './PasswordForm'
 import AppConfig from '@/AppConfig'
 import { onBeforeMount, onMounted } from 'vue'
 import { useUserInfo } from '@/stores'
-import { UserHelper, UserInfo } from '@/models'
+import { UserHelper } from '@/models'
 import { navModel, navData } from '@/navs/navModel'
-import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, dialog, DialogMode, Colors, DialogState, useRouter, ThemeHelper, config, KeyValue, ObjectHelper } from '@/0_tigersan_ui/tigerui'
+import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue } from '@/0_tigersan_ui/tigerui'
 
 // 字段:
 /** 用户信息 */
@@ -129,24 +130,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
 })
-
-// 方法:
-function OnExit() {
-  dialog.ShowDialog(
-    '确认',
-    '是否要退出登录？',
-    undefined,
-    Login,
-    DialogMode.YesOrNo,
-    Colors.Warning)
-}
-
-function Login(state: DialogState) {
-  if (state != DialogState.Yes) return
-  const userInfo = useUserInfo()
-  ObjectHelper.ShallowSet(new UserInfo(), userInfo)
-  useRouter().GoTo('/')
-}
 </script>
 
 <style lang="less" scoped>

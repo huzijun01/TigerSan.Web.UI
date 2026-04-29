@@ -21,6 +21,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         #endregion 【Ctor】
 
         #region 【Functions】
+        [HttpPut]
+        [Route("Password")]
+        /// <summary>修改“密码”</summary>
+        public async Task<MyActionResult<object>> EditPassword([FromBody] PasswordEdit edit)
+        {
+            return await _service.EditPassword(edit);
+        }
+
         [HttpGet]
         [Route("Login")]
         [NoNeedAuthorize]
@@ -30,12 +38,12 @@ namespace TigerSan.NET8.WebApi.Controllers
             return await _service.Login(search, password);
         }
 
-        [HttpPut]
-        [Route("Password")]
-        /// <summary>修改“密码”</summary>
-        public async Task<MyActionResult<object>> EditPassword([FromBody] PasswordEdit edit)
+        [HttpGet]
+        [Route("Logout")]
+        /// <summary>登出</summary>
+        public async Task<MyActionResult<object>> Logout(string username)
         {
-            return await _service.EditPassword(edit);
+            return await _service.Logout(username);
         }
         #endregion 【Functions】
     }
