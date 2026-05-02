@@ -68,7 +68,7 @@ namespace TigerSan.NET8.WebApi.Filters
                     accessibleCompanies = resGetList.Data;
                     if (accessibleCompanies == null)
                     {
-                        context.Result = new JsonResult(accessibleCompanies);
+                        context.Result = new JsonResult(resGetList);
                         return;
                     }
                 }
@@ -79,7 +79,7 @@ namespace TigerSan.NET8.WebApi.Filters
                     accessibleCompanies = resGetAccessibleCompanies.Data;
                     if (accessibleCompanies == null)
                     {
-                        context.Result = new JsonResult(accessibleCompanies);
+                        context.Result = new JsonResult(resGetAccessibleCompanies);
                         return;
                     }
                 }
