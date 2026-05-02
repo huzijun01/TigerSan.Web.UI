@@ -71,8 +71,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 return MyResults<List<CompanyEntity>>.ResourceNotExist;
             }
 
+            find.Parent = null; // 设置为“根公司”
             var accessibleCompanies = CompanyHelper.GetSubCompanies(companies, find);
-            find.Parent = null;
             accessibleCompanies.Add(find);
 
             return MyResults<List<CompanyEntity>>.Success(null, accessibleCompanies);

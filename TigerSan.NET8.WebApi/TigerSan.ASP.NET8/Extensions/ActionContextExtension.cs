@@ -18,8 +18,18 @@ namespace TigerSan.NET8.WebApi.Extensions
         }
         #endregion
 
-        #region 是否为指定控制器
-        /// <summary>是否为指定控制器</summary>
+        #region 是否为指定名称行为
+        /// <summary>是否为指定名称行为</summary>
+        public static bool IsAction(this ActionContext context, string actionName)
+        {
+            context.RouteData.Values.TryGetValue("action", out var value);
+            var action = value as string;
+            return action != null && string.Equals(action, actionName);
+        }
+        #endregion
+
+        #region 是否为指定名称控制器
+        /// <summary>是否为指定名称控制器</summary>
         public static bool IsController(this ActionContext context, string controllerName)
         {
             context.RouteData.Values.TryGetValue("controller", out var value);
@@ -28,8 +38,8 @@ namespace TigerSan.NET8.WebApi.Extensions
         }
         #endregion
 
-        #region 是否为指定控制器
-        /// <summary>是否为指定控制器</summary>
+        #region 是否为指定类型控制器
+        /// <summary>是否为指定类型控制器</summary>
         public static bool IsController<TController>(this ActionExecutingContext context) where TController : class
         {
             return context.Controller.GetType() == typeof(TController);

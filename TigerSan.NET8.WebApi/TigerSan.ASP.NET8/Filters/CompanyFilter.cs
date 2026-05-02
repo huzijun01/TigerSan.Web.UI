@@ -7,7 +7,6 @@ using TigerSan.NET8.WebApi.Extensions;
 using TigerSan.NET8.WebApi.Controllers;
 using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Services.Models;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Services.Models.Base;
 
@@ -97,6 +96,12 @@ namespace TigerSan.NET8.WebApi.Filters
                     // 是否为“公司”控制器:
                     if (context.IsController<CompanyController>())
                     {
+                        if (context.IsAction(nameof(ICompanyService.GetList)))
+                        {
+                            context.Result = new JsonResult(MyResults<List<CompanyEntity>>.Success(null, accessibleCompanies));
+                            return; // 直接返回“可访问公司”集合
+                        }
+
                         filter.Filters = [new PropFilter(){
                                 PropName = nameof(CompanyEntity.Id),
                                 Values = accessibleCompanies.Select(c => c.Id as object).ToList()
@@ -112,10 +117,6 @@ namespace TigerSan.NET8.WebApi.Filters
                             return;
                         }
 
-                        if (service.GetType() == typeof(BaseStationService))
-                        {
-
-                        }
                         SetCompanyFilter(service.DbSetConfig, ref filter, accessibleCompanies);
                     }
 
