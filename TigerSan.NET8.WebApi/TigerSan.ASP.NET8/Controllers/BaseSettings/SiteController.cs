@@ -22,7 +22,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
         {
-            return await _service.GetBelongCompanyList();
+            return await _service.GetBelongCompanyList(AccessibleCompanies);
         }
 
         [HttpGet]

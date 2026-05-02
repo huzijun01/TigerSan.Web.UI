@@ -8,7 +8,7 @@ using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Filters
 {
-    public class ConsoleLogFilterAttribute : Attribute, IAsyncActionFilter
+    public class LogFilterAttribute : Attribute, IAsyncActionFilter
     {
         #region [Private]
         #region 获取“请求体”字符串

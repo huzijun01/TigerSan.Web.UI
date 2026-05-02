@@ -207,11 +207,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 // 获取“数据”集合:
                 var resGetList = await GetList(pageSize, pageNumber, sort, ascending, filter);
-                if (resGetList.Data == null)
+                var tags = resGetList.Data;
+                if (tags == null)
                 {
                     return MyResults<List<TagDto>>.Error(resGetList.Message);
                 }
-                var tags = resGetList.Data;
 
                 // 获取“批次”ID列表:
                 var batchIds = tags.Select(i => i.Batch).Distinct().ToList();

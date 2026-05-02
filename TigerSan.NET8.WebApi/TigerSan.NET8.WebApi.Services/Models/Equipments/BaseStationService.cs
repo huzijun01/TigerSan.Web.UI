@@ -40,12 +40,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var list = new List<BaseStationDto>();
 
-                var resFilter = await GetList(pageSize, pageNumber, sort, ascending, filter);
-                if (resFilter.Data == null)
+                var resGetList = await GetList(pageSize, pageNumber, sort, ascending, filter);
+                var stations = resGetList.Data;
+                if (stations == null)
                 {
-                    return MyResults<List<BaseStationDto>>.Error(resFilter.Message);
+                    return MyResults<List<BaseStationDto>>.Error(resGetList.Message);
                 }
-                var stations = resFilter.Data;
 
                 // 添加“数据”:
                 foreach (var station in stations)
@@ -78,7 +78,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList(List<CompanyEntity>? accessibleCompanies)
         {
             try
             {
@@ -98,6 +98,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .ToListAsync();
 
                 if (companys.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
+
+                if (accessibleCompanies == null)
+                {
+                    return MyResults<List<IdName>>.IsNull(nameof(accessibleCompanies));
+                }
+
+                companys = companys.Where(i => accessibleCompanies.Any(a => a.Id == i)).ToList();
 
                 var list = await _db.Companies
                     .AsNoTracking()

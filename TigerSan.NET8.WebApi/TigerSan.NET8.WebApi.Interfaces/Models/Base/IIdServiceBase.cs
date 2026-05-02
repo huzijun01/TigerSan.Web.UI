@@ -3,7 +3,13 @@ using TigerSan.NET8.WebApi.Share.Entities;
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
-    public interface IIdServiceBase<TEntity> where TEntity : IdEntityBase
+    public interface IDbSetConfig
+    {
+        /// <summary>“当前表”配置</summary>
+        public DbSetConfig DbSetConfig { get; }
+    }
+
+    public interface IIdServiceBase<TEntity> : IDbSetConfig where TEntity : IdEntityBase
     {
         // 查:
         public Task<MyActionResult<TEntity>> Get(long id);

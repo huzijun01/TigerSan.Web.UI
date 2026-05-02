@@ -3,7 +3,7 @@ import { ref, watch, computed, shallowReactive, type App, type ShallowReactive }
 import { Texts } from "../../texts"
 import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
-import { RectPosition, RectHelper } from '../../helpers'
+import { RectPosition, RectHelper, ObjectHelper } from '../../helpers'
 
 type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
 
@@ -197,6 +197,11 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
             arr = this._getItems()
             this.Items.splice(0)
             this.Items.push(...arr)
+        }
+
+        if (this.Value.value != undefined
+            && !this.Items.some(i => ObjectHelper.IsValueEquals(i, this.Value.value))) {
+            this.Value.value = undefined
         }
     }
 

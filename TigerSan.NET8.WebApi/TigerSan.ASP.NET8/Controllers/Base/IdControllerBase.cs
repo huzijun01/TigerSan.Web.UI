@@ -10,8 +10,13 @@ namespace TigerSan.NET8.WebApi.Controllers
     public abstract class IdControllerBase<TEntity, TIIdService> : ControllerBase where TEntity : IdEntityBase where TIIdService : IIdServiceBase<TEntity>
     {
         #region 【Fields】
-        protected TIIdService _service;
+        public TIIdService _service;
         #endregion 【Fields】
+
+        #region 【Properties】
+        /// <summary>可访问公司</summary>
+        public List<CompanyEntity>? AccessibleCompanies { get; set; }
+        #endregion 【Properties】
 
         #region 【Ctor】
         public IdControllerBase(TIIdService service)

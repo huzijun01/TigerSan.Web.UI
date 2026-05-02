@@ -35,6 +35,7 @@
         public static MyActionResult<TData> Success(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Success, msg ?? OperationSuccess.Message, data); }
         public static MyActionResult<TData> Warning(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Warning, msg ?? nameof(Warning), data); }
         public static MyActionResult<TData> Error(string msg) { return new MyActionResult<TData>(ActionResultCode.Error, msg); }
+        public static MyActionResult<TData> IsNull(string name) { return new MyActionResult<TData>(ActionResultCode.Error, $"The {name} is null!"); }
         public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
         public static Func<string, MyActionResult<TData>> TagNotFound = tagId => new MyActionResult<TData>(ActionResultCode.Error, $"The tag not found! ({tagId})");
         public static Func<string, MyActionResult<TData>> NoAssetRecord = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"No asset record! ({assetId})");

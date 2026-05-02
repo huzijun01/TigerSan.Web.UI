@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -249,16 +249,22 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 }
 
                 // 验证过滤器参数的有效性:
-                if (filter.Values == null || filter.Values.Count() < 1 || string.IsNullOrEmpty(filter.PropName))
+                if (filter.Values == null)
                     return MyResults<IQueryable>.Success(null, queryable);
+
+                // 属性名为空:
+                if (string.IsNullOrEmpty(filter.PropName))
+                    return MyResults<IQueryable>.Error(LogHelper.Instance.IsNullOrEmpty(nameof(filter.PropName)));
+
+                // 不选择:
+                if (filter.Values.Count() < 1)
+                    return MyResults<IQueryable>.Success(null, queryable.False());
 
                 // 获取“属性信息”:
                 var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                 if (propertyInfo == null)
                 {
-                    var error = $"Property '{filter.PropName}' not found on type '{entityType.Name}'";
-                    LogHelper.Instance.Error(error);
-                    return MyResults<IQueryable>.Error(error);
+                    return MyResults<IQueryable>.Error(LogHelper.Instance.Error($"Property '{filter.PropName}' not found on type '{entityType.Name}'"));
                 }
 
                 // 创建“x”表达式:
@@ -285,9 +291,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                     {
                         var res = TryParse(propertyType, obj.ToString(), out var convertedValue);
                         if (res == false)
-                        {
                             return MethodPicker.GetThrow($"TryParse error!({propertyType.Name})");
-                        }
 
                         return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
                     };
@@ -303,16 +307,13 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 // 动态调用“Where”方法:
                 var newQueryable = queryable.Where(lambda);
                 if (newQueryable == null)
-                {
-                    LogHelper.Instance.IsNull(nameof(newQueryable));
-                    return MyResults<IQueryable>.Error($"The {nameof(newQueryable)} is null!");
-                }
+                    return MyResults<IQueryable>.Error(LogHelper.Instance.IsNull(nameof(newQueryable)));
 
                 queryable = newQueryable;
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
+                return MyResults<IQueryable>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
             return MyResults<IQueryable>.Success(null, queryable);
@@ -343,10 +344,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             {
                 var res = GetFilter(typeof(TEntity), queryable, filter);
                 if (res.Data == null)
-                {
-                    LogHelper.Instance.Error(res.Message);
-                    return MyResults<IQueryable<TEntity>>.Error(res.Message);
-                }
+                    return MyResults<IQueryable<TEntity>>.Error(LogHelper.Instance.Error(res.Message));
 
                 queryable = (IQueryable<TEntity>)res.Data;
             }
@@ -362,23 +360,23 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             string? parentIdPropName,
             AppDbContext db,
             DbSetConfig? config,
-            ParentFilter parent) where TEntity : IdEntityBase
+            ParentFilter parentFilter) where TEntity : IdEntityBase
         {
             if (config == null)
-            {
-                LogHelper.Instance.IsNull(nameof(config));
-                return MyResults<IQueryable<TEntity>>.Error($"The {nameof(config)} is null!");
-            }
-            if (parentIdPropName == null)
-            {
-                LogHelper.Instance.IsNull(nameof(parentIdPropName));
-                return MyResults<IQueryable<TEntity>>.Error($"The {nameof(parentIdPropName)} is null!");
-            }
+                return MyResults<IQueryable<TEntity>>.Error(LogHelper.Instance.IsNull(nameof(config)));
 
-            var parentIds = await GetParentIds(
+            if (string.IsNullOrEmpty(parentIdPropName))
+                return MyResults<IQueryable<TEntity>>.Error(LogHelper.Instance.IsNullOrEmpty(nameof(parentIdPropName)));
+
+            var resGetParentIds = await GetParentIds(
                 db,
                 config,
-                parent);
+                parentFilter);
+            var parentIds = resGetParentIds.Data;
+            if(parentIds == null && resGetParentIds.IsSuccess) // 无需筛选
+                return MyResults<IQueryable<TEntity>>.Success(null, queryable);
+            else if (parentIds == null)
+                return MyResults<IQueryable<TEntity>>.Error(resGetParentIds.Message);
 
             var res = queryable.GetOnlyFilter(new PropFilter()
             {
@@ -387,10 +385,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             });
 
             if (res.Data == null)
-            {
-                LogHelper.Instance.Error(res.Message);
-                return MyResults<IQueryable<TEntity>>.Error(res.Message);
-            }
+                return MyResults<IQueryable<TEntity>>.Error(LogHelper.Instance.Error(res.Message));
 
             queryable = res.Data;
 
@@ -399,65 +394,55 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
         #endregion
 
         #region 获取“父表ID”集合
-        public static async Task<List<long>> GetParentIds(
+        public static async Task<MyActionResult<List<long>>> GetParentIds(
             AppDbContext db,
             DbSetConfig config,
-            ParentFilter parent)
+            ParentFilter parentFilter)
         {
-            var ids = new List<long>();
-
             // 添加单值:
-            if (parent.Id != null)
+            if (parentFilter.Id != null)
             {
-                if (parent.Ids == null)
+                if (parentFilter.Ids == null)
                 {
-                    parent.Ids = new List<long>();
+                    parentFilter.Ids = new List<long>();
                 }
-                parent.Ids.Add(parent.Id.Value);
+                parentFilter.Ids.Add(parentFilter.Id.Value);
             }
 
-            if (parent.Ids != null && parent.Ids.Count() > 0) // 无需向上筛选
-            {
-                return parent.Ids;
-            }
-            else if (parent.Parent == null || config.Parent == null) // 已到顶级
-            {
-                return ids;
-            }
+            if (parentFilter.Ids != null && parentFilter.Ids.Count > 0) // 无需向上筛选
+                return MyResults<List<long>>.Success(null, parentFilter.Ids);
+            else if (parentFilter.Parent == null || config.Parent == null) // 已到顶级
+                return MyResults<List<long>>.Success(null, null);
 
             // 继续向上获取父表ID集合:
-            parent.Ids = await GetParentIds(
+            var resGetParentIds = await GetParentIds(
                 db,
                 config.Parent,
-                parent.Parent);
+                parentFilter.Parent);
+            var grandIds = resGetParentIds.Data;
+            if (grandIds == null)
+                return resGetParentIds;
 
-            if (parent.Ids.Count() < 1) return ids;
+            if (grandIds.Count < 1) return MyResults<List<long>>.Success(null, []);
 
             // 获取父表ID集合:
             var queryableParent = db.GetDbSet(config.DbSetName) as IQueryable<IdEntityBase>;
             if (queryableParent == null)
-            {
-                LogHelper.Instance.IsNull(nameof(queryableParent));
-                return ids;
-            }
-            if (config.ParentIdPropName == null)
-            {
-                LogHelper.Instance.IsNull(nameof(config.ParentIdPropName));
-                return ids;
-            }
+                return MyResults<List<long>>.Error(LogHelper.Instance.IsNull(nameof(queryableParent)));
 
-            queryableParent = GetFilter(config.EntityType, queryableParent, new PropFilter()
+            if (string.IsNullOrEmpty(config.ParentIdPropName))
+                return MyResults<List<long>>.Error(LogHelper.Instance.IsNullOrEmpty(nameof(config.ParentIdPropName)));
+
+            var resGetFilter = GetFilter(config.EntityType, queryableParent, new PropFilter()
             {
                 PropName = config.ParentIdPropName,
-                Values = parent.Ids.Cast<object>().ToList()
-            }) as IQueryable<IdEntityBase>;
+                Values = grandIds.Cast<object>().ToList()
+            });
+            queryableParent = resGetFilter.Data as IQueryable<IdEntityBase>;
             if (queryableParent == null)
-            {
-                LogHelper.Instance.IsNull(nameof(queryableParent));
-                return ids;
-            }
+                return MyResults<List<long>>.Error(resGetFilter.Message);
 
-            return await queryableParent.Select(i => i.Id).ToListAsync();
+            return MyResults<List<long>>.Success(null, await queryableParent.Select(i => i.Id).ToListAsync());
         }
         #endregion
     }

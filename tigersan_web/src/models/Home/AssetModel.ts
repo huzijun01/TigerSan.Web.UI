@@ -27,7 +27,7 @@ export class AssetModel extends AssetBaseModel {
     stateName = ''
     tagId? = ''
     siteName? = ''
-    battery? = ''
+    battery?: number
     // 计算:
     dailyMove?: number
     monthlyMove?: number

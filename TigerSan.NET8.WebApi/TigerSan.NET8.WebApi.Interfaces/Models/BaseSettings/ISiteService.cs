@@ -5,7 +5,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface ISiteService : IIdNameServiceBase<SiteEntity>
     {
-        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList();
+        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList(List<CompanyEntity>? accessibleCompanies);
         public Task<MyActionResult<List<IdName>>> GetBelongSiteTypeList(long? company = null);
     }
 }

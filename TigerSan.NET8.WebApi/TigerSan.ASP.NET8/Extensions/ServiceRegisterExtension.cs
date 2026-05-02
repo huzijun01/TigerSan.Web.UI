@@ -17,14 +17,14 @@ namespace TigerSan.NET8.WebApi.Extensions
             services.AddControllersWithViews(option =>
             {
                 option.Filters.Add<ApiAuthorizeFilter>();
-                option.Filters.Add<CompanyClassifyFilter>();
+                option.Filters.Add<CompanyFilter>();
                 option.Filters.Add<NeedAuthorizeAttribute>();
                 option.Filters.Add<NoNeedAuthorizeAttribute>();
                 option.Filters.Add<ClassifyByCompanyAttribute>();
 
                 if (builder.Environment.IsDevelopment())
                 {
-                    option.Filters.Add<ConsoleLogFilterAttribute>();
+                    option.Filters.Add<LogFilterAttribute>();
                 }
             });
         }

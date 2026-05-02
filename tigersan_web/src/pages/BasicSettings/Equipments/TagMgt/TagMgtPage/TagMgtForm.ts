@@ -91,7 +91,7 @@ const configComment: FormItemConfig<TagModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new TagModel()
 
-/** “基站管理”表单配置 */
+/** “标签管理”表单配置 */
 let configTagForm: FormConfig<TagModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -119,7 +119,7 @@ let configTagForm: FormConfig<TagModel> = {
     ]
 }
 
-/** “基站管理”表单模型 */
+/** “标签管理”表单模型 */
 const tagForm = new FormModel(configTagForm)
 
 async function RefreshBase() {
@@ -203,7 +203,7 @@ selectIsEnable._onChange = Refresh
 
 /** 增 */
 function Add() {
-    tagForm.Title.value = '新增基站'
+    tagForm.Title.value = '新增标签'
 
     tagForm._getSource = AddGetSource
 
@@ -218,7 +218,7 @@ function Add() {
 
 /** 改 */
 function Edit() {
-    tagForm.Title.value = '修改基站'
+    tagForm.Title.value = '修改标签'
 
     tagForm._getSource = () => {
         const rowData = tagMgtTable.SelectedRowDatas.value[0]

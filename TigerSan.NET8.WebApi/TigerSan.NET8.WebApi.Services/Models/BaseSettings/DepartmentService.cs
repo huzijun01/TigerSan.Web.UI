@@ -32,7 +32,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [查]
         #region 获取“所属公司”集合
         /// <summary>获取“所属公司”集合</summary>
-        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList()
+        public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList(List<CompanyEntity>? accessibleCompanies)
         {
             try
             {
@@ -43,6 +43,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .ToListAsync();
 
                 if (companys.Count < 1) return MyResults<List<IdName>>.EmptyIdNameList;
+
+                if (accessibleCompanies == null)
+                {
+                    return MyResults<List<IdName>>.IsNull(nameof(accessibleCompanies));
+                }
+
+                companys = companys.Where(i => accessibleCompanies.Any(a => a.Id == i)).ToList();
 
                 var list = await _db.Companies
                     .AsNoTracking()

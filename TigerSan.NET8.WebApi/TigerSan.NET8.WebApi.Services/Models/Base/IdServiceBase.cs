@@ -17,6 +17,11 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         private readonly static DbSetConfig _dbSetConfig = new DbSetConfig(typeof(TEntity), AppDbContext.GetDbSetName(typeof(DbSet<TEntity>)));
         #endregion 【Fields】
 
+        #region 【Properties】
+        /// <summary>“当前表”配置</summary>
+        public DbSetConfig DbSetConfig { get => _dbSetConfig; }
+        #endregion 【Properties】
+
         #region 【Ctor】
         public IdServiceBase(AppDbContext db, DbSet<TEntity> dbSet)
         {
@@ -49,9 +54,8 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     {
                         var res = queryable.GetFilters(filter.Filters);
                         if (res.Data == null)
-                        {
                             return MyResults<IQueryable<TEntity>>.Error(res.Message);
-                        }
+
                         queryable = res.Data;
                     }
 
@@ -63,9 +67,8 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                             _dbSetConfig.Parent,
                             filter.Parent);
                         if (res.Data == null)
-                        {
                             return MyResults<IQueryable<TEntity>>.Error(res.Message);
-                        }
+
                         queryable = res.Data;
                     }
                 }
@@ -74,8 +77,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<IQueryable<TEntity>>.Error(e.GetMessage());
+                return MyResults<IQueryable<TEntity>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -466,14 +468,9 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
                 var count = await entities.CountAsync();
                 if (count < 1)
-                {
                     return MyResults<object>.ResourceNotExist;
-                }
                 else if (count < ids.Count)
-                {
                     return MyResults<object>.SomeResourceNotExist;
-                }
-
 
                 _dbSet.RemoveRange(entities);
                 await _db.SaveChangesAsync();

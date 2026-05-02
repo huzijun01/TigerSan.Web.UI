@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace TigerSan.NET8.WebApi.Extensions
@@ -24,6 +25,14 @@ namespace TigerSan.NET8.WebApi.Extensions
             context.RouteData.Values.TryGetValue("controller", out var value);
             var controller = value as string;
             return controller != null && string.Equals(controller, controllerName);
+        }
+        #endregion
+
+        #region 是否为指定控制器
+        /// <summary>是否为指定控制器</summary>
+        public static bool IsController<TController>(this ActionExecutingContext context) where TController : class
+        {
+            return context.Controller.GetType() == typeof(TController);
         }
         #endregion
 

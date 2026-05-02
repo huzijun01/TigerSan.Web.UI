@@ -13,7 +13,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? sort = null,
             bool? ascending = null,
             FilterDto? filter = null);
-        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList();
+        public Task<MyActionResult<List<IdName>>> GetBelongCompanyList(List<CompanyEntity>? accessibleCompanies);
         public Task<MyActionResult<List<IdName>>> GetBelongDepartmentList(long? company = null);
         public Task<MyActionResult<List<IdName>>> GetBelongRoleList(long? department = null);
     }

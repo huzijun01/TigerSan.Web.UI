@@ -187,6 +187,11 @@ export class ObjectHelper {
         return v != null && v != undefined
     }
 
+    /** 判断“是否值相等” */
+    static IsValueEquals<TValue>(a: TValue, b: TValue): boolean {
+        return JSON.stringify(a) === JSON.stringify(b)
+    }
+
     /** 判断“类型是否相同” */
     static IsSameType(a: unknown, b: unknown, isIgnoreUndefinedOrNull: boolean = true): boolean {
         // 是否忽略undefined和null:

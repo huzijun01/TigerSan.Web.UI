@@ -47,7 +47,7 @@
         public Type EntityType { get; set; }
         /// <summary>DbSet名称</summary>
         public string DbSetName { get; set; }
-        /// <summary>父项ID属性名称</summary>
+        /// <summary>父表ID属性名称</summary>
         public string? ParentIdPropName { get; set; }
 
         public DbSetConfig(

@@ -1,4 +1,4 @@
-import { IdNameModel, OnlineStates, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, OnlineStates, IdNameModelHelper, SelectModel, AxiosHelper, StringHelper } from "@/0_tigersan_ui/tigerui"
 
 /** “基站”模型 */
 export class BaseStationModel extends IdNameModel {
@@ -44,7 +44,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
                 { propName: 'IsEnable', value: param.isEnable },
                 { propName: 'OnlineState', value: param.state },
                 { propName: 'Type', value: param.type },
-                { propName: 'MacAddr', value: param.macAddr },
+                { propName: 'MacAddr', value: StringHelper.IsNotEmpty(param.macAddr) ? param.macAddr : undefined },
             ],
             parent: {
                 id: param.site,
@@ -76,7 +76,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
                 { propName: 'IsEnable', value: param.isEnable },
                 { propName: 'OnlineState', value: param.state },
                 { propName: 'Type', value: param.type },
-                { propName: 'MacAddr', value: param.macAddr },
+                { propName: 'MacAddr', value: StringHelper.IsNotEmpty(param.macAddr) ? param.macAddr : undefined },
             ],
             parent: {
                 id: param.site,

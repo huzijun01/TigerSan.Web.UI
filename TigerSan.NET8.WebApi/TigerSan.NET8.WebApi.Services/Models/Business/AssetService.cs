@@ -443,7 +443,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                 }
 
-                res = await base.Add(dto, isBeginTransaction);
+                res = await base.Add(dto, false);
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
@@ -508,7 +508,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.TagRepeated;
                 }
 
-                res = await base.AddRange(entities, isBeginTransaction);
+                res = await base.AddRange(entities, false);
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务

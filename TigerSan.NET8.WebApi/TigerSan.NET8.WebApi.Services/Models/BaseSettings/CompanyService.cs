@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
@@ -50,6 +51,31 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
 
             return subIds;
+        }
+        #endregion
+
+        #region 获取“可访问公司”集合
+        /// <summary>获取“可访问公司”集合</summary>
+        public async Task<MyActionResult<List<CompanyEntity>>> GetAccessibleCompanies(long rootCompany)
+        {
+            var resGetList = await GetList();
+            var companies = resGetList.Data;
+            if (companies == null)
+            {
+                return resGetList;
+            }
+
+            var find = companies.FirstOrDefault(c => c.Id == rootCompany);
+            if (find == null)
+            {
+                return MyResults<List<CompanyEntity>>.ResourceNotExist;
+            }
+
+            var accessibleCompanies = CompanyHelper.GetSubCompanies(companies, find);
+            find.Parent = null;
+            accessibleCompanies.Add(find);
+
+            return MyResults<List<CompanyEntity>>.Success(null, accessibleCompanies);
         }
         #endregion
         #endregion [查]
