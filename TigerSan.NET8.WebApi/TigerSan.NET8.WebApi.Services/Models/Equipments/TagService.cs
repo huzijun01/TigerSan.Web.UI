@@ -48,8 +48,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<TagEntity>.Error(e.GetMessage());
+                return MyResults<TagEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -104,8 +103,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<TagDto>.Error(e.GetMessage());
+                return MyResults<TagDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -186,8 +184,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<List<TagDto>>.Error(e.GetMessage());
+                return MyResults<List<TagDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -273,8 +270,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<List<TagDto>>.Error(e.GetMessage());
+                return MyResults<List<TagDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -381,7 +377,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -436,7 +432,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

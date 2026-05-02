@@ -227,8 +227,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<IQueryable<TEntity>>.Error(e.GetMessage());
+                return MyResults<IQueryable<TEntity>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion

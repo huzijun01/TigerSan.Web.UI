@@ -61,7 +61,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                return MyResults<object>.Error(e.GetMessage());
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
             return MyResults<object>.OperationSuccess;
@@ -140,8 +140,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<List<AssetRecordDto>>.Error(e.GetMessage());
+                return MyResults<List<AssetRecordDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -158,18 +157,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .OrderByDescending(ar => ar.ReportTime)
                     .FirstOrDefaultAsync();
 
-                if (entity == null)
-                {
-                    LogHelper.Instance.IsNull(nameof(entity));
-                    return MyResults<AssetRecordEntity>.Error("Entity not found");
-                }
-
                 return MyResults<AssetRecordEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<AssetRecordEntity>.Error(e.GetMessage());
+                return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -188,16 +180,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 if (entity == null)
                 {
-                    LogHelper.Instance.IsNull(nameof(entity));
-                    return MyResults<AssetRecordEntity>.Error("Entity not found");
+                    return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.IsNull(nameof(entity)));
                 }
 
                 return MyResults<AssetRecordEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<AssetRecordEntity>.Error(e.GetMessage());
+                return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -232,7 +222,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -271,7 +261,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -313,7 +303,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 
@@ -369,7 +359,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
             }
 

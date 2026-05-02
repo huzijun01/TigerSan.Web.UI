@@ -177,7 +177,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                return MyResults<UserInfo>.Error(e.GetMessage());
+                return MyResults<UserInfo>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -226,7 +226,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(e.GetMessage());
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
             return res;
@@ -290,7 +290,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                return MyResults<UserInfo>.Error(e.GetMessage());
+                return MyResults<UserInfo>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -306,7 +306,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                return MyResults<object>.Error(e.GetMessage());
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion

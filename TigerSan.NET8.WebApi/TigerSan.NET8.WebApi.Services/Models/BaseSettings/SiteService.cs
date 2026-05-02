@@ -56,8 +56,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<List<IdName>>.Error(e.GetMessage());
+                return MyResults<List<IdName>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -93,8 +92,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                LogHelper.Instance.Error(e.GetMessage());
-                return MyResults<List<IdName>>.Error(e.GetMessage());
+                return MyResults<List<IdName>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
