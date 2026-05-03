@@ -127,8 +127,8 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         }
         #endregion
 
-        #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
+        #region 获取“数据”集合（ids）
+        /// <summary>获取“数据”集合（ids）</summary>
         public virtual async Task<MyActionResult<List<TEntity>>> GetList(List<long> ids)
         {
             try

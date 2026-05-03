@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using TigerSan.NET8.WebApi.Share;
-using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Extensions;
+using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Controllers;
 using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -96,16 +97,16 @@ namespace TigerSan.NET8.WebApi.Filters
                     // 是否为“公司”控制器:
                     if (context.IsController<CompanyController>())
                     {
+                        filter.Filters = [new PropFilter(){
+                                PropName = nameof(CompanyEntity.Id),
+                                Values = accessibleCompanies.Select(c => c.Id as object).ToList()
+                            }];
+
                         if (context.IsAction(nameof(ICompanyService.GetList)))
                         {
                             context.Result = new JsonResult(MyResults<List<CompanyEntity>>.Success(null, accessibleCompanies));
                             return; // 直接返回“可访问公司”集合
                         }
-
-                        filter.Filters = [new PropFilter(){
-                                PropName = nameof(CompanyEntity.Id),
-                                Values = accessibleCompanies.Select(c => c.Id as object).ToList()
-                            }];
                     }
                     else
                     {
@@ -117,7 +118,7 @@ namespace TigerSan.NET8.WebApi.Filters
                             return;
                         }
 
-                        SetCompanyFilter(service.DbSetConfig, ref filter, accessibleCompanies);
+                        FilterHelper.SetCompanyParentFilter(service.DbSetConfig, ref filter, accessibleCompanies);
                     }
 
                     context.ActionArguments.Remove(Filter);
@@ -125,107 +126,9 @@ namespace TigerSan.NET8.WebApi.Filters
                 }
             }
 
-            var res = await next();
+            await next();
         }
         #endregion
-
-        #region [Filter]
-        #region 获取“父表”过滤器
-        /// <summary>获取“父表”过滤器</summary>
-        private ParentFilter? GetParentFilter<TParentEntity>(
-            DbSetConfig dbSetConfig,
-            FilterDto? filter)
-            where TParentEntity : IdEntityBase
-        {
-            if (filter == null) return null;
-
-            var parentFilter = filter.Parent;
-            var parentConfig = dbSetConfig.Parent;
-
-            while (parentFilter != null && parentConfig != null)
-            {
-                if (parentConfig.EntityType == typeof(TParentEntity)) return parentFilter;
-                parentFilter = parentFilter.Parent;
-                parentConfig = parentConfig.Parent;
-            }
-
-            return null;
-        }
-        #endregion
-
-        #region 设置“父表”过滤器
-        /// <summary>设置“父表”过滤器</summary>
-        private bool SetParentFilter<TParentEntity>(
-            DbSetConfig dbSetConfig,
-            ref FilterDto? filter,
-            ParentFilter parentFilter)
-            where TParentEntity : IdEntityBase
-        {
-            if (filter == null) filter = new FilterDto();
-
-            var findParentFilter = filter.Parent;
-            if (findParentFilter == null) findParentFilter = filter.Parent = new ParentFilter();
-            var parentConfig = dbSetConfig.Parent;
-
-            while (parentConfig != null && findParentFilter != null)
-            {
-                if (parentConfig.EntityType == typeof(TParentEntity))
-                {
-                    findParentFilter.Id = parentFilter.Id;
-                    findParentFilter.Ids = parentFilter.Ids;
-                    return true;
-                }
-
-                if (parentConfig.Parent != null && findParentFilter.Parent == null)
-                {
-                    findParentFilter.Parent = new ParentFilter();
-                }
-
-                findParentFilter = findParentFilter.Parent;
-                parentConfig = parentConfig.Parent;
-            }
-
-            return false;
-        }
-        #endregion
-
-        #region 设置“公司”过滤器
-        /// <summary>设置“公司”过滤器</summary>
-        private bool SetCompanyFilter(
-            DbSetConfig dbSetConfig,
-            ref FilterDto? filter,
-            List<CompanyEntity> accessibleCompanyEntities)
-        {
-            if (accessibleCompanyEntities == null) return false;
-
-            var accessibleCompanies = accessibleCompanyEntities.Select(i => i.Id).ToList();
-
-            var companyFilter = GetParentFilter<CompanyEntity>(dbSetConfig, filter);
-            if (companyFilter == null)
-            {
-                companyFilter = new ParentFilter() { Ids = accessibleCompanies };
-            }
-            else if (companyFilter.Ids != null || companyFilter.Id != null)
-            {
-                if (companyFilter.Id != null && !accessibleCompanies.Contains(companyFilter.Id.Value))
-                    companyFilter.Id = null;
-                if (companyFilter.Ids != null)
-                    companyFilter.Ids = companyFilter.Ids.Where(i => accessibleCompanies.Contains(i)).ToList();
-
-                if (companyFilter.Ids == null && companyFilter.Id == null)
-                    companyFilter.Ids = accessibleCompanies;
-            }
-            else
-            {
-                companyFilter.Ids = accessibleCompanies;
-            }
-
-            SetParentFilter<CompanyEntity>(dbSetConfig, ref filter, companyFilter);
-
-            return true;
-        }
-        #endregion
-        #endregion [Filter]
         #endregion 【Functions】
     }
 }
