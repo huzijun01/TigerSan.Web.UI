@@ -334,7 +334,7 @@ export class TableItemModel<TSource extends object> {
         if (this._headerModel._propName === '') {
             return
         }
-        else if (!(this._headerModel._propName in this._rowModel._rowData)) {
+        else if (this._headerModel.IsRequired.value && !(this._headerModel._propName in this._rowModel._rowData)) {
             console.warn(`The _rowData does not contain the ${this._headerModel._propName} field!`)
             return
         }
@@ -355,7 +355,7 @@ export class TableItemModel<TSource extends object> {
         if (this._headerModel._propName === '') {
             return
         }
-        else if (!(this._headerModel._propName in this._rowModel._rowData)) {
+        else if (this._headerModel.IsRequired.value && !(this._headerModel._propName in this._rowModel._rowData)) {
             console.warn(`The _rowData does not contain the ${this._headerModel._propName} field!`)
             return
         }
@@ -395,6 +395,8 @@ export class TableHeaderModel<TSource extends object> {
     //#endregion 【Fields】
 
     //#region 【Properties】
+    /** 类型 */
+    readonly Type = ref(ItemType.Textarea)
     /** 文本 */
     readonly Text = ref('null')
     /** 宽度 */
@@ -403,8 +405,8 @@ export class TableHeaderModel<TSource extends object> {
     readonly TextAlign = ref(TextAlign.Center)
     /** 是否只读 */
     readonly IsReadonly = ref(true)
-    /** 类型 */
-    readonly Type = ref(ItemType.Textarea)
+    /** 是否必须 */
+    readonly IsRequired = ref(true)
 
     //#region [computed]
     /** 样式对象 */
@@ -436,6 +438,8 @@ export class TableHeaderConfig<TSource extends object> {
     _setObject?: UnknownSetter
     /** “项目”点击后 */
     _onItemClick?: (itemModel: TableItemModel<TSource>) => void
+    /** 类型 */
+    Type?: ItemType
     /** 文本 */
     Text?: string
     /** 宽度 */
@@ -444,8 +448,8 @@ export class TableHeaderConfig<TSource extends object> {
     TextAlign?: TextAlign
     /** 是否只读 */
     IsReadonly?: boolean
-    /** 类型 */
-    Type?: ItemType
+    /** 是否必须 */
+    IsRequired?: boolean
 
     //#region 【Ctor】
     constructor(propName: string) {
@@ -461,9 +465,10 @@ export function SetTableHeaderModel<TSource extends object>(model: TableHeaderMo
     if (config._getStringAsync) model._getStringAsync = config._getStringAsync
     if (config._setObject) model._setObject = config._setObject
     if (config._onItemClick) model._onItemClick = config._onItemClick
+    if (config.Type != undefined) model.Type.value = config.Type
     if (config.Text != undefined) model.Text.value = config.Text
     if (config.Width != undefined) model.Width.value = config.Width
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
-    if (config.Type != undefined) model.Type.value = config.Type
+    if (config.IsRequired != undefined) model.IsRequired.value = config.IsRequired
 }

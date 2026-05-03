@@ -84,7 +84,7 @@ export class Verify {
     static IsBigintGreaterThan(num?: bigint, min: bigint = 0n, error?: string): VerifyResult {
         const res = new VerifyResult()
 
-        if (num === undefined) {
+        if (num === undefined || num === null) {
             res.VerifyText = '不能为空'
             res.VerifyState = FormResult.Error
         }

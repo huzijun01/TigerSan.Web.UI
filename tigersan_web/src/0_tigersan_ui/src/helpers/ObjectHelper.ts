@@ -139,8 +139,8 @@ export class ObjectHelper {
         let date: Date
 
         // 处理输入值
-        if (value === undefined) {
-            date = new Date()
+        if (value === undefined || value === null) {
+            return ''
         } else if (value instanceof Date) {
             date = value
         } else if (typeof value === 'number' || typeof value === 'string') {

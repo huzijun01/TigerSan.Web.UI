@@ -14,7 +14,7 @@ export class ParamHelper {
         const queryParts: string[] = []
         params.forEach(param => {
             if (this.IsNotEmpty(param.key) && this.IsNotEmpty(param.value)) {
-                if (param.value === undefined) {
+                if (param.value === undefined || param.value === null) {
                     console.warn('The value is undefined!')
                     return
                 }
