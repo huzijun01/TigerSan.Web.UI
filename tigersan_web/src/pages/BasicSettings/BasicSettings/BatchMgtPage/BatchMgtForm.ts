@@ -84,7 +84,7 @@ const configComment: FormItemConfig<BatchModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new BatchModel()
 
-/** “批次管理”表单配置 */
+/** “批次”表单配置 */
 let configBatchMgtForm: FormConfig<BatchModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -115,8 +115,8 @@ let configBatchMgtForm: FormConfig<BatchModel> = {
     ]
 }
 
-/** “批次管理”表单模型 */
-const batchMgtForm = new FormModel(configBatchMgtForm)
+/** “批次”表单模型 */
+const batchForm = new FormModel(configBatchMgtForm)
 
 /** 查 */
 async function Refresh() {
@@ -147,24 +147,24 @@ selectScenario._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    batchMgtForm.Title.value = '新增批次'
+    batchForm.Title.value = '新增批次'
 
-    batchMgtForm._getSource = AddGetSource
+    batchForm._getSource = AddGetSource
 
-    batchMgtForm._onSubmitAsync = async source => {
+    batchForm._onSubmitAsync = async source => {
         const res = await batchHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    batchMgtForm.Show()
+    batchForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    batchMgtForm.Title.value = '修改批次'
+    batchForm.Title.value = '修改批次'
 
-    batchMgtForm._getSource = () => {
+    batchForm._getSource = () => {
         const rowData = batchMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
@@ -174,13 +174,13 @@ async function Edit() {
         return ObjectHelper.ShallowCopy(rowData)
     }
 
-    batchMgtForm._onSubmitAsync = async source => {
+    batchForm._onSubmitAsync = async source => {
         const res = await batchHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    batchMgtForm.Show(true)
+    batchForm.Show(true)
 }
 
 /** 删 */
@@ -210,7 +210,7 @@ function DeleteRowData(state: DialogState) {
         })
 }
 
-export default {
+export const batchMgtForm = {
     password,
     searchBatchId,
     selectCompany,
@@ -223,7 +223,7 @@ export default {
     configManager,
     configPhone,
     configComment,
-    batchMgtForm,
+    batchForm,
     Refresh,
     Add,
     Edit,

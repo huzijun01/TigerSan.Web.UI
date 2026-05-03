@@ -91,7 +91,7 @@ const configComment: FormItemConfig<TagModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new TagModel()
 
-/** “标签管理”表单配置 */
+/** “标签”表单配置 */
 let configTagForm: FormConfig<TagModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -119,7 +119,7 @@ let configTagForm: FormConfig<TagModel> = {
     ]
 }
 
-/** “标签管理”表单模型 */
+/** “标签”表单模型 */
 const tagForm = new FormModel(configTagForm)
 
 async function RefreshBase() {
@@ -305,7 +305,7 @@ function Repair() {
     dialog.ShowInformation('维修')
 }
 
-export default {
+export const tagMgtForm = {
     timer,
     pagination,
     onlineCount,

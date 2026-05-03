@@ -41,7 +41,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.assetMgtForm">
+    <PopForm :model="form.assetForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -100,9 +100,9 @@
 </template>
 
 <script lang="ts" setup>
-import form from './AssetMgtForm'
 import AssetRecordPage from './AssetRecordPage.vue'
 import { onMounted } from 'vue'
+import { assetMgtForm as form } from './AssetMgtForm'
 import { assetMgtTable, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
 // 【字段】:

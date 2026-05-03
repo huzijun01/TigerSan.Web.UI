@@ -1,6 +1,5 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
-import { navData } from '@/navs/navModel'
 import { companyHelper, CompanyHelper } from '@/models'
 import { tree, CompanyModel, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
 
@@ -135,12 +134,7 @@ function DeleteRowData(state: DialogState) {
         })
 }
 
-/** 进入主页 */
-function GoHome() {
-    navData.InitHome()
-}
-
-export default {
+export const companyMgtForm = {
     tree,
     configName,
     configAddr,
@@ -150,5 +144,4 @@ export default {
     Add,
     Edit,
     Delete,
-    GoHome,
 }

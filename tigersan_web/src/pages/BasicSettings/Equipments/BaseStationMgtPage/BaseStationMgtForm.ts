@@ -118,7 +118,7 @@ const configReportInterval: FormItemConfig<BaseStationModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new BaseStationModel()
 
-/** “基站管理”表单配置 */
+/** “基站”表单配置 */
 let configBaseStationForm: FormConfig<BaseStationModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -150,7 +150,7 @@ let configBaseStationForm: FormConfig<BaseStationModel> = {
     ]
 }
 
-/** “基站管理”表单模型 */
+/** “基站”表单模型 */
 const baseStationForm = new FormModel(configBaseStationForm)
 
 async function RefreshBase() {
@@ -335,7 +335,7 @@ function Repair() {
     dialog.ShowInformation('维修')
 }
 
-export default {
+export const baseStationMgtForm = {
     timer,
     pagination,
     onlineCount,

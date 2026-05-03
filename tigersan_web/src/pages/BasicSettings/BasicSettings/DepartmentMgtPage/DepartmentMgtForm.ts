@@ -40,7 +40,7 @@ const configName: FormItemConfig<DepartmentModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new DepartmentModel()
 
-/** “部门管理”表单配置 */
+/** “部门”表单配置 */
 let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -55,8 +55,8 @@ let configDepartmentMgtForm: FormConfig<DepartmentModel> = {
     ]
 }
 
-/** “部门管理”表单模型 */
-const departmentMgtForm = new FormModel(configDepartmentMgtForm)
+/** “部门”表单模型 */
+const departmentForm = new FormModel(configDepartmentMgtForm)
 
 /** 查 */
 async function Refresh() {
@@ -79,24 +79,24 @@ selectCompany._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    departmentMgtForm.Title.value = '新增部门'
+    departmentForm.Title.value = '新增部门'
 
-    departmentMgtForm._getSource = AddGetSource
+    departmentForm._getSource = AddGetSource
 
-    departmentMgtForm._onSubmitAsync = async source => {
+    departmentForm._onSubmitAsync = async source => {
         const res = await departmentHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    departmentMgtForm.Show()
+    departmentForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    departmentMgtForm.Title.value = '修改部门'
+    departmentForm.Title.value = '修改部门'
 
-    departmentMgtForm._getSource = () => {
+    departmentForm._getSource = () => {
         const rowData = departmentMgtTable.SelectedRowDatas.value[0]
 
         if (!rowData) {
@@ -107,13 +107,13 @@ async function Edit() {
         return ObjectHelper.ShallowCopy(rowData)
     }
 
-    departmentMgtForm._onSubmitAsync = async source => {
+    departmentForm._onSubmitAsync = async source => {
         const res = await departmentHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    departmentMgtForm.Show()
+    departmentForm.Show()
 }
 
 /** 删 */
@@ -143,13 +143,13 @@ function DeleteRowData(state: DialogState) {
         })
 }
 
-export default {
+export const departmentMgtForm = {
     selectCompanyForm,
     pagination,
     selectCompany,
     configCompany,
     configName,
-    departmentMgtForm,
+    departmentForm,
     Refresh,
     Add,
     Edit,

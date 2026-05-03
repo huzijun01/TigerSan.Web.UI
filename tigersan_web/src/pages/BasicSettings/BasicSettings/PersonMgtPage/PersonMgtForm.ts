@@ -116,7 +116,7 @@ const configMail: FormItemConfig<PersonModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new PersonModel()
 
-/** “人员管理”表单配置 */
+/** “人员”表单配置 */
 let configPersonMgtForm: FormConfig<PersonModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -150,8 +150,8 @@ let configPersonMgtForm: FormConfig<PersonModel> = {
     ]
 }
 
-/** “人员管理”表单模型 */
-const personMgtForm = new FormModel(configPersonMgtForm)
+/** “人员”表单模型 */
+const personForm = new FormModel(configPersonMgtForm)
 
 /** 查 */
 async function Refresh() {
@@ -187,24 +187,24 @@ selectRole._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    personMgtForm.Title.value = '新增人员'
+    personForm.Title.value = '新增人员'
 
-    personMgtForm._getSource = AddGetSource
+    personForm._getSource = AddGetSource
 
-    personMgtForm._onSubmitAsync = async source => {
+    personForm._onSubmitAsync = async source => {
         const res = await personHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    personMgtForm.Show()
+    personForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    personMgtForm.Title.value = '修改人员'
+    personForm.Title.value = '修改人员'
 
-    personMgtForm._getSource = () => {
+    personForm._getSource = () => {
         const rowData = personMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
@@ -216,13 +216,13 @@ async function Edit() {
         return data
     }
 
-    personMgtForm._onSubmitAsync = async source => {
+    personForm._onSubmitAsync = async source => {
         const res = await personHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    personMgtForm.Show(true)
+    personForm.Show(true)
 }
 
 /** 删 */
@@ -252,7 +252,7 @@ function DeleteRowData(state: DialogState) {
         })
 }
 
-export default {
+export const personMgtForm = {
     password,
     searchName,
     selectCompany,
@@ -269,7 +269,7 @@ export default {
     configPassword,
     configPhone,
     configMail,
-    personMgtForm,
+    personForm,
     Refresh,
     Add,
     Edit,

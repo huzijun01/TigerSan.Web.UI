@@ -114,7 +114,7 @@ loginForm._isShowSuccessResult = false
 function Logout() {
     dialog.ShowDialog(
         '确认',
-        '是否要退出登录？',
+        '是否退出登录？',
         undefined,
         FnLogout,
         DialogMode.YesOrNo,

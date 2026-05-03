@@ -29,7 +29,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.departmentMgtForm">
+    <PopForm :model="form.departmentForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -44,9 +44,9 @@
 </template>
 
 <script lang="ts" setup>
-import form from './DepartmentMgtForm'
 import { onMounted } from 'vue'
 import { departmentMgtTable } from './DepartmentMgtTable'
+import { departmentMgtForm as form } from './DepartmentMgtForm'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

@@ -32,7 +32,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.personMgtForm">
+    <PopForm :model="form.personForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -77,8 +77,8 @@
 </template>
 
 <script lang="ts" setup>
-import form from './PersonMgtForm'
 import { onMounted } from 'vue'
+import { personMgtForm as form } from './PersonMgtForm'
 import { personMgtTable, pagination } from './PersonMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
 

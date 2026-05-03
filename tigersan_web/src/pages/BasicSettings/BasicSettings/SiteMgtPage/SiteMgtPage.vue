@@ -30,7 +30,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.siteMgtForm">
+    <PopForm :model="form.siteForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -75,9 +75,9 @@
 </template>
 
 <script lang="ts" setup>
-import form from './SiteMgtForm'
 import { onMounted } from 'vue'
 import { siteMgtTable } from './SiteMgtTable'
+import { siteMgtForm as form } from './SiteMgtForm'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

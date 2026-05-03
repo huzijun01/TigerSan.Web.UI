@@ -101,7 +101,7 @@ const configComment: FormItemConfig<AssetModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new AssetModel()
 
-/** “资产管理”表单配置 */
+/** “资产”表单配置 */
 let configAssetMgtForm: FormConfig<AssetModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -133,8 +133,8 @@ let configAssetMgtForm: FormConfig<AssetModel> = {
     ]
 }
 
-/** “资产管理”表单模型 */
-const assetMgtForm = new FormModel(configAssetMgtForm)
+/** “资产”表单模型 */
+const assetForm = new FormModel(configAssetMgtForm)
 
 /** 查 */
 async function Refresh() {
@@ -179,24 +179,24 @@ selectErrorType._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    assetMgtForm.Title.value = '新增资产'
+    assetForm.Title.value = '新增资产'
 
-    assetMgtForm._getSource = AddGetSource
+    assetForm._getSource = AddGetSource
 
-    assetMgtForm._onSubmitAsync = async source => {
+    assetForm._onSubmitAsync = async source => {
         const res = await assetHelper.Add(source)
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    assetMgtForm.Show()
+    assetForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    assetMgtForm.Title.value = '修改资产'
+    assetForm.Title.value = '修改资产'
 
-    assetMgtForm._getSource = () => {
+    assetForm._getSource = () => {
         const rowData = assetMgtTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
@@ -206,13 +206,13 @@ async function Edit() {
         return ObjectHelper.ShallowCopy(rowData)
     }
 
-    assetMgtForm._onSubmitAsync = async source => {
+    assetForm._onSubmitAsync = async source => {
         const res = await assetHelper.Edit(source)
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    assetMgtForm.Show(true)
+    assetForm.Show(true)
 }
 
 /** 删 */
@@ -337,7 +337,7 @@ async function Outbound() {
     assetOutbundForm.Show(true)
 }
 
-export default {
+export const assetMgtForm = {
     searchAssetId,
     selectOnlineState,
     selectCompany,
@@ -357,7 +357,7 @@ export default {
     configTagId,
     configName,
     configComment,
-    assetMgtForm,
+    assetForm,
     configOutboundCompany,
     configSite,
     configOutbundForm,

@@ -67,7 +67,7 @@ const configAuthorities: FormItemConfig<RoleAuthorityModel, number> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new RoleAuthorityModel()
 
-/** “角色管理”表单配置 */
+/** “角色”表单配置 */
 let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -103,8 +103,8 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     ]
 }
 
-/** “角色管理”表单模型 */
-const roleMgtForm = new FormModel(configRoleMgtForm)
+/** “角色”表单模型 */
+const roleForm = new FormModel(configRoleMgtForm)
 
 /** 查 */
 async function Refresh() {
@@ -133,11 +133,11 @@ selectDepartment._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    roleMgtForm.Title.value = '新增角色'
+    roleForm.Title.value = '新增角色'
 
-    roleMgtForm._getSource = AddGetSource
+    roleForm._getSource = AddGetSource
 
-    roleMgtForm._onSubmitAsync = async source => {
+    roleForm._onSubmitAsync = async source => {
         source.authorities = authorityHelperForm.GetAuthorities()
         const res = await roleHelper.Add(source)
 
@@ -145,14 +145,14 @@ async function Add() {
         return GetSubmitResult(res, '添加成功')
     }
 
-    roleMgtForm.Show()
+    roleForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    roleMgtForm.Title.value = '修改角色'
+    roleForm.Title.value = '修改角色'
 
-    roleMgtForm._getSource = () => {
+    roleForm._getSource = () => {
         const rowData = roleMgtTable.SelectedRowDatas.value[0]
 
         if (!rowData) {
@@ -163,7 +163,7 @@ async function Edit() {
         return ObjectHelper.ShallowCopy(rowData)
     }
 
-    roleMgtForm._onSubmitAsync = async source => {
+    roleForm._onSubmitAsync = async source => {
         source.authorities = authorityHelperForm.GetAuthorities()
         const res = await roleHelper.Edit(source)
 
@@ -171,7 +171,7 @@ async function Edit() {
         return GetSubmitResult(res, '修改成功')
     }
 
-    roleMgtForm.Show(true)
+    roleForm.Show(true)
 }
 
 /** 删 */
@@ -201,7 +201,7 @@ function DeleteRowData(state: DialogState) {
         })
 }
 
-export default {
+export const roleMgtForm = {
     authorityHelperForm,
     pagination,
     selectCompany,
@@ -212,7 +212,7 @@ export default {
     configDepartment,
     configName,
     configAuthorities,
-    roleMgtForm,
+    roleForm,
     Refresh,
     Add,
     Edit,

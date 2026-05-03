@@ -30,7 +30,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.roleMgtForm">
+    <PopForm :model="form.roleForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -62,9 +62,9 @@
 </template>
 
 <script lang="ts" setup>
-import form from './RoleMgtForm'
 import { onMounted } from 'vue'
 import { roleMgtTable } from './RoleMgtTable'
+import { roleMgtForm as form } from './RoleMgtForm'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

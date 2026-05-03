@@ -75,9 +75,9 @@
 </template>
 
 <script lang="ts" setup>
-import form from './TagMgtForm'
 import { onMounted } from 'vue'
 import { tagMgtTable } from './TagMgtTable'
+import { tagMgtForm as form } from './TagMgtForm'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, TimerHelper } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:

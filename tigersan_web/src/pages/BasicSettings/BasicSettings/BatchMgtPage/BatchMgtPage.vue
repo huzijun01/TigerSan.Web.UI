@@ -31,7 +31,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.batchMgtForm">
+    <PopForm :model="form.batchForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm"></Select>
@@ -66,10 +66,10 @@
 </template>
 
 <script lang="ts" setup>
-import form from './BatchMgtForm'
 import { onMounted } from 'vue'
+import { batchMgtForm as form } from './BatchMgtForm'
 import { batchMgtTable, pagination } from './BatchMgtTable'
-import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password } from '@/0_tigersan_ui/tigerui'
+import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

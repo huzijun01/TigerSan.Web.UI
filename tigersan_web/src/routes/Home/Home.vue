@@ -19,15 +19,16 @@
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <div class="info-panel flex-right" ref="refInfoPanel">
-          <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.company.name"></KeyValue>
-          <IconButton :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value" :click="navData.InitBasicSettings">
-          </IconButton>
-          <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale">
-          </IconButton>
-          <IconButton :icon="Icons.Question" :text="Texts.Help.value"></IconButton>
-          <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value"></IconButton>
-          <IconButton :icon="Icons.User" :text="userInfo.nickname" :click="form.Edit"></IconButton>
-          <IconButton :icon="Icons.Output" text="" :click="loginForm.Logout"></IconButton>
+          <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.company.name" />
+          <IconButton v-if="!navData.IsAtHome.value" :icon="Icons.Building_2" :text="Texts.EnterCompany.value"
+            :click="navData.InitHome" />
+          <IconButton v-if="navData.IsAtHome.value" :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value"
+            :click="navData.InitBasicSettings" />
+          <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale" />
+          <IconButton :icon="Icons.Question" :text="Texts.Help.value" />
+          <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value" />
+          <IconButton :icon="Icons.User" :text="userInfo.nickname" :click="form.Edit" />
+          <IconButton :icon="Icons.StartUp" text="" :click="loginForm.Logout" />
         </div>
       </div>
 
@@ -47,17 +48,17 @@
   <PopForm :model="form.userInfoForm">
     <FormRow>
       <FormItem :model="form.configCompany.ItemModel">
-        <input type="text" disabled v-model="form.configCompany.Target.value"></input>
+        <input type="text" disabled v-model="form.configCompany.Target.value">
       </FormItem>
     </FormRow>
     <FormRow v-if="!userInfo.isAdmin">
       <FormItem :model="form.configDepartment.ItemModel">
-        <input type="text" disabled v-model="form.configDepartment.Target.value"></input>
+        <input type="text" disabled v-model="form.configDepartment.Target.value">
       </FormItem>
     </FormRow>
     <FormRow>
       <FormItem :model="form.configRole.ItemModel">
-        <input type="text" disabled v-model="form.configRole.Target.value"></input>
+        <input type="text" disabled v-model="form.configRole.Target.value">
       </FormItem>
     </FormRow>
     <FormRow>
@@ -89,17 +90,17 @@
   <PopForm :model="passwordForm.passwordForm">
     <FormRow>
       <FormItem :model="passwordForm.configOldPassword.ItemModel">
-        <Password :model="passwordForm.oldPassword"></Password>
+        <Password :model="passwordForm.oldPassword" />
       </FormItem>
     </FormRow>
     <FormRow>
       <FormItem :model="passwordForm.configPassword.ItemModel">
-        <Password :model="passwordForm.password"></Password>
+        <Password :model="passwordForm.password" />
       </FormItem>
     </FormRow>
     <FormRow>
       <FormItem :model="passwordForm.configConfirmPassword.ItemModel">
-        <Password :model="passwordForm.confirmPassword"></Password>
+        <Password :model="passwordForm.confirmPassword" />
       </FormItem>
     </FormRow>
   </PopForm>

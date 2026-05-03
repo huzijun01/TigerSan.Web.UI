@@ -12,7 +12,6 @@
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
                         <button @click="form.Add">+ 新增</button>
-                        <button :disabled="!tree.IsActive.value" @click="form.GoHome">进入</button>
                         <button class="bg-warning" :disabled="!tree.IsActive.value" @click="form.Edit">修改</button>
                         <button class="bg-danger" :disabled="!tree.IsActive.value" @click="form.Delete">删除</button>
                     </div>
@@ -52,9 +51,9 @@
 </template>
 
 <script lang="ts" setup>
-import form from './CompanyMgtForm'
 import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
+import { companyMgtForm as form } from './CompanyMgtForm'
 import { tree, selectCompany, selectParentCompany } from './CompanyMgtTable'
 import { PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
 

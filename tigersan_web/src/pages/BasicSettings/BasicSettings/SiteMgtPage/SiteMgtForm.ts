@@ -98,7 +98,7 @@ const configComment: FormItemConfig<SiteModel, string> = {
 /** “增”源数据获取方法 */
 const AddGetSource = () => new SiteModel()
 
-/** “场地管理”表单配置 */
+/** “场地”表单配置 */
 let configSiteMgtForm: FormConfig<SiteModel> = {
     CancelText: '取消',
     SubmitText: '确定',
@@ -135,8 +135,8 @@ let configSiteMgtForm: FormConfig<SiteModel> = {
     ]
 }
 
-/** “场地管理”表单模型 */
-const siteMgtForm = new FormModel(configSiteMgtForm)
+/** “场地”表单模型 */
+const siteForm = new FormModel(configSiteMgtForm)
 
 /** 查 */
 async function Refresh() {
@@ -165,25 +165,25 @@ selectType._onChange = Refresh
 
 /** 增 */
 async function Add() {
-    siteMgtForm.Title.value = '新增场地'
+    siteForm.Title.value = '新增场地'
 
-    siteMgtForm._getSource = AddGetSource
+    siteForm._getSource = AddGetSource
 
-    siteMgtForm._onSubmitAsync = async source => {
+    siteForm._onSubmitAsync = async source => {
         const res = await siteHelper.Add(source)
 
         await Refresh()
         return GetSubmitResult(res, '添加成功')
     }
 
-    siteMgtForm.Show()
+    siteForm.Show()
 }
 
 /** 改 */
 async function Edit() {
-    siteMgtForm.Title.value = '修改场地'
+    siteForm.Title.value = '修改场地'
 
-    siteMgtForm._getSource = () => {
+    siteForm._getSource = () => {
         const rowData = siteMgtTable.SelectedRowDatas.value[0]
 
         if (!rowData) {
@@ -194,14 +194,14 @@ async function Edit() {
         return ObjectHelper.ShallowCopy(rowData)
     }
 
-    siteMgtForm._onSubmitAsync = async source => {
+    siteForm._onSubmitAsync = async source => {
         const res = await siteHelper.Edit(source)
 
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
 
-    siteMgtForm.Show(true)
+    siteForm.Show(true)
 }
 
 /** 删 */
@@ -231,7 +231,7 @@ function DeleteRowData(state: DialogState) {
         })
 }
 
-export default {
+export const siteMgtForm = {
     pagination,
     selectCompany,
     selectType,
@@ -245,7 +245,7 @@ export default {
     configManager,
     configPhone,
     configComment,
-    siteMgtForm,
+    siteForm,
     Refresh,
     Add,
     Edit,

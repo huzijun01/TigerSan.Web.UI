@@ -8,13 +8,13 @@ import SiteMgtPage from '@/pages/BasicSettings/BasicSettings/SiteMgtPage/SiteMgt
 import BatchMgtPage from '@/pages/BasicSettings/BasicSettings/BatchMgtPage/BatchMgtPage.vue'
 // BaseStationMgt:
 import BaseStationMgtPage from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtPage.vue'
-import baseStationForm from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtForm'
+import { baseStationMgtForm } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtForm'
 // TagMgt:
 import PersonMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/PersonMgtTagPage/PersonMgtTagPage.vue'
 import AssetMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
 import EnvSensorPage from '@/pages/BasicSettings/Equipments/TagMgt/EnvSensorPage/EnvSensorPage.vue'
 import TagMgtPage from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtPage.vue'
-import tageForm from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtForm'
+import { tagMgtForm } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtForm'
 // TerminalMgt:
 import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
 // Dictionaries:
@@ -95,7 +95,7 @@ export const navBasicSettings: NavFolderConfig = {
                     IsSelected: false,
                     _component: BaseStationMgtPage,
                     _authority: Authorities.BaseStationMgtPage,
-                    IsSelectedChanged: button => baseStationForm.timer.Set(button.IsSelected.value)
+                    IsSelectedChanged: button => baseStationMgtForm.timer.Set(button.IsSelected.value)
                 },
             ]
         },
@@ -110,7 +110,7 @@ export const navBasicSettings: NavFolderConfig = {
                     Icon: Icons.Label_2,
                     _component: TagMgtPage,
                     _authority: Authorities.TagMgtPage,
-                    IsSelectedChanged: button => tageForm.timer.Set(button.IsSelected.value)
+                    IsSelectedChanged: button => tagMgtForm.timer.Set(button.IsSelected.value)
                 },
                 {
                     Title: "人员管理标签",

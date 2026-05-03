@@ -61,6 +61,7 @@ function OnClick(payload: PointerEvent) {
     .text {
         margin: 0 10px;
         max-width: 200px;
+        line-height: 1.5;
     }
 }
 </style>
