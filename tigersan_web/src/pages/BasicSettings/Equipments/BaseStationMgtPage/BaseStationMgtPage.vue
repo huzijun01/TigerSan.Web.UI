@@ -25,8 +25,9 @@
                             :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                     <div class="row-panel">
-                        <Switch :model="form.switchIsEnable"></Switch>
-                        <button :disabled="!IsOnlySelected" @click="form.Repair">维修</button>
+                        <Switch v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :model="form.switchIsEnable" />
+                        <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :disabled="!IsOnlySelected"
+                            @click="form.Repair">维修</button>
                     </div>
                 </div>
             </div>
