@@ -33,7 +33,20 @@ export class Authorities {
     static SystemSettingsFolder = authorityHelper.GetAuthority()
     static SystemSettingsPage = authorityHelper.GetAuthority()
     static AlarmMgtPage = authorityHelper.GetAuthority()
-    /** 业务类别 1 */
-    static BusinessFolder1 = authorityHelper.GetAuthority()
-    static Business1 = authorityHelper.GetAuthority()
+    /** 资产管理 */
+    static AssetMgtFolder = authorityHelper.GetAuthority()
+    static AssetLedgerPage = authorityHelper.GetAuthority()
+    static AssetMapPage = authorityHelper.GetAuthority()
+    static AssetCheckPage = authorityHelper.GetAuthority()
+    static AssetAllocationPage = authorityHelper.GetAuthority()
+    static AssetAlarmPage = authorityHelper.GetAuthority()
+    static AssetMaintenancePage = authorityHelper.GetAuthority()
+    static AssetReportPage = authorityHelper.GetAuthority()
+    /** 其它 */
+    static OtherFolder = authorityHelper.GetAuthority()
+    static OwnershipTransferPage = authorityHelper.GetAuthority()
+    static VehiclesListPage = authorityHelper.GetAuthority()
+    static AnalysisPage = authorityHelper.GetAuthority()
+    static ErrorInfoPage = authorityHelper.GetAuthority()
+    static WorkFlowPage = authorityHelper.GetAuthority()
 }

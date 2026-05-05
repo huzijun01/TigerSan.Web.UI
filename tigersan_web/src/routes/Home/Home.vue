@@ -18,7 +18,7 @@
         <!-- 按钮: -->
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
-        <div class="info-panel flex-right" ref="refInfoPanel">
+        <div class="info-panel flex-right">
           <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.companyIdName.name" />
           <IconButton v-if="!navData.IsAtHome.value" :icon="Icons.Building_2" :text="Texts.EnterCompany.value"
             :click="navData.InitHome" />
@@ -108,12 +108,12 @@
 
 <script lang="ts" setup>
 import form from './UserInfoForm'
-import loginForm from '@/routes/Login/LoginForm'
-import passwordForm from './PasswordForm'
 import AppConfig from '@/AppConfig'
+import passwordForm from './PasswordForm'
+import loginForm from '@/routes/Login/LoginForm'
 import { onBeforeMount, onMounted } from 'vue'
-import { useUserInfo } from '@/stores'
 import { UserHelper } from '@/models'
+import { useUserInfo } from '@/stores'
 import { navModel, navData } from '@/navs/navModel'
 import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue } from '@/0_tigersan_ui/tigerui'
 
