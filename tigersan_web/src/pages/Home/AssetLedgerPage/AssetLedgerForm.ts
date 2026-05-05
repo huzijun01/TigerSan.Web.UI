@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
-import { assetMgtTable, pagination } from './AssetMgtTable'
+import { assetLedgerTable, pagination } from './AssetLedgerTable'
 import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel, ErrorType, siteHelper } from '@/models'
 
 // 选择框:
@@ -102,13 +102,13 @@ const configComment: FormItemConfig<AssetModel, string> = {
 const AddGetSource = () => new AssetModel()
 
 /** “资产”表单配置 */
-let configAssetMgtForm: FormConfig<AssetModel> = {
+let configAssetLedgerForm: FormConfig<AssetModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
         if (isEdit) {
-            const rowData = assetMgtTable.SelectedRowDatas.value[0]
+            const rowData = assetLedgerTable.SelectedRowDatas.value[0]
             if (!rowData) {
                 console.warn('The rowData is undefined!')
                 return
@@ -134,7 +134,7 @@ let configAssetMgtForm: FormConfig<AssetModel> = {
 }
 
 /** “资产”表单模型 */
-const assetForm = new FormModel(configAssetMgtForm)
+const assetForm = new FormModel(configAssetLedgerForm)
 
 /** 查 */
 async function Refresh() {
@@ -165,7 +165,7 @@ async function Refresh() {
         errorType: selectErrorType.Value.value,
         assetId: searchAssetId.Value.value,
     }).then(arr => {
-        ArrayHelper.Set(assetMgtTable.RowDatas, arr)
+        ArrayHelper.Set(assetLedgerTable.RowDatas, arr)
     })
 }
 
@@ -197,7 +197,7 @@ async function Edit() {
     assetForm.Title.value = '修改资产'
 
     assetForm._getSource = () => {
-        const rowData = assetMgtTable.SelectedRowDatas.value[0]
+        const rowData = assetLedgerTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return new AssetModel()
@@ -229,7 +229,7 @@ function Delete() {
 function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const model = assetMgtTable.SelectedRowDatas.value[0]
+    const model = assetLedgerTable.SelectedRowDatas.value[0]
     if (!model) {
         console.warn('The model is undefined!')
         return {}
@@ -275,7 +275,7 @@ let configOutbundForm: FormConfig<OutboundModel> = {
     _getSource: () => new OutboundModel(),
     _beforeInitAsync: async isEdit => {
         if (isEdit) {
-            const rowData = assetMgtTable.SelectedRowDatas.value[0]
+            const rowData = assetLedgerTable.SelectedRowDatas.value[0]
             if (!rowData) {
                 console.warn('The rowData is undefined!')
                 return
@@ -312,7 +312,7 @@ async function Inbound() {
 function InboundRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const rowDatas = assetMgtTable.SelectedRowDatas.value
+    const rowDatas = assetLedgerTable.SelectedRowDatas.value
     if (rowDatas.length < 1) return
 
     assetHelper.Inbound(rowDatas.map(r => r.id)).then(res => {
@@ -323,7 +323,7 @@ function InboundRowData(state: DialogState) {
 
 /** 出库 */
 async function Outbound() {
-    const rowDatas = assetMgtTable.SelectedRowDatas.value
+    const rowDatas = assetLedgerTable.SelectedRowDatas.value
     if (rowDatas.length < 1) return
 
     assetOutbundForm.Title.value = '出库'
@@ -337,7 +337,7 @@ async function Outbound() {
     assetOutbundForm.Show(true)
 }
 
-export const assetMgtForm = {
+export const assetLedgerForm = {
     searchAssetId,
     selectOnlineState,
     selectCompany,

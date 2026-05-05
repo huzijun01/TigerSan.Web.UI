@@ -66,7 +66,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 else
                 {
                     userInfo.RoleIdName = new IdName { Id = role.Id, Name = role.Name };
-                    userInfo.Authorities = await _db.Authoritys.Where(a => a.Role == role.Id).ToListAsync();
+                    userInfo.Authorities = await _db.Authorities.Where(a => a.Role == role.Id).ToListAsync();
                 }
             }
             catch (Exception e)

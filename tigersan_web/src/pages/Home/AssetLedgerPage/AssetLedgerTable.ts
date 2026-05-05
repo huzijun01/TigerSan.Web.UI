@@ -12,7 +12,7 @@ export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
-export const assetMgtTable = new TableModel<AssetModel>([
+export const assetLedgerTable = new TableModel<AssetModel>([
     {
         _propName: 'companyName',
         Text: '公司',
@@ -160,9 +160,9 @@ export const assetMgtTable = new TableModel<AssetModel>([
 ])
 
 // 初始化:
-assetMgtTable.IsAllowMultiSelect.value = true
+assetLedgerTable.IsAllowMultiSelect.value = true
 
-assetMgtTable._initItem = itemModel => {
+assetLedgerTable._initItem = itemModel => {
     AssetState.InitItemModel(itemModel)
 
     if (itemModel._headerModel._propName === 'onlineState') {
@@ -182,9 +182,9 @@ assetMgtTable._initItem = itemModel => {
 
 /** 是否允许入库 */
 export const IsAllowInbound = computed(() =>
-    assetMgtTable.IsSelected.value
-    && assetMgtTable.SelectedRowDatas.value.every(r => r.state === AssetStates.Inbound))
+    assetLedgerTable.IsSelected.value
+    && assetLedgerTable.SelectedRowDatas.value.every(r => r.state === AssetStates.Inbound))
 /** 是否允许出库 */
 export const IsAllowOutbound = computed(() =>
-    assetMgtTable.IsSelected.value
-    && assetMgtTable.SelectedRowDatas.value.every(r => r.state === AssetStates.InStore || r.state === AssetStates.Stolid))
+    assetLedgerTable.IsSelected.value
+    && assetLedgerTable.SelectedRowDatas.value.every(r => r.state === AssetStates.InStore || r.state === AssetStates.Stolid))

@@ -13,9 +13,11 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button @click="form.Add">+ 新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" class="bg-warning"
+                            :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                        <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" class="bg-danger"
+                            :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
@@ -67,6 +69,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue'
+import { Authorities } from '@/navs/Authorities'
 import { batchMgtForm as form } from './BatchMgtForm'
 import { batchMgtTable, pagination } from './BatchMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'

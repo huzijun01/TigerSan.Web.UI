@@ -23,19 +23,21 @@
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button @click="form.Add">+ 新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
+                            :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
+                            :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
 
             <!-- 表格: -->
-            <Table :model="assetMgtTable"></Table>
+            <Table :model="assetLedgerTable"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="assetMgtTable.SelectedRowCount.value" />
+                <Pagination :model="pagination" :selectedRowCount="assetLedgerTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
@@ -102,12 +104,13 @@
 <script lang="ts" setup>
 import AssetRecordPage from './AssetRecordPage.vue'
 import { onMounted } from 'vue'
-import { assetMgtForm as form } from './AssetMgtForm'
-import { assetMgtTable, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetMgtTable'
+import { Authorities } from '@/navs/Authorities'
+import { assetLedgerForm as form } from './AssetLedgerForm'
+import { assetLedgerTable, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetLedgerTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = assetMgtTable
+const { IsOnlySelected } = assetLedgerTable
 
 // 【过程】:
 onMounted(() => {

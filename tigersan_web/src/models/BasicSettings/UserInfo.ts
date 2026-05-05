@@ -1,4 +1,4 @@
-import { IdNameModel, AuthorityModel, ObjectHelper, AxiosHelper, StringHelper } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, AuthorityModel, ObjectHelper, AxiosHelper, StringHelper, IdModel } from "@/0_tigersan_ui/tigerui"
 import { PersonModel } from "./PersonModel"
 
 export class UserInfo extends PersonModel {
@@ -25,8 +25,7 @@ export class UserInfo extends PersonModel {
     }
 }
 
-export class PasswordEditModel {
-    id = ''
+export class PasswordEditModel extends IdModel {
     password = ''
     oldPassword = ''
     confirmPassword = ''

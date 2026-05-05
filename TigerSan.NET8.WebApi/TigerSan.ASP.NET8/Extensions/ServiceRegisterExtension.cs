@@ -1,7 +1,6 @@
 ﻿using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Filters;
 using TigerSan.NET8.WebApi.Helpers;
-using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Services.Models;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 
@@ -18,9 +17,6 @@ namespace TigerSan.NET8.WebApi.Extensions
             {
                 option.Filters.Add<ApiAuthorizeFilter>();
                 option.Filters.Add<CompanyFilter>();
-                option.Filters.Add<NeedAuthorizeAttribute>();
-                option.Filters.Add<NoNeedAuthorizeAttribute>();
-                option.Filters.Add<FilterByCompanyAttribute>();
 
                 if (builder.Environment.IsDevelopment())
                 {

@@ -1,6 +1,6 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from './Authorities'
-import AssetMgtPage from '@/pages/Home/AssetMgtPage/AssetMgtPage.vue'
+import AssetLedgerPage from '@/pages/Home/AssetLedgerPage/AssetLedgerPage.vue'
 
 export const navHome: NavFolderConfig = {
     Folders: [
@@ -15,7 +15,7 @@ export const navHome: NavFolderConfig = {
                     Icon: Icons.Asset,
                     IsSelected: true,
                     IsShowCloseButton: false,
-                    _component: AssetMgtPage,
+                    _component: AssetLedgerPage,
                     _authority: Authorities.AssetLedgerPage,
                 },
                 {

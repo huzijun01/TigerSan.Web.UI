@@ -18,7 +18,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 .SetParent(typeof(RoleEntity), nameof(_db.Roles));
         }
 
-        public AuthorityService(AppDbContext db) : base(db, db.Authoritys)
+        public AuthorityService(AppDbContext db) : base(db, db.Authorities)
         {
         }
         #endregion 【Ctor】
@@ -60,7 +60,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 // 删除“旧权限”：
-                await _db.Authoritys.Where(a => a.Role == entity.Role).ExecuteDeleteAsync();
+                await _db.Authorities.Where(a => a.Role == entity.Role).ExecuteDeleteAsync();
 
                 // “保存更改”并“提交事务”：
                 await _db.SaveChangesAsync();
@@ -89,7 +89,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 删除“旧权限”：
                 entities.Select(e => e.Role).Distinct().ToList().ForEach(async r =>
                 {
-                    await _db.Authoritys.Where(a => a.Role == r).ExecuteDeleteAsync();
+                    await _db.Authorities.Where(a => a.Role == r).ExecuteDeleteAsync();
                 });
 
                 // “保存更改”并“提交事务”：

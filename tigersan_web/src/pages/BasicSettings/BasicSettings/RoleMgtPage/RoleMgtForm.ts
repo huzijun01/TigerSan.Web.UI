@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, AuthorityModel } from '@/0_tigersan_ui/tigerui'
+import { useUserInfo } from '@/stores'
 import { roleMgtTable } from './RoleMgtTable'
 import { companyHelper, roleHelper, departmentHelper, RoleAuthorityModel } from '@/models'
 
@@ -91,8 +92,14 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
             selectDepartmentForm.Value.value = departmentHelper.GetIdName(rowData.department)
 
             authorityHelperForm.InitTree(rowData.authorities)
+            const authorities = authorityHelperForm.GetAuthorities()
+            FilterAuthorities(authorities)
+            authorityHelperForm.InitTree(authorities)
         } else {
             authorityHelperForm.InitTree()
+            const authorities = authorityHelperForm.GetAuthorities()
+            FilterAuthorities(authorities)
+            authorityHelperForm.InitTree(authorities)
         }
     },
     _itemConfigs: [
@@ -194,11 +201,31 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    roleHelper.Delete(model.id)
-        .then(res => {
-            Refresh()
-            MyActionResult.ShowResult(res, '删除成功')
-        })
+    roleHelper.Delete(model.id).then(res => {
+        Refresh()
+        MyActionResult.ShowResult(res, '删除成功')
+    })
+}
+
+/** 过滤权限 */
+function FilterAuthorities(authorities: AuthorityModel[]) {
+    const userInfo = useUserInfo()
+    const unavailables = new Array<AuthorityModel>
+
+    authorities.forEach(authority => {
+        const find = userInfo.authorities.find(i => i.path === authority.path);
+        if (!find) {
+            unavailables.push(authority)
+            return
+        }
+
+        if (find.isReadonly) {
+            authority.isReadonly = true
+            return
+        }
+    })
+
+    unavailables.forEach(u => ArrayHelper.Delete(authorities, u))
 }
 
 export const roleMgtForm = {
@@ -217,4 +244,5 @@ export const roleMgtForm = {
     Add,
     Edit,
     Delete,
+    FilterAuthorities,
 }

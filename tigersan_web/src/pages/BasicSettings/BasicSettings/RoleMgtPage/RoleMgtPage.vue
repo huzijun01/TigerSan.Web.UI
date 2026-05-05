@@ -12,9 +12,11 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button @click="form.Add">+ 新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" class="bg-warning"
+                            :disabled="!IsAllowEdit" @click="form.Edit">修改</button>
+                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" class="bg-danger"
+                            :disabled="!IsAllowEdit" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
@@ -62,14 +64,19 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useUserInfo } from '@/stores'
 import { roleMgtTable } from './RoleMgtTable'
+import { Authorities } from '@/navs/Authorities'
 import { roleMgtForm as form } from './RoleMgtForm'
-import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts } from '@/0_tigersan_ui/tigerui'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = roleMgtTable
+const userInfo = useUserInfo()
+const IsAllowEdit = computed(() => IsOnlySelected.value
+    && !BigintHelper.IsEqualAndNotUndefined(roleMgtTable.SelectedRowDatas.value[0]?.id, userInfo.role))
 
 // 【过程】:
 onMounted(() => {

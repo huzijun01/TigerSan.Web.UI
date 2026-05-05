@@ -12,9 +12,9 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button @click="form.Add">+ 新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                 </div>
             </div>
@@ -77,6 +77,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { siteMgtTable } from './SiteMgtTable'
+import { Authorities } from '@/navs/Authorities'
 import { siteMgtForm as form } from './SiteMgtForm'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
 

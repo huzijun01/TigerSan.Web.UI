@@ -32,8 +32,9 @@ namespace TigerSan.NET8.WebApi.Filters
         #region 执行时
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // 按公司过滤:
-            if (!context.HasAttribute<FilterByCompanyAttribute>())
+            // 是否无需验证:
+            if (context.HasAttribute<NoNeedAuthorizeAttribute>()
+                || context.HasAttribute<NotIdControllerAttribute>())
             {
                 await next();
                 return;
@@ -54,6 +55,19 @@ namespace TigerSan.NET8.WebApi.Filters
             if (userInfo == null)
             {
                 context.Result = new JsonResult(MyResults<object>.UserNotExist);
+                return;
+            }
+
+            // 设置“用户信息”：
+            ObjectHelper.SetProperty(
+                context.Controller,
+                nameof(IdControllerBase<IdEntityBase, IdServiceBase<IdEntityBase>>.UserInfo),
+                userInfo);
+
+            // 按公司过滤:
+            if (!context.HasAttribute<FilterByCompanyAttribute>())
+            {
+                await next();
                 return;
             }
 
@@ -83,11 +97,6 @@ namespace TigerSan.NET8.WebApi.Filters
                 }
             }
 
-            // 设置“用户信息”：
-            ObjectHelper.SetProperty(
-                context.Controller,
-                nameof(IdControllerBase<IdEntityBase, IdServiceBase<IdEntityBase>>.UserInfo),
-                userInfo);
             // 设置“可访问公司”集合:
             ObjectHelper.SetProperty(
                 context.Controller,

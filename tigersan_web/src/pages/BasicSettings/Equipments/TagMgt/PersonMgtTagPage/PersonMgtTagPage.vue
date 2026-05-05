@@ -23,9 +23,12 @@
                     </div>
                     <div class="row-panel">
                         <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
-                        <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
+                        <button v-if="!Authorities.PersonMgtTagPage.IsReadonly.value" class="bg-warning"
+                            :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                        <button v-if="!Authorities.PersonMgtTagPage.IsReadonly.value" class="bg-danger"
+                            :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button v-if="!Authorities.PersonMgtTagPage.IsReadonly.value" :disabled="!IsOnlySelected"
+                            @click="SetParams">修改参数</button>
                     </div>
                 </div>
             </div>
@@ -63,8 +66,10 @@
 <script lang="ts" setup>
 import form from './PersonMgtTagForm'
 import select from './PersonMgtTagSelect'
+import { Authorities } from '@/navs/Authorities'
 import { personMgtTagTable, pagination, onlineCount, offlineCount } from './PersonMgtTagTable'
 import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = personMgtTagTable

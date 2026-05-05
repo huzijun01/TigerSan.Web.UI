@@ -70,7 +70,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>添加“单条数据”</summary>
         public async Task<MyActionResult<object>> Add([FromBody] RoleAuthorityEntity entity)
         {
-            return await _service.Add(entity);
+            if(UserInfo == null) return MyResults<object>.IsNull(nameof(UserInfo));
+            return await _service.Add(UserInfo, entity);
         }
 
         [HttpPost]
@@ -78,7 +79,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>添加“多条数据”</summary>
         public async Task<MyActionResult<object>> AddRange([FromBody] List<RoleAuthorityEntity> entities)
         {
-            return await _service.AddRange(entities);
+            if(UserInfo == null) return MyResults<object>.IsNull(nameof(UserInfo));
+            return await _service.AddRange(UserInfo, entities);
         }
         #endregion [增]
 
@@ -97,7 +99,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>修改“单条数据”</summary>
         public async Task<MyActionResult<object>> Edit([FromBody] RoleAuthorityEntity entity)
         {
-            return await _service.Edit(entity);
+            if(UserInfo == null) return MyResults<object>.IsNull(nameof(UserInfo));
+            return await _service.Edit(UserInfo, entity);
         }
         #endregion [改]
         #endregion 【Functions】

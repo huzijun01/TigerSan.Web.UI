@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Attributes;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
     [ApiController]
+    [NotIdController]
     [Route("[controller]")]
     public class UserController
     {

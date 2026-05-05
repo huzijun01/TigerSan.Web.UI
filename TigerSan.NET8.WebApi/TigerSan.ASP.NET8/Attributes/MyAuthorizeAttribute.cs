@@ -2,6 +2,11 @@
 
 namespace TigerSan.NET8.WebApi.Attributes
 {
+    /// <summary>不是ID控制器</summary>
+    public class NotIdControllerAttribute : Attribute, IFilterMetadata
+    {
+    }
+
     /// <summary>需要授权</summary>
     public class NeedAuthorizeAttribute : Attribute, IFilterMetadata
     {

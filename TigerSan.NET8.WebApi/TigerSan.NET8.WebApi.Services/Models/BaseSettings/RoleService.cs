@@ -31,6 +31,44 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
+        #region [Private]
+        #region 过滤权限
+        /// <summary>过滤权限</summary>
+        private async Task<MyActionResult<object>> FilterAuthorities(UserInfo userInfo, List<AuthorityEntity> authorities)
+        {
+            var res = MyResults<object>.OperationSuccess;
+
+            if (userInfo.IsRoot) return res;
+
+            var finds = await _db.Authorities.Where(a => a.Role == userInfo.Role).ToListAsync();
+
+            var unavailables = new List<AuthorityEntity>();
+
+            foreach (var authority in authorities)
+            {
+                var find = finds.FirstOrDefault(i => i.Path == authority.Path);
+                if (find == null)
+                {
+                    unavailables.Add(authority);
+                    res = MyResults<object>.SomeAuthoritiesUnavailable;
+                    continue;
+                }
+
+                if (find.IsReadonly && !authority.IsReadonly)
+                {
+                    authority.IsReadonly = true;
+                    res = MyResults<object>.SomeAuthoritiesUnavailable;
+                    continue;
+                }
+            }
+
+            unavailables.ForEach(u => authorities.Remove(u));
+
+            return res;
+        }
+        #endregion
+        #endregion [Private]
+
         #region [查]
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
@@ -158,7 +196,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult<object>> Add(RoleAuthorityEntity entity, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> Add(UserInfo userInfo, RoleAuthorityEntity entity, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -171,7 +209,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.NameRepeated;
                 }
 
-                // 更新“Id”：
+                // 过滤权限：
+                var resFilterAuthorities = await FilterAuthorities(userInfo, entity.Authorities);
+                if (!resFilterAuthorities.IsSuccess) res = resFilterAuthorities;
+
+                // 更新“ID”：
                 entity.UpdateId();
                 entity.Authorities.UpdateId();
                 entity.Authorities.ForEach(a => a.Role = entity.Id); // 设置“权限”的“角色ID”
@@ -204,7 +246,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 添加“多条数据”
         /// <summary>添加“多条数据”</summary>
-        public async Task<MyActionResult<object>> AddRange(List<RoleAuthorityEntity> entities, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> AddRange(UserInfo userInfo, List<RoleAuthorityEntity> entities, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -220,12 +262,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                 }
 
-                // 更新“Id”：
+                // 更新“ID”：
                 entities.UpdateId();
 
                 foreach (var entity in entities)
                 {
-                    // 更新“Id”：
+                    // 过滤权限：
+                    var resFilterAuthorities = await FilterAuthorities(userInfo, entity.Authorities);
+                    if (!resFilterAuthorities.IsSuccess) res = resFilterAuthorities;
+
+                    // 更新“ID”：
                     entity.Authorities.UpdateId();
 
                     // 添加“权限”：
@@ -258,10 +304,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [改]
         #region 修改“单条数据”
         /// <summary>修改“单条数据”</summary>
-        public async Task<MyActionResult<object>> Edit(RoleAuthorityEntity entity, bool isBeginTransaction = true)
+        public async Task<MyActionResult<object>> Edit(UserInfo userInfo, RoleAuthorityEntity entity, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            if (userInfo.Role == entity.Id) return MyResults<object>.CannotModifyOwnRole;
 
             try
             {
@@ -282,7 +330,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 find.Name = entity.Name;
 
                 // 删除“角色”相关的“权限”：
-                await _db.Authoritys.Where(a => a.Role == entity.Id).ExecuteDeleteAsync();
+                await _db.Authorities.Where(a => a.Role == entity.Id).ExecuteDeleteAsync();
+
+                // 过滤权限：
+                var resFilterAuthorities = await FilterAuthorities(userInfo, entity.Authorities);
+                if (!resFilterAuthorities.IsSuccess) res = resFilterAuthorities;
 
                 // 更新“权限”：
                 foreach (var authority in entity.Authorities)
@@ -330,7 +382,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 // 删除“角色”相关的“权限”：
-                await _db.Authoritys.Where(a => a.Role == id).ExecuteDeleteAsync();
+                await _db.Authorities.Where(a => a.Role == id).ExecuteDeleteAsync();
 
                 // 获取“单条数据”：
                 var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
@@ -391,7 +443,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 // 删除“角色”相关的“权限”：
-                await _db.Authoritys.Where(a => ids.Contains(a.Role)).ExecuteDeleteAsync();
+                await _db.Authorities.Where(a => ids.Contains(a.Role)).ExecuteDeleteAsync();
 
                 // 删除“多条数据”：
                 _dbSet.RemoveRange(entities);

@@ -7,9 +7,11 @@
             <div class="button-panel">
                 <div class="row-panel">
                     <button class="bg-success" @click="model.Refresh">刷新</button>
-                    <button @click="model.Add">+ 新增</button>
-                    <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
-                    <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
+                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">+ 新增</button>
+                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-warning"
+                        :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
+                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-danger"
+                        :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
                 </div>
             </div>
         </div>
@@ -45,6 +47,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue'
+import { Authorities } from '@/navs/Authorities'
 import { AssetRecordPageModel } from './AssetRecordPageModel'
 import { assetRecordTable, pagination } from './AssetRecordTable'
 import { Select, Table, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
@@ -71,7 +74,7 @@ onMounted(() => {
 <style lang="less" scoped>
 @import '@/assets/page.less';
 
-.table-page{
+.table-page {
     min-height: 55vh;
     max-height: calc(95vh - 160px);
 }

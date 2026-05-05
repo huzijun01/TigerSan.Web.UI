@@ -18,9 +18,11 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button @click="form.Add">+ 新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button v-if="!Authorities.TagMgtPage.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.TagMgtPage.IsReadonly.value" class="bg-warning"
+                            :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                        <button v-if="!Authorities.TagMgtPage.IsReadonly.value" class="bg-danger"
+                            :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>
                     <div class="row-panel">
                         <Switch :model="form.switchIsEnable"></Switch>
@@ -77,6 +79,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { tagMgtTable } from './TagMgtTable'
+import { Authorities } from '@/navs/Authorities'
 import { tagMgtForm as form } from './TagMgtForm'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, TimerHelper } from '@/0_tigersan_ui/tigerui'
 
