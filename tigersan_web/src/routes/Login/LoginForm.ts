@@ -110,7 +110,6 @@ let configLoginForm: FormConfig<UserInfo> = {
 const loginForm = new FormModel(configLoginForm)
 loginForm._isShowSuccessResult = false
 
-
 function Logout() {
     dialog.ShowDialog(
         '确认',
@@ -128,7 +127,8 @@ async function FnLogout(state: DialogState) {
     // 发送“登出请求”:
     var res = await UserHelper.LogoutAsync(userInfo.username)
     if (res.code == ActionResultCode.Error) {
-        return new SubmitResult(res.message, FormResult.Error)
+        dialog.ShowError(res.message)
+        return
     }
 
     ObjectHelper.ShallowSet(new UserInfo(), userInfo)

@@ -1,5 +1,5 @@
-INSERT INTO tigersan_web.admin (id,company,name,password,is_root) VALUES
-	 (0,NULL,'admin','AQAAAAIAAYagAAAAEB5GDKHRZakKnu/RAYmdkdc8Dwy0vOVjgcyiFT4rz8c/6gOhFFMZtOLpvRhhi5neJQ==',1);
+INSERT INTO tigersan_web.admin (id,name,password) VALUES
+	 (0,'admin','AQAAAAIAAYagAAAAEB5GDKHRZakKnu/RAYmdkdc8Dwy0vOVjgcyiFT4rz8c/6gOhFFMZtOLpvRhhi5neJQ==');
 
 INSERT INTO tigersan_web.site_type (id,name) VALUES
 	 (116328410096926849,'京东星配'),

@@ -45,7 +45,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else
                 {
-                    userInfo.Company = new IdName { Id = company.Id, Name = company.Name };
+                    userInfo.CompanyIdName = new IdName { Id = company.Id, Name = company.Name };
                 }
 
                 var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == person.Department);
@@ -55,7 +55,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else
                 {
-                    userInfo.Department = new IdName { Id = department.Id, Name = department.Name };
+                    userInfo.DepartmentIdName = new IdName { Id = department.Id, Name = department.Name };
                 }
 
                 var role = await _db.Roles.FirstOrDefaultAsync(r => r.Id == person.Role);
@@ -65,7 +65,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else
                 {
-                    userInfo.Role = new IdName { Id = role.Id, Name = role.Name };
+                    userInfo.RoleIdName = new IdName { Id = role.Id, Name = role.Name };
                     userInfo.Authorities = await _db.Authoritys.Where(a => a.Role == role.Id).ToListAsync();
                 }
             }
@@ -88,29 +88,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 Username = admin.Name,
                 Nickname = "Admin",
                 IsAdmin = true,
-                IsRoot = admin.IsRoot,
+                IsRoot = true,
             };
-            userInfo.Role.Name = "Admin";
-
-            try
-            {
-                if (admin.Company != null)
-                {
-                    var company = await _db.Companies.FirstOrDefaultAsync(c => c.Id == admin.Company);
-                    if (company == null)
-                    {
-                        LogHelper.Instance.Error($"The company with id {admin.Company} is not found");
-                    }
-                    else
-                    {
-                        userInfo.Company = new IdName { Id = company.Id, Name = company.Name };
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                LogHelper.Instance.Error(e.GetMessage());
-            }
+            userInfo.RoleIdName.Name = "Admin";
 
             return userInfo;
         }

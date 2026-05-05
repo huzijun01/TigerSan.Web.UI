@@ -5,6 +5,7 @@ export class PersonModel extends IdModel {
     company: bigint = 0n
     department: bigint = 0n
     role: bigint = 0n
+    isAdmin = false
     username = ''
     nickname = ''
     password = ''

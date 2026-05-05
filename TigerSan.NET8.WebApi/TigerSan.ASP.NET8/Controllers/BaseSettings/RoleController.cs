@@ -6,7 +6,7 @@ using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
-    [ClassifyByCompany]
+    [FilterByCompany]
     public class RoleController : IdNameControllerBase<RoleEntity, IRoleService>
     {
         #region 【Ctor】

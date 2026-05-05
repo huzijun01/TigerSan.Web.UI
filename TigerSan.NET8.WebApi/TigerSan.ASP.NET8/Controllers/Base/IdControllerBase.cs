@@ -14,6 +14,8 @@ namespace TigerSan.NET8.WebApi.Controllers
         #endregion 【Fields】
 
         #region 【Properties】
+        /// <summary>用户信息</summary>
+        public UserInfo? UserInfo { get; set; }
         /// <summary>可访问公司</summary>
         public List<CompanyEntity>? AccessibleCompanies { get; set; }
         #endregion 【Properties】

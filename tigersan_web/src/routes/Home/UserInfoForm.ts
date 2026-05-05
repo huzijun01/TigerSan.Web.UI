@@ -12,32 +12,32 @@ password.Width.value = '108px'
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<UserInfo, string> = {
-    _propName: 'company',
+    _propName: 'companyIdName',
     PropText: '公司',
     IsEquired: false,
     Target: ref(),
-    _getValue: source => source.company.name,
-    _setValue: (source, propName, value) => source.company.name = value ?? ''
+    _getValue: source => source.companyIdName.name,
+    _setValue: (source, propName, value) => source.companyIdName.name = value ?? ''
 }
 
 /** “部门”项目配置 */
 const configDepartment: FormItemConfig<UserInfo, string> = {
-    _propName: 'department',
+    _propName: 'departmentIdName',
     PropText: '部门',
     IsEquired: false,
     Target: ref(),
-    _getValue: source => source.department.name,
-    _setValue: (source, propName, value) => source.department.name = value ?? ''
+    _getValue: source => source.departmentIdName.name,
+    _setValue: (source, propName, value) => source.departmentIdName.name = value ?? ''
 }
 
 /** “角色”项目配置 */
 const configRole: FormItemConfig<UserInfo, string> = {
-    _propName: 'role',
+    _propName: 'roleIdName',
     PropText: '角色',
     IsEquired: true,
     Target: ref(),
-    _getValue: source => source.role.name,
-    _setValue: (source, propName, value) => source.role.name = value ?? ''
+    _getValue: source => source.roleIdName.name,
+    _setValue: (source, propName, value) => source.roleIdName.name = value ?? ''
 }
 
 /** “用户名”项目配置 */

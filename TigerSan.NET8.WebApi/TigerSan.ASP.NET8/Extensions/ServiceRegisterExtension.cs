@@ -20,7 +20,7 @@ namespace TigerSan.NET8.WebApi.Extensions
                 option.Filters.Add<CompanyFilter>();
                 option.Filters.Add<NeedAuthorizeAttribute>();
                 option.Filters.Add<NoNeedAuthorizeAttribute>();
-                option.Filters.Add<ClassifyByCompanyAttribute>();
+                option.Filters.Add<FilterByCompanyAttribute>();
 
                 if (builder.Environment.IsDevelopment())
                 {

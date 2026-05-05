@@ -12,8 +12,8 @@ namespace TigerSan.NET8.WebApi.Attributes
     {
     }
 
-    /// <summary>按公司分类</summary>
-    public class ClassifyByCompanyAttribute : Attribute, IFilterMetadata
+    /// <summary>按公司过滤</summary>
+    public class FilterByCompanyAttribute : Attribute, IFilterMetadata
     {
     }
 }

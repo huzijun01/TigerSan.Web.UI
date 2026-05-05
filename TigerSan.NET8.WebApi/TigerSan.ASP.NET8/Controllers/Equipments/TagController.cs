@@ -7,7 +7,7 @@ using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
-    [ClassifyByCompany]
+    [FilterByCompany]
     public class TagController : IdControllerBase<TagEntity, ITagService>
     {
         #region 【Ctor】

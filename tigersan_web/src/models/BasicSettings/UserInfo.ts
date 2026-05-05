@@ -1,21 +1,12 @@
 import { IdNameModel, AuthorityModel, ObjectHelper, AxiosHelper, StringHelper } from "@/0_tigersan_ui/tigerui"
+import { PersonModel } from "./PersonModel"
 
-export class UserInfo {
-    // 基础:
-    id = ''
-    username = ''
-    nickname = ''
-    password = ''
-    avatar?: string
-    phone?: string
-    mail?: string
-    // 附加:
-    isAdmin = false
+export class UserInfo extends PersonModel {
     isRoot = false
     captcha = ''
-    company = new IdNameModel()
-    department = new IdNameModel()
-    role = new IdNameModel()
+    companyIdName = new IdNameModel()
+    departmentIdName = new IdNameModel()
+    roleIdName = new IdNameModel()
     authorities: AuthorityModel[] = []
     token?: string
 
@@ -23,6 +14,7 @@ export class UserInfo {
         uname: string = '',
         pwd: string = '',
         captcha: string = '') {
+        super()
         this.username = uname
         this.password = pwd
         this.captcha = captcha

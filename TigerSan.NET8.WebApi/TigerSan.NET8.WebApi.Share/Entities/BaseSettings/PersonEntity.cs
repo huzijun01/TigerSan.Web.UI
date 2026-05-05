@@ -4,8 +4,12 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("person")]
-    public class PersonEntity : RoleEntityBase
+    public class PersonEntity : IdEntityBase
     {
+        [SnakeColumn]
+        public long Role { get; set; }
+        [SnakeColumn]
+        public bool IsAdmin { get; set; } = false;
         [SnakeColumn]
         public string Username { get; set; } = string.Empty;
         [SnakeColumn]

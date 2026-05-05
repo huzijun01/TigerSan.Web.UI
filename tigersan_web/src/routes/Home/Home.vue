@@ -19,7 +19,7 @@
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <div class="info-panel flex-right" ref="refInfoPanel">
-          <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.company.name" />
+          <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.companyIdName.name" />
           <IconButton v-if="!navData.IsAtHome.value" :icon="Icons.Building_2" :text="Texts.EnterCompany.value"
             :click="navData.InitHome" />
           <IconButton v-if="navData.IsAtHome.value" :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value"
