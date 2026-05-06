@@ -7,7 +7,7 @@
             <div class="button-panel">
                 <div class="row-panel">
                     <button class="bg-success" @click="model.Refresh">刷新</button>
-                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">+ 新增</button>
+                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">新增</button>
                     <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-warning"
                         :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
                     <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-danger"

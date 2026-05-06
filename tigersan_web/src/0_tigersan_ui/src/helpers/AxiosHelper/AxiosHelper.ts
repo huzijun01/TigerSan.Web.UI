@@ -133,7 +133,6 @@ export class AxiosHelper extends AxiosBase {
 
     static async Add<T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> {
         try {
-            debugger
             const range = isRange ? '/Range' : ''
             const actionResult = await this.Post(`${action}${range}`, undefined, data)
 

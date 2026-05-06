@@ -12,7 +12,7 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">新增</button>
                         <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
                         <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
                     </div>

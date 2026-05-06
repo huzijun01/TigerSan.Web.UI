@@ -12,6 +12,7 @@ export class ThemeHelper {
     //#region 【Fields】
     /** CSS路径 */
     static readonly theme = `theme.css`
+    /** 配置 */
     static readonly config = new ConfigBase('theme', new ThemeConfig())
     //#endregion 【Fields】
 

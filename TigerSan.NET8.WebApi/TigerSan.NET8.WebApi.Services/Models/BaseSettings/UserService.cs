@@ -95,23 +95,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return userInfo;
         }
         #endregion
-
-        #region 初始化“Token”
-        /// <summary>初始化“Token”</summary>
-        private bool InitToken(UserInfo userInfo)
-        {
-            userInfo.Token = TokenGenerator.GetToken(userInfo.Username, Constants.Token_Validity_Period, Constants.SecretKey);
-            if (userInfo.Token == null)
-            {
-                LogHelper.Instance.Error($"Failed to generate token for user {userInfo.Username}");
-                return false;
-            }
-
-            MemoryCacheHelper.SetRelative(userInfo.Username, userInfo.Token, Constants.Token_Validity_Period);
-
-            return true;
-        }
-        #endregion
         #endregion [private]
 
         #region [查]
@@ -241,7 +224,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     res.Data = await GetUserInfoAsync(person);
-                    InitToken(res.Data);
+                    TokenHelper.InitToken(res.Data);
                     return res;
                 }
 
@@ -264,9 +247,34 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     res.Data = await GetUserInfoAsync(admin);
-                    InitToken(res.Data);
+                    TokenHelper.InitToken(res.Data);
                     return res;
                 }
+            }
+            catch (Exception e)
+            {
+                return MyResults<UserInfo>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region Token登录
+        public async Task<MyActionResult<UserInfo>> LoginByToken(string token)
+        {
+            try
+            {
+                var res = TokenHelper.GetTokenInfo(token);
+                var tokenInfo = res.Data;
+                if (tokenInfo == null)
+                    return MyResults<UserInfo>.InvalidToken(res.Message);
+
+                var resGetUserInfo = await GetUserInfo(tokenInfo.Username);
+                var userInfo = resGetUserInfo.Data;
+                if (userInfo == null)
+                    return MyResults<UserInfo>.UserNotExist;
+                userInfo.Token = token;
+
+                return MyResults<UserInfo>.Success(null, userInfo);
             }
             catch (Exception e)
             {

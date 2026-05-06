@@ -23,7 +23,7 @@
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">新增</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"

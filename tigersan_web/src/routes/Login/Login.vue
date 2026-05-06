@@ -14,8 +14,14 @@
 </template>
 
 <script lang="ts" setup>
+import form from './LoginForm'
 import LoginForm from './LoginForm.vue'
+import { onBeforeMount } from 'vue';
 import { ThemeHelper, IconButton, Icons, Lottie, config } from '@/0_tigersan_ui/tigerui'
+
+onBeforeMount(() => {
+  form.LoginByToken()
+})
 </script>
 
 <style lang="less" scoped>

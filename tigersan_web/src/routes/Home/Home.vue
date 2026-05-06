@@ -115,7 +115,7 @@ import { onBeforeMount, onMounted } from 'vue'
 import { UserHelper } from '@/models'
 import { useUserInfo } from '@/stores'
 import { navModel, navData } from '@/navs/navModel'
-import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue, MyActionResult, TokenHelper } from '@/0_tigersan_ui/tigerui'
 
 // 字段:
 /** 用户信息 */
@@ -130,7 +130,10 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-  MyActionResult._logout = () => useRouter().GoTo('/')
+  MyActionResult._logout = () => {
+    TokenHelper.Save()
+    useRouter().GoTo('/')
+  }
 })
 </script>
 

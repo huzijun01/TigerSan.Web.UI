@@ -1,25 +1,34 @@
 import { ref, watch } from 'vue'
+import { ConfigBase } from './ConfigBase'
 
 /** 语言 */
-enum Language {
+export enum Language {
     en,
     zhCn
 }
 
+export class AppConfig {
+    static defaultLocale = Language.zhCn
+    locale: Language = AppConfig.defaultLocale
+}
+
 /** 配置模型 */
-class ConfigModel {
+export class ConfigModel {
     //#region 【Fields】
     /** “地区”改变后 */
     _onLocaleChanged?: (lang: Language) => void
+    /** 配置 */
+    readonly config = new ConfigBase('AppConfig', new AppConfig())
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 地区 */
-    readonly Locale = ref(Language.en)
+    readonly Locale = ref(AppConfig.defaultLocale)
     //#endregion 【Properties】
 
     //#region 【Ctor】
     constructor() {
+        this.Locale.value = this.config.Get().locale
         watch(this.Locale, () => this._onLocaleChanged?.(this.Locale.value))
     }
     //#endregion 【Ctor】
@@ -27,16 +36,12 @@ class ConfigModel {
     //#region 【Functions】
     /** 切换“地区” */
     readonly ToggleLocale = () => {
-        this.Locale.value = this.Locale.value == Language.en ? Language.zhCn : Language.en
+        const config = this.config.Get()
+        config.locale = this.Locale.value = this.Locale.value == Language.en ? Language.zhCn : Language.en
+        this.config.Save()
     }
     //#endregion 【Functions】
 }
 
 /** 配置实例 */
-const config = new ConfigModel()
-
-export {
-    Language,
-    ConfigModel,
-    config,
-}
+export const config = new ConfigModel()

@@ -40,6 +40,15 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("LoginByToken")]
+        [NoNeedAuthorize]
+        /// <summary>Token登录</summary>
+        public async Task<MyActionResult<UserInfo>> LoginByToken(string token)
+        {
+            return await _service.LoginByToken(token);
+        }
+
+        [HttpGet]
         [Route("Logout")]
         /// <summary>登出</summary>
         public async Task<MyActionResult<object>> Logout(string username)

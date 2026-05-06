@@ -1,4 +1,4 @@
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization, DialogState, dialog, DialogMode, Colors } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization, DialogState, dialog, DialogMode, Colors, TokenHelper } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
 import { UserInfo, UserHelper } from '@/models'
@@ -60,7 +60,6 @@ const GetSource = () => {
 
 /** 提交 */
 const OnSubmitAsync = async (source: object) => {
-    const userInfo = useUserInfo()
     const userInfoForm = source as UserInfo
     // 发送“登录请求”:
     var res = await UserHelper.LoginAsync(userInfoForm.username, userInfoForm.password)
@@ -72,23 +71,7 @@ const OnSubmitAsync = async (source: object) => {
         return new SubmitResult('The data is undefined!', FormResult.Error)
     }
 
-    // 保存“用户信息”:
-    ObjectHelper.ShallowSet(res.data as object, userInfo)
-
-    // 添加“权限”:
-    if (userInfo.isAdmin && userInfo.isRoot) {
-        authorityHelper.AddAllAuthorities()
-    } else {
-        authorityHelper.SetAuthorities(userInfo.authorities)
-    }
-
-    // 设置Token:
-    SetAuthorization(userInfo.token)
-
-    // 初始化“导航栏”:
-    navData.InitBasicSettings()
-    // 跳转到“主页”:
-    useRouter().GoTo('Home')
+    GoToHome(res.data as object)
 
     return new SubmitResult('登录成功')
 }
@@ -110,6 +93,7 @@ let configLoginForm: FormConfig<UserInfo> = {
 const loginForm = new FormModel(configLoginForm)
 loginForm._isShowSuccessResult = false
 
+/** 登出 */
 function Logout() {
     dialog.ShowDialog(
         '确认',
@@ -126,13 +110,54 @@ async function FnLogout(state: DialogState) {
 
     // 发送“登出请求”:
     var res = await UserHelper.LogoutAsync(userInfo.username)
-    if (res.code == ActionResultCode.Error) {
+    if (res.code === ActionResultCode.Error) {
         dialog.ShowError(res.message)
         return
     }
 
+    TokenHelper.Save()
     ObjectHelper.ShallowSet(new UserInfo(), userInfo)
     useRouter().GoTo('/')
+}
+
+/** Token登录 */
+async function LoginByToken() {
+    const token = TokenHelper.Get()
+    if (!token) return
+
+    // 发送“登出请求”:
+    var res = await UserHelper.LoginByTokenAsync(token)
+    if (!res.data) {
+        TokenHelper.Save()
+        dialog.ShowError(res.message)
+        return
+    }
+
+    GoToHome(res.data as object)
+}
+
+/** 进入主页 */
+function GoToHome(data: object) {
+    const userInfo = useUserInfo()
+
+    // 保存“用户信息”:
+    ObjectHelper.ShallowSet(data as object, userInfo)
+
+    // 添加“权限”:
+    if (userInfo.isAdmin && userInfo.isRoot) {
+        authorityHelper.AddAllAuthorities()
+    } else {
+        authorityHelper.SetAuthorities(userInfo.authorities)
+    }
+
+    // 设置Token:
+    SetAuthorization(userInfo.token)
+    TokenHelper.Save(userInfo.token)
+
+    // 初始化“导航栏”:
+    navData.InitBasicSettings()
+    // 跳转到“主页”:
+    useRouter().GoTo('Home')
 }
 
 export default {
@@ -144,4 +169,5 @@ export default {
     configCaptcha,
     loginForm,
     Logout,
+    LoginByToken,
 }

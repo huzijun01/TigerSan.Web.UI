@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Extensions;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -25,20 +24,11 @@ namespace TigerSan.NET8.WebApi.Filters
             }
 
             // 获取“Token信息”:
-            var tokenInfo = TokenGenerator.GetTokenInfo(authorize, Constants.SecretKey);
+            var res = TokenHelper.GetTokenInfo(authorize);
+            var tokenInfo = res.Data;
             if (tokenInfo == null)
             {
-                context.Result = new JsonResult(MyResults<object>.InvalidOrExpiredToken);
-                return;
-            }
-
-            // 获取“Token记录”:
-            var tokenRecord = MemoryCacheHelper.Get<string>(tokenInfo.UserId);
-
-            // “Token”是否可用:
-            if (!string.Equals(tokenRecord, authorize))
-            {
-                context.Result = new JsonResult(MyResults<object>.LoggedInByAnotherUser);
+                context.Result = new JsonResult(res);
                 return;
             }
 

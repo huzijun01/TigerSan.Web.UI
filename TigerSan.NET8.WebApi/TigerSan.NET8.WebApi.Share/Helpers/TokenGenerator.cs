@@ -1,14 +1,14 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+﻿using System.Text;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 #region 令牌信息
 /// <summary>令牌信息</summary>
 public class TokenInfo
 {
-    public string UserId { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
     public TimeSpan Expiration { get; set; } = TimeSpan.FromDays(7);
 }
 #endregion
@@ -72,7 +72,7 @@ public static class TokenGenerator
 
             return new TokenInfo
             {
-                UserId = userId,
+                Username = userId,
                 Expiration = expires
             };
         }

@@ -33,8 +33,8 @@ namespace TigerSan.NET8.WebApi.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             // 是否无需验证:
-            if (context.HasAttribute<NoNeedAuthorizeAttribute>()
-                || context.HasAttribute<NotIdControllerAttribute>())
+            if (context.HasAttribute<NotIdControllerAttribute>()
+                || context.HasAttribute<NoNeedAuthorizeAttribute>())
             {
                 await next();
                 return;
@@ -50,7 +50,7 @@ namespace TigerSan.NET8.WebApi.Filters
             }
 
             // 获取“用户信息”：
-            var resGetUserInfo = await _userService.GetUserInfo(tokenInfo.UserId);
+            var resGetUserInfo = await _userService.GetUserInfo(tokenInfo.Username);
             var userInfo = resGetUserInfo.Data;
             if (userInfo == null)
             {

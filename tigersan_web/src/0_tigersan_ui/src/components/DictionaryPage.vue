@@ -8,7 +8,7 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="model.Refresh">刷新</button>
-                        <button @click="model.Add">+ 新增</button>
+                        <button @click="model.Add">新增</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
                         <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
                     </div>

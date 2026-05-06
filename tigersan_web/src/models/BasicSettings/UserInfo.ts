@@ -38,6 +38,8 @@ export class UserHelper {
     static readonly EditPassword = async (edit: PasswordEditModel) => await AxiosHelper.Put(`${this._action}/Password`, edit)
     /** 登录 */
     static readonly LoginAsync = async (search: string, password: string) => await AxiosHelper.Get(`${this._action}/Login`, [{ key: 'search', value: search }, { key: 'password', value: password }])
+    /** Token登录 */
+    static readonly LoginByTokenAsync = async (token: string) => await AxiosHelper.Get(`${this._action}/LoginByToken`, [{ key: 'token', value: token }])
     /** 登出 */
     static readonly LogoutAsync = async (username: string) => await AxiosHelper.Get(`${this._action}/Logout`, [{ key: 'username', value: username }])
 

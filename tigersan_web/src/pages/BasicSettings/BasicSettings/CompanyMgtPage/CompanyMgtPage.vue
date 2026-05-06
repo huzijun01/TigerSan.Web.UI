@@ -11,7 +11,7 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">+ 新增</button>
+                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">新增</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!tree.IsActive.value" @click="form.Edit">修改</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-danger"
