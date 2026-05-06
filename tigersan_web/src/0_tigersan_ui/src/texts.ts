@@ -18,7 +18,7 @@ class Texts {
     static readonly Login = TextModel.Computed('Login', '登录')
     static readonly VerificationCodeLogin = TextModel.Computed('Verification code login', '验证码登录')
     static readonly BasicSettings = TextModel.Computed('Basic Settings', '基础设置')
-    static readonly EnterCompany = TextModel.Computed('Enter company', '进入公司')
+    static readonly Business = TextModel.Computed('Business', '业务平台')
     static readonly Help = TextModel.Computed('Help', '帮助')
     static readonly Progress = TextModel.Computed('Progress', '进度')
     static readonly All = TextModel.Computed('All', '全部')

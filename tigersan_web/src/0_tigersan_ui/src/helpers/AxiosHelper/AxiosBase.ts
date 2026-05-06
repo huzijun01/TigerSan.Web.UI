@@ -18,6 +18,9 @@ export class AxiosBase {
                 dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
+            else if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
+            }
 
             return actionResult
         } catch (error) {
@@ -42,6 +45,9 @@ export class AxiosBase {
             if (actionResult === undefined) {
                 dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
+            }
+            else if (!MyActionResult.IsSuccess(actionResult)) {
+                MyActionResult.ShowResult(actionResult)
             }
 
             return actionResult

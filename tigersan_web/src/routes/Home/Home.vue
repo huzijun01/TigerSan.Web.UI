@@ -20,7 +20,7 @@
 
         <div class="info-panel flex-right">
           <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.companyIdName.name" />
-          <IconButton v-if="!navData.IsAtHome.value" :icon="Icons.Building_2" :text="Texts.EnterCompany.value"
+          <IconButton v-if="!navData.IsAtHome.value" :icon="Icons.Building_2" :text="Texts.Business.value"
             :click="navData.InitHome" />
           <IconButton v-if="navData.IsAtHome.value" :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value"
             :click="navData.InitBasicSettings" />
@@ -115,7 +115,7 @@ import { onBeforeMount, onMounted } from 'vue'
 import { UserHelper } from '@/models'
 import { useUserInfo } from '@/stores'
 import { navModel, navData } from '@/navs/navModel'
-import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue } from '@/0_tigersan_ui/tigerui'
+import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue, MyActionResult } from '@/0_tigersan_ui/tigerui'
 
 // 字段:
 /** 用户信息 */
@@ -130,6 +130,7 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
+  MyActionResult._logout = () => useRouter().GoTo('/')
 })
 </script>
 

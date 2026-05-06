@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace TigerSan.NET8.WebApi.Share.Dtos
+﻿namespace TigerSan.NET8.WebApi.Share.Dtos
 {
     #region 结果码
     public enum ActionResultCode
@@ -8,6 +6,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         Success = 0,
         Warning = 1,
         Error = 2,
+        InvalidToken = 3,
     }
     #endregion
 
@@ -32,8 +31,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
         public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
         public static MyActionResult<TData> AssetNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset do not exist!"); }
-        public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.Error, "Authorization header is missing!"); }
-        public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.Error, "Invalid or expired token!"); }
+        public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Authorization header is missing!"); }
+        public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Invalid or expired token!"); }
+        public static MyActionResult<TData> LoggedInByAnotherUser { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Account logged in by others!"); }
 
         #region 【Functions】
         public static MyActionResult<TData> Success(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Success, msg ?? OperationSuccess.Message, data); }

@@ -94,12 +94,14 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             {
                 if (input == null) return false;
 
-                if (type.IsEnum)
+                Type underlyingType = Nullable.GetUnderlyingType(type) ?? type;
+
+                if (underlyingType.IsEnum)
                 {
-                    return TryParseEnum(type, input, out result);
+                    return TryParseEnum(underlyingType, input, out result);
                 }
 
-                var converter = TypeDescriptor.GetConverter(type);
+                var converter = TypeDescriptor.GetConverter(underlyingType);
                 if (converter == null || !converter.IsValid(input)) return false;
 
                 var convertedValue = converter.ConvertFromString(input);
@@ -372,7 +374,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 config,
                 parentFilter);
             var parentIds = resGetParentIds.Data;
-            if(parentIds == null && resGetParentIds.IsSuccess) // 无需筛选
+            if (parentIds == null && resGetParentIds.IsSuccess) // 无需筛选
                 return MyResults<IQueryable<TEntity>>.Success(null, queryable);
             else if (parentIds == null)
                 return MyResults<IQueryable<TEntity>>.Error(resGetParentIds.Message);

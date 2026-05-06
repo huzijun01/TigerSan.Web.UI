@@ -5,9 +5,11 @@ export enum ActionResultCode {
     Success = 0,
     Warning = 1,
     Error = 2,
+    InvalidToken = 3,
 }
 
 export class MyActionResult {
+    static _logout?: Function
     static ActionResult_Undefined = new MyActionResult(ActionResultCode.Error, 'The actionResult is undefined!')
 
     code: ActionResultCode
@@ -29,6 +31,9 @@ export class MyActionResult {
 
     static ShowResult(res: MyActionResult, success: string = '操作成功') {
         if (res.code === ActionResultCode.Error) {
+            dialog.ShowError(res.message)
+        } else if (res.code === ActionResultCode.InvalidToken) {
+            MyActionResult._logout?.()
             dialog.ShowError(res.message)
         } else if (res.code === ActionResultCode.Warning) {
             dialog.ShowWarning(res.message)

@@ -38,7 +38,7 @@ namespace TigerSan.NET8.WebApi.Filters
             // “Token”是否可用:
             if (!string.Equals(tokenRecord, authorize))
             {
-                context.Result = new JsonResult(MyResults<object>.InvalidOrExpiredToken);
+                context.Result = new JsonResult(MyResults<object>.LoggedInByAnotherUser);
                 return;
             }
 
