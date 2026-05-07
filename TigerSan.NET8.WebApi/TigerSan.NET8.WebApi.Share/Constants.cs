@@ -8,6 +8,8 @@
         public readonly static double Report_Interval_Seconds = 3600;
         /// <summary>计算间隔（秒）</summary>
         public readonly static double Calculation_Interval_Seconds = 600;
+        /// <summary>在线状态更新间隔（秒）</summary>
+        public readonly static double OnlineStateUpdater_Interval_Seconds = 60;
         /// <summary>密钥</summary>
         public readonly static string SecretKey = TokenGenerator.GetSecretKey();
         /// <summary>Token有效期</summary>

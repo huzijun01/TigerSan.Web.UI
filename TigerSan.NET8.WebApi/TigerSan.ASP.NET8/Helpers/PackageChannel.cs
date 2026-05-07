@@ -22,7 +22,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         /// <summary>服务提供者</summary>
         private IServiceProvider _serviceProvider;
         /// <summary>“在线状态”更新定时器</summary>
-        public ActionTimer _onlineStateUpdater = new ActionTimer(5000, true);
+        public ActionTimer _onlineStateUpdater = new ActionTimer(Constants.OnlineStateUpdater_Interval_Seconds * 1000, true);
         /// <summary>“标签”缓存</summary>
         private Dictionary<string, TagDto> _tagCaches = new Dictionary<string, TagDto>();
         /// <summary>“基站”缓存</summary>
@@ -31,8 +31,6 @@ namespace TigerSan.NET8.WebApi.Helpers
         private ITagService TagService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ITagService>(); }
         /// <summary>“基站”服务</summary>
         private IBaseStationService BaseStationService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IBaseStationService>(); }
-        /// <summary>“资产”服务</summary>
-        private IAssetService AssetService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IAssetService>(); }
         /// <summary>“资产记录”服务</summary>
         private IAssetRecordService AssetRecordService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IAssetRecordService>(); }
         #endregion 【Fields】

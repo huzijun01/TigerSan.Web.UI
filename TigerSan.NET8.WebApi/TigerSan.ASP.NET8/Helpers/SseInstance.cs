@@ -87,7 +87,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             _sseHelper.Stop();
             _cts?.Cancel();
             _cts = null;
-            _packageChannel._onlineStateUpdater.Start();
+            _packageChannel._onlineStateUpdater.Stop();
         }
         #endregion
 
