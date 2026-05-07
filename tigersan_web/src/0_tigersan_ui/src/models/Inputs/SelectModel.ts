@@ -5,10 +5,11 @@ import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
 import { RectPosition, RectHelper, ObjectHelper } from '../../helpers'
 
-type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
+export type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
+export type MenuItemModelsAction<TSource> = (itemModels: MenuItemModel<TSource>[]) => void
 
 /** “菜单项目”模型 */
-class MenuItemModel<TSource> extends ConverterBase<TSource> {
+export class MenuItemModel<TSource> extends ConverterBase<TSource> {
     //#region 【Fields】
     /** ID */
     readonly _id = nanoid()
@@ -19,6 +20,9 @@ class MenuItemModel<TSource> extends ConverterBase<TSource> {
     //#endregion 【Fields】
 
     //#region 【Properties】
+    /** 是否“选中” */
+    readonly IsChecked = ref(false)
+
     //#region [computed]
     /** 是否显示 */
     readonly IsShow = computed(() => {
@@ -38,6 +42,11 @@ class MenuItemModel<TSource> extends ConverterBase<TSource> {
     //#region 【Functions】
     /** 点击事件 */
     readonly OnClick = () => {
+        if (this._select.IsAllowMultiSelect.value) {
+            this.IsChecked.value = !this.IsChecked.value
+            return
+        }
+
         this._select.IsOpen.value = false
         this._select.Value.value = this.Value.value
 
@@ -49,7 +58,7 @@ class MenuItemModel<TSource> extends ConverterBase<TSource> {
 }
 
 /** “选择框”模型 */
-class SelectModel<TSource> extends ConverterBase<TSource> {
+export class SelectModel<TSource> extends ConverterBase<TSource> {
     //#region 【Fields】
     /** 菜单实例
      * （由“Select”内部维护） */
@@ -60,6 +69,8 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     _getItemsAsync?: () => ShallowReactive<Promise<TSource[]>>
     /** 选择后 */
     _onSelect?: MenuItemModelAction<TSource>
+    /** 选中状态改变事件 */
+    _onCheckedItemsChange?: MenuItemModelsAction<TSource>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -85,6 +96,8 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
     readonly IsEnabled = ref(true)
     /** 是否“允许搜索” */
     readonly IsAllowSearch = ref(false)
+    /** 是否“允许多选” */
+    readonly IsAllowMultiSelect = ref(false)
     /** 搜索文本
      * （由“MenuItemModel”维护） */
     readonly SearchText = ref('')
@@ -101,6 +114,9 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
 
     /** 是否“无内容” */
     readonly IsNoContent = computed(() => this.Items.length < 1)
+
+    /** 选中项目集合 */
+    readonly CheckedItems = computed(() => this.ItemModels.value.filter(i => i.IsChecked.value))
 
     /** 项目集合 */
     readonly ItemModels = computed(() => {
@@ -182,6 +198,10 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
                 this.Value.value = undefined
             }
         })
+
+        watch(this.CheckedItems, () => {
+            this._onCheckedItemsChange?.(this.CheckedItems.value)
+        })
     }
     //#endregion 【Ctor】
 
@@ -232,10 +252,4 @@ class SelectModel<TSource> extends ConverterBase<TSource> {
         this.bottom.value = -rectRoot.top
     }
     //#endregion 【Functions】
-}
-
-export {
-    type MenuItemModelAction,
-    MenuItemModel,
-    SelectModel
 }

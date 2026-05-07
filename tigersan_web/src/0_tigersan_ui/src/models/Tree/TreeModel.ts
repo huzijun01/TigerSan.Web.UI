@@ -34,6 +34,8 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     readonly Text = ref('null')
     /** 颜色 */
     readonly Color = ref('')
+    /** 是否显示 */
+    readonly IsShow = ref(true)
     /** 是否“选中” */
     readonly IsChecked = ref(false)
     /** 是否“不确定” */
@@ -210,6 +212,8 @@ export class TreeNodeConfig<TData> {
     Text?: string
     /** 颜色 */
     Color?: string
+    /** 是否显示 */
+    IsShow?: boolean
     /** 是否“激活” */
     IsActive?: boolean
     /** 是否“选中” */
@@ -369,17 +373,18 @@ function GetNodeModel<TData>(tree: TreeModel<TData>, config: TreeNodeConfig<TDat
 }
 
 /** 初始化“节点模型” */
-function InitNodeModel<TData>(config: TreeNodeConfig<TData>, node: TreeNodeModel<TData>) {
+function InitNodeModel<TData>(config: TreeNodeConfig<TData>, model: TreeNodeModel<TData>) {
     // Fields:
-    if (config._data != undefined) node._data = config._data
-    if (config._onActive != undefined) node._onActive = config._onActive
-    if (config._onChecked != undefined) node._onChecked = config._onChecked
-    if (config._onUnactive != undefined) node._onUnactive = config._onUnactive
+    if (config._data != undefined) model._data = config._data
+    if (config._onActive != undefined) model._onActive = config._onActive
+    if (config._onChecked != undefined) model._onChecked = config._onChecked
+    if (config._onUnactive != undefined) model._onUnactive = config._onUnactive
 
     // Properties:
-    if (config.Text != undefined) node.Text.value = config.Text
-    if (config.Color != undefined) node.Color.value = config.Color
-    if (config.IsChecked != undefined) node.IsChecked.value = config.IsChecked
+    if (config.Text != undefined) model.Text.value = config.Text
+    if (config.Color != undefined) model.Color.value = config.Color
+    if (config.IsShow != undefined) model.IsShow.value = config.IsShow
+    if (config.IsChecked != undefined) model.IsChecked.value = config.IsChecked
 }
 
 /** “树”助手 */

@@ -2,7 +2,10 @@
     <div class="select-menu" ref="refMenu" v-if="model.IsOpen.value" :class="model.RootClass.value"
         :style="model.menuStyleObj.value">
         <div v-for="i in model.ItemModels.value" :key="i._id">
-            <div class="menu-item" v-if="i.IsShow.value" @click="i.OnClick">{{ i.Text.value }}</div>
+            <div class="menu-item flex-left" v-if="i.IsShow.value" @click="i.OnClick">
+                <input type="checkbox" v-if="model.IsAllowMultiSelect.value" v-model="i.IsChecked.value">
+                <span>{{ i.Text.value }}</span>
+            </div>
         </div>
         <div v-if="model.IsNoContent.value" class="placeholder flex-center">{{ Texts.NoContent.value }}</div>
     </div>
@@ -72,6 +75,10 @@ onUnmounted(() => {
 
         &:hover {
             background: var(--theme-mask-hover);
+        }
+
+        input {
+            margin-right: 5px;
         }
     }
 

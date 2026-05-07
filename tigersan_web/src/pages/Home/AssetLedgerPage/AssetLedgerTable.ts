@@ -1,4 +1,4 @@
-import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel, SelectModel, TableHeaderModel, ColumnSelectModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
 import { AssetRecordPageModel } from './AssetRecordPageModel'
 import { computed } from 'vue'
@@ -188,3 +188,6 @@ export const IsAllowInbound = computed(() =>
 export const IsAllowOutbound = computed(() =>
     assetLedgerTable.IsSelected.value
     && assetLedgerTable.SelectedRowDatas.value.every(r => r.state === AssetStates.InStore || r.state === AssetStates.Stolid))
+
+/** “列筛选”选择器类型 */
+export const selectColumnFilter = new ColumnSelectModel(assetLedgerTable, 'assetLedgerTable_Columns')

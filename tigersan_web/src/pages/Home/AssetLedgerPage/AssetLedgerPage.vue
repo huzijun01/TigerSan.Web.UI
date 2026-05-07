@@ -8,6 +8,7 @@
                         <Select :model="form.selectCompany"></Select>
                         <Select :model="form.selectDepartment"></Select>
                         <Select :model="form.selectAssetState"></Select>
+                        <Select :model="selectColumnFilter"></Select>
                     </div>
                     <div class="row-panel">
                         <Select :model="form.selectAssetType"></Select>
@@ -106,7 +107,7 @@ import AssetRecordPage from './AssetRecordPage.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { assetLedgerForm as form } from './AssetLedgerForm'
-import { assetLedgerTable, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetLedgerTable'
+import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetLedgerTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:

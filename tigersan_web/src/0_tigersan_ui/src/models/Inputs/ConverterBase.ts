@@ -1,19 +1,19 @@
-import { ref, watch } from "vue"
+import { ref, shallowRef, watch } from "vue"
 import { StringHelper } from "../../helpers"
 import type { T2String } from "../../types"
 
 /** “值转换控件”基类 */
 export class ConverterBase<TValue> {
-    /** 改变时 */
+    //#region 【Fields】
     /** 转换器 */
     _converter?: T2String<TValue>
-    //#region 【Fields】
+    /** 改变时 */
     _onChange?: (value: TValue | undefined) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 值 */
-    readonly Value = ref<TValue | undefined>()
+    readonly Value = shallowRef<TValue | undefined>()
     /** 文本 */
     readonly Text = ref('')
     //#endregion 【Properties】

@@ -140,7 +140,7 @@ assetMgtTagTable._initItem = itemModel => {
     }
 }
 
-assetMgtTagTable._onInitRowModel = rowDatas => {
+assetMgtTagTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length

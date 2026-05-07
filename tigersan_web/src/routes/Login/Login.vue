@@ -7,8 +7,8 @@
       <LoginForm></LoginForm>
     </div>
     <div class="info-panel flex-left" ref="refInfoPanel">
-      <IconButton :icon="Icons.Skin" text="主题" :click="ThemeHelper.Toggle"></IconButton>
-      <IconButton :icon="Icons.Global_Linear" text="语言" :click="config.ToggleLocale"></IconButton>
+      <IconButton :icon="Icons.Skin" :text="Texts.Theme.value" :click="ThemeHelper.Toggle"></IconButton>
+      <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale"></IconButton>
     </div>
   </div>
 </template>
@@ -17,7 +17,7 @@
 import form from './LoginForm'
 import LoginForm from './LoginForm.vue'
 import { onBeforeMount } from 'vue';
-import { ThemeHelper, IconButton, Icons, Lottie, config } from '@/0_tigersan_ui/tigerui'
+import { ThemeHelper, IconButton, Icons, Lottie, config, Texts } from '@/0_tigersan_ui/tigerui'
 
 onBeforeMount(() => {
   form.LoginByToken()

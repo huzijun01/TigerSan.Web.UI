@@ -162,7 +162,7 @@ terminal4gTable._initItem = itemModel => {
     }
 }
 
-terminal4gTable._onInitRowModel = rowDatas => {
+terminal4gTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length

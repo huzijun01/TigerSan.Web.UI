@@ -1,5 +1,5 @@
 <template>
-    <div class="tree-node-panel" :class="model.RootClass.value">
+    <div v-if="model.IsShow.value" class="tree-node-panel" :class="model.RootClass.value">
         <div class="back-panel flex-center">
             <Arrow :isShow="model.IsHaveChild.value" :style="model.arrowStyleObj.value" :click="model.OnClickArrow" />
             <input type="checkbox" class="checkbox" v-if="model._tree.IsShowCheckbox.value"

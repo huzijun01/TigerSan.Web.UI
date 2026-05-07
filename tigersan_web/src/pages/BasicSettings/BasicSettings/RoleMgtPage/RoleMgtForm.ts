@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, AuthorityModel } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { roleMgtTable } from './RoleMgtTable'
@@ -7,6 +7,14 @@ import { companyHelper, roleHelper, departmentHelper, RoleAuthorityModel } from 
 /** “权限助手”实例 */
 const authorityHelperForm = new AuthorityHelper()
 authorityHelperForm._tree._configs = authorityHelper._tree._configs
+
+/** 是否显示“只读复选框” */
+const isShowIsReadonly = computed(() => {
+    const userInfo = useUserInfo()
+    return authorityHelperForm._tree.IsActive.value && (userInfo.isRoot || userInfo.authorities.some(
+        a => a.path === authorityHelperForm._tree.ActiveNode.value?.Path.value && !a.isReadonly
+    ))
+})
 
 // 选择框:
 /** 筛选 */
@@ -72,6 +80,12 @@ const AddGetSource = () => new RoleAuthorityModel()
 let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
     CancelText: '取消',
     SubmitText: '确定',
+    _itemConfigs: [
+        configCompany,
+        configDepartment,
+        configName,
+        configAuthorities,
+    ],
     _getSource: AddGetSource,
     _beforeInitAsync: async isEdit => {
         selectCompanyForm.IsEnabled.value = !isEdit
@@ -79,6 +93,8 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
 
         await companyHelper.UpdateIdNames()
 
+        const userInfo = useUserInfo()
+        let authorities: AuthorityModel[] = []
         if (isEdit) {
             const rowData = roleMgtTable.SelectedRowDatas.value[0]
             if (!rowData) {
@@ -92,22 +108,21 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
             selectDepartmentForm.Value.value = departmentHelper.GetIdName(rowData.department)
 
             authorityHelperForm.InitTree(rowData.authorities)
-            const authorities = authorityHelperForm.GetAuthorities()
-            FilterAuthorities(authorities)
-            authorityHelperForm.InitTree(authorities)
+            authorities = authorityHelperForm.GetAuthorities()
         } else {
             authorityHelperForm.InitTree()
-            const authorities = authorityHelperForm.GetAuthorities()
+            authorities = authorityHelperForm.GetAuthorities()
+        }
+
+        if (!userInfo.isRoot) {
             FilterAuthorities(authorities)
             authorityHelperForm.InitTree(authorities)
+
+            authorityHelperForm._tree.NodeArray.value.forEach(node => {
+                node.IsShow.value = userInfo.authorities.some(a => a.path === node.Path.value)
+            })
         }
-    },
-    _itemConfigs: [
-        configCompany,
-        configDepartment,
-        configName,
-        configAuthorities,
-    ]
+    }
 }
 
 /** “角色”表单模型 */
@@ -230,6 +245,7 @@ function FilterAuthorities(authorities: AuthorityModel[]) {
 
 export const roleMgtForm = {
     authorityHelperForm,
+    isShowIsReadonly,
     pagination,
     selectCompany,
     selectDepartment,

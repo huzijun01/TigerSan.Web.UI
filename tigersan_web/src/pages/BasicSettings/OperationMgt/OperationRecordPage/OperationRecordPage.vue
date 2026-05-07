@@ -43,7 +43,7 @@ import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker } from
 // 【过程】:
 // 表格:
 operationRecordTable.IsAllowMultiSelect.value = false
-operationRecordTable._onInitRowModel = () => {
+operationRecordTable._onInitRowModels = () => {
     pagination.Count.value = operationRecordTable.Count.value
 }
 

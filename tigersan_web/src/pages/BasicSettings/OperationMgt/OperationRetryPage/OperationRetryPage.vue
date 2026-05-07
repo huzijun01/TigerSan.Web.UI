@@ -45,7 +45,7 @@ const { IsOnlySelected } = operationRetryTable
 // 【过程】:
 // 表格:
 operationRetryTable.IsAllowMultiSelect.value = false
-operationRetryTable._onInitRowModel = () => {
+operationRetryTable._onInitRowModels = () => {
     pagination.Count.value = operationRetryTable.Count.value
 }
 

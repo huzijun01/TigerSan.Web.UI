@@ -1,7 +1,8 @@
 import { nanoid } from 'nanoid'
-import { ref, computed, shallowReactive, type ShallowReactive, watch } from "vue"
+import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive } from "vue"
 import { Colors, Theme } from '../../base'
-import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper } from '../../helpers'
+import { SelectModel } from '../Inputs/SelectModel'
+import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase } from '../../helpers'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
 
 export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
@@ -40,7 +41,9 @@ export class TableModel<TSource extends object> {
     /** 初始化“列头” */
     _initHeader?: TableHeaderFunc<TSource>
     /** 初始化“行模型”后 */
-    _onInitRowModel?: (rowDatas: ShallowReactive<TSource[]>) => void
+    _onInitRowModels?: (rowDatas: TSource[]) => void
+    /** 初始化“列头模型”后 */
+    _onInitHeaderModels?: (headers: TableHeaderModel<TSource>[]) => void
     /** “项目文本”输入 */
     _onItemTextInput?: TableItemFunc<TSource>
     /** “项目文本”改变 */
@@ -174,6 +177,8 @@ export class TableModel<TSource extends object> {
             if (this._initHeader) this._initHeader(headerModel) // 初始化
             this.HeaderModels.push(headerModel)
         })
+
+        this._onInitHeaderModels?.(toRaw(this.HeaderModels))
     }
 
     /** 初始化“行模型” */
@@ -193,7 +198,7 @@ export class TableModel<TSource extends object> {
 
         this._checkboxBehavior.InitState()
 
-        this._onInitRowModel?.(this.RowDatas)
+        this._onInitRowModels?.(toRaw(this.RowDatas))
     }
 
     /** 更新“文本”  */
@@ -403,6 +408,8 @@ export class TableHeaderModel<TSource extends object> {
     readonly Width = ref<number | undefined>(undefined)
     /** 文本对齐 */
     readonly TextAlign = ref(TextAlign.Center)
+    /** 是否显示 */
+    readonly IsShow = ref(true)
     /** 是否只读 */
     readonly IsReadonly = ref(true)
     /** 是否必须 */
@@ -410,8 +417,9 @@ export class TableHeaderModel<TSource extends object> {
 
     //#region [computed]
     /** 样式对象 */
-    readonly widthStyleObj = computed(() => {
+    readonly styleObj = computed(() => {
         return {
+            display: this.IsShow.value ? undefined : 'none',
             width: this.Width.value != undefined ? `${this.Width.value}px` : 'auto'
         }
     })
@@ -446,6 +454,8 @@ export class TableHeaderConfig<TSource extends object> {
     Width?: number
     /** 文本对齐 */
     TextAlign?: TextAlign
+    /** 是否显示 */
+    IsShow?: boolean
     /** 是否只读 */
     IsReadonly?: boolean
     /** 是否必须 */
@@ -469,6 +479,73 @@ export function SetTableHeaderModel<TSource extends object>(model: TableHeaderMo
     if (config.Text != undefined) model.Text.value = config.Text
     if (config.Width != undefined) model.Width.value = config.Width
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
+    if (config.IsShow != undefined) model.IsShow.value = config.IsShow
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
     if (config.IsRequired != undefined) model.IsRequired.value = config.IsRequired
+}
+
+/** “列筛选”选择器类型 */
+export class ColumnSelectModel<TSource extends object> extends SelectModel<TableHeaderModel<TSource>> {
+    //#region 【Fields】
+    /** 是否更新 */
+    private _isUpdate = true
+    /** 表格 */
+    private _table: TableModel<TSource>
+    /** 配置 */
+    private _config: ConfigBase<string[]>
+    //#endregion 【Fields】
+
+    //#region 【Properties】
+    /** “可见表头”集合 */
+    private get VisibleHeaders() {
+        return this._table.HeaderModels.filter(h => h.IsShow.value)
+    }
+    //#endregion 【Properties】
+
+    //#region 【Ctor】
+    constructor(
+        table: TableModel<TSource>,
+        configKey: string,
+        width: number = 120) {
+        super()
+        this._table = table
+        this._config = new ConfigBase<string[]>(configKey, [])
+
+        // 基础设置:
+        this.Width.value = width
+        this.IsAllowMultiSelect.value = true
+        this.PlaceholderCN.value = '列筛选'
+        this.PlaceholderEN.value = 'Columns'
+        this._converter = header => header.Text.value
+
+        // 初始化“Items”:
+        this._table._onInitHeaderModels = headers => {
+            let config = this._config.Get()
+            if (config.length < 1) {
+                this._config.Save(headers.map(h => h._propName))
+                config = this._config.Get()
+            }
+
+            this._table.HeaderModels.forEach(h => h.IsShow.value = config.includes(h._propName))
+
+            this.Items.splice(0)
+            this.Items.push(...headers)
+            this._isUpdate = false
+            this.ItemModels.value.forEach(m => m.IsChecked.value = m.Value.value?.IsShow.value ?? false)
+            this._isUpdate = true
+        }
+
+        // 监听“选中状态”改变:
+        this._onCheckedItemsChange = items => {
+            if (!this._isUpdate) return
+
+            this._table.HeaderModels.forEach(h => {
+                const item = items.find(i => i.Value.value?._id === h._id)
+                h.IsShow.value = item?.IsChecked.value ?? false
+            })
+
+            this._config.Save(this.VisibleHeaders.map(h => h._propName))
+        }
+    }
+    //#endregion 【Ctor】
 }

@@ -162,7 +162,7 @@ personMgtTagTable._initItem = itemModel => {
     }
 }
 
-personMgtTagTable._onInitRowModel = rowDatas => {
+personMgtTagTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length

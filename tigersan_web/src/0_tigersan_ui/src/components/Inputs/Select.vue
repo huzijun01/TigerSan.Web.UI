@@ -107,7 +107,8 @@ function window_OnClick(event: MouseEvent) {
 
     const target = event.target as HTMLElement
 
-    if (IsClickOutside(target, model.refRoot.value)) {
+    if (IsClickOutside(target, model.refRoot.value)
+        && (!model.refMenu.value || IsClickOutside(target, model.refMenu.value))) {
         model.IsOpen.value = false
     }
 }

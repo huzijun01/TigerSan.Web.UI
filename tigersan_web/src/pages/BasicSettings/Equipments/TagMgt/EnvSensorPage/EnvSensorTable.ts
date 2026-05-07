@@ -142,7 +142,7 @@ envSensorTable._initItem = itemModel => {
     }
 }
 
-envSensorTable._onInitRowModel = rowDatas => {
+envSensorTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length

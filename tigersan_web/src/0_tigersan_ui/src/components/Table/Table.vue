@@ -8,8 +8,8 @@
                         <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
                             v-model="model.IsSelectAll.value" v-on:change="OnIsSelectAllChanged">
                     </th>
-                    <th v-for="h in model.HeaderModels" :key="h._id" :style="h.widthStyleObj.value"><span
-                            class="ellipsis">{{ h.Text.value }}</span>
+                    <th v-for="h in model.HeaderModels" :key="h._id" :style="h.styleObj.value">
+                        <span class="ellipsis">{{ h.Text.value }}</span>
                     </th>
                 </tr>
             </thead>
@@ -20,7 +20,7 @@
                     <td v-if="model.IsShowCheckBox.value" class="checkbox">
                         <input type="checkbox" v-model="r.IsChecked.value" v-on:change="OnIsCheckedChanged(r)">
                     </td>
-                    <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.widthStyleObj.value">
+                    <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.styleObj.value">
                         <TableItem type="checkbox" :model="i" />
                     </td>
                 </tr>
