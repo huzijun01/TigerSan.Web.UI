@@ -5,6 +5,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IBaseStationService : IIdNameServiceBase<BaseStationEntity>
     {
+        public Task<MyActionResult<BaseStationEntity>> GetByMacAddr(string macAddr);
         public Task<MyActionResult<List<BaseStationDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
@@ -16,5 +17,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<List<IdName>>> GetBelongStationTypeList(long? company = null, long? site = null);
         public Task<MyActionResult<SiteEntity>> GetSite(long id);
         public Task<MyActionResult<Dictionary<long, SiteEntity>>> GetSiteDict(List<long> ids);
+        public Task<MyActionResult<object>> UpdateOnlineState();
     }
 }

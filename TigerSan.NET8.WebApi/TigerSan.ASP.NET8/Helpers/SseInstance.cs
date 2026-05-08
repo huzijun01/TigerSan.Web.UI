@@ -1,7 +1,7 @@
 ﻿using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Share.Packages;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -21,26 +21,6 @@ namespace TigerSan.NET8.WebApi.Helpers
         {
             _instance = this;
             _packageChannel = new PackageChannel(serviceProvider);
-            UpdateCachesAsync();
-        }
-        #endregion
-
-        #region 更新“缓存”
-        /// <summary>更新“缓存”</summary>
-        public async void UpdateCachesAsync()
-        {
-            try
-            {
-                var baseTask = UpdateBaseStationCachesAsync();
-                var tagTask = UpdateTagCachesAsync();
-
-                await Task.WhenAll(baseTask, tagTask).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Stop();
-                LogHelper.Instance.Error(e.GetMessage());
-            }
         }
         #endregion
 
@@ -76,6 +56,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                 var ex = task.Exception?.GetBaseException();
                 LogHelper.Instance.Error(ex?.GetMessage());
             });
+            _packageChannel.UpdateOnlineState();
             _packageChannel._onlineStateUpdater.Start();
         }
         #endregion
@@ -98,86 +79,6 @@ namespace TigerSan.NET8.WebApi.Helpers
             await _packageChannel.Publish(data);
         }
         #endregion
-
-        #region [缓存]
-        #region 更新“基站”缓存
-        /// <summary>更新“基站”缓存</summary>
-        public static async Task UpdateBaseStationCachesAsync()
-        {
-            if (_instance == null)
-            {
-                LogHelper.Instance.IsNull(nameof(_instance));
-                return;
-            }
-            await _instance._packageChannel.UpdateBaseStationCachesAsync();
-        }
-        #endregion
-
-        #region 更新“标签”缓存
-        /// <summary>更新“标签”缓存</summary>
-        public static async Task UpdateTagCachesAsync()
-        {
-            if (_instance == null)
-            {
-                LogHelper.Instance.IsNull(nameof(_instance));
-                return;
-            }
-            await _instance._packageChannel.UpdateTagCachesAsync();
-        }
-        #endregion
-
-        #region 更新“单个标签”缓存
-        /// <summary>更新“单个标签”缓存</summary>
-        public static async Task UpdateTagCacheAsync(string tagId)
-        {
-            if (_instance == null)
-            {
-                LogHelper.Instance.IsNull(nameof(_instance));
-                return;
-            }
-            await _instance._packageChannel.UpdateTagCacheAsync(tagId);
-        }
-        #endregion
-
-        #region 更新“多个标签”缓存
-        /// <summary>更新“多个标签”缓存</summary>
-        public static async Task UpdateTagCacheRangeAsync(List<long> ids)
-        {
-            if (_instance == null)
-            {
-                LogHelper.Instance.IsNull(nameof(_instance));
-                return;
-            }
-            await _instance._packageChannel.UpdateTagCacheRangeAsync(ids);
-        }
-        #endregion
-
-        #region 删除“单个标签”缓存
-        /// <summary>删除“单个标签”缓存</summary>
-        public static async Task DeleteTagCacheAsync(long id)
-        {
-            if (_instance == null)
-            {
-                LogHelper.Instance.IsNull(nameof(_instance));
-                return;
-            }
-            await _instance._packageChannel.DeleteTagCacheAsync(id);
-        }
-        #endregion
-
-        #region 删除“多个标签”缓存
-        /// <summary>删除“多个标签”缓存</summary>
-        public static async Task DeleteTagCacheRangeAsync(List<long> ids)
-        {
-            if (_instance == null)
-            {
-                LogHelper.Instance.IsNull(nameof(_instance));
-                return;
-            }
-            await _instance._packageChannel.DeleteTagCacheRangeAsync(ids);
-        }
-        #endregion
-        #endregion [缓存]
 
         #region [DB]
         #region 修改“基站”和“标签”（蓝牙）

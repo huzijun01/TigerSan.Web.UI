@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -18,6 +17,22 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
+        [HttpGet]
+        [Route("ByTagId/{tagId}")]
+        /// <summary>根据“TagId”获取“单条数据”</summary>
+        public async Task<MyActionResult<TagEntity>> GetByTagId(string tagId)
+        {
+            return await _service.GetByTagId(tagId);
+        }
+
+        [HttpGet]
+        [Route("FullByTagId/{tagId}")]
+        /// <summary>根据“TagId”获取“单条完整数据”</summary>
+        public async Task<MyActionResult<TagDto>> GetFullByTagId(string tagId)
+        {
+            return await _service.GetFullByTagId(tagId);
+        }
+
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
@@ -31,70 +46,6 @@ namespace TigerSan.NET8.WebApi.Controllers
             return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
         #endregion [查]
-
-        #region [增]
-        [HttpPost]
-        /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add([FromBody] TagEntity entity)
-        {
-            var res = await _service.Add(entity);
-            await SseInstance.UpdateTagCacheAsync(entity.TagId);
-            return res;
-        }
-
-        [HttpPost]
-        [Route("Range")]
-        /// <summary>添加“多条数据”</summary>
-        public override async Task<MyActionResult<object>> AddRange([FromBody] List<TagEntity> entities)
-        {
-            var res = await _service.AddRange(entities);
-            await SseInstance.UpdateTagCacheRangeAsync(entities.Select(e => e.Id).ToList());
-            return res;
-        }
-        #endregion [增]
-
-        #region [改]
-        [HttpPut]
-        /// <summary>修改“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Edit([FromBody] TagEntity entity)
-        {
-            var res = await _service.Edit(entity);
-            await SseInstance.UpdateTagCacheAsync(entity.TagId);
-            return res;
-        }
-
-        [HttpPut]
-        [Route("Range")]
-        /// <summary>修改“多条数据”</summary>
-        public override async Task<MyActionResult<object>> EditRange([FromBody] List<TagEntity> entities)
-        {
-            var res = await _service.EditRange(entities);
-            await SseInstance.UpdateTagCacheRangeAsync(entities.Select(e => e.Id).ToList());
-            return res;
-        }
-        #endregion [改]
-
-        #region [删]
-        [HttpDelete]
-        [Route("{id}")]
-        /// <summary>删除“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Remove(long id)
-        {
-            var res = await _service.Remove(id);
-            await SseInstance.DeleteTagCacheAsync(id);
-            return res;
-        }
-
-        [HttpDelete]
-        [Route("Range")]
-        /// <summary>删除“多条数据”</summary>
-        public override async Task<MyActionResult<object>> RemoveRange([FromBody] List<long> ids)
-        {
-            var res = await _service.RemoveRange(ids);
-            await SseInstance.DeleteTagCacheRangeAsync(ids);
-            return res;
-        }
-        #endregion [删]
         #endregion 【Functions】
     }
 }

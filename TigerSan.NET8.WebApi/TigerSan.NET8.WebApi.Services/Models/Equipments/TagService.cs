@@ -2,6 +2,7 @@
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
@@ -33,9 +34,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
-        #region 获取“单条数据”
-        /// <summary>获取“单条数据”</summary>
-        public async Task<MyActionResult<TagEntity>> Get(string tagId)
+        #region 根据“TagId”获取“单条数据”
+        /// <summary>根据“TagId”获取“单条数据”</summary>
+        public async Task<MyActionResult<TagEntity>> GetByTagId(string tagId)
         {
             try
             {
@@ -53,9 +54,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“单条完整数据”
-        /// <summary>获取“单条完整数据”</summary>
-        public async Task<MyActionResult<TagDto>> GetFull(string tagId)
+        #region 根据“TagId”获取“单条完整数据”
+        /// <summary>根据“TagId”获取“单条完整数据”</summary>
+        public async Task<MyActionResult<TagDto>> GetFullByTagId(string tagId)
         {
             try
             {
@@ -440,6 +441,36 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [改]
+
+        #region [Others]
+        #region 更新“在线状态”
+        /// <summary>更新“在线状态”</summary>
+        public async Task<MyActionResult<object>> UpdateOnlineState()
+        {
+            try
+            {
+                var now = DateTimeHelper.GetUtcNow();
+
+                var timeOuts = await _dbSet
+                    .Where(bs => bs.OnlineState == OnlineStates.Online && bs.ReportTime != null
+                    && bs.ReportTime.Value.AddSeconds(Constants.Report_Interval_Seconds) < now)
+                    .ToListAsync();
+
+                foreach (var timeOut in timeOuts)
+                {
+                    timeOut.OnlineState = OnlineStates.Offline;
+                }
+
+                await _db.SaveChangesAsync();
+                return MyResults<object>.Success();
+            }
+            catch (Exception e)
+            {
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+        #endregion [Others]
         #endregion 【Functions】
     }
 }

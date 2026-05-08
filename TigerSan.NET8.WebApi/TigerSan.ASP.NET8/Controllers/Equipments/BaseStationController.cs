@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -18,6 +17,14 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
+        [HttpGet]
+        [Route("ByMacAddr/{macAddr}")]
+        /// <summary>根据“MAC地址”获取“单条数据”</summary>
+        public async Task<MyActionResult<BaseStationEntity>> GetByMacAddr(string macAddr)
+        {
+            return await _service.GetByMacAddr(macAddr);
+        }
+
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>
@@ -55,70 +62,6 @@ namespace TigerSan.NET8.WebApi.Controllers
             return await _service.GetBelongStationTypeList(company, site);
         }
         #endregion [查]
-
-        #region [增]
-        [HttpPost]
-        /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add([FromBody] BaseStationEntity entity)
-        {
-            var res = await _service.Add(entity);
-            await SseInstance.UpdateBaseStationCachesAsync();
-            return res;
-        }
-
-        [HttpPost]
-        [Route("Range")]
-        /// <summary>添加“多条数据”</summary>
-        public override async Task<MyActionResult<object>> AddRange([FromBody] List<BaseStationEntity> entities)
-        {
-            var res = await _service.AddRange(entities);
-            await SseInstance.UpdateBaseStationCachesAsync();
-            return res;
-        }
-        #endregion [增]
-
-        #region [改]
-        [HttpPut]
-        /// <summary>修改“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Edit([FromBody] BaseStationEntity entity)
-        {
-            var res = await _service.Edit(entity);
-            await SseInstance.UpdateBaseStationCachesAsync();
-            return res;
-        }
-
-        [HttpPut]
-        [Route("Range")]
-        /// <summary>修改“多条数据”</summary>
-        public override async Task<MyActionResult<object>> EditRange([FromBody] List<BaseStationEntity> entities)
-        {
-            var res = await _service.EditRange(entities);
-            await SseInstance.UpdateBaseStationCachesAsync();
-            return res;
-        }
-        #endregion [改]
-
-        #region [删]
-        [HttpDelete]
-        [Route("{id}")]
-        /// <summary>删除“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Remove(long id)
-        {
-            var res = await _service.Remove(id);
-            await SseInstance.UpdateBaseStationCachesAsync();
-            return res;
-        }
-
-        [HttpDelete]
-        [Route("Range")]
-        /// <summary>删除“多条数据”</summary>
-        public override async Task<MyActionResult<object>> RemoveRange([FromBody] List<long> ids)
-        {
-            var res = await _service.RemoveRange(ids);
-            await SseInstance.UpdateBaseStationCachesAsync();
-            return res;
-        }
-        #endregion [删]
         #endregion 【Functions】
     }
 }

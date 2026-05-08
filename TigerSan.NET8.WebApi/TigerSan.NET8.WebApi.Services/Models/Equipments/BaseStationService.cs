@@ -3,6 +3,7 @@ using System.Data;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
@@ -27,6 +28,26 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [查]
+        #region 根据“MAC地址”获取“单条数据”
+        /// <summary>根据“MAC地址”获取“单条数据”</summary>
+        public async Task<MyActionResult<BaseStationEntity>> GetByMacAddr(string macAddr)
+        {
+            try
+            {
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.MacAddr == macAddr);
+                if (entity == null)
+                {
+                    return MyResults<BaseStationEntity>.ResourceNotFound;
+                }
+                return MyResults<BaseStationEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                return MyResults<BaseStationEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult<List<BaseStationDto>>> GetFullList(
@@ -313,6 +334,36 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [增]
+
+        #region [Others]
+        #region 更新“在线状态”
+        /// <summary>更新“在线状态”</summary>
+        public async Task<MyActionResult<object>> UpdateOnlineState()
+        {
+            try
+            {
+                var now = DateTimeHelper.GetUtcNow();
+
+                var timeOuts = await _dbSet
+                    .Where(bs => bs.OnlineState == OnlineStates.Online && bs.ReportTime != null
+                    && bs.ReportTime.Value.AddSeconds(bs.HeartbeatInterval) < now)
+                    .ToListAsync();
+
+                foreach (var timeOut in timeOuts)
+                {
+                    timeOut.OnlineState = OnlineStates.Offline;
+                }
+
+                await _db.SaveChangesAsync();
+                return MyResults<object>.Success();
+            }
+            catch (Exception e)
+            {
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+        #endregion [Others]
         #endregion 【Functions】
     }
 }
