@@ -243,7 +243,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
         const rectRoot = this.refRoot.value.getBoundingClientRect()
 
         // 菜单矩形:
-        const rectMenu = RectHelper.GetWithinWindowRect(rectRoot, this.refMenu.value.offsetWidth, this.refMenu.value.offsetHeight)
+        const rectMenu = RectHelper.GetWithinWindowRect(rectRoot, this.refMenu.value.getBoundingClientRect().width, this.refMenu.value.getBoundingClientRect().height)
 
         // 设置位置:
         this.isTopOpen.value = rectMenu.Position === RectPosition.Top

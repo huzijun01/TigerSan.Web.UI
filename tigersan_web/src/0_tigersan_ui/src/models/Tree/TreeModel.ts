@@ -1,6 +1,8 @@
 import { nanoid } from "nanoid"
 import { computed, ref, shallowRef, shallowReactive } from "vue"
-import { ArrayHelper, BigintHelper, ContentSizeBehavior } from "../../helpers"
+import type { NumberAction } from "../../types"
+import { AuthorityVerify } from "../Authority/AuthorityVerify"
+import { ArrayHelper, BigintHelper, ContentSizeBehavior, FolderBehavior, type IRoot } from "../../helpers"
 
 export type TreeNodeModelFunc<TData> = (node: TreeNodeModel<TData>) => void
 
@@ -11,6 +13,10 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     private _isAutoUpdate = true
     /** ID */
     readonly _id = nanoid()
+    /** “目录”行为 */
+    private _behavior: FolderBehavior<TreeModel<TData>, this>
+    /** 权限 */
+    _authority?: AuthorityVerify
     /** 分隔符 */
     _separator = '>'
     /** 所属树 */
@@ -30,6 +36,12 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     //#endregion 【Fields】
 
     //#region 【Properties】
+    /** 子项高度 */
+    readonly SubItemsHeight = ref(0)
+    /** 是否“允许显示” */
+    readonly IsAllowShow = computed(() => this.IsShow.value && this.IsHasAuthority.value)
+    /** 是否“具有权限” */
+    readonly IsHasAuthority = computed(() => !this._authority || this._authority.IsEnable.value)
     /** 文本 */
     readonly Text = ref('null')
     /** 颜色 */
@@ -42,6 +54,10 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     readonly IsIndeterminate = ref(false)
     /** “子项”集合 */
     readonly Childs = shallowReactive<TreeNodeModel<TData>[]>([])
+    /** “目录”集合 */
+    get FolderModels(): TreeNodeModel<TData>[] {
+        return this.Childs
+    }
 
     //#region [computed]
     /** 是否“激活” */
@@ -81,6 +97,18 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     readonly IsHaveChild = computed(() => {
         return this.Childs.length > 0
     })
+
+    /** “内容容器”样式对象 
+     * （需绑定到“内容容器”上） */
+    readonly ContentPanelStyleObj = computed(() => {
+        return {
+            height: `${this.SubItemsHeight.value}px`,
+            maxHeight: `${this.ContentMaxHeight.value}px`,
+            overflow: this.IsOpen.value ? 'auto' : 'hidden',
+            opacity: this.IsOpen.value ? 1 : 0,
+            transition: 'var(--Global-Transition)'
+        }
+    })
     //#endregion [computed]
     //#endregion 【Properties】
 
@@ -94,6 +122,7 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
         this._tree = tree
         this._data = data
         this._parent = parent
+        this._behavior = new FolderBehavior(this._tree, this)
         if (childs) this.Childs.push(...childs)
     }
     //#endregion 【Ctor】
@@ -180,6 +209,8 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
         if (this.IsHaveChild.value) {
             this.IsOpen.value = !this.IsOpen.value
         }
+
+        this._tree.UpdateHeight()
     }
 
     /** 改变后 */
@@ -192,6 +223,16 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
         this.UpdateParentNodesIsChecked()
         this.UpdateSubNodesIsChecked()
     }
+
+    /** 更新“高度” */
+    readonly UpdateHeight = () => {
+        this._behavior.UpdateHeight()
+    }
+
+    /** 更新“旧状态” */
+    readonly UpdateOldState = () => {
+        this._behavior.UpdateOldState()
+    }
     //#endregion 【Functions】
 }
 
@@ -200,6 +241,8 @@ export class TreeNodeConfig<TData> {
     // Fields:
     /** 数据 */
     _data?: TData
+    /** 权限 */
+    _authority?: AuthorityVerify
     /** 激活后 */
     _onActive?: TreeNodeModelFunc<TData>
     /** 选中后 */
@@ -223,8 +266,11 @@ export class TreeNodeConfig<TData> {
 }
 
 /** “树”模型 */
-export class TreeModel<TData> {
+export class TreeModel<TData> implements IRoot {
     //#region 【Fields】
+    /** 获取“文件夹”高度
+     * （Tree内部会自动添加回调） */
+    _getFolderHeight?: NumberAction
     /** “配置”集合 */
     _configs: TreeNodeConfig<TData>[] = []
     /** 默认“数据” */
@@ -248,14 +294,14 @@ export class TreeModel<TData> {
     readonly IsShowCheckbox = ref(true)
     /** 激活节点 */
     readonly ActiveNode = shallowRef<TreeNodeModel<TData> | undefined>()
-    /** “节点”集合 */
-    readonly Nodes = shallowReactive<TreeNodeModel<TData>[]>([])
+    /** “根文件夹”模型 */
+    readonly RootNode = new TreeNodeModel<TData>(this)
 
     //#region [computed]
     /** 是否“已激活” */
     readonly IsActive = computed(() => this.ActiveNode.value != undefined)
     /** “节点”数组（无嵌套） */
-    readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange<TData>(this.Nodes))
+    readonly NodeArray = computed(() => TreeNodeModel.GetArrayRange<TData>(this.RootNode.Childs))
     /** “选中节点”数组（无嵌套） */
     readonly CheckedNodeArray = computed(() => this.NodeArray.value.filter(n => n.IsChecked.value))
     /** “激活节点”的数据 */
@@ -291,6 +337,11 @@ export class TreeModel<TData> {
         }
     }
 
+    /** 清空 */
+    readonly Clear = () => {
+        this.RootNode.Childs.splice(0)
+    }
+
     /** 初始化 */
     readonly Init = (
         configs?: TreeNodeConfig<TData>[],
@@ -302,14 +353,14 @@ export class TreeModel<TData> {
         if (configs) this._configs = configs
 
         try {
-            this.Nodes.splice(0)
+            this.Clear()
             this.ActiveNode.value = undefined
 
             if (!this._configs) return
 
             this._configs.forEach(config => {
                 const node = GetNodeModel(this, config)
-                this.Nodes.push(node)
+                this.RootNode.Childs.push(node)
             })
 
             this.NodeArray.value.forEach(node => {
@@ -325,6 +376,7 @@ export class TreeModel<TData> {
             })
         } finally {
             this._onInited?.()
+            this.UpdateHeight()
         }
     }
 
@@ -354,6 +406,15 @@ export class TreeModel<TData> {
     GetDatas(): TData[] {
         return this.NodeArray.value.map(n => (n._data as TData))
     }
+
+    /** 更新“高度” */
+    readonly UpdateHeight = () => {
+        FolderBehavior.RecursivelyOperateSubItems(
+            this.RootNode,
+            folderModel => {
+                folderModel.UpdateHeight()
+            })
+    }
     //#endregion 【Functions】
 }
 
@@ -376,6 +437,7 @@ function GetNodeModel<TData>(tree: TreeModel<TData>, config: TreeNodeConfig<TDat
 function InitNodeModel<TData>(config: TreeNodeConfig<TData>, model: TreeNodeModel<TData>) {
     // Fields:
     if (config._data != undefined) model._data = config._data
+    if (config._authority != undefined) model._authority = config._authority
     if (config._onActive != undefined) model._onActive = config._onActive
     if (config._onChecked != undefined) model._onChecked = config._onChecked
     if (config._onUnactive != undefined) model._onUnactive = config._onUnactive

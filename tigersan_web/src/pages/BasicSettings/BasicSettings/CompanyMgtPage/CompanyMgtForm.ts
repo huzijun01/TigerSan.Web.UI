@@ -64,7 +64,7 @@ const companyForm = new FormModel(configCompanyForm)
 /** 查 */
 async function Refresh() {
     await companyHelper.GetList({}).then(arr => {
-        tree.Nodes.splice(0)
+        tree.Clear()
         tree.Init(CompanyHelper.Companies2Tree(arr))
     })
 }

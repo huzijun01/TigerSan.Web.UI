@@ -5,6 +5,7 @@ import { NavFolderModel } from '../NavBar/NavFolderModel'
 import { NavButtonModel } from '../NavBar/NavButtonModel'
 import { AuthorityVerify, PathIsReadonly } from './AuthorityVerify'
 import { TreeHelper, TreeModel, TreeNodeConfig, TreeNodeModel } from '../Tree/TreeModel'
+import { FolderBehavior } from '../../helpers'
 
 /** “权限”模型 */
 export class AuthorityModel {
@@ -79,7 +80,7 @@ export class AuthorityHelper {
         let datas: AuthorityNodeData[] = []
         const AddData = (i: NavButtonModel | NavFolderModel) => datas.push(new AuthorityNodeData(i))
         AddData(rootFolder)
-        NavFolderModel.RecursivelyOperateSubItems(rootFolder, AddData, AddData)
+        FolderBehavior.RecursivelyOperateSubItems(rootFolder, AddData, AddData)
 
         return TreeHelper.Array2Tree<AuthorityNodeData>(
             datas,

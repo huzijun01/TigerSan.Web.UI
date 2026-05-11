@@ -1,14 +1,15 @@
 <template>
     <div v-if="model.IsShow.value" class="tree-node-panel" :class="model.RootClass.value">
-        <div class="back-panel flex-center">
-            <Arrow :isShow="model.IsHaveChild.value" :style="model.arrowStyleObj.value" :click="model.OnClickArrow" />
+        <div class="back-panel flex-center" ref="refRoot">
+            <Arrow :class="{ hidden: !model.IsHaveChild.value }" :style="model.arrowStyleObj.value"
+                :click="model.OnClickArrow" />
             <input type="checkbox" class="checkbox" v-if="model._tree.IsShowCheckbox.value"
                 v-model="model.IsChecked.value" :indeterminate="model.IsIndeterminate.value" @change="model.OnChange">
             <div class="text" :style="model.ColorStyle.value" @click="model.OnClick">{{ model.Text.value }}</div>
         </div>
-        <div class="content-panel flex-center drawer" :style="model.ContentPanelStyleObj.value">
-            <Arrow v-if="model.IsHaveChild.value" :opacity="0" />
-            <div class="size-panel" ref="refSizePanel">
+        <div class="content-panel" :style="model.ContentPanelStyleObj.value">
+            <Arrow :opacity="0" />
+            <div class="node-panel" ref="refSizePanel">
                 <TreeNode v-for="c in model.Childs" :key="c._id" :model="c" />
             </div>
         </div>
@@ -17,10 +18,12 @@
 
 <script lang="ts" setup>
 import Arrow from './Arrow.vue'
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { TreeModel, TreeNodeModel } from '../../models'
 
 // 字段:
+const refRoot = ref<HTMLElement | undefined>()
+
 const { model } = defineProps({
     model: {
         type: TreeNodeModel,
@@ -28,17 +31,26 @@ const { model } = defineProps({
     }
 })
 
-const { refSizePanel } = model
+// 导出:
+defineExpose({
+    GetHeight: () => refRoot.value?.getBoundingClientRect().height
+})
 
 onMounted(() => {
-    model.ObserverSizePanel()
+    model.UpdateOldState()
+    model.UpdateHeight()
 })
 </script>
 
 <style lang="less" scoped>
 .tree-node-panel {
     display: grid;
-    grid-template-rows: fit-content(100%) fit-content(100%);
+    grid-template-rows: min-content min-content;
+
+    .arrow-panel.hidden {
+        visibility: hidden;
+        pointer-events: none;
+    }
 
     &.active {
         &>.back-panel {
@@ -74,9 +86,8 @@ onMounted(() => {
     }
 
     .content-panel {
-        .size-panel {
-            flex-grow: 1;
-        }
+        display: grid;
+        grid-template-columns: auto 1fr;
     }
 }
 </style>

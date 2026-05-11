@@ -121,6 +121,8 @@ let configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
             authorityHelperForm._tree.NodeArray.value.forEach(node => {
                 node.IsShow.value = userInfo.authorities.some(a => a.path === node.Path.value)
             })
+
+            authorityHelperForm._tree.UpdateHeight()
         }
     }
 }

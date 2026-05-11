@@ -80,7 +80,7 @@ onMounted(() => {
     grid-template-columns: auto 1fr;
 
     .left-panel {
-        width: 250px;
+        width: 350px;
         margin-right: 15px;
         overflow: auto;
     }

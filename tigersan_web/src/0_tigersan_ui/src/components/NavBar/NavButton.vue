@@ -23,7 +23,7 @@ const { model } = defineProps({
 
 // 导出:
 defineExpose({
-    GetHeight: () => refRoot.value?.offsetHeight
+    GetHeight: () => refRoot.value?.getBoundingClientRect().height
 })
 
 // 方法:

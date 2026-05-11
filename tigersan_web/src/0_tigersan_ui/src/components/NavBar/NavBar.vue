@@ -97,7 +97,7 @@ function UpdateWidthString() {
 }
 
 function GetWidth(): number {
-    return refRoot.value?.offsetWidth ?? 0
+    return refRoot.value?.getBoundingClientRect().width ?? 0
 }
 </script>
 

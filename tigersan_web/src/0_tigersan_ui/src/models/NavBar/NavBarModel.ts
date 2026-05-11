@@ -3,22 +3,23 @@ import type { NumberAction } from '../../types'
 import { NavFolderConfig, CreateNavFolderModel } from './NavConfig'
 import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'
 import { NavFolderModel, type NavFolderHandler } from './NavFolderModel'
+import { FolderBehavior, type IRoot } from '../../helpers/FolderBehavior'
 
 export type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
 
-export class NavBarModel {
+export class NavBarModel implements IRoot {
     //#region 【Fields】
     static readonly _defaultFolderModel = () => new NavFolderModel(new NavBarModel())
     static readonly _defaultButtonModel = () => new NavButtonModel(new NavBarModel())
-    /** 获取“导航栏”宽度
-     * （NavBar内部会自动添加回调） */
-    _getNavWidth?: NumberAction
     /** 获取“文件夹”高度
      * （NavBar内部会自动添加回调） */
     _getFolderHeight?: NumberAction
     /** 获取“按钮”高度
      * （NavBar内部会自动添加回调） */
     _getButtonHeight?: NumberAction
+    /** 获取“导航栏”宽度
+     * （NavBar内部会自动添加回调） */
+    _getNavWidth?: NumberAction
     /** “选中按钮”改变后委托
      * （PageView内部会自动添加回调） */
     _onSelectedButtonModelChanged: TryNavButtonHandler | undefined
@@ -76,7 +77,7 @@ export class NavBarModel {
         fnFolder: NavFolderHandler | undefined,
         fnButton: NavButtonHandler | undefined = undefined,
         isIncludeNotShowFolder: boolean = true) => {
-        NavFolderModel.RecursivelyOperateSubItems(this.RootFolder, fnFolder, fnButton, isIncludeNotShowFolder)
+        FolderBehavior.RecursivelyOperateSubItems(this.RootFolder, fnFolder, fnButton, isIncludeNotShowFolder)
     }
 
     /** 初始化 */
@@ -117,7 +118,7 @@ export class NavBarModel {
 
     /** 更新“高度” */
     readonly UpdateHeight = () => {
-        NavFolderModel.RecursivelyOperateSubItems(
+        FolderBehavior.RecursivelyOperateSubItems(
             this.RootFolder,
             folderModel => {
                 folderModel.UpdateHeight()

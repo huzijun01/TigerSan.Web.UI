@@ -82,11 +82,11 @@ function UpdatePagePanelWidth() {
 }
 
 function GetWidth(): number {
-    return (refRoot.value?.offsetWidth ?? 0) + 1
+    return refRoot.value?.getBoundingClientRect().width ?? 0
 }
 
 function GetHeight(): number {
-    return refRoot.value?.offsetHeight ?? 0
+    return refRoot.value?.getBoundingClientRect().height ?? 0
 }
 </script>
 

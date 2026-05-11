@@ -33,7 +33,7 @@ export class ContentSizeBehavior {
     /** “内容容器”样式对象 
      * （需绑定到“内容容器”上） */
     readonly ContentPanelStyleObj = computed(() => {
-        let height = this.IsOpen.value ? this.ContentHeight.value + this.ContentPanelPadding.value * 2 + 1 : 0
+        let height = this.IsOpen.value ? this.ContentHeight.value + this.ContentPanelPadding.value * 2 : 0
 
         return {
             height: `${height}px`,
@@ -50,7 +50,7 @@ export class ContentSizeBehavior {
     //#region [private]
     /** 更新内容高度 */
     readonly UpdateContentHeight = () => {
-        this.ContentHeight.value = this.refSizePanel.value?.offsetHeight ?? 0
+        this.ContentHeight.value = this.refSizePanel.value?.getBoundingClientRect().height ?? 0
     }
     //#endregion [private]
 
