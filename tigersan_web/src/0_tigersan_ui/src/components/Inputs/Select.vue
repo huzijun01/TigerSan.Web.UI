@@ -10,11 +10,11 @@
 </template>
 
 <script lang="ts" setup>
+import SelectMenu from './SelectMenu.vue'
 import { watch, onMounted, onUnmounted } from 'vue'
 import { Icons } from '../../base'
 import { SelectModel } from '../../models'
-import { ComponentHelper } from '../../helpers'
-import SelectMenu from './SelectMenu.vue'
+import { PanelBehavior } from '../../helpers'
 
 // 字段:
 const { model } = defineProps({
@@ -26,19 +26,16 @@ const { model } = defineProps({
 
 const { refRoot, refInput } = model
 
-let panel: Element | undefined
+const behavior = new PanelBehavior(
+    'select-menu-panel',
+    SelectMenu,
+    () => SelectModel._appMenu,
+    (content) => SelectModel._appMenu = content
+)
 
 const watchIsOpen = watch(model.IsOpen, (isOpen) => {
     if (isOpen) {
-        AddPanel()
-
-        if (SelectModel._appMenu) {
-            SelectModel._appMenu.unmount()
-            SelectModel._appMenu = undefined
-        }
-
-        SelectModel._appMenu = ComponentHelper.CreateApp(SelectMenu, { model })
-        SelectModel._appMenu.mount(panel)
+        behavior.AddContent(model)
     }
 })
 
@@ -54,20 +51,6 @@ onUnmounted(() => {
 })
 
 // 方法:
-/** 添加容器 */
-function AddPanel() {
-    const id = `select-menu-panel`
-    const dom = document.querySelector(`#${id}`)
-    if (dom) {
-        panel = dom
-    }
-
-    if (!panel) {
-        panel = document.createElement('div')
-        panel.id = id
-        document.body.appendChild(panel)
-    }
-}
 
 /** 点击后 */
 function OnClick() {

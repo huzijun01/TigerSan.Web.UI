@@ -69,3 +69,20 @@
 .drawer .size-panel {
   overflow: auto;
 }
+.pop-mask {
+  /* 位置 */
+  position: relative;
+  /* 显示 */
+  display: flex;
+  /* 对齐 */
+  align-items: center;
+  justify-content: center;
+  /* 尺寸 */
+  width: 100vw;
+  height: 100vh;
+  /* 颜色 */
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1px);
+  /* 置顶 */
+  z-index: 999;
+}

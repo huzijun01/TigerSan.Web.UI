@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { personMgtTable, pagination } from './PersonMgtTable'
 import { companyHelper, personHelper, departmentHelper, roleHelper, PersonModel } from '@/models'
 
@@ -155,29 +155,36 @@ const personForm = new FormModel(configPersonMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.UpdateIdNames()
-    await departmentHelper.UpdateIdNames()
-    await roleHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    await selectDepartment.UpdateItemsAsync()
-    await selectRole.UpdateItemsAsync()
+    try {
+        loading.IsShow.value = true
 
-    pagination.Count.value = await personHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        department: selectDepartment.Value.value?.id,
-        role: selectRole.Value.value?.id,
-        name: searchName.Value.value,
-    })
-    await personHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        department: selectDepartment.Value.value?.id,
-        role: selectRole.Value.value?.id,
-        name: searchName.Value.value,
-    }).then(arr => {
-        ArrayHelper.Set(personMgtTable.RowDatas, arr)
-    })
+        await companyHelper.UpdateIdNames()
+        await departmentHelper.UpdateIdNames()
+        await roleHelper.UpdateIdNames()
+        await selectCompany.UpdateItemsAsync()
+        await selectDepartment.UpdateItemsAsync()
+        await selectRole.UpdateItemsAsync()
+
+        pagination.Count.value = await personHelper.GetCount({
+            company: selectCompany.Value.value?.id,
+            department: selectDepartment.Value.value?.id,
+            role: selectRole.Value.value?.id,
+            name: searchName.Value.value,
+        })
+
+        await personHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+            department: selectDepartment.Value.value?.id,
+            role: selectRole.Value.value?.id,
+            name: searchName.Value.value,
+        }).then(arr => {
+            ArrayHelper.Set(personMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -236,7 +243,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const model = personMgtTable.SelectedRowDatas.value[0]
@@ -245,11 +252,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    personHelper.Delete(model.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await personHelper.Delete(model.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 export const personMgtForm = {

@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, TimerHelper, IsEnable, OnlineState } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, TimerHelper, IsEnable, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
 import { tagMgtTable } from './TagMgtTable'
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper, tagHelper } from '@/models'
 
@@ -160,7 +160,7 @@ async function RefreshBase() {
 
 /** 更新“行数据” */
 async function UpdateRowDatas() {
-    RefreshBase()
+    await RefreshBase()
 
     await tagHelper.GetList({
         pageSize: pagination.PageSize.value,
@@ -178,20 +178,26 @@ async function UpdateRowDatas() {
 
 /** 查 */
 async function Refresh() {
-    RefreshBase()
+    try {
+        loading.IsShow.value = true
 
-    await tagHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        batch: selectBatch.Value.value?.id,
-        station: selectStation.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: selectState.Value.value,
-        type: selectType.Value.value?.id,
-        tagId: searchTagId.Value.value,
-    }).then(arr => {
-        ArrayHelper.Set(tagMgtTable.RowDatas, arr)
-    })
+        await RefreshBase()
+
+        await tagHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            batch: selectBatch.Value.value?.id,
+            station: selectStation.Value.value?.id,
+            isEnable: selectIsEnable.Value.value,
+            state: selectState.Value.value,
+            type: selectType.Value.value?.id,
+            tagId: searchTagId.Value.value,
+        }).then(arr => {
+            ArrayHelper.Set(tagMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -285,7 +291,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const rowData = tagMgtTable.SelectedRowDatas.value[0]
@@ -294,11 +300,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    tagHelper.Delete(rowData.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await tagHelper.Delete(rowData.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 function Repair() {

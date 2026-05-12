@@ -13,6 +13,7 @@ export * from './helpers/DictionaryHelper'
 export * from "./helpers/DomHelper"
 export * from "./helpers/FolderBehavior"
 export * from "./helpers/ObjectHelper"
+export * from "./helpers/PanelBehavior"
 export * from "./helpers/RectHelper"
 export * from "./helpers/ThemeHelper"
 export * from "./helpers/StringHelper"

@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, TimerHelper, OnlineState } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, TimerHelper, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
 import { BaseStationModel, baseStationMgtTable } from './BaseStationMgtTable'
 import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper } from '@/models'
 
@@ -208,20 +208,26 @@ async function UpdateRowDatas() {
 
 /** 查 */
 async function Refresh() {
-    await RefreshBase()
+    try {
+        loading.IsShow.value = true
 
-    await baseStationHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        site: selectSite.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: selectState.Value.value,
-        type: selectType.Value.value?.id,
-        macAddr: searchMacAddr.Value.value,
-    }).then(arr => {
-        ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
-    })
+        await RefreshBase()
+
+        await baseStationHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+            site: selectSite.Value.value?.id,
+            isEnable: selectIsEnable.Value.value,
+            state: selectState.Value.value,
+            type: selectType.Value.value?.id,
+            macAddr: searchMacAddr.Value.value,
+        }).then(arr => {
+            ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -315,7 +321,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
@@ -324,11 +330,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    baseStationHelper.Delete(rowData.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await baseStationHelper.Delete(rowData.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 function Repair() {

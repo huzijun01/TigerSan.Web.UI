@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Verify, dialog, Colors, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig } from '@/0_tigersan_ui/tigerui'
+import { Verify, dialog, Colors, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetMgtTagModel, assetMgtTagTable } from './AssetMgtTagTable'
 
 /** “MAC地址”项目配置 */
@@ -33,7 +33,13 @@ const assetMgtTagForm = new FormModel(configassetMgtTagForm)
 
 /** 查 */
 function Refresh() {
-    assetMgtTagTable.Refresh()
+    try {
+        loading.IsShow.value = true
+
+        assetMgtTagTable.Refresh()
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 增 */

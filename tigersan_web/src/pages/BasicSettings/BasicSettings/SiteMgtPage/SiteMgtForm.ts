@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { siteMgtTable } from './SiteMgtTable'
 import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 
@@ -140,23 +140,30 @@ const siteForm = new FormModel(configSiteMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.UpdateIdNames()
-    await siteTypeHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    await selectType.UpdateItemsAsync()
+    try {
+        loading.IsShow.value = true
 
-    pagination.Count.value = await siteHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        type: selectType.Value.value?.id
-    })
-    await siteHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        type: selectType.Value.value?.id,
-    }).then(arr => {
-        ArrayHelper.Set(siteMgtTable.RowDatas, arr)
-    })
+        await companyHelper.UpdateIdNames()
+        await siteTypeHelper.UpdateIdNames()
+        await selectCompany.UpdateItemsAsync()
+        await selectType.UpdateItemsAsync()
+
+        pagination.Count.value = await siteHelper.GetCount({
+            company: selectCompany.Value.value?.id,
+            type: selectType.Value.value?.id
+        })
+
+        await siteHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+            type: selectType.Value.value?.id,
+        }).then(arr => {
+            ArrayHelper.Set(siteMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -215,7 +222,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const model = siteMgtTable.SelectedRowDatas.value[0]
@@ -224,11 +231,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    siteHelper.Delete(model.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await siteHelper.Delete(model.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 export const siteMgtForm = {

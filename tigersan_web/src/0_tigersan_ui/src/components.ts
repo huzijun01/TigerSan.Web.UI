@@ -4,6 +4,7 @@ import IconButton from "./components/Button/IconButton.vue"
 import Lottie from "./components/Content/Lottie.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
+import Loading from "./components/Dialog/Loading.vue"
 import Pop from "./components/Dialog/Pop.vue"
 import PopWindow from "./components/Dialog/PopWindow.vue"
 // Drawer:
@@ -55,6 +56,7 @@ export {
     Lottie,
     // Dialog:
     Dialog,
+    Loading,
     Pop,
     PopWindow,
     // Drawer:

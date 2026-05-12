@@ -1,4 +1,4 @@
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization, DialogState, dialog, DialogMode, Colors, TokenHelper } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization, DialogState, dialog, DialogMode, Colors, TokenHelper, loading } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
 import { UserInfo, UserHelper } from '@/models'
@@ -106,18 +106,25 @@ function Logout() {
 
 async function FnLogout(state: DialogState) {
     if (state != DialogState.Yes) return
-    const userInfo = useUserInfo()
 
-    // 发送“登出请求”:
-    var res = await UserHelper.LogoutAsync(userInfo.username)
-    if (res.code === ActionResultCode.Error) {
-        dialog.ShowError(res.message)
-        return
+    try {
+        loading.IsShow.value = true
+
+        const userInfo = useUserInfo()
+
+        // 发送“登出请求”:
+        var res = await UserHelper.LogoutAsync(userInfo.username)
+        if (res.code === ActionResultCode.Error) {
+            dialog.ShowError(res.message)
+            return
+        }
+
+        TokenHelper.Save()
+        ObjectHelper.ShallowSet(new UserInfo(), userInfo)
+        useRouter().GoTo('/')
+    } finally {
+        loading.IsShow.value = false
     }
-
-    TokenHelper.Save()
-    ObjectHelper.ShallowSet(new UserInfo(), userInfo)
-    useRouter().GoTo('/')
 }
 
 /** Token登录 */
@@ -125,15 +132,21 @@ async function LoginByToken() {
     const token = TokenHelper.Get()
     if (!token) return
 
-    // 发送“登出请求”:
-    var res = await UserHelper.LoginByTokenAsync(token)
-    if (!res.data) {
-        TokenHelper.Save()
-        dialog.ShowError(res.message)
-        return
-    }
+    try {
+        loading.IsShow.value = true
 
-    GoToHome(res.data as object)
+        // 发送“登出请求”:
+        var res = await UserHelper.LoginByTokenAsync(token)
+        if (!res.data) {
+            TokenHelper.Save()
+            dialog.ShowError(res.message)
+            return
+        }
+
+        GoToHome(res.data as object)
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 进入主页 */

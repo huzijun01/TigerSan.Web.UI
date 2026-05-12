@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { FormItemConfig, Verify, FormConfig, FormModel, SubmitResult, ObjectHelper, dialog, DialogMode, Colors, DialogState } from '@/0_tigersan_ui/tigerui'
+import { FormItemConfig, Verify, FormConfig, FormModel, SubmitResult, ObjectHelper, dialog, DialogMode, Colors, DialogState, loading } from '@/0_tigersan_ui/tigerui'
 import { PersonMgtTagModel, personMgtTagTable } from './PersonMgtTagTable'
 
 /** “IMEI”项目配置 */
@@ -45,7 +45,13 @@ const personMgtTagForm = new FormModel<PersonMgtTagModel>(configPersonMgtTagForm
 
 /** 查 */
 function Refresh() {
-    personMgtTagTable.Refresh()
+    try {
+        loading.IsShow.value = true
+
+        personMgtTagTable.Refresh()
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 增 */

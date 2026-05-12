@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { departmentMgtTable } from './DepartmentMgtTable'
 import { companyHelper, departmentHelper, DepartmentModel } from '@/models'
 
@@ -60,18 +60,26 @@ const departmentForm = new FormModel(configDepartmentMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    pagination.Count.value = await departmentHelper.GetCount({
-        company: selectCompany.Value.value?.id
-    })
-    await departmentHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-    }).then(arr => {
-        ArrayHelper.Set(departmentMgtTable.RowDatas, arr)
-    })
+    try {
+        loading.IsShow.value = true
+
+        await companyHelper.UpdateIdNames()
+        await selectCompany.UpdateItemsAsync()
+
+        pagination.Count.value = await departmentHelper.GetCount({
+            company: selectCompany.Value.value?.id
+        })
+
+        await departmentHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+        }).then(arr => {
+            ArrayHelper.Set(departmentMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -127,7 +135,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const rowData = departmentMgtTable.SelectedRowDatas.value[0]
@@ -136,11 +144,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    departmentHelper.Delete(rowData.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await departmentHelper.Delete(rowData.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 export const departmentMgtForm = {

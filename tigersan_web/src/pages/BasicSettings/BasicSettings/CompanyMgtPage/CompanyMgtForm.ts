@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, CompanyHelper } from '@/models'
 import { tree, CompanyModel, selectParentCompany, AddGetItemsAsync, EditGetItemsAsync } from './CompanyMgtTable'
 
@@ -63,10 +63,16 @@ const companyForm = new FormModel(configCompanyForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.GetList({}).then(arr => {
-        tree.Clear()
-        tree.Init(CompanyHelper.Companies2Tree(arr))
-    })
+    try {
+        loading.IsShow.value = true
+
+        await companyHelper.GetList({}).then(arr => {
+            tree.Clear()
+            tree.Init(CompanyHelper.Companies2Tree(arr))
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 增 */
@@ -118,7 +124,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const model = tree.ActiveData.value
@@ -127,11 +133,16 @@ function DeleteRowData(state: DialogState) {
         return
     }
 
-    companyHelper.Delete(model.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await companyHelper.Delete(model.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 export const companyMgtForm = {

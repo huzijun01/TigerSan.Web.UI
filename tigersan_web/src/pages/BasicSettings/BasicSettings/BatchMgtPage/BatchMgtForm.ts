@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { batchMgtTable, pagination } from './BatchMgtTable'
 import { companyHelper, scenarioHelper, BatchModel, batchHelper } from '@/models'
 
@@ -120,25 +120,32 @@ const batchForm = new FormModel(configBatchMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.UpdateIdNames()
-    await scenarioHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    await selectScenario.UpdateItemsAsync()
+    try {
+        loading.IsShow.value = true
 
-    pagination.Count.value = await batchHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        scenario: selectScenario.Value.value?.id,
-        batchId: searchBatchId.Value.value,
-    })
-    await batchHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        scenario: selectScenario.Value.value?.id,
-        batchId: searchBatchId.Value.value,
-    }).then(arr => {
-        ArrayHelper.Set(batchMgtTable.RowDatas, arr)
-    })
+        await companyHelper.UpdateIdNames()
+        await scenarioHelper.UpdateIdNames()
+        await selectCompany.UpdateItemsAsync()
+        await selectScenario.UpdateItemsAsync()
+
+        pagination.Count.value = await batchHelper.GetCount({
+            company: selectCompany.Value.value?.id,
+            scenario: selectScenario.Value.value?.id,
+            batchId: searchBatchId.Value.value,
+        })
+
+        await batchHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+            scenario: selectScenario.Value.value?.id,
+            batchId: searchBatchId.Value.value,
+        }).then(arr => {
+            ArrayHelper.Set(batchMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -194,7 +201,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const model = batchMgtTable.SelectedRowDatas.value[0]
@@ -203,11 +210,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    batchHelper.Delete(model.id)
-        .then(res => {
+    try {
+        loading.IsShow.value = true
+
+        await batchHelper.Delete(model.id).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 export const batchMgtForm = {

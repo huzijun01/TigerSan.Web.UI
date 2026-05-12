@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { EnvSensorModel, envSensorTable } from './EnvSensorTable'
 import {
-    Colors, dialog, Verify, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
+    Colors, dialog, Verify, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig,
+    loading
 } from '@/0_tigersan_ui/tigerui'
 
 /** “MAC地址”项目配置 */
@@ -35,7 +36,13 @@ const envSensorForm = new FormModel(configenvSensorForm)
 
 /** 查 */
 function Refresh() {
-    envSensorTable.Refresh()
+    try {
+        loading.IsShow.value = true
+
+        envSensorTable.Refresh()
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 增 */

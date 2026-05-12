@@ -2,7 +2,8 @@ import { ref } from 'vue'
 import { Terminal4gModel, terminal4gTable } from './Terminal4gTable'
 import {
     Colors, dialog, Verify, ObjectHelper,
-    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig
+    DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig,
+    loading
 } from '@/0_tigersan_ui/tigerui'
 
 /** “IMEI”项目配置 */
@@ -48,7 +49,13 @@ const terminal4gForm = new FormModel(configTerminal4gForm)
 
 /** 查 */
 function Refresh() {
-    terminal4gTable.Refresh()
+    try {
+        loading.IsShow.value = true
+
+        terminal4gTable.Refresh()
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 增 */

@@ -17,19 +17,6 @@ let { isShow } = defineProps({
 
 <style lang="less" scoped>
 .pop-mask {
-    position: absolute;
-    /* 显示 */
-    display: flex;
-    /* 对齐 */
-    align-items: center;
-    justify-content: center;
-    /* 尺寸 */
-    width: 100vw;
-    height: 100vh;
-    /* 颜色 */
-    background: rgba(0, 0, 0, 0.1);
-    // backdrop-filter: blur(1px);
-    /* 置顶 */
-    z-index: 999;
+    backdrop-filter: none;
 }
 </style>

@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, AuthorityModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, AuthorityModel, loading } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { roleMgtTable } from './RoleMgtTable'
 import { companyHelper, roleHelper, departmentHelper, RoleAuthorityModel } from '@/models'
@@ -132,23 +132,30 @@ const roleForm = new FormModel(configRoleMgtForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.UpdateIdNames()
-    await departmentHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    await selectDepartment.UpdateItemsAsync()
+    try {
+        loading.IsShow.value = true
 
-    pagination.Count.value = await roleHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        department: selectDepartment.Value.value?.id,
-    })
-    await roleHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        department: selectDepartment.Value.value?.id,
-    }).then(arr => {
-        ArrayHelper.Set(roleMgtTable.RowDatas, arr)
-    })
+        await companyHelper.UpdateIdNames()
+        await departmentHelper.UpdateIdNames()
+        await selectCompany.UpdateItemsAsync()
+        await selectDepartment.UpdateItemsAsync()
+
+        pagination.Count.value = await roleHelper.GetCount({
+            company: selectCompany.Value.value?.id,
+            department: selectDepartment.Value.value?.id,
+        })
+
+        await roleHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+            department: selectDepartment.Value.value?.id,
+        }).then(arr => {
+            ArrayHelper.Set(roleMgtTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -209,7 +216,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const model = roleMgtTable.SelectedRowDatas.value[0]
@@ -218,10 +225,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    roleHelper.Delete(model.id).then(res => {
-        Refresh()
-        MyActionResult.ShowResult(res, '删除成功')
-    })
+    try {
+        loading.IsShow.value = true
+
+        await roleHelper.Delete(model.id).then(res => {
+            Refresh()
+            MyActionResult.ShowResult(res, '删除成功')
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 /** 过滤权限 */

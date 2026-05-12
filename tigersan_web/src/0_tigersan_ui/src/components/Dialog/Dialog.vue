@@ -1,18 +1,21 @@
 <template>
     <Teleport to="body">
-        <div class="dialog-mask" v-if="isShow">
+        <div class="dialog-mask pop-mask" v-if="isShow">
             <div class="popPanel" v-for="m in dialogModels" :key="m.id" :style="{ borderColor: m.Color.value }">
                 <div class="titlePanel" :style="{ background: m.Color.value }">
                     <div class="title">{{ m.Title }}</div>
-                    <button class="btnClose btn_clear iconfont"
-                        @click="Close(m.id, DialogState.Cancel)">&#xe639;</button>
+                    <button class="btnClose btn_clear iconfont" @click="Close(m.id, DialogState.Cancel)">
+                        {{ Icons.Close }}
+                    </button>
                 </div>
                 <div class="content">{{ m.Msg }}</div>
                 <div class="button-panel flex-stretch" v-if="m.IsShowButtonPanel.value">
-                    <button class="yes bg-success" @click="Close(m.id, DialogState.Yes)">{{ m.ShowYesText.value
-                    }}</button>
-                    <button class="no bg-danger" v-if="m.IsShowNoButton.value" @click="Close(m.id, DialogState.No)">{{
-                        m.ShowNoText.value }}</button>
+                    <button class="yes bg-success" @click="Close(m.id, DialogState.Yes)">
+                        {{ m.ShowYesText.value }}
+                    </button>
+                    <button class="no bg-danger" v-if="m.IsShowNoButton.value" @click="Close(m.id, DialogState.No)">
+                        {{ m.ShowNoText.value }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -20,9 +23,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Teleport, computed, type ShallowReactive } from 'vue'
+import { Icons } from '../../base'
 import { useDialogStore } from '../../stores/dialog'
 import { DialogState, DialogModel } from '../../models'
+import { Teleport, computed, type ShallowReactive } from 'vue'
 
 // 全局数据：
 const store = useDialogStore()
@@ -51,22 +55,6 @@ function Close(id: string, state: DialogState) {
 
 <style lang="less" scoped>
 .dialog-mask {
-    /* 位置 */
-    position: relative;
-    /* 显示 */
-    display: flex;
-    /* 对齐 */
-    align-items: center;
-    justify-content: center;
-    /* 尺寸 */
-    width: 100vw;
-    height: 100vh;
-    /* 颜色 */
-    background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(1px);
-    /* 置顶 */
-    z-index: 999;
-
     .popPanel {
         /* 显示 */
         display: grid;

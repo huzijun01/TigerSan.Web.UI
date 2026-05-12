@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
 import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel, ErrorType, siteHelper } from '@/models'
 
@@ -138,35 +138,42 @@ const assetForm = new FormModel(configAssetLedgerForm)
 
 /** 查 */
 async function Refresh() {
-    await companyHelper.UpdateIdNames()
-    await departmentHelper.UpdateIdNames()
-    await assetTypeHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    await selectDepartment.UpdateItemsAsync()
-    await selectAssetType.UpdateItemsAsync()
+    try {
+        loading.IsShow.value = true
 
-    pagination.Count.value = await assetHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        department: selectDepartment.Value.value?.id,
-        type: selectAssetType.Value.value?.id,
-        state: selectAssetState.Value.value,
-        onlineState: selectOnlineState.Value.value,
-        errorType: selectErrorType.Value.value,
-        assetId: searchAssetId.Value.value,
-    })
-    await assetHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        department: selectDepartment.Value.value?.id,
-        type: selectAssetType.Value.value?.id,
-        state: selectAssetState.Value.value,
-        onlineState: selectOnlineState.Value.value,
-        errorType: selectErrorType.Value.value,
-        assetId: searchAssetId.Value.value,
-    }).then(arr => {
-        ArrayHelper.Set(assetLedgerTable.RowDatas, arr)
-    })
+        await companyHelper.UpdateIdNames()
+        await departmentHelper.UpdateIdNames()
+        await assetTypeHelper.UpdateIdNames()
+        await selectCompany.UpdateItemsAsync()
+        await selectDepartment.UpdateItemsAsync()
+        await selectAssetType.UpdateItemsAsync()
+
+        pagination.Count.value = await assetHelper.GetCount({
+            company: selectCompany.Value.value?.id,
+            department: selectDepartment.Value.value?.id,
+            type: selectAssetType.Value.value?.id,
+            state: selectAssetState.Value.value,
+            onlineState: selectOnlineState.Value.value,
+            errorType: selectErrorType.Value.value,
+            assetId: searchAssetId.Value.value,
+        })
+
+        await assetHelper.GetList({
+            pageSize: pagination.PageSize.value,
+            pageNumber: pagination.SelectedNum.value,
+            company: selectCompany.Value.value?.id,
+            department: selectDepartment.Value.value?.id,
+            type: selectAssetType.Value.value?.id,
+            state: selectAssetState.Value.value,
+            onlineState: selectOnlineState.Value.value,
+            errorType: selectErrorType.Value.value,
+            assetId: searchAssetId.Value.value,
+        }).then(arr => {
+            ArrayHelper.Set(assetLedgerTable.RowDatas, arr)
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 pagination._onChange = Refresh
@@ -226,7 +233,7 @@ function Delete() {
         Colors.Warning)
 }
 
-function DeleteRowData(state: DialogState) {
+async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
     const model = assetLedgerTable.SelectedRowDatas.value[0]
@@ -235,10 +242,16 @@ function DeleteRowData(state: DialogState) {
         return {}
     }
 
-    assetHelper.Delete(model.id).then(res => {
-        Refresh()
-        MyActionResult.ShowResult(res, '删除成功')
-    })
+    try {
+        loading.IsShow.value = true
+
+        await assetHelper.Delete(model.id).then(res => {
+            Refresh()
+            MyActionResult.ShowResult(res, '删除成功')
+        })
+    } finally {
+        loading.IsShow.value = false
+    }
 }
 
 class OutboundModel {

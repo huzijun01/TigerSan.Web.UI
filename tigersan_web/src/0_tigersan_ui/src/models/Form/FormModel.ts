@@ -2,6 +2,7 @@ import { ref, type Ref, computed, watch } from "vue"
 import { Colors } from "../../base"
 import { dialog } from '../../stores'
 import { ObjectHelper } from "../../helpers"
+import { loading } from "../Dialog/LoadingModel"
 import { FormConfig, SetFormModel } from './FormConfig'
 import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
 
@@ -234,12 +235,18 @@ class FormModel<TSource extends object> {
         // 提交:
         const results = new Array<SubmitResult>()
 
-        if (this._onSubmit) {
-            results.push(this._onSubmit(this._source, this._isEdit))
-        }
+        try {
+            loading.IsShow.value = true
 
-        if (this._onSubmitAsync) {
-            results.push(await this._onSubmitAsync(this._source, this._isEdit))
+            if (this._onSubmit) {
+                results.push(this._onSubmit(this._source, this._isEdit))
+            }
+
+            if (this._onSubmitAsync) {
+                results.push(await this._onSubmitAsync(this._source, this._isEdit))
+            }
+        } finally {
+            loading.IsShow.value = false
         }
 
         // 显示结果:
