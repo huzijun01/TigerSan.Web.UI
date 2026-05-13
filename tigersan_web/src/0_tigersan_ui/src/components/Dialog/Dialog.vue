@@ -1,7 +1,7 @@
 <template>
     <Teleport to="body">
         <div class="dialog-mask pop-mask" v-if="isShow">
-            <div class="popPanel" v-for="m in dialogModels" :key="m.id" :style="{ borderColor: m.Color.value }">
+            <div class="pop-panel" v-for="m in dialogModels" :key="m.id" :style="{ borderColor: m.Color.value }">
                 <div class="titlePanel" :style="{ background: m.Color.value }">
                     <div class="title">{{ m.Title }}</div>
                     <button class="btnClose btn_clear iconfont" @click="Close(m.id, DialogState.Cancel)">
@@ -55,13 +55,13 @@ function Close(id: string, state: DialogState) {
 
 <style lang="less" scoped>
 .dialog-mask {
-    .popPanel {
+    .pop-panel {
         /* 显示 */
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
         /* 位置 */
-        position: absolute;
+        position: relative;
         /* 尺寸 */
         min-width: 200px;
         min-height: 100px;

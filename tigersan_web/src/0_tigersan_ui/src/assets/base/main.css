@@ -142,8 +142,6 @@
   background: linear-gradient(180deg, #666, #333);
 }
 body {
-  /* 位置 */
-  position: relative !important;
   /* 颜色 */
   color: var(--color-basic-white);
 }

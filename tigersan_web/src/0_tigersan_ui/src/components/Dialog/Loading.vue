@@ -11,8 +11,9 @@ import { Icons } from '../../base'
 <style lang="less" scoped>
 .loading {
     .icon {
-        color: var(--theme-brand);
+        position: relative;
         font-size: 50px;
+        color: var(--theme-brand);
         transform-origin: center;
         animation: rotate 1.5s linear infinite;
     }
