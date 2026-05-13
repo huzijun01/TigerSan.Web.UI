@@ -1,7 +1,8 @@
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, SetAuthorization, DialogState, dialog, DialogMode, Colors, TokenHelper, loading } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, DialogState, dialog, DialogMode, Colors, TokenHelper, loading } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
 import { UserInfo, UserHelper } from '@/models'
+import { axiosHelper } from '@/models/base/AxiosHelper'
 
 // 组件模型:
 const uname = new TextBoxModel()
@@ -164,7 +165,7 @@ function GoToHome(data: object) {
     }
 
     // 设置Token:
-    SetAuthorization(userInfo.token)
+    axiosHelper.SetAuthorization(userInfo.token)
     TokenHelper.Save(userInfo.token)
 
     // 初始化“导航栏”:

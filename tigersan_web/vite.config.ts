@@ -33,4 +33,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://192.168.0.204:9999',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  }
 })

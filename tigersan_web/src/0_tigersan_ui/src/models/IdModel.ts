@@ -3,7 +3,7 @@ import { IdValueModel } from "./SelectModel"
 import { KeyValue } from "../helpers/ParamHelper"
 import { SelectModel } from "./Inputs/SelectModel"
 import { BigintHelper } from "../helpers/BigintHelper"
-import { AxiosHelper } from "../helpers/AxiosHelper/AxiosHelper"
+import { axiosHelper } from "@/models/base/AxiosHelper"
 
 /** "组织机构"模型 */
 export class IdModel {
@@ -22,7 +22,7 @@ export class IdModelHelper<TModel extends IdModel> {
 
     // 查:
     readonly GetCount = async (param: {}) =>
-        await AxiosHelper.GetCount(this._action, {})
+        await axiosHelper.GetCount(this._action, {})
 
     readonly GetList = async (param: {
         pageSize?: number,
@@ -31,7 +31,7 @@ export class IdModelHelper<TModel extends IdModel> {
         ascending?: boolean,
         strList?: string,
         params?: KeyValue[]
-    }) => await AxiosHelper.GetList<TModel>(this._action, {
+    }) => await axiosHelper.GetList<TModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         sort: param.sort,
@@ -42,19 +42,19 @@ export class IdModelHelper<TModel extends IdModel> {
 
     // 增:
     readonly Add = async (source: TModel, isRange: boolean = false) =>
-        await AxiosHelper.Add(this._action, source, isRange)
+        await axiosHelper.Add(this._action, source, isRange)
 
     // 改:
     readonly Edit = async (source: TModel) =>
-        await AxiosHelper.Put(this._action, source)
+        await axiosHelper.Put(this._action, source)
     readonly EditRange = async (sources: TModel[]) =>
-        await AxiosHelper.Put(this._action, sources, undefined, true)
+        await axiosHelper.Put(this._action, sources, undefined, true)
 
     // 删:
     readonly Delete = async (id: number | bigint) =>
-        await AxiosHelper.Delete(this._action, id)
+        await axiosHelper.Delete(this._action, id)
     readonly DeleteRange = async (ids: number[] | bigint[]) =>
-        await AxiosHelper.DeleteRange(this._action, ids)
+        await axiosHelper.DeleteRange(this._action, ids)
 
     // 筛选:
     /** 获取“ID值对”集合 */
@@ -66,7 +66,7 @@ export class IdModelHelper<TModel extends IdModel> {
         if (param && this._strIdValueList) {
             this._strIdValueList = this._strIdValueList
         }
-        return await AxiosHelper.SelectIdValue(this._action, param ?? { strIdValueList: this._strIdValueList })
+        return await axiosHelper.SelectIdValue(this._action, param ?? { strIdValueList: this._strIdValueList })
     }
 
     /** 获取“ID值对” */

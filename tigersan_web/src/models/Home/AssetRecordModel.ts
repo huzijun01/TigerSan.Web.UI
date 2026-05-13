@@ -1,5 +1,6 @@
-import { IdModel, IdModelHelper, AxiosHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
 import { AssetStates } from "../base/AssetStates"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "资产基类"模型 */
 export class AssetRecordModel extends IdModel {
@@ -41,7 +42,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         state?: number,
         station?: bigint,
         onlineState?: OnlineStates,
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         filter: {
             parent: {
                 id: param.asset,
@@ -70,7 +71,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         state?: number,
         station?: bigint,
         onlineState?: OnlineStates,
-    }) => await AxiosHelper.GetList<AssetRecordModel>(this._action, {
+    }) => await axiosHelper.GetList<AssetRecordModel>(this._action, {
         strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
@@ -96,7 +97,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
 
     // 增:
     readonly Add = async (source: AssetRecordModel, isRange: boolean = false) =>
-        await AxiosHelper.Add(`${this._action}/ByPackage`, source, isRange)
+        await axiosHelper.Add(`${this._action}/ByPackage`, source, isRange)
 }
 
 export const assetRecordHelper = new AssetRecordHelper()

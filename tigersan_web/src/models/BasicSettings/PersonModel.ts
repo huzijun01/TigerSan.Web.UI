@@ -1,4 +1,5 @@
-import { IdModel, IdModelHelper, AxiosHelper, IdNameModel } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, IdNameModel } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "组织机构"模型 */
 export class PersonModel extends IdModel {
@@ -25,7 +26,7 @@ class PersonHelper extends IdModelHelper<PersonModel> {
         department?: bigint,
         role?: bigint,
         name?: string,
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         params: [
             { key: 'name', value: param.name }
         ],
@@ -50,7 +51,7 @@ class PersonHelper extends IdModelHelper<PersonModel> {
         department?: bigint,
         role?: bigint,
         name?: string,
-    }) => await AxiosHelper.GetList<PersonModel>(this._action, {
+    }) => await axiosHelper.GetList<PersonModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
@@ -71,13 +72,13 @@ class PersonHelper extends IdModelHelper<PersonModel> {
     })
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属部门”集合 */
-    readonly GetBelongDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
+    readonly GetBelongDepartmentListAsync = async (company?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
 
     /** 获取“所属角色”集合 */
-    readonly GetBelongRoleListAsync = async (department?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongRoleList`, [{ key: 'department', value: department }])
+    readonly GetBelongRoleListAsync = async (department?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongRoleList`, [{ key: 'department', value: department }])
 }
 
 export const personHelper = new PersonHelper()

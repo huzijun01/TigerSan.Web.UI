@@ -1,4 +1,5 @@
-import { IdNameModel, AuthorityModel, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, AuthorityModel, IdNameModelHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "角色"模型 */
 export class RoleAuthorityModel extends IdNameModel {
@@ -22,7 +23,7 @@ class RoleHelper extends IdNameModelHelper<RoleAuthorityModel> {
     readonly GetCount = async (param: {
         company?: bigint,
         department?: bigint
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         filter: {
             parent: {
                 id: param.department,
@@ -39,7 +40,7 @@ class RoleHelper extends IdNameModelHelper<RoleAuthorityModel> {
         pageNumber?: number,
         company?: bigint,
         department?: bigint,
-    }) => await AxiosHelper.GetList<RoleAuthorityModel>(this._action, {
+    }) => await axiosHelper.GetList<RoleAuthorityModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
@@ -61,10 +62,10 @@ class RoleHelper extends IdNameModelHelper<RoleAuthorityModel> {
     })
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属部门”集合 */
-    readonly GetBelongDepartmentListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
+    readonly GetBelongDepartmentListAsync = async (company?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
 }
 
 export const roleHelper = new RoleHelper()

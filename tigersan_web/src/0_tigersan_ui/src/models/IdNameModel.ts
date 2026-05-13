@@ -4,7 +4,7 @@ import { IdNameModel } from "./SelectModel"
 import { KeyValue } from "../helpers/ParamHelper"
 import { SelectModel } from "./Inputs/SelectModel"
 import { BigintHelper } from "../helpers/BigintHelper"
-import { AxiosHelper } from "../helpers/AxiosHelper/AxiosHelper"
+import { axiosHelper } from "@/models/base/AxiosHelper"
 
 export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper<TModel> {
     /** 更新“ID名称对”集合 */
@@ -20,7 +20,7 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
         isDistinct?: boolean,
         params?: KeyValue[],
         filter?: FilterModel
-    }) => await AxiosHelper.SelectIdName(this._action, param ?? {})
+    }) => await axiosHelper.SelectIdName(this._action, param ?? {})
 
     /** 获取“ID名称对” */
     readonly GetIdName = (id: bigint): IdNameModel | undefined => {

@@ -1,4 +1,5 @@
-import { IdNameModel, OnlineStates, IdNameModelHelper, SelectModel, AxiosHelper, StringHelper } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, OnlineStates, IdNameModelHelper, SelectModel, StringHelper } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** “基站”模型 */
 export class BaseStationModel extends IdNameModel {
@@ -38,7 +39,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
             type?: bigint,
             macAddr?: string,
         }
-    ) => await AxiosHelper.GetCount(this._action, {
+    ) => await axiosHelper.GetCount(this._action, {
         filter: {
             filters: [
                 { propName: 'IsEnable', value: param.isEnable },
@@ -67,7 +68,7 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
             type?: bigint,
             macAddr?: string,
         }
-    ) => await AxiosHelper.GetList<BaseStationModel>(this._action, {
+    ) => await axiosHelper.GetList<BaseStationModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
@@ -88,14 +89,14 @@ class BaseStationHelper extends IdNameModelHelper<BaseStationModel> {
     })
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongSiteListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongSiteList`,
+    readonly GetBelongSiteListAsync = async (company?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongSiteList`,
         [{ key: 'company', value: company }])
 
     /** 获取“所属基站类型”集合 */
-    readonly GetBelongStationTypeListAsync = async (company?: bigint, site?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongStationTypeList`,
+    readonly GetBelongStationTypeListAsync = async (company?: bigint, site?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongStationTypeList`,
         [{ key: 'company', value: company }, { key: 'site', value: site }])
 }
 

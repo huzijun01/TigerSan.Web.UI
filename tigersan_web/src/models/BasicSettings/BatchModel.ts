@@ -1,4 +1,5 @@
-import { IdModel, IdModelHelper, SelectModel, IdValueModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, SelectModel, IdValueModel } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "批次"模型 */
 export class BatchModel extends IdModel {
@@ -28,7 +29,7 @@ class BatchHelper extends IdModelHelper<BatchModel> {
         company?: bigint,
         scenario?: bigint,
         batchId?: string,
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         filter: {
             filters: [
                 { propName: 'Scenario', value: param.scenario },
@@ -47,7 +48,7 @@ class BatchHelper extends IdModelHelper<BatchModel> {
         company?: bigint,
         scenario?: bigint,
         batchId?: string,
-    }) => await AxiosHelper.GetList<BatchModel>(this._action, {
+    }) => await axiosHelper.GetList<BatchModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {

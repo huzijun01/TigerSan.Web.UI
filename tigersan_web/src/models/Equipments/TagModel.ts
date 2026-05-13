@@ -1,4 +1,5 @@
-import { IdModel, OnlineStates, IdModelHelper, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdModel, OnlineStates, IdModelHelper } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "标签"模型 */
 export class TagModel extends IdModel {
@@ -37,7 +38,7 @@ class TagHelper extends IdModelHelper<TagModel> {
         isEnable?: boolean,
         state?: OnlineStates,
         tagId?: string,
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         filter: {
             parent: {
                 id: param.batch,
@@ -66,7 +67,7 @@ class TagHelper extends IdModelHelper<TagModel> {
         isEnable?: boolean,
         state?: OnlineStates,
         tagId?: string,
-    }) => await AxiosHelper.GetList<TagModel>(this._action, {
+    }) => await axiosHelper.GetList<TagModel>(this._action, {
         strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,

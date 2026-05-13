@@ -1,5 +1,6 @@
-import { IdModel, IdModelHelper, AxiosHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
 import { AssetStates, ErrorTypes } from "../base/AssetStates"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "资产基类"模型 */
 class AssetBaseModel extends IdModel {
@@ -51,7 +52,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         onlineState?: OnlineStates,
         errorType?: ErrorTypes,
         assetId?: string,
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         filter: {
             parent: {
                 id: param.department,
@@ -80,7 +81,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         onlineState?: OnlineStates,
         errorType?: ErrorTypes,
         assetId?: string,
-    }) => await AxiosHelper.GetList<AssetModel>(this._action, {
+    }) => await axiosHelper.GetList<AssetModel>(this._action, {
         strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
@@ -103,11 +104,11 @@ class AssetHelper extends IdModelHelper<AssetModel> {
 
     /** 入库 */
     readonly Inbound = async (ids: number[] | bigint[]) =>
-        await AxiosHelper.Put(`${this._action}/Inbound`, ids)
+        await axiosHelper.Put(`${this._action}/Inbound`, ids)
 
     /** 出库 */
     readonly Outbound = async (site: bigint, ids: number[] | bigint[]) =>
-        await AxiosHelper.Put(`${this._action}/Outbound/${site.toString()}`, ids)
+        await axiosHelper.Put(`${this._action}/Outbound/${site.toString()}`, ids)
 }
 
 export const assetHelper = new AssetHelper()

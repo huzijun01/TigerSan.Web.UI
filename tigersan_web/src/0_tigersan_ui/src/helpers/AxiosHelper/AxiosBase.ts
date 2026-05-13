@@ -1,17 +1,64 @@
-import { api } from "./AxiosApi"
+import axios from "axios"
+import JSONBig from 'json-bigint'
 import { dialog } from "../../stores"
+import { type AxiosInstance } from "axios"
 import { KeyValue, ParamHelper } from "../ParamHelper"
 import { MyActionResult } from "../../models/MyActionResult"
 
 export class AxiosBase {
-    static async Get(action: string, params?: KeyValue[]): Promise<MyActionResult> {
+    _api: AxiosInstance
+
+    constructor(baseURL: string) {
+        const api = axios.create({
+            baseURL: baseURL,
+            // TransformResponse:axios提供的工具，用在获取后端数据之后，先进行处理，再通过promise返回给axios调用者
+            // transformResponse发生在axios 的响应拦截器之前。
+            transformResponse: [function (data) {
+                try {
+                    return JSONBig.parse(data) // 字符串--->对象
+                } catch (err) {
+                    return data
+                }
+            }],
+            responseType: 'text'
+        })
+
+        // 请求拦截器：发送前转换 BigInt -> 字符串
+        api.interceptors.request.use(config => {
+            const transform = (obj: any) => {
+                if (obj === null || typeof obj !== 'object') return obj
+
+                Object.keys(obj).forEach(key => {
+                    const value = obj[key]
+                    if (typeof value === 'bigint') {
+                        obj[key] = value.toString();
+                    } else if (typeof value === 'object') {
+                        transform(value)
+                    }
+                })
+                return obj
+            }
+            return {
+                ...config,
+                data: transform(config.data)
+            }
+        })
+
+        this._api = api
+    }
+
+    readonly SetAuthorization = (authorization?: string) => {
+        this._api.defaults.headers.common['Authorization'] = authorization ? authorization : undefined
+    }
+
+    readonly Get = async (action: string, params?: KeyValue[]): Promise<MyActionResult> => {
         try {
             let url = action
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await api.get(url)
+            const response = await this._api.get(url)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -28,18 +75,18 @@ export class AxiosBase {
         }
     }
 
-    static async GetData<T extends object | unknown[] | number>(action: string, params?: KeyValue[]): Promise<T> {
+    readonly GetData = async <T extends object | unknown[] | number>(action: string, params?: KeyValue[]): Promise<T> => {
         return (await this.Get(action, params)).data as T
     }
 
-    static async Post(action: string, params?: KeyValue[], data?: unknown): Promise<MyActionResult> {
+    readonly Post = async (action: string, params?: KeyValue[], data?: unknown): Promise<MyActionResult> => {
         try {
             let url = action
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await api.post(url, data)
+            const response = await this._api.post(url, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -56,7 +103,7 @@ export class AxiosBase {
         }
     }
 
-    static async Put<T>(action: string, data: T, params?: KeyValue[], isRange: boolean = false): Promise<MyActionResult> {
+    readonly Put = async <T>(action: string, data: T, params?: KeyValue[], isRange: boolean = false): Promise<MyActionResult> => {
         try {
             const range = isRange ? '/Range' : ''
 
@@ -65,7 +112,7 @@ export class AxiosBase {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await api.put(url, data)
+            const response = await this._api.put(url, data)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -82,14 +129,14 @@ export class AxiosBase {
         }
     }
 
-    static async Delete(action: string, id: number | bigint, params?: KeyValue[]): Promise<MyActionResult> {
+    readonly Delete = async (action: string, id: number | bigint, params?: KeyValue[]): Promise<MyActionResult> => {
         try {
             let url = `${action}/${id}`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await api.delete(url)
+            const response = await this._api.delete(url)
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {
@@ -106,14 +153,14 @@ export class AxiosBase {
         }
     }
 
-    static async DeleteRange(action: string, ids: number[] | bigint[], params?: KeyValue[]): Promise<MyActionResult> {
+    readonly DeleteRange = async (action: string, ids: number[] | bigint[], params?: KeyValue[]): Promise<MyActionResult> => {
         try {
             let url = `${action}/Range`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await api.delete(url, { data: ids })
+            const response = await this._api.delete(url, { data: ids })
             const actionResult = response.data as MyActionResult
 
             if (actionResult === undefined) {

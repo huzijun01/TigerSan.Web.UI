@@ -1,4 +1,5 @@
-import { IdNameModel, IdNameModelHelper, SelectModel, AxiosHelper } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, IdNameModelHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper } from "../base/AxiosHelper"
 
 /** "组织机构"模型 */
 export class SiteModel extends IdNameModel {
@@ -26,7 +27,7 @@ class SiteHelper extends IdNameModelHelper<SiteModel> {
     readonly GetCount = async (param: {
         company?: bigint,
         type?: bigint
-    }) => await AxiosHelper.GetCount(this._action, {
+    }) => await axiosHelper.GetCount(this._action, {
         filter: {
             filters: [
                 { propName: 'Company', value: param.company },
@@ -41,7 +42,7 @@ class SiteHelper extends IdNameModelHelper<SiteModel> {
         pageNumber?: number
         company?: bigint,
         type?: bigint,
-    }) => await AxiosHelper.GetList<SiteModel>(this._action, {
+    }) => await axiosHelper.GetList<SiteModel>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {
@@ -60,10 +61,10 @@ class SiteHelper extends IdNameModelHelper<SiteModel> {
     })
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属类型”集合 */
-    readonly GetBelongSiteTypeListAsync = async (company?: bigint) => await AxiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongSiteTypeList`,
+    readonly GetBelongSiteTypeListAsync = async (company?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongSiteTypeList`,
         [{ key: 'company', value: company }])
 }
 

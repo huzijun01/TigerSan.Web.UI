@@ -3,7 +3,6 @@ using TigerSan.NET8.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container:
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -39,4 +38,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run(SettingHelper.AppSettings.ListenUrl);

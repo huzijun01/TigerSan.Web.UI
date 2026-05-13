@@ -7,13 +7,17 @@ import { MyActionResult } from "../../models/MyActionResult"
 import { IdNameModel, IdValueModel } from "../../models/SelectModel"
 
 export class AxiosHelper extends AxiosBase {
+    constructor(baseURL: string) {
+        super(baseURL)
+    }
+
     // 列表:
-    static async GetCount(
+    readonly GetCount = async (
         action: string,
         param: {
             params?: KeyValue[],
             filter?: FilterModel
-        }): Promise<number> {
+        }): Promise<number> => {
         try {
             const actionResult = await this.Post(`${action}/Count`, param.params, param.filter)
 
@@ -33,7 +37,7 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    static async GetList<T>(
+    readonly GetList = async <T>(
         action: string,
         param: {
             pageSize?: number,
@@ -43,7 +47,7 @@ export class AxiosHelper extends AxiosBase {
             ascending?: boolean,
             params?: KeyValue[],
             filter?: FilterModel
-        }): Promise<T[]> {
+        }): Promise<T[]> => {
         try {
             const arrParams: KeyValue[] = [
                 { key: 'pageSize', value: param.pageSize },
@@ -71,14 +75,14 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    static async SelectIdValue<T extends IdValueModel>(
+    readonly SelectIdValue = async <T extends IdValueModel>(
         action: string,
         param: {
             isDistinct?: boolean,
             strIdValueList?: string,
             params?: KeyValue[],
             filter?: FilterModel
-        }): Promise<T[]> {
+        }): Promise<T[]> => {
         try {
             const arrParams: KeyValue[] = [{ key: 'isDistinct', value: param.isDistinct }]
             if (param.params) arrParams.push(...param.params)
@@ -101,14 +105,14 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    static async SelectIdName<T extends IdNameModel>(
+    readonly SelectIdName = async <T extends IdNameModel>(
         action: string,
         param: {
             isDistinct?: boolean,
             strIdNameList?: string,
             params?: KeyValue[],
             filter?: FilterModel
-        }): Promise<T[]> {
+        }): Promise<T[]> => {
         try {
             const arrParams: KeyValue[] = [{ key: 'isDistinct', value: param.isDistinct }]
             if (param.params) arrParams.push(...param.params)
@@ -131,7 +135,7 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    static async Add<T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> {
+    readonly Add = async <T>(action: string, data: T, isRange: boolean = false): Promise<MyActionResult> => {
         try {
             const range = isRange ? '/Range' : ''
             const actionResult = await this.Post(`${action}${range}`, undefined, data)
@@ -150,7 +154,7 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    // static async Select<T>(action: string, field: string): Promise<T[]> {
+    // readonly Select = async <T>(action: string, field: string): Promise<T[]> => {
     //     try {
     //         const actionResult = await this.Get(`${action}/Select/${field}}`)
 
