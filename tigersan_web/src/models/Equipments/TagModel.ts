@@ -50,7 +50,7 @@ class TagHelper extends IdModelHelper<TagModel> {
                 { propName: 'Station', value: param.station },
                 { propName: 'IsEnable', value: param.isEnable },
                 { propName: 'OnlineState', value: param.state },
-                { propName: 'TagId', value: param.tagId },
+                { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
             ],
         }
     })
@@ -82,7 +82,7 @@ class TagHelper extends IdModelHelper<TagModel> {
                 { propName: 'Station', value: param.station },
                 { propName: 'IsEnable', value: param.isEnable },
                 { propName: 'OnlineState', value: param.state },
-                { propName: 'TagId', value: param.tagId },
+                { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
             ],
         }
     })

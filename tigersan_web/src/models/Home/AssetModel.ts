@@ -64,7 +64,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
                 { propName: 'State', value: param.state },
                 { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'ErrorType', value: param.errorType },
-                { propName: 'AssetId', value: param.assetId },
+                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
             ],
         }
     })
@@ -96,7 +96,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
                 { propName: 'State', value: param.state },
                 { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'ErrorType', value: param.errorType },
-                { propName: 'AssetId', value: param.assetId },
+                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
             ],
         }
     })

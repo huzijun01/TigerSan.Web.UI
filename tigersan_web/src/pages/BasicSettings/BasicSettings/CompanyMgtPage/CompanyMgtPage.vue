@@ -23,10 +23,10 @@
             <!-- 内容: -->
             <div class="content-panel">
                 <div class="left-panel">
-                    <Tree :model="form.tree"></Tree>
+                    <Tree :model="form.tree" />
                 </div>
                 <div class="right-panel">
-                    <CompanyInfo v-if="tree.IsActive.value" :model="tree.ActiveData.value"></CompanyInfo>
+                    <CompanyInfo v-if="tree.IsActive.value" :model="tree.ActiveData.value" />
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@ onMounted(() => {
     grid-template-columns: auto 1fr;
 
     .left-panel {
-        width: 350px;
+        width: 360px;
         margin-right: 15px;
         overflow: auto;
     }

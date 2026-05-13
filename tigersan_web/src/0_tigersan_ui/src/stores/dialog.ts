@@ -21,7 +21,11 @@ function ShowDialog(
   background: string = Colors.Brand) {
   let { dialogModels } = useDialogStore()
 
-  dialogModels.push(new DialogModel(title, msg, data, callback, mode, background))
+  var strMsg = msg.toString().trim()
+
+  if (dialogModels.some(m => m.Msg.value === strMsg)) return
+
+  dialogModels.push(new DialogModel(title, strMsg, data, callback, mode, background))
 }
 
 function ShowInformation(msg: string) {

@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 
 namespace TigerSan.NET8.WebApi.Share.Extensions
@@ -26,18 +26,6 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
 
     public static class IQueryableExtendion
     {
-        #region 【OrderBy】
-        /// <summary>排序</summary>
-        public static MethodInfo? OrderBy(bool ascending = true)
-        {
-            var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
-
-            return typeof(Queryable)
-                .GetMethods()
-                .FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2);
-        }
-        #endregion 【OrderBy】
-
         #region 【Where】
         private static readonly Lazy<MethodInfo?> _cachedWhereMethod = new Lazy<MethodInfo?>(GetWhereMethod, true);
 
@@ -84,69 +72,103 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
         #endregion
         #endregion 【Where】
 
-        #region 【Helpers】
-        #region 转换类型
-        /// <summary>转换类型</summary>
-        public static bool TryParse(Type type, string? input, out object result)
+        #region 【OrderBy】
+        /// <summary>排序</summary>
+        public static MethodInfo? OrderBy(bool ascending = true)
         {
-            result = new object();
-            try
-            {
-                if (input == null) return false;
+            var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
 
-                Type underlyingType = Nullable.GetUnderlyingType(type) ?? type;
-
-                if (underlyingType.IsEnum)
-                {
-                    return TryParseEnum(underlyingType, input, out result);
-                }
-
-                var converter = TypeDescriptor.GetConverter(underlyingType);
-                if (converter == null || !converter.IsValid(input)) return false;
-
-                var convertedValue = converter.ConvertFromString(input);
-                if (convertedValue == null) return false;
-
-                result = convertedValue;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return typeof(Queryable)
+                .GetMethods()
+                .FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2);
         }
-        #endregion
+        #endregion 【OrderBy】
 
-        #region 转换“枚举”
-        /// <summary>转换“枚举”</summary>
-        private static bool TryParseEnum(Type enumType, string input, out object result)
+        #region 【Others】
+        #region 获取“OR”表达式
+        /// <summary>获取“OR”表达式</summary>
+        private static Expression GetOrExpression(
+            ParameterExpression parameter,
+            Expression property,
+            Type propertyType,
+            List<object> values)
         {
-            result = new object();
-            try
+            Func<object, Expression> selector = obj =>
             {
-                if (char.IsDigit(input[0]) || input.StartsWith("-") && char.IsDigit(input[1]))
+                if (propertyType == typeof(string))
                 {
-                    if (Enum.IsDefined(enumType, Convert.ToInt32(input)))
-                    {
-                        result = Enum.ToObject(enumType, Convert.ToInt32(input));
-                        return true;
-                    }
+                    if (string.IsNullOrEmpty(obj.ToString()))
+                        return Expression.Constant(false);
+
+                    return Expression.Equal(
+                        Expression.Call(property, MethodPicker.ToLower),
+                        Expression.Constant(obj.ToString()?.ToLower(), typeof(string))
+                    );
                 }
                 else
                 {
-                    var enumValue = Enum.Parse(enumType, input, ignoreCase: true);
-                    result = enumValue;
-                    return true;
+                    var res = ObjectHelper.TryParse(propertyType, obj.ToString(), out var convertedValue);
+                    if (res == false)
+                        return MethodPicker.GetThrow($"TryParse error!({propertyType.Name})");
+
+                    return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
                 }
-                return false;
-            }
-            catch
+            };
+
+            return values.Select(selector).Aggregate(Expression.OrElse);
+        }
+        #endregion
+
+        #region 获取“Contains”表达式
+        /// <summary>获取“Contains”表达式</summary>
+        private static Expression GetContainsExpression(
+            ParameterExpression parameter,
+            Expression property,
+            Type propertyType,
+            List<object> values)
+        {
+            if (propertyType == typeof(string))
             {
-                return false;
+                // 字符串类型：全部转小写
+                var convertedValues = values.Select(v => v.ToString()?.ToLower()).ToArray();
+
+                // 构建：values.Contains(x.Prop.ToLower())
+                var valuesConstant = Expression.Constant(convertedValues, typeof(string[]));
+                var toLowerCall = Expression.Call(property, MethodPicker.ToLower);
+
+                var containsMethod = typeof(Enumerable)
+                    .GetMethods()
+                    .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                    .MakeGenericMethod(typeof(string));
+
+                return Expression.Call(containsMethod, valuesConstant, toLowerCall);
+            }
+            else
+            {
+                // 创建强类型数组：
+                var convertedValues = Array.CreateInstance(propertyType, values.Count);
+
+                for (int i = 0; i < values.Count; i++)
+                {
+                    var res = ObjectHelper.TryParse(propertyType, values[i].ToString(), out var converted);
+                    if (res == false)
+                        return MethodPicker.GetThrow($"TryParse error!({propertyType.Name})");
+                    convertedValues.SetValue(converted, i);
+                }
+
+                // 构建：values.Contains(x.Prop)
+                var valuesConstant = Expression.Constant(convertedValues, propertyType.MakeArrayType());
+
+                var containsMethod = typeof(Enumerable)
+                    .GetMethods()
+                    .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                    .MakeGenericMethod(propertyType);
+
+                return Expression.Call(containsMethod, valuesConstant, property);
             }
         }
         #endregion
-        #endregion 【Helpers】
+        #endregion 【Others】
 
         #region 不选择
         /// <summary>不选择</summary>
@@ -257,10 +279,6 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 if (string.IsNullOrEmpty(filter.PropName))
                     return MyResults<IQueryable>.Error(LogHelper.Instance.IsNullOrEmpty(nameof(filter.PropName)));
 
-                // 不选择:
-                if (filter.Values.Count() < 1)
-                    return MyResults<IQueryable>.Success(null, queryable.False());
-
                 // 获取“属性信息”:
                 var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                 if (propertyInfo == null)
@@ -274,33 +292,27 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 var property = Expression.Property(parameter, propertyInfo);
                 var propertyType = propertyInfo.PropertyType;
 
-                // 创建“=”表达式:
-                Func<object, Expression> selector;
+                // 值去重:
+                var values = filter.Values.Distinct().ToList();
                 if (propertyType == typeof(string))
                 {
-                    if (string.IsNullOrEmpty(filter.Value?.ToString()))
-                        return MyResults<IQueryable>.Success(null, queryable);
-
-                    selector = obj => Expression.Equal(
-                        Expression.Call(property, MethodPicker.ToLower),
-                        Expression.Constant(obj.ToString()?.ToLower(), typeof(string))
-                    );
+                    values = values.Where(v => v != null && !string.IsNullOrEmpty(v.ToString())).ToList();
                 }
-                else
+
+                // 不选择:
+                if (values.Count < 1)
+                    return MyResults<IQueryable>.Success(null, queryable.False());
+
+                Expression body;
+
+                if (values.Count > 10) // 超过10个值，使用 Contains（避免栈溢出）
                 {
-                    selector = obj =>
-                    {
-                        var res = TryParse(propertyType, obj.ToString(), out var convertedValue);
-                        if (res == false)
-                            return MethodPicker.GetThrow($"TryParse error!({propertyType.Name})");
-
-                        return Expression.Equal(property, Expression.Constant(convertedValue, propertyType));
-                    };
+                    body = GetContainsExpression(parameter, property, propertyType, values);
                 }
-
-                // 创建“OR”表达式:
-                var values = filter.Values.Distinct().ToList();
-                var body = values.Select(selector).Aggregate(Expression.OrElse);
+                else // 值少的时候用原来的 OR（性能更好）
+                {
+                    body = GetOrExpression(parameter, property, propertyType, values);
+                }
 
                 // 创建“Lambda”表达式:
                 var lambda = Expression.Lambda(body, parameter);
