@@ -55,13 +55,15 @@ function Close(id: string, state: DialogState) {
 
 <style lang="less" scoped>
 .dialog-mask {
+    z-index: 99999;
+
     .pop-panel {
         /* 显示 */
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
         /* 位置 */
-        position: relative;
+        position: absolute;
         /* 尺寸 */
         min-width: 200px;
         min-height: 100px;

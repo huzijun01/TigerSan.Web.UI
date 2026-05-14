@@ -27,6 +27,7 @@ export class AssetModel extends AssetBaseModel {
     typeName = ''
     stateName = ''
     tagId? = ''
+    rfid? = ''
     siteName? = ''
     battery?: number
     // 计算:

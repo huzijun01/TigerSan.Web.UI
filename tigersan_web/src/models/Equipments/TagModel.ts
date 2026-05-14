@@ -10,6 +10,7 @@ export class TagModel extends IdModel {
     onlineState = OnlineStates.Offline
     tagId = ''
     brandId? = ''
+    rfid? = ''
     battery?: number
     signal?: number
     temperature?: number

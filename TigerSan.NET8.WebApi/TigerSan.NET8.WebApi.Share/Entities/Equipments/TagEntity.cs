@@ -23,6 +23,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string? BrandId { get; set; } = string.Empty;
         [SnakeColumn]
+        public string? Rfid { get; set; } = string.Empty;
+        [SnakeColumn]
         public int? Battery { get; set; }
         [SnakeColumn]
         public int? Signal { get; set; }

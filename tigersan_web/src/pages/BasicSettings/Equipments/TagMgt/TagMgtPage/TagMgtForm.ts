@@ -80,6 +80,14 @@ const configBrandId: FormItemConfig<TagModel, string> = {
     Target: ref(),
 }
 
+/** “RFID”项目配置 */
+const configRFID: FormItemConfig<TagModel, string> = {
+    _propName: 'rfid',
+    PropText: 'RFID',
+    IsEquired: false,
+    Target: ref(),
+}
+
 /** “备注”项目配置 */
 const configComment: FormItemConfig<TagModel, string> = {
     _propName: 'comment',
@@ -115,6 +123,7 @@ let configTagForm: FormConfig<TagModel> = {
         configType,
         configBrandId,
         configTagId,
+        configRFID,
         configComment,
     ]
 }
@@ -334,6 +343,7 @@ export const tagMgtForm = {
     configType,
     configBrandId,
     configTagId,
+    configRFID,
     configComment,
     tagForm,
     Refresh,

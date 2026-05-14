@@ -69,6 +69,11 @@
             </FormItem>
         </FormRow>
         <FormRow>
+            <FormItem :model="form.configRFID.ItemModel">
+                <input type="text" v-model="form.configRFID.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="form.configComment.ItemModel">
                 <input type="text" v-model="form.configComment.Target.value">
             </FormItem>

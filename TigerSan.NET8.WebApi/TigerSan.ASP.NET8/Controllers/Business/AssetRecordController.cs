@@ -63,14 +63,14 @@ namespace TigerSan.NET8.WebApi.Controllers
             if (tag == null)
             {
                 LogHelper.Instance.IsNull(nameof(tag));
-                return MyResults<object>.ResourceNotExist;
+                return MyResults<object>.TagNotFound(asset.AssetId);
             }
 
             var station = (await _baseStationService.Get(entity.Station ?? 0)).Data;
             if (station == null)
             {
                 LogHelper.Instance.IsNull(nameof(station));
-                return MyResults<object>.ResourceNotExist;
+                return MyResults<object>.BaseStationNotFound(asset.AssetId);
             }
 
             BluetoothTagPackage package = new BluetoothTagPackage();

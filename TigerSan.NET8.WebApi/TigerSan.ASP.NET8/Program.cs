@@ -25,10 +25,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.Urls.Add(SettingHelper.AppSettings.ListenUrl);
-}
 
 SseInstance.InitInstance(app.Services).StartListening();
 

@@ -332,6 +332,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         else
                         {
                             dto.TagId = tag.TagId;
+                            dto.Rfid = tag.Rfid;
                         }
                     }
 

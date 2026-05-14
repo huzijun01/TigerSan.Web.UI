@@ -50,7 +50,7 @@ table {
 }
 
 .form-panel {
-    position: relative;
+    position: absolute;
     display: flex;
     flex-direction: column;
     max-width: 95vw;

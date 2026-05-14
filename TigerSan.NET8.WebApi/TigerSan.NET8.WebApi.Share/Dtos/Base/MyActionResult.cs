@@ -25,6 +25,7 @@
         public static MyActionResult<TData> ResourceBeenOccupied { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource have been occupied!"); }
         public static MyActionResult<TData> NameRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The name cannot be repeated!"); }
         public static MyActionResult<TData> BrandIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The BrandId cannot be repeated!"); }
+        public static MyActionResult<TData> RfidRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The RFID cannot be repeated!"); }
         public static MyActionResult<TData> TagRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The Tag cannot be repeated!"); }
         public static MyActionResult<TData> UserNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "User does not exist!"); }
         public static MyActionResult<TData> PasswordIncorrect { get => new MyActionResult<TData>(ActionResultCode.Error, "The password is incorrect!"); }
@@ -43,6 +44,7 @@
         public static MyActionResult<TData> IsNull(string name) { return new MyActionResult<TData>(ActionResultCode.Error, $"The {name} is null!"); }
         public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
         public static Func<string, MyActionResult<TData>> TagNotFound = tagId => new MyActionResult<TData>(ActionResultCode.Error, $"The tag not found! ({tagId})");
+        public static Func<string, MyActionResult<TData>> BaseStationNotFound = stationId => new MyActionResult<TData>(ActionResultCode.Error, $"The base station not found! ({stationId})");
         public static Func<string, MyActionResult<TData>> NoAssetRecord = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"No asset record! ({assetId})");
         public static Func<string, MyActionResult<TData>> NotInbound = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the Inbound state! ({assetId})");
         public static Func<string, MyActionResult<TData>> NotInStoreOrStolid = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the InStore or Stolid state! ({assetId})");

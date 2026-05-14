@@ -176,27 +176,33 @@ class FormModel<TSource extends object> {
 
     /** 初始化
      * （“Form”显示后会自动调用） */
-    Init() {
-        const init = () => {
-            // 获取“源数据”:
-            this._source = this._getSource()
-            // 更新“目标数据”:
-            this.UpdateTargets()
-            // 初始化“验证状态”:
-            this.InitVerifyState()
-        }
+    readonly Init = async () => {
+        try {
+            loading.IsShow.value = true
 
-        if (this._beforeInitAsync) {
-            this._beforeInitAsync(this._isEdit).then(init)
-        } else {
-            this._beforeInit?.(this._isEdit)
-            init()
+            const init = () => {
+                // 获取“源数据”:
+                this._source = this._getSource()
+                // 更新“目标数据”:
+                this.UpdateTargets()
+                // 初始化“验证状态”:
+                this.InitVerifyState()
+            }
+
+            if (this._beforeInitAsync) {
+                await this._beforeInitAsync(this._isEdit).then(init)
+            } else {
+                this._beforeInit?.(this._isEdit)
+                init()
+            }
+        } finally {
+            loading.IsShow.value = false
         }
     }
 
     /** 初始化“验证状态”
      * （“Form”显示后会自动调用） */
-    InitVerifyState() {
+    readonly InitVerifyState = () => {
         this.ForEachItemModels(itemModel => {
             itemModel.VerifyText.value = ''
             itemModel.VerifyResult.value = FormResult.OK
@@ -204,7 +210,7 @@ class FormModel<TSource extends object> {
     }
 
     /** 更新“目标数据”集合 */
-    UpdateTargets() {
+    readonly UpdateTargets = () => {
         this.ForEachItemModels(itemModel => {
             itemModel.UpdateTarget()
         })

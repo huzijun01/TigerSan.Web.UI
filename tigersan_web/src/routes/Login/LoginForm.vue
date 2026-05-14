@@ -37,10 +37,10 @@ import { onMounted } from 'vue'
 import { useUserInfo } from '@/stores'
 import { Texts, Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
 
-onMounted(() => {
+onMounted(async () => {
   const userInfo = useUserInfo()
   userInfo.Clear()
-  form.loginForm.Init()
+  await form.loginForm.Init()
 })
 </script>
 

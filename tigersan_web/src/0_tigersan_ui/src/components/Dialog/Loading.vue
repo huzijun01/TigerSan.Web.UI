@@ -10,8 +10,10 @@ import { Icons } from '../../base'
 
 <style lang="less" scoped>
 .loading {
+    z-index: 9999;
+
     .icon {
-        position: relative;
+        position: absolute;
         font-size: 50px;
         color: var(--theme-brand);
         transform-origin: center;

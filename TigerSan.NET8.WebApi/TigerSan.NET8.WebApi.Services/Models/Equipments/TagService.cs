@@ -327,6 +327,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 return MyResults<object>.BrandIdRepeated;
             }
 
+            // 检验“RFID”是否重复:
+            if (!string.IsNullOrEmpty(entity.Rfid) && await _dbSet.AnyAsync(i => i.Rfid == entity.Rfid))
+            {
+                return MyResults<object>.RfidRepeated;
+            }
+
             return await base.Add(entity, isBeginTransaction);
         }
         #endregion
@@ -336,10 +342,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
         public override async Task<MyActionResult<object>> AddRange(List<TagEntity> entities, bool isBeginTransaction = true)
         {
             // 检验“标牌ID”是否重复:
-            var names = entities.Where(e => !string.IsNullOrEmpty(e.BrandId)).Select(e => e.BrandId).ToList();
-            if (await _dbSet.AnyAsync(i => names.Contains(i.BrandId)))
+            var brandIds = entities.Where(e => !string.IsNullOrEmpty(e.BrandId)).Select(e => e.BrandId).ToList();
+            if (await _dbSet.AnyAsync(i => brandIds.Contains(i.BrandId)))
             {
                 return MyResults<object>.BrandIdRepeated;
+            }
+
+            // 检验“RFID”是否重复:
+            var rfids = entities.Where(e => !string.IsNullOrEmpty(e.Rfid)).Select(e => e.Rfid).ToList();
+            if (await _dbSet.AnyAsync(i => rfids.Contains(i.Rfid)))
+            {
+                return MyResults<object>.RfidRepeated;
             }
 
             return await base.AddRange(entities, isBeginTransaction);
@@ -368,6 +381,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (!string.IsNullOrEmpty(entity.BrandId) && await _dbSet.AnyAsync(i => i.BrandId == entity.BrandId && i.Id != entity.Id))
                 {
                     return MyResults<object>.BrandIdRepeated;
+                }
+
+                // 检验“RFID”是否重复:
+                if (!string.IsNullOrEmpty(entity.Rfid) && await _dbSet.AnyAsync(i => i.Rfid == entity.Rfid && i.Id != entity.Id))
+                {
+                    return MyResults<object>.RfidRepeated;
                 }
 
                 // 修改“数据”:
@@ -422,6 +441,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (!string.IsNullOrEmpty(entity.BrandId) && await _dbSet.AnyAsync(i => i.BrandId == entity.BrandId && i.Id != entity.Id))
                     {
                         return MyResults<object>.BrandIdRepeated;
+                    }
+
+                    // 检验“RFID”是否重复:
+                    if (!string.IsNullOrEmpty(entity.Rfid) && await _dbSet.AnyAsync(i => i.Rfid == entity.Rfid && i.Id != entity.Id))
+                    {
+                        return MyResults<object>.RfidRepeated;
                     }
 
                     // 修改“数据”:
