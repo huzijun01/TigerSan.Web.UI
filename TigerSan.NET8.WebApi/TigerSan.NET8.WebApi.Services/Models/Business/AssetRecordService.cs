@@ -453,6 +453,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         else
                         {
                             // 新增“出库记录”：
+                            lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
                             resOutbound = await Add(lastRecord, false);
                         }
 
