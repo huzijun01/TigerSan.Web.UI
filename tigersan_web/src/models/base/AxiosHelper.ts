@@ -1,4 +1,4 @@
-import { Constants } from "@/constants"
+import { Settings } from "@/settings"
 import { AxiosHelper } from "@/0_tigersan_ui/tigerui"
 
-export const axiosHelper = new AxiosHelper(Constants.API_BASE_URL)
+export const axiosHelper = new AxiosHelper(Settings.AppBaseUrl)

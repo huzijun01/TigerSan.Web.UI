@@ -14,5 +14,6 @@ declare module 'vue' {
     Company: typeof import('./src/components/Company.vue')['default']
     Counter: typeof import('./src/components/Counter.vue')['default']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+    Map: typeof import('./src/components/Map.vue')['default']
   }
 }

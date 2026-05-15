@@ -1,6 +1,7 @@
 import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from './Authorities'
 import AssetLedgerPage from '@/pages/Home/AssetLedgerPage/AssetLedgerPage.vue'
+import AssetMapPage from '@/pages/Home/AssetMapPage/AssetMapPage.vue'
 
 export const navHome: NavFolderConfig = {
     Folders: [
@@ -22,7 +23,7 @@ export const navHome: NavFolderConfig = {
                     Title: "资产地图",
                     Icon: Icons.Global_Linear,
                     IsSelected: false,
-                    _component: undefined,
+                    _component: AssetMapPage,
                     _authority: Authorities.AssetMapPage,
                 },
                 {
