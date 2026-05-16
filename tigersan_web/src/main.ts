@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 import { MapModel } from './models'
 import { Settings } from './settings'
 
-await MapModel.LoadAsync(Settings.SecretKey, Settings.AppKey)
+await MapModel.LoadAsync(Settings.AppKey)
 
 const app = createApp(App)
 
