@@ -3,7 +3,7 @@ import { ComponentHelper } from "./ComponentHelper"
 
 export class PanelBehavior {
     //#region 【Fields】
-    private _panel?: Element
+    private _panel?: HTMLElement
     private readonly _id: string
     private readonly _component: Component
     private readonly _getContent: () => App<any> | undefined
@@ -30,7 +30,7 @@ export class PanelBehavior {
         const id = this._id
         const dom = document.querySelector(`#${id}`)
         if (dom) {
-            this._panel = dom
+            this._panel = dom as HTMLElement
         }
 
         if (!this._panel) {
@@ -38,6 +38,8 @@ export class PanelBehavior {
             this._panel.id = id
             document.body.appendChild(this._panel)
         }
+
+        this._panel.style = 'position: relative;'
     }
 
     /** 添加内容 */

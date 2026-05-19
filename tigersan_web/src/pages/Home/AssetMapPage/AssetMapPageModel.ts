@@ -16,10 +16,12 @@ export const map = new MapModel(undefined, ThemeHelper.IsDark)
 map._onInitAsync = async () => {
     const placeSearch = await MapModel.GetPlaceSearchAsync(res => {
         selectAddr.SetItems(res.poiList.pois)
+        selectAddr.IsLoading.value = false
     })
 
     if (placeSearch) {
         selectAddr._onSearchTextChange = search => {
+            selectAddr.IsLoading.value = true
             placeSearch.search(search)
         }
     }

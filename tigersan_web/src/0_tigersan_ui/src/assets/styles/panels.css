@@ -72,6 +72,8 @@
 .pop-mask {
   /* 位置 */
   position: absolute;
+  top: 0 !important;
+  left: 0 !important;
   /* 显示 */
   display: flex;
   /* 对齐 */

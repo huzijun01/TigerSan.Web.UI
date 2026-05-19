@@ -1,11 +1,23 @@
 <template>
     <div class="loading pop-mask">
-        <div class="icon iconfont">{{ Icons.Loading_Dot }}</div>
+        <div class="icon iconfont" :style="styleObj">{{ Icons.Loading_Dot }}</div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { Icons } from '../../base'
+
+// 字段:
+const { fontSize } = defineProps({
+    fontSize: {
+        type: Number,
+        default: 50
+    }
+})
+
+const styleObj = {
+    'font-size': `${fontSize}px`
+}
 </script>
 
 <style lang="less" scoped>
@@ -14,7 +26,6 @@ import { Icons } from '../../base'
 
     .icon {
         position: absolute;
-        font-size: 50px;
         color: var(--theme-brand);
         transform-origin: center;
         animation: rotate 1.5s linear infinite;

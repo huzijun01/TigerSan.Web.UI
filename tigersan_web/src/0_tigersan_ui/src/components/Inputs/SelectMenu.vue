@@ -8,13 +8,15 @@
             </div>
         </div>
         <div v-if="model.IsNoContent.value" class="placeholder flex-center">{{ Texts.NoContent.value }}</div>
+        <Loading v-if="model.IsLoading.value" :fontSize="15" :style="model.menuStyleObj.value" />
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref, watch } from 'vue';
+import { onUnmounted, ref, watch } from 'vue'
 import { Texts } from '../../texts'
 import { SelectModel } from '../../models'
+import Loading from '../Dialog/Loading.vue'
 
 // 字段:
 const { model } = defineProps({

@@ -93,12 +93,16 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     readonly Width = ref(208)
     /** 是否“充满父容器” */
     readonly IsFull = ref(false)
+    /** 菜单最小高度 */
+    readonly MenuMinHeight = ref(30)
     /** 菜单最大高度 */
     readonly MenuMaxHeight = ref(300)
     /** 是否“打开” */
     readonly IsOpen = ref(false)
     /** 是否“启用” */
     readonly IsEnabled = ref(true)
+    /** 是否“正在加载” */
+    readonly IsLoading = ref(false)
     /** 是否“允许搜索” */
     readonly IsAllowSearch = ref(false)
     /** 是否“允许多选” */
@@ -166,10 +170,12 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     readonly menuStyleObj = computed(() => {
         const obj = {
             width: `${this.Width.value}px`,
+            minHeight: `${this.MenuMinHeight.value}px`,
             maxHeight: `${this.MenuMaxHeight.value}px`,
             left: '',
             top: '',
             bottom: '',
+            overflow: this.IsLoading.value ? 'hidden' : 'auto'
         }
 
         if (this.isTopOpen.value) {
@@ -193,7 +199,10 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
 
         watch(this.SearchText, search => {
             if (!this._onSearchTextChange || search === '') {
-                this._timer.Stop()
+                if (this._timer.IsStarted) {
+                    this.Clear()
+                    this._timer.Stop()
+                }
                 return
             }
 
@@ -276,6 +285,11 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     readonly SetItems = (items: TSource[]) => {
         this.Items.splice(0)
         this.Items.push(...items)
+    }
+
+    /** 清空“项目集合” */
+    readonly Clear = () => {
+        this.Items.splice(0)
     }
     //#endregion 【Functions】
 }
