@@ -195,7 +195,7 @@ export class MapModel {
         }
 
         if (!opts1.mapStyle) {
-            opts1.mapStyle = this.IsDark ? MapStyle.grey : undefined
+            opts1.mapStyle = this.IsDark.value ? MapStyle.grey : undefined
         }
 
         this._map = new AMap.Map(this.refContainer.value, opts1)
