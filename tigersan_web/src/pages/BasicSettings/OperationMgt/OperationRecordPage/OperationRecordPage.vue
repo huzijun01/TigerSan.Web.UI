@@ -16,7 +16,7 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="Refresh">刷新</button>
+                        <button class="bg-success" @click="Refresh">{{ Texts.Refresh.value }}</button>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import select from './OperationRecordSelect'
 import { operationRecordTable } from './OperationRecordTable'
-import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker } from '@/0_tigersan_ui/tigerui'
+import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 

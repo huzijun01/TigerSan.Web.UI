@@ -50,9 +50,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add(AdminEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<AdminEntity>> Add(AdminEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -63,14 +62,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return MyResults<AdminEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<AdminEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return res;
         }
         #endregion
         #endregion [增]

@@ -16,14 +16,14 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
                         <button @click="form.Add">+ 导入设备</button>
                     </div>
                     <div class="row-panel">
                         <button :disabled="!IsOnlySelected" @click="SetTime">授时</button>
                         <button :disabled="!IsOnlySelected" @click="PowerOff">关机</button>
                         <button :disabled="!IsOnlySelected" @click="OTA_Update">OTA升级</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>

@@ -23,12 +23,12 @@
                         <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Outbound">出库</button>
                     </div>
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">新增</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                            :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                            :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -108,7 +108,7 @@ import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { assetLedgerForm as form } from './AssetLedgerForm'
 import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetLedgerTable'
-import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow } from '@/0_tigersan_ui/tigerui'
+import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = assetLedgerTable

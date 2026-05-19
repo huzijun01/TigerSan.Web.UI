@@ -1,4 +1,6 @@
-﻿namespace TigerSan.NET8.WebApi.Share.Dtos
+﻿using TigerSan.NET8.WebApi.Share.Extensions;
+
+namespace TigerSan.NET8.WebApi.Share.Dtos
 {
     #region 结果码
     public enum ActionResultCode
@@ -40,6 +42,7 @@
         public static MyActionResult<TData> Success(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Success, msg ?? OperationSuccess.Message, data); }
         public static MyActionResult<TData> Warning(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Warning, msg ?? nameof(Warning), data); }
         public static MyActionResult<TData> Error(string msg) { return new MyActionResult<TData>(ActionResultCode.Error, msg); }
+        public static MyActionResult<TData> ParentCompanyNotExist(long id, long parent) { return new MyActionResult<TData>(ActionResultCode.Error, $"The parent company does not exist! ({id}, {parent})"); }
         public static MyActionResult<TData> InvalidToken(string msg) { return new MyActionResult<TData>(ActionResultCode.InvalidToken, msg); }
         public static MyActionResult<TData> IsNull(string name) { return new MyActionResult<TData>(ActionResultCode.Error, $"The {name} is null!"); }
         public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
@@ -55,11 +58,11 @@
 
     public class MyActionResult<TData>
     {
-        #region 【Functions】
+        #region 【Properties】
         public bool IsSuccess { get => Code == ActionResultCode.Success; }
         public bool IsWarning { get => Code == ActionResultCode.Warning; }
         public bool IsError { get => Code == ActionResultCode.Error; }
-        #endregion 【Functions】
+        #endregion 【Properties】
 
         #region 【Properties】
         /// <summary>结果码</summary>
@@ -88,5 +91,16 @@
             Data = data;
         }
         #endregion 【Ctor】
+
+        #region 【Functions
+        #region 转换
+        public MyActionResult<TData1> Convert<TData1>()
+        {
+            var res = new MyActionResult<TData1>();
+            res.ShallowCopy(this);
+            return res;
+        }
+        #endregion
+        #endregion 【Functions】
     }
 }

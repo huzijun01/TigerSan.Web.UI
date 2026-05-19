@@ -2,6 +2,8 @@ export class TimerHelper {
     //#region 【Fields】
     /** 定时器ID */
     private _id?: number
+    /** 是否重复触发 */
+    private _isRepeat: boolean
     /** 执行方法 */
     _handler: TimerHandler
     /** 间隔时间 */
@@ -16,9 +18,13 @@ export class TimerHelper {
     //#endregion 【Properties】
 
     //#region 【Ctor】
-    constructor(handler: TimerHandler, timeout: number) {
+    constructor(
+        handler: TimerHandler,
+        timeout: number,
+        isRepeat: boolean = true) {
         this._handler = handler
         this._timeout = timeout
+        this._isRepeat = isRepeat
     }
     //#endregion 【Ctor】
 
@@ -26,13 +32,21 @@ export class TimerHelper {
     /** 开始 */
     readonly Start = () => {
         this.Stop()
-        this._id = setInterval(this._handler, this._timeout)
+        this._id = this._isRepeat
+            ? setInterval(this._handler, this._timeout)
+            : setTimeout(this._handler, this._timeout)
     }
 
     /** 停止 */
     readonly Stop = () => {
         if (this._id === undefined) return
-        clearInterval(this._id)
+
+        if (this._isRepeat) {
+            clearInterval(this._id)
+        } else {
+            clearTimeout(this._id)
+        }
+
         this._id = undefined
     }
 

@@ -7,10 +7,10 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="model.Refresh">刷新</button>
-                        <button @click="model.Add">新增</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
+                        <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button @click="model.Add">{{ Texts.Add.value }}</button>
+                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -43,6 +43,7 @@ import Pagination from './Pagination/Pagination.vue'
 import PopForm from './Form/PopForm.vue'
 import FormRow from './Form/FormRow.vue'
 import FormItem from './Form/FormItem.vue'
+import { Texts } from '@/0_tigersan_ui/tigerui'
 import { DictionaryModel } from '../models/DictionaryModel'
 import { DictionaryHelper } from '../helpers/DictionaryHelper'
 

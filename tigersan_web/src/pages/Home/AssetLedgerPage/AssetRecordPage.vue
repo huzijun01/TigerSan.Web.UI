@@ -6,12 +6,12 @@
             </div>
             <div class="button-panel">
                 <div class="row-panel">
-                    <button class="bg-success" @click="model.Refresh">刷新</button>
-                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">新增</button>
+                    <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
+                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">{{ Texts.Add.value }}</button>
                     <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-warning"
-                        :disabled="!IsOnlySelected" @click="model.Edit">修改</button>
+                        :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
                     <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-danger"
-                        :disabled="!IsOnlySelected" @click="model.Delete">删除</button>
+                        :disabled="!IsOnlySelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@ import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { AssetRecordPageModel } from './AssetRecordPageModel'
 import { assetRecordTable, pagination } from './AssetRecordTable'
-import { Select, Table, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
+import { Select, Table, Pagination, PopForm, FormRow, FormItem, Texts } from '@/0_tigersan_ui/tigerui'
 
 const { model } = defineProps({
     model: {

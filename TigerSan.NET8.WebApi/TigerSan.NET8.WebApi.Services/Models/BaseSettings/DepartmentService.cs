@@ -105,9 +105,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add(DepartmentEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<DepartmentEntity>> Add(DepartmentEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -115,7 +114,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 验证“名称是否重复”：
                 if (await _dbSet.AnyAsync(i => i.Company == entity.Company && i.Name == entity.Name))
                 {
-                    return MyResults<object>.NameRepeated;
+                    return MyResults<DepartmentEntity>.NameRepeated;
                 }
 
                 entity.UpdateId();
@@ -123,14 +122,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return MyResults<DepartmentEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<DepartmentEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return res;
         }
         #endregion
 

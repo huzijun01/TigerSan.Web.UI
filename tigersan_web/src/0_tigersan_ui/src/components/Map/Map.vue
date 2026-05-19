@@ -1,10 +1,10 @@
 <template>
-    <div class="map-container" ref="refContainer" :id="model._id"></div>
+    <div class="map-container" ref="refContainer"></div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, type PropType } from "vue"
-import { MapModel } from "@/models"
+import { MapModel } from "../../models/Map/MapModel"
 
 //字段:
 const { model } = defineProps({
@@ -17,7 +17,7 @@ const { model } = defineProps({
 const { refContainer } = model
 
 onMounted(async () => {
-    model.Init()
+    await model.InitAsync()
 })
 
 onUnmounted(() => {

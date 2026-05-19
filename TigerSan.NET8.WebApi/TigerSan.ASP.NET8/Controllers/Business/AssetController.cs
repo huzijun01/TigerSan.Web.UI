@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Attributes;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
@@ -37,6 +37,19 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.SelectIdValue(i => i.AssetId, isDistinct, filter);
         }
+
+        [HttpPost]
+        [Route("PositionList")]
+        /// <summary>获取“位置”集合</summary>
+        public async Task<MyActionResult<List<AssetPosition>>> GetPositionList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            return await _service.GetPositionList(pageSize, pageNumber, sort, ascending, filter);
+        }
         #endregion [查]
 
         #region [增]
@@ -44,9 +57,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Unused")]
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add([FromBody] AssetEntity entity)
+        public override async Task<MyActionResult<AssetEntity>> Add([FromBody] AssetEntity entity)
         {
-            return MyResults<object>.ApiUnavailable;
+            return MyResults<AssetEntity>.ApiUnavailable;
         }
 
         [HttpPost]
@@ -60,7 +73,7 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         [HttpPost]
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult<object>> Add([FromBody] AssetDto dto)
+        public async Task<MyActionResult<AssetEntity>> Add([FromBody] AssetDto dto)
         {
             return await _service.Add(dto);
         }

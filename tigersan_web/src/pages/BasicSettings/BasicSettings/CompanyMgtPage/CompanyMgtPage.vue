@@ -10,12 +10,12 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">新增</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!tree.IsActive.value" @click="form.Edit">修改</button>
+                            :disabled="!tree.IsActive.value" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!tree.IsActive.value" @click="form.Delete">删除</button>
+                            :disabled="!tree.IsActive.value" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@ import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { companyMgtForm as form } from './CompanyMgtForm'
 import { tree, selectCompany, selectParentCompany } from './CompanyMgtTable'
-import { PageCard, PopForm, FormRow, FormItem, Tree, Select } from '@/0_tigersan_ui/tigerui'
+import { PageCard, PopForm, FormRow, FormItem, Tree, Select, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 

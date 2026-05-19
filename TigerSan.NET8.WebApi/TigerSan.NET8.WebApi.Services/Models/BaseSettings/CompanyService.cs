@@ -84,11 +84,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add(CompanyEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<CompanyEntity>> Add(CompanyEntity entity, bool isBeginTransaction = true)
         {
             if (entity.Parent != null && !await _dbSet.AnyAsync(i => i.Id == entity.Parent))
             {
-                return MyResults<object>.Error($"父公司不存在：{entity.Id}，{entity.Parent}");
+                return MyResults<CompanyEntity>.ParentCompanyNotExist(entity.Id, entity.Parent.Value);
             }
 
             return await base.Add(entity, isBeginTransaction);

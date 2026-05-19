@@ -11,12 +11,12 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" @click="form.Add">新增</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!IsAllowEdit" @click="form.Edit">修改</button>
+                            :disabled="!IsAllowEdit" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsAllowEdit" @click="form.Delete">删除</button>
+                            :disabled="!IsAllowEdit" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>

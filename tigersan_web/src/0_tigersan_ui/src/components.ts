@@ -23,6 +23,8 @@ import Search from "./components/Inputs/Search.vue"
 import Select from "./components/Inputs/Select.vue"
 import Switch from "./components/Inputs/Switch.vue"
 import TextBox from "./components/Inputs/TextBox.vue"
+// Map:
+import Map from "./components/Map/Map.vue"
 // NavBar:
 import NavBar from "./components/NavBar/NavBar.vue"
 import NavButton from "./components/NavBar/NavButton.vue"
@@ -75,6 +77,8 @@ export {
     Select,
     Switch,
     TextBox,
+    // Map:
+    Map,
     // NavBar:
     NavBar,
     NavButton,

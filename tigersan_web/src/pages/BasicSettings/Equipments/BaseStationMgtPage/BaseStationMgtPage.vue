@@ -17,12 +17,12 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" @click="form.Add">新增</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
+                            :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                            :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                     <div class="row-panel">
                         <Switch v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :model="form.switchIsEnable" />

@@ -400,61 +400,129 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“位置”集合
+        /// <summary>获取“位置”集合</summary>
+        public async Task<MyActionResult<List<AssetPosition>>> GetPositionList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var queryable = _dbSet.AsNoTracking();
+
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<AssetPosition>>.Error(res.Message);
+                }
+
+                var resSort = queryable.Sort(sort, ascending);
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<AssetPosition>>.Error(resSort.Message);
+                }
+
+                var positions = await queryable
+                    .Select(i => new AssetPosition()
+                    {
+                        Id = i.Id,
+                        AssetId = i.AssetId,
+                        LastRecord = i.LastRecord
+                    })
+                    .GetPage(pageSize, pageNumber)
+                    .ToListAsync();
+
+                foreach (var position in positions)
+                {
+                    if (position.LastRecord == null) continue;
+
+                    var lastRecord = _db.AssetRecords.FirstOrDefault(i => i.Id == position.LastRecord);
+                    if (lastRecord == null) continue;
+
+                    position.Longitude = lastRecord.Longitude;
+                    position.Latitude = lastRecord.Latitude;
+                    position.ReportTime = lastRecord.ReportTime;
+                }
+
+                return MyResults<List<AssetPosition>>.Success(null, positions);
+            }
+            catch (Exception e)
+            {
+                return MyResults<List<AssetPosition>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public async Task<MyActionResult<object>> Add(AssetDto dto, bool isBeginTransaction = true)
+        public async Task<MyActionResult<AssetEntity>> Add(AssetDto dto, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
             {
+                TagDto? tag = null;
+
                 if (!string.IsNullOrEmpty(dto.TagId))
                 {
                     dto.BindingTime = DateTime.Now;
 
                     // 修改“标签ID”:
                     var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
-                    if (resGetFull.Data == null)
+                    tag = resGetFull.Data;
+                    if (tag == null)
                     {
-                        return MyResults<object>.TagNotFound(dto.TagId);
+                        return MyResults<AssetEntity>.TagNotFound(dto.TagId);
                     }
-                    var tag = resGetFull.Data;
                     // 绑定“标签”:
                     dto.Tag = tag.Id;
 
                     // 检验“标签”是否重复:
                     if (dto.Tag != null && await _dbSet.AnyAsync(i => i.Tag == dto.Tag))
                     {
-                        return MyResults<object>.TagRepeated;
+                        return MyResults<AssetEntity>.TagRepeated;
                     }
+                }
 
+                var res = await base.Add(dto, false);
+                var asset = res.Data;
+                if (asset == null)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return res;
+                }
+
+                if (tag != null)
+                {
                     // “标签”绑定“资产”:
-                    tag.Asset = dto.Id;
+                    tag.Asset = asset.Id;
                     tag.BrandId = dto.AssetId;
                     var resTag = await _tagService.Edit(tag, false);
                     if (resTag.IsError)
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        return MyResults<object>.Error(resTag.Message);
+                        return MyResults<AssetEntity>.Error(resTag.Message);
                     }
                 }
 
-                res = await base.Add(dto, false);
-
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return res;
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<AssetEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return res;
         }
         #endregion
 

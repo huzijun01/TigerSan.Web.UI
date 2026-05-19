@@ -319,18 +319,18 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add(TagEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<TagEntity>> Add(TagEntity entity, bool isBeginTransaction = true)
         {
             // 检验“标牌ID”是否重复:
             if (!string.IsNullOrEmpty(entity.BrandId) && await _dbSet.AnyAsync(i => i.BrandId == entity.BrandId))
             {
-                return MyResults<object>.BrandIdRepeated;
+                return MyResults<TagEntity>.BrandIdRepeated;
             }
 
             // 检验“RFID”是否重复:
             if (!string.IsNullOrEmpty(entity.Rfid) && await _dbSet.AnyAsync(i => i.Rfid == entity.Rfid))
             {
-                return MyResults<object>.RfidRepeated;
+                return MyResults<TagEntity>.RfidRepeated;
             }
 
             return await base.Add(entity, isBeginTransaction);

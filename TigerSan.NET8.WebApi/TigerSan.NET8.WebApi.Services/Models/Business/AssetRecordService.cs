@@ -196,9 +196,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add(AssetRecordEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<AssetRecordEntity>> Add(AssetRecordEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -211,7 +210,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (resInit.IsError)
                 {
                     if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                    return resInit;
+                    return resInit.Convert<AssetRecordEntity>();
                 }
 
                 // 添加数据:
@@ -219,14 +218,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return MyResults<AssetRecordEntity>.Success(null, entity);
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return res;
         }
         #endregion
 
@@ -275,7 +274,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“单条数据”</summary>
         public override async Task<MyActionResult<object>> Edit(AssetRecordEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -300,14 +298,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return MyResults<object>.OperationSuccess;
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return res;
         }
         #endregion
 
@@ -359,8 +357,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
             return res;
@@ -406,7 +404,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         LogHelper.Instance.Error(res.Message);
-                        return res;
+                        return res.Convert<object>();
                     }
 
                     await _db.SaveChangesAsync();
@@ -454,7 +452,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         {
                             // 新增“出库记录”：
                             lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
-                            resOutbound = await Add(lastRecord, false);
+                            resOutbound = (await Add(lastRecord, false)).Convert<object>();
                         }
 
                         if (resOutbound.IsError)
@@ -474,7 +472,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         LogHelper.Instance.Error(res.Message);
-                        return res;
+                        return res.Convert<object>();
                     }
                 }
                 else // 同一场地
@@ -519,7 +517,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         {
                             if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             LogHelper.Instance.Error(res.Message);
-                            return res;
+                            return res.Convert<object>();
                         }
                     }
                     else

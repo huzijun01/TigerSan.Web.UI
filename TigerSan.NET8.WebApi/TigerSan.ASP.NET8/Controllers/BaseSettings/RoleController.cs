@@ -52,9 +52,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Unused")]
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add([FromBody] RoleEntity entity)
+        public override async Task<MyActionResult<RoleEntity>> Add([FromBody] RoleEntity entity)
         {
-            return MyResults<object>.ApiUnavailable;
+            return MyResults<RoleEntity>.ApiUnavailable;
         }
 
         [HttpPost]

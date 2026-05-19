@@ -50,12 +50,12 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region [增]
         #region 添加“单条数据”
         /// <summary>添加“单条数据”</summary>
-        public override async Task<MyActionResult<object>> Add(TEntity entity, bool isBeginTransaction = true)
+        public override async Task<MyActionResult<TEntity>> Add(TEntity entity, bool isBeginTransaction = true)
         {
             // 检验“名称”是否重复:
             if (await _dbSet.AnyAsync(i => i.Name == entity.Name))
             {
-                return MyResults<object>.NameRepeated;
+                return MyResults<TEntity>.NameRepeated;
             }
 
             return await base.Add(entity, isBeginTransaction);

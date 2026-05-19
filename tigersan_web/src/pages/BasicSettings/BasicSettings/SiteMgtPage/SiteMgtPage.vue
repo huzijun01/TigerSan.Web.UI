@@ -11,10 +11,10 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">新增</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@ import { onMounted } from 'vue'
 import { siteMgtTable } from './SiteMgtTable'
 import { Authorities } from '@/navs/Authorities'
 import { siteMgtForm as form } from './SiteMgtForm'
-import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem } from '@/0_tigersan_ui/tigerui'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

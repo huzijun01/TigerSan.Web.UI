@@ -18,13 +18,13 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
                         <button @click="form.Add">+ 导入设备</button>
                     </div>
                     <div class="row-panel">
                         <button :disabled="!IsOnlySelected" @click="Restart">重启</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">修改</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                         <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
                     </div>
                 </div>

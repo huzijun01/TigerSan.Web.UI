@@ -36,7 +36,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<bool>> IsExistsRange(List<long> ids);
 
         // 增:
-        public Task<MyActionResult<object>> Add(TEntity entity, bool isBeginTransaction = true);
+        public Task<MyActionResult<TEntity>> Add(TEntity entity, bool isBeginTransaction = true);
         public Task<MyActionResult<object>> AddRange(List<TEntity> entities, bool isBeginTransaction = true);
 
         // 改:

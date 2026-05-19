@@ -4,7 +4,7 @@ import { ConfigBase } from "./ConfigBase"
 import { Constants } from "../base"
 
 export class ThemeConfig {
-    /** 是否为黑暗模式 */
+    /** 是否为“黑暗模式” */
     isDark = false
 }
 
@@ -17,7 +17,7 @@ export class ThemeHelper {
     //#endregion 【Fields】
 
     //#region 【Properties】
-    /** 是否为黑暗模式 */
+    /** 是否为“黑暗模式” */
     static readonly IsDark = ref(false)
     //#endregion 【Properties】
 

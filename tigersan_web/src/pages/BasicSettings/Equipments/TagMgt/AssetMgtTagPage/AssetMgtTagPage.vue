@@ -18,14 +18,14 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">刷新</button>
+                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
                         <button @click="form.Add">+ 导入设备</button>
                         <button @click="BatchOperation">批量操作</button>
                     </div>
                     <div class="row-panel">
                         <button :disabled="!IsOnlySelected" @click="SetParams">修改参数</button>
                         <button :disabled="!IsOnlySelected" @click="SetCol">列管理</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">删除</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>

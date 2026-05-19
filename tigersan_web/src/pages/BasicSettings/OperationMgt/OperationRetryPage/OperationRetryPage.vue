@@ -17,7 +17,7 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="Refresh">刷新</button>
+                        <button class="bg-success" @click="Refresh">{{ Texts.Refresh.value }}</button>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import select from './OperationRetrySelect'
 import { operationRetryTable } from './OperationRetryTable'
-import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker, Search } from '@/0_tigersan_ui/tigerui'
+import { Table, Select, PageCard, Pagination, PaginationModel, DatePicker, Search, Texts } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:
 const { IsOnlySelected } = operationRetryTable

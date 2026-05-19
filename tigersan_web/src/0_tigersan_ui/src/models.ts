@@ -22,6 +22,10 @@ export * from './models/Inputs/SelectModel'
 export * from './models/Inputs/SwitchModel'
 export * from './models/Inputs/TextBoxModel'
 
+// Others:
+export * from './models/Map/MapModel'
+export * from './models/Map/MapTypes'
+
 /* NavBar: */
 export * from './models/NavBar/NavBarModel'
 export * from './models/NavBar/NavButtonModel'

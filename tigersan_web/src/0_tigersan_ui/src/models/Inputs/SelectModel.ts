@@ -3,7 +3,8 @@ import { ref, watch, computed, shallowReactive, type App, type ShallowReactive }
 import { Texts } from "../../texts"
 import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
-import { RectPosition, RectHelper, ObjectHelper } from '../../helpers'
+import { RectPosition, RectHelper, ObjectHelper, TimerHelper } from '../../helpers'
+import type { StringFunc } from "../../types"
 
 export type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
 export type MenuItemModelsAction<TSource> = (itemModels: MenuItemModel<TSource>[]) => void
@@ -60,6 +61,8 @@ export class MenuItemModel<TSource> extends ConverterBase<TSource> {
 /** “选择框”模型 */
 export class SelectModel<TSource> extends ConverterBase<TSource> {
     //#region 【Fields】
+    /** “搜索延迟”定时器 */
+    private _timer: TimerHelper
     /** 菜单实例
      * （由“Select”内部维护） */
     static _appMenu?: App
@@ -69,8 +72,10 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     _getItemsAsync?: () => ShallowReactive<Promise<TSource[]>>
     /** 选择后 */
     _onSelect?: MenuItemModelAction<TSource>
-    /** 选中状态改变事件 */
+    /** “选中状态”改变事件 */
     _onCheckedItemsChange?: MenuItemModelsAction<TSource>
+    /** “搜索文本”改变事件 */
+    _onSearchTextChange?: StringFunc
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -184,6 +189,17 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     constructor() {
         super()
 
+        this._timer = new TimerHelper(this.OnSearchTextChange, 2000, false)
+
+        watch(this.SearchText, search => {
+            if (!this._onSearchTextChange || search === '') {
+                this._timer.Stop()
+                return
+            }
+
+            this._timer.Start()
+        })
+
         watch(this.IsOpen, isOpen => {
             this.SearchText.value = ''
             this.UpdateText()
@@ -206,6 +222,10 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    readonly OnSearchTextChange = () => {
+        this._onSearchTextChange?.(this.SearchText.value)
+    }
+
     /** 更新“项目集合” */
     readonly UpdateItemsAsync = async () => {
         let arr: TSource[] = []
@@ -225,7 +245,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
         }
     }
 
-    /** 更新菜单位置 */
+    /** 更新“菜单位置” */
     readonly UpdateMenuPosition = () => {
         if (!this.IsOpen.value) return
 
@@ -250,6 +270,12 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
         this.left.value = rectRoot.left
         this.top.value = rectRoot.bottom
         this.bottom.value = -rectRoot.top
+    }
+
+    /** 设置“项目集合” */
+    readonly SetItems = (items: TSource[]) => {
+        this.Items.splice(0)
+        this.Items.push(...items)
     }
     //#endregion 【Functions】
 }

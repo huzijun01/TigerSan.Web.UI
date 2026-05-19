@@ -62,7 +62,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region [增]
         [HttpPost]
         /// <summary>添加“单条数据”</summary>
-        public virtual async Task<MyActionResult<object>> Add([FromBody] TEntity entity)
+        public virtual async Task<MyActionResult<TEntity>> Add([FromBody] TEntity entity)
         {
             return await _service.Add(entity);
         }

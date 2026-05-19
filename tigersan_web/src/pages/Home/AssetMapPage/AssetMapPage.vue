@@ -4,8 +4,10 @@
             <!-- 顶部: -->
             <div class="top-panel flex-between">
                 <div class="filter-panel">
+                    <Select :model="selectAddr"></Select>
                 </div>
                 <div class="button-panel">
+                    <button class="bg-success" @click="Refresh">{{ Texts.Refresh.value }}</button>
                 </div>
             </div>
             <div class="map-panel">
@@ -16,15 +18,15 @@
 </template>
 
 <script lang="ts" setup>
-import Map from '@/components/Map.vue'
 import { onMounted } from 'vue'
-import { PageCard } from '@/0_tigersan_ui/tigerui'
-import { map } from './AssetMapPageModel'
+import { PageCard, Select, Texts, Map } from '@/0_tigersan_ui/tigerui'
+import { map, selectAddr, Refresh } from './AssetMapPageModel'
+
 // 【字段】:
 
 // 【过程】:
-onMounted(() => {
-
+onMounted(async () => {
+    await Refresh()
 })
 
 // 【方法】:
@@ -38,7 +40,7 @@ onMounted(() => {
     height: 100%;
 
     .top-panel {
-        padding: 16px;
+        margin: 0 0 16px 0;
     }
 }
 </style>
