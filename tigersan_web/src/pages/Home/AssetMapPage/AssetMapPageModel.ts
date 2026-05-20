@@ -57,12 +57,14 @@ export async function Refresh() {
     loading.IsShow.value = true
     await AssetInfoModel.UpdateTypeAsync()
     await map.InitAsync()
-    Count.value = Positions.length
     loading.IsShow.value = false
 }
 
 /** 更新“物资信息”集合 */
 export function UpdateAssetInfoes() {
+    // 总数:
+    Count.value = Positions.length
+
     // 标记:
     const points: AMap.Vector2[] = []
     const positions = toRaw(Positions)
@@ -71,7 +73,7 @@ export function UpdateAssetInfoes() {
             points.push([position.longitude, position.latitude])
         }
     })
-    map.InitClusterAsync(points, {})
+    map.InitClusterAsync(points)
 
     // 列表:
     AssetInfoes.splice(0)

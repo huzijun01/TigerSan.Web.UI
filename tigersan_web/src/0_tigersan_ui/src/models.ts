@@ -23,6 +23,7 @@ export * from './models/Inputs/SwitchModel'
 export * from './models/Inputs/TextBoxModel'
 
 // Others:
+export * from './models/Map/ClusterMarkerModel'
 export * from './models/Map/MapModel'
 export * from './models/Map/MapTypes'
 

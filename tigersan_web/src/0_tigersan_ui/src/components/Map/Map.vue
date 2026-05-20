@@ -9,7 +9,7 @@ import { MapModel } from "../../models/Map/MapModel"
 //字段:
 const { model } = defineProps({
     model: {
-        type: Object as PropType<MapModel>,
+        type: Object as PropType<MapModel<any>>,
         default: () => new MapModel()
     },
 })

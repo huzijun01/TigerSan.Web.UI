@@ -1,11 +1,14 @@
 import "./MapTypes"
 import AMapLoader from "@amap/amap-jsapi-loader"
+import ClusterMarker from '../../components/Map/ClusterMarker.vue'
 import { ref, shallowRef, watch, type Ref } from "vue"
 import type { ActionAsync } from "../../types"
 import { MapPlugins } from "./MapTypes/MapPlugins"
+import { ComponentHelper } from "../../helpers"
+import { ClusterMarkerModel } from "./ClusterMarkerModel"
 import { MapEvents, DataOptions, MapStyle } from "./MapTypes"
 
-export class MapModel {
+export class MapModel<TData> {
     //#region 【Fields】
     /** 应用秘钥 */
     static _appKey: string = ''
@@ -13,6 +16,8 @@ export class MapModel {
     static _plugins?: string[]
     /** 地图容器 */
     readonly refContainer = shallowRef<HTMLDivElement>()
+    /** “标记数据”映射 */
+    _markerDataMap = new Map<AMap.Marker, TData>
     /** 地图实例 */
     _map?: AMap.Map
     /** 配置 */
@@ -140,34 +145,25 @@ export class MapModel {
 
     /** 渲染“标记” */
     static RenderMarker(context: AMap.RenderClusterMarkerObject) {
-        var content = '<div style="background-color: hsla(180, 100%, 50%, 0.3); height: 18px; width: 18px; border: 1px solid hsl(180, 100%, 40%); border-radius: 12px; box-shadow: hsl(180, 100%, 50%) 0px 0px 3px;"></div>';
-        var offset = new AMap.Pixel(-9, -9);
+        const content = '<div style="background-color: hsla(180, 100%, 50%, 0.3); height: 18px; width: 18px; border: 1px solid hsl(180, 100%, 40%); border-radius: 12px; box-shadow: hsl(180, 100%, 50%) 0px 0px 3px;"></div>';
+        const offset = new AMap.Pixel(-9, -9);
         context.marker.setContent(content)
         context.marker.setOffset(offset)
     }
 
     /** 渲染“标记聚合” */
     static RenderClusterMarker(count: number, context: AMap.RenderClusterMarkerObject) {
-        var factor = Math.pow(context.count / count, 1 / 18)
-        var div = document.createElement('div')
-        var Hue = 180 - factor * 180
-        var bgColor = `hsla(${Hue},100%,40%,0.7)`
-        var fontColor = `hsla(${Hue},100%,90%,1)`
-        var borderColor = `hsla(${Hue},100%,40%,1)`
-        var shadowColor = `hsla(${Hue},100%,90%,1)`
-        div.style.backgroundColor = bgColor
-        var size = Math.round(30 + Math.pow(context.count / count, 1 / 5) * 20)
-        div.style.width = div.style.height = size + 'px'
-        div.style.border = 'solid 1px ' + borderColor
-        div.style.borderRadius = size / 2 + 'px'
-        div.style.boxShadow = '0 0 5px ' + shadowColor
-        div.innerHTML = context.count.toString()
-        div.style.lineHeight = size + 'px'
-        div.style.color = fontColor
-        div.style.fontSize = '14px'
-        div.style.textAlign = 'center'
-        context.marker.setOffset(new AMap.Pixel(-size / 2, -size / 2))
-        context.marker.setContent(div)
+        const model = new ClusterMarkerModel({
+            count: context.count,
+            totalCount: count
+        })
+        const marker = ComponentHelper.GetElement(ClusterMarker, { model })
+        if (!marker) {
+            console.log('The marker is undefined!')
+            return
+        }
+        context.marker.setOffset(new AMap.Pixel(model.offset, model.offset))
+        context.marker.setContent(marker as HTMLElement)
     }
     //#endregion [static]
 
@@ -205,7 +201,7 @@ export class MapModel {
     }
 
     /** 初始化"标记聚合" */
-    readonly InitClusterAsync = async (points: AMap.LngLatLike[], options: AMap.MarkerClusterOptions) => {
+    readonly InitClusterAsync = async (points: AMap.LngLatLike[], options?: AMap.MarkerClusterOptions) => {
         if (!await MapModel.LoadPluginAsync([MapPlugins.MarkerCluster])) return
 
         if (!this._map) {
@@ -217,7 +213,7 @@ export class MapModel {
 
         const markers = MapModel.GetMarkers(points)
 
-        var count = markers.length
+        const count = markers.length
 
         this._cluster = new AMap.MarkerCluster(this._map, markers, {
             renderMarker: MapModel.RenderMarker,
