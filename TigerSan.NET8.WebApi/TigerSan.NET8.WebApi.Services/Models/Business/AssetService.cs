@@ -432,6 +432,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Select(i => new AssetPosition()
                     {
                         Id = i.Id,
+                        Type = i.Type,
                         AssetId = i.AssetId,
                         LastRecord = i.LastRecord
                     })

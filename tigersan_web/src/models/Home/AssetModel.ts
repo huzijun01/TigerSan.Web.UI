@@ -42,6 +42,7 @@ export class AssetModel extends AssetBaseModel {
 /** "资产位置"模型 */
 export class AssetPosition extends IdModel {
     assetId = ''
+    type?: bigint
     lastRecord?: bigint
     longitude?: number
     latitude?: number

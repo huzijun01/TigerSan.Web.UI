@@ -43,10 +43,17 @@ export class IdNameModelHelper<TModel extends IdNameModel> extends IdModelHelper
     }
 
     /** 获取“名称” */
-    readonly GetName = async (id?: bigint, isUpdate: boolean = false): Promise<string> => {
+    readonly GetNameAsync = async (id?: bigint, isUpdate: boolean = false): Promise<string> => {
         if (isUpdate || !this._idNames) {
             this._idNames = await this.GetIdNames()
         }
+
+        return this.GetName(id)
+    }
+
+    /** 获取“名称” */
+    readonly GetName = (id?: bigint): string => {
+        if (!this._idNames) return ''
 
         const idName = this._idNames.find((i => BigintHelper.IsEqualAndNotUndefined(i.id, id)))
         if (!idName) {

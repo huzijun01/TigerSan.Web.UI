@@ -8,21 +8,21 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
         Text: '公司',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => companyHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetNameAsync(source.company)
     },
     {
         _propName: 'site',
         Text: '场地',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => siteHelper.GetName(source.site)
+        _getStringAsync: source => siteHelper.GetNameAsync(source.site)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => stationTypeHelper.GetName(source.type)
+        _getStringAsync: source => stationTypeHelper.GetNameAsync(source.type)
     },
     {
         _propName: 'macAddr',

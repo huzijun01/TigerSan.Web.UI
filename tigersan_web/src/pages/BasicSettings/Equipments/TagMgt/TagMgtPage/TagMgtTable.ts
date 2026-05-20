@@ -21,7 +21,7 @@ export const tagMgtTable = new TableModel<TagModel>([
         Text: '类型',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => tagTypeHelper.GetName(source.type)
+        _getStringAsync: source => tagTypeHelper.GetNameAsync(source.type)
     },
     {
         _propName: 'station',
@@ -29,7 +29,7 @@ export const tagMgtTable = new TableModel<TagModel>([
         IsReadonly: true,
         IsRequired: false,
         Type: ItemType.TextBox,
-        _getStringAsync: source => baseStationHelper.GetName(source.station)
+        _getStringAsync: source => baseStationHelper.GetNameAsync(source.station)
     },
     {
         _propName: 'siteName',

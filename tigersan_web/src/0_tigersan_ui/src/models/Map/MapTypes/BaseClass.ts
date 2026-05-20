@@ -1,6 +1,7 @@
 declare global {
     namespace AMap {
         // 基础类:
+        /** 向量 */
         type Vector2 = [number, number]
 
         /** 经纬度坐标 */

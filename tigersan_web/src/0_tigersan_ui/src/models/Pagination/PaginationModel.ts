@@ -319,7 +319,7 @@ class PaginationModel {
     //#endregion [private]
 
     /** 获取“行数” */
-    GetRowCount(): Int {
+    readonly GetRowCount = (): Int => {
         let pageCount = new Int(this.PageCount.value)
         let rowCount = Int.Div(pageCount, this.MaxShowPageCount)
         if (Int.Mod(pageCount, this.MaxShowPageCount) != 0) {
@@ -329,7 +329,7 @@ class PaginationModel {
     }
 
     /** 获取“页数” */
-    GetPageCount(): Int {
+    readonly GetPageCount = (): Int => {
         let rowCount = Int.Div(this.Count, this.PageSize)
         if (Int.Mod(this.Count, this.PageSize) != 0) {
             ++rowCount
@@ -338,7 +338,7 @@ class PaginationModel {
     }
 
     /** 跳转到“指定页” */
-    GoToPage() {
+    readonly GoToPage = () => {
         let pageNum = Number.parseInt(this.PageText.value)
         if (!isNaN(pageNum)) {
             if (pageNum < 1) {
@@ -351,6 +351,26 @@ class PaginationModel {
         }
 
         this.UpdatePageText()
+    }
+
+    /** 获取“分页数据” */
+    readonly GetPage = <TSource>(rows: TSource[]): TSource[] => {
+        const pageSize = this.PageSize.value
+        const selectedNum = this.SelectedNum.value
+
+        /** 起始索引 */
+        const startIndex = (selectedNum - 1) * pageSize
+
+        // 边界检查
+        if (startIndex < 0 || startIndex >= rows.length) {
+            console.warn('The startIndex is out of range!')
+            return []
+        }
+
+        /** 结束索引 */
+        const endIndex = Math.min(startIndex + pageSize, rows.length)
+
+        return rows.slice(startIndex, endIndex)
     }
     //#endregion 【Functions】
 

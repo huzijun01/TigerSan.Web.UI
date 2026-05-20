@@ -8,14 +8,14 @@ const siteMgtTable = new TableModel<SiteModel>([
         Text: '公司',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => companyHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetNameAsync(source.company)
     },
     {
         _propName: 'type',
         Text: '类型',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => siteTypeHelper.GetName(source.type)
+        _getStringAsync: source => siteTypeHelper.GetNameAsync(source.type)
     },
     {
         _propName: 'name',

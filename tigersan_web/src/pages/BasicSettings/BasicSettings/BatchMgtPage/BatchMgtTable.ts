@@ -13,14 +13,14 @@ const batchMgtTable = new TableModel<BatchModel>([
         Text: '公司',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => companyHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetNameAsync(source.company)
     },
     {
         _propName: 'scenario',
         Text: '场景',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => scenarioHelper.GetName(source.scenario)
+        _getStringAsync: source => scenarioHelper.GetNameAsync(source.scenario)
     },
     {
         _propName: 'batchId',

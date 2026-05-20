@@ -13,21 +13,21 @@ const personMgtTable = new TableModel<PersonModel>([
         Text: '公司',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => companyHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetNameAsync(source.company)
     },
     {
         _propName: 'department',
         Text: '部门',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => departmentHelper.GetName(source.department)
+        _getStringAsync: source => departmentHelper.GetNameAsync(source.department)
     },
     {
         _propName: 'role',
         Text: '角色',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => roleHelper.GetName(source.role)
+        _getStringAsync: source => roleHelper.GetNameAsync(source.role)
     },
     {
         _propName: 'username',

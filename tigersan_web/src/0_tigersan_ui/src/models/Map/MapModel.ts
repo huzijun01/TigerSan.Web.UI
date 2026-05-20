@@ -253,5 +253,17 @@ export class MapModel {
         const zoomCenter = this._map.getFitZoomAndCenterByBounds(bounds, [padding, padding, padding, padding])
         this._map.setZoomAndCenter(zoomCenter[0], zoomCenter[1])
     }
+
+    /** 根据“经纬度”缩放 */
+    readonly ZoomByLngLat = (lnglat: AMap.LngLat, zoom: number = 20) => {
+        if (!this._map) return
+        this._map.setZoomAndCenter(zoom, lnglat)
+    }
+
+    /** 根据“向量”缩放 */
+    readonly ZoomByVector2 = (point: AMap.Vector2, zoom: number = 20) => {
+        if (!this._map) return
+        this._map.setZoomAndCenter(zoom, new AMap.LngLat(point[0], point[1]))
+    }
     //#endregion 【Functions】
 }

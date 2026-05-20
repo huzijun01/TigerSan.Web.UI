@@ -11,7 +11,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AssetInfo: typeof import('./src/components/AssetInfo.vue')['default']
     Company: typeof import('./src/components/Company.vue')['default']
+    copy: typeof import('./src/components/Company copy.vue')['default']
     Counter: typeof import('./src/components/Counter.vue')['default']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
   }

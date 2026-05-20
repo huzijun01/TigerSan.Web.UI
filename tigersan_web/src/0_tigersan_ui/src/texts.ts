@@ -44,6 +44,7 @@ class Texts {
     static readonly NoSignal = TextModel.Computed('NoSignal', '无信号')
     static readonly Breakdown = TextModel.Computed('Breakdown', '故障')
     static readonly Lose = TextModel.Computed('Lose', '丢失')
+    static readonly ReportTime = TextModel.Computed('ReportTime: ', '上报时间：')
 }
 
 export {

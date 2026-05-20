@@ -1,3 +1,4 @@
+/** 数据配置 */
 export class DataOptions {
     lnglat: AMap.LngLatLike
     weight?: number

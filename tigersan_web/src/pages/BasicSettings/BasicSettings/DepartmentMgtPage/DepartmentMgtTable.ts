@@ -8,7 +8,7 @@ const departmentMgtTable = new TableModel<DepartmentModel>([
         Text: '公司',
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => companyHelper.GetName(source.company)
+        _getStringAsync: source => companyHelper.GetNameAsync(source.company)
     },
     {
         _propName: 'name',
