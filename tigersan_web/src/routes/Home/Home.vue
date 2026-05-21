@@ -147,6 +147,7 @@ onMounted(() => {
 
   .left-panel {
     height: 100%;
+    background: var(--theme-card-background);
   }
 
   .right-panel {
