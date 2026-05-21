@@ -4,11 +4,11 @@
 
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
-import { ref, onMounted } from 'vue'
+import { shallowRef, onMounted } from 'vue'
 import { ComponentHelper } from '../../helpers';
 
 // 字段:
-const refRoot = ref<HTMLElement | undefined>()
+const refRoot = shallowRef<HTMLElement | undefined>()
 
 let { component } = defineProps({
     component: {

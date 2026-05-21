@@ -24,7 +24,9 @@ import Select from "./components/Inputs/Select.vue"
 import Switch from "./components/Inputs/Switch.vue"
 import TextBox from "./components/Inputs/TextBox.vue"
 // Map:
+import ClusterMarker from "./components/Map/ClusterMarker.vue"
 import Map from "./components/Map/Map.vue"
+import Marker from "./components/Map/Marker.vue"
 // NavBar:
 import NavBar from "./components/NavBar/NavBar.vue"
 import NavButton from "./components/NavBar/NavButton.vue"
@@ -78,7 +80,9 @@ export {
     Switch,
     TextBox,
     // Map:
+    ClusterMarker,
     Map,
+    Marker,
     // NavBar:
     NavBar,
     NavButton,

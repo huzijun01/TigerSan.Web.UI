@@ -17,10 +17,10 @@
 <script lang="ts" setup>
 import { StringHelper } from '../../helpers';
 import { TableHeaderModel, TableItemModel, TableModel, TableRowModel } from '../../models'
-import { ref, onMounted, computed } from 'vue'
+import { ref, shallowRef, onMounted, computed } from 'vue'
 
 // 字段:
-const refRoot = ref<HTMLElement | undefined>()
+const refRoot = shallowRef<HTMLElement | undefined>()
 const actualWidth = ref(50)
 const actualHeight = ref(18)
 

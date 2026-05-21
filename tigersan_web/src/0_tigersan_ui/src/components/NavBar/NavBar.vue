@@ -34,14 +34,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, shallowRef, watch, onMounted } from 'vue'
 import { Constants } from '../../base'
 import { DomHelper } from '../../helpers'
 import { NavBarModel } from '../../models'
 import { NavButton, NavFolder } from '../../components'
 
 // 字段:
-const refRoot = ref<HTMLElement | undefined>()
+const refRoot = shallowRef<HTMLElement | undefined>()
 const refFolder = ref<typeof NavFolder>()
 const refButton = ref<typeof NavButton>()
 

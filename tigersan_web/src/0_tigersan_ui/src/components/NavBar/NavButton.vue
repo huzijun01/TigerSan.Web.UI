@@ -8,11 +8,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 import { NavBarModel, NavButtonModel } from '../../models'
 
 // 字段:
-const refRoot = ref<HTMLElement | undefined>()
+const refRoot = shallowRef<HTMLElement | undefined>()
 
 const { model } = defineProps({
     model: {

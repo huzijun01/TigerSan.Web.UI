@@ -1,9 +1,11 @@
 <template>
-    <div class="asset-info" @click="model.OnClick">
+    <div class="asset-info" @click="model.OnClick" :style="model.StyleObj.value">
         <div class="icon-panel flex-center iconfont">{{ model.Icon.value }}</div>
         <div class="info-panel">
-            <div class="title">{{ model.Title.value }}</div>
-            <div class="time">
+            <div class="title ellipsis">
+                {{ model.Title.value }}
+            </div>
+            <div class="time ellipsis">
                 <span>{{ Texts.ReportTime.value }}</span>
                 <span>{{ model.ReportTimeText.value }}</span>
             </div>
@@ -15,9 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-import { type PropType } from 'vue';
-import { AssetInfoModel, AssetPosition } from '@/models';
-import { Texts } from '@/0_tigersan_ui/tigerui';
+import { type PropType } from 'vue'
+import { Texts } from '@/0_tigersan_ui/tigerui'
+import { AssetInfoModel, AssetPosition } from '@/models'
 
 //字段:
 const { model } = defineProps({
@@ -55,6 +57,8 @@ const { model } = defineProps({
 
     .info-panel {
         .title {
+            cursor: auto;
+            user-select: text;
             font-weight: bold;
             margin-bottom: 10px;
         }

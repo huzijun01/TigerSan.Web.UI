@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, shallowRef, watch } from 'vue'
 import { Texts } from '../../texts'
 import { SelectModel } from '../../models'
 import Loading from '../Dialog/Loading.vue'
@@ -26,7 +26,7 @@ const { model } = defineProps({
     }
 })
 
-const refMenu = ref<HTMLElement | undefined>()
+const refMenu = shallowRef<HTMLElement | undefined>()
 
 // 监听:
 const refMenuWatch = watch(refMenu, menu => {

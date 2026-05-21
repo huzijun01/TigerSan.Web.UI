@@ -4,7 +4,18 @@
             <!-- 顶部: -->
             <div class="top-panel flex-between">
                 <div class="filter-panel">
-                    <Select :model="selectAddr"></Select>
+                    <div class="row-panel">
+                        <Select :model="selectAddr"></Select>
+                        <Search :model="filter.searchAssetId" />
+                        <Select :model="filter.selectOnlineState"></Select>
+                        <Select :model="filter.selectErrorType"></Select>
+                    </div>
+                    <div class="row-panel">
+                        <Select :model="filter.selectCompany"></Select>
+                        <Select :model="filter.selectDepartment"></Select>
+                        <Select :model="filter.selectAssetType"></Select>
+                        <Select :model="filter.selectAssetState"></Select>
+                    </div>
                 </div>
                 <div class="button-panel">
                     <button class="bg-success" @click="Refresh">{{ Texts.Refresh.value }}</button>
@@ -33,8 +44,8 @@
 <script lang="ts" setup>
 import AssetInfo from '@/components/AssetInfo.vue'
 import { onMounted } from 'vue'
-import { PageCard, Select, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
-import { map, selectAddr, Refresh, pagination, Count, AssetInfoes } from './AssetMapPageModel'
+import { PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
+import { map, selectAddr, Refresh, pagination, Count, AssetInfoes, filter } from './AssetMapPageModel'
 // 【字段】:
 
 // 【过程】:
@@ -46,6 +57,8 @@ onMounted(async () => {
 </script>
 
 <style lang="less" scoped>
+@import '@/assets/page.less';
+
 .map-page {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -67,7 +80,7 @@ onMounted(async () => {
             .list-panel {
                 flex-grow: 1;
                 overflow: auto;
-                max-height: calc(100vh - 255px);
+                max-height: calc(100vh - 300px);
             }
 
             .pagination-panel {

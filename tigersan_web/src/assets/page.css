@@ -69,6 +69,25 @@
 .drawer .size-panel {
   overflow: auto;
 }
+.pop-mask {
+  /* 位置 */
+  position: absolute;
+  top: 0 !important;
+  left: 0 !important;
+  /* 显示 */
+  display: flex;
+  /* 对齐 */
+  align-items: center;
+  justify-content: center;
+  /* 尺寸 */
+  width: 100vw;
+  height: 100vh;
+  /* 颜色 */
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1px);
+  /* 置顶 */
+  z-index: 999;
+}
 .child-margin-bottom > div:not(:last-child) {
   margin-bottom: 10px;
 }
@@ -90,42 +109,42 @@
 .table-page .top-panel > * {
   flex-shrink: 0;
 }
-.table-page .top-panel .filter-panel > div:not(:last-child) {
+.table-page .bottom-panel {
+  flex-shrink: 0;
+  overflow: auto;
+}
+.filter-panel > div:not(:last-child) {
   margin-bottom: 10px;
 }
-.table-page .top-panel .filter-panel .row-panel {
+.filter-panel .row-panel {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
 }
-.table-page .top-panel .filter-panel .row-panel > * {
+.filter-panel .row-panel > * {
   flex-grow: 0;
   flex-shrink: 0;
 }
-.table-page .top-panel .filter-panel .row-panel > :not(:last-child) {
+.filter-panel .row-panel > :not(:last-child) {
   margin-right: 10px;
 }
-.table-page .top-panel .button-panel {
+.button-panel {
   padding-left: 20px;
 }
-.table-page .top-panel .button-panel > div:not(:last-child) {
+.button-panel > div:not(:last-child) {
   margin-bottom: 10px;
 }
-.table-page .top-panel .button-panel .row-panel {
+.button-panel .row-panel {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
 }
-.table-page .top-panel .button-panel .row-panel > * {
+.button-panel .row-panel > * {
   flex-grow: 0;
   flex-shrink: 0;
 }
-.table-page .top-panel .button-panel .row-panel > :not(:last-child) {
+.button-panel .row-panel > :not(:last-child) {
   margin-right: 10px;
-}
-.table-page .bottom-panel {
-  flex-shrink: 0;
-  overflow: auto;
 }

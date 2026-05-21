@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { shallowRef, onMounted } from 'vue'
 import lottie from 'lottie-web'
 import mapJson from '@/assets/lottie/map.json'
 
@@ -16,7 +16,7 @@ let { map } = defineProps({
 })
 
 let lottieInstance = null
-const refLottiePanel = ref<HTMLElement | undefined>()
+const refLottiePanel = shallowRef<HTMLElement | undefined>()
 
 onMounted(() => {
     if (!refLottiePanel.value) {

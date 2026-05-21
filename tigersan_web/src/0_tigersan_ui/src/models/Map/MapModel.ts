@@ -1,13 +1,30 @@
 import "./MapTypes"
 import AMapLoader from "@amap/amap-jsapi-loader"
+import Marker from '../../components/Map/Marker.vue'
 import ClusterMarker from '../../components/Map/ClusterMarker.vue'
-import { ref, shallowRef, watch, type Ref } from "vue"
+import { ref, shallowRef, watch, type Component, type Ref } from "vue"
+import { MarkerModel } from "./MarkerModel"
 import type { ActionAsync } from "../../types"
-import { MapPlugins } from "./MapTypes/MapPlugins"
 import { ComponentHelper } from "../../helpers"
+import { MapPlugins } from "./MapTypes/MapPlugins"
 import { ClusterMarkerModel } from "./ClusterMarkerModel"
 import { MapEvents, DataOptions, MapStyle } from "./MapTypes"
 
+/** “经纬度数据”模型 */
+export class LnglatData<TData> {
+    lnglat: AMap.LngLatLike
+    data?: TData
+    info?: Component
+    infoModel?: any
+    onClick?: (data?: TData) => void
+
+    constructor(lnglat: AMap.LngLatLike, data?: TData) {
+        this.lnglat = lnglat
+        this.data = data
+    }
+}
+
+/** “地图”模型 */
 export class MapModel<TData> {
     //#region 【Fields】
     /** 应用秘钥 */
@@ -17,7 +34,7 @@ export class MapModel<TData> {
     /** 地图容器 */
     readonly refContainer = shallowRef<HTMLDivElement>()
     /** “标记数据”映射 */
-    _markerDataMap = new Map<AMap.Marker, TData>
+    readonly _markerDataMap = new Map<DataOptions, LnglatData<TData>>()
     /** 地图实例 */
     _map?: AMap.Map
     /** 配置 */
@@ -131,7 +148,8 @@ export class MapModel<TData> {
     }
 
     /** 获取"范围" */
-    static GetBounds(lnglats: AMap.LngLat[]): AMap.Bounds {
+    static GetBounds(lnglats: AMap.LngLat[]): AMap.Bounds | undefined {
+        if (lnglats.length < 1) return undefined
         const lngs = lnglats.map(i => i.lng)
         const lats = lnglats.map(i => i.lat)
         const minLng = Math.min(...lngs)
@@ -144,18 +162,32 @@ export class MapModel<TData> {
     }
 
     /** 渲染“标记” */
-    static RenderMarker(context: AMap.RenderClusterMarkerObject) {
-        const content = '<div style="background-color: hsla(180, 100%, 50%, 0.3); height: 18px; width: 18px; border: 1px solid hsl(180, 100%, 40%); border-radius: 12px; box-shadow: hsl(180, 100%, 50%) 0px 0px 3px;"></div>';
-        const offset = new AMap.Pixel(-9, -9);
-        context.marker.setContent(content)
-        context.marker.setOffset(offset)
+    static RenderMarker(context: AMap.RenderMarkerObject, map: MapModel<any>) {
+        const model = new MarkerModel()
+        const cd = context.data[0]
+        if (cd) {
+            const opts = map._markerDataMap.get(cd)
+            if (opts) {
+                model.data = opts
+                model.info = opts.info
+                model.infoModel = opts.infoModel
+            }
+        }
+
+        const marker = ComponentHelper.GetElement(Marker, { model })
+        if (!marker) {
+            console.log('The marker is undefined!')
+            return
+        }
+        context.marker.setOffset(new AMap.Pixel(MarkerModel.offset, MarkerModel.offset))
+        context.marker.setContent(marker as HTMLElement)
     }
 
     /** 渲染“标记聚合” */
-    static RenderClusterMarker(count: number, context: AMap.RenderClusterMarkerObject) {
+    static RenderClusterMarker(context: AMap.RenderClusterMarkerObject, totalCount: number) {
         const model = new ClusterMarkerModel({
             count: context.count,
-            totalCount: count
+            totalCount: totalCount
         })
         const marker = ComponentHelper.GetElement(ClusterMarker, { model })
         if (!marker) {
@@ -175,7 +207,7 @@ export class MapModel<TData> {
         }
 
         if (!this.refContainer.value) {
-            console.warn('The Container is undefined!')
+            console.warn('The refContainer is undefined!')
             return
         }
 
@@ -201,7 +233,7 @@ export class MapModel<TData> {
     }
 
     /** 初始化"标记聚合" */
-    readonly InitClusterAsync = async (points: AMap.LngLatLike[], options?: AMap.MarkerClusterOptions) => {
+    readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData>[], options?: AMap.MarkerClusterOptions) => {
         if (!await MapModel.LoadPluginAsync([MapPlugins.MarkerCluster])) return
 
         if (!this._map) {
@@ -209,19 +241,29 @@ export class MapModel<TData> {
             return
         }
 
-        if (points.length === 0) return
+        const arrOpts: DataOptions[] = []
+        this._markerDataMap.clear()
 
-        const markers = MapModel.GetMarkers(points)
+        lnglatDatas.forEach(lnglatData => {
+            const opts = new DataOptions(lnglatData.lnglat)
+            arrOpts.push(opts)
+            this._markerDataMap.set(opts, lnglatData)
+        })
 
-        const count = markers.length
-
-        this._cluster = new AMap.MarkerCluster(this._map, markers, {
-            renderMarker: MapModel.RenderMarker,
-            renderClusterMarker: (c: any) => MapModel.RenderClusterMarker(count, c),
+        this._cluster = new AMap.MarkerCluster(this._map, arrOpts, {
+            renderMarker: m => MapModel.RenderMarker(m, this),
+            renderClusterMarker: c => MapModel.RenderClusterMarker(c, arrOpts.length),
             ...options
         })
         this._cluster.on(MapEvents.click, e => {
             this.ZoomByClusterData(e.clusterData)
+            const cd = e.clusterData[0]
+            if (cd) {
+                const opts = this._markerDataMap.get(cd)
+                if (opts && opts.onClick) {
+                    opts.onClick(opts.data)
+                }
+            }
         })
     }
 
@@ -246,6 +288,7 @@ export class MapModel<TData> {
         if (!this._map) return
         const lnglats = clusterData.map(c => c.lnglat as AMap.LngLat)
         const bounds = MapModel.GetBounds(lnglats)
+        if (!bounds) return
         const zoomCenter = this._map.getFitZoomAndCenterByBounds(bounds, [padding, padding, padding, padding])
         this._map.setZoomAndCenter(zoomCenter[0], zoomCenter[1])
     }

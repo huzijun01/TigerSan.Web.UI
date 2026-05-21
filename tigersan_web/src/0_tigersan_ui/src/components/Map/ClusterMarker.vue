@@ -40,7 +40,7 @@ function OnClick() {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .cluster-marker {
     display: flex;
     align-items: center;

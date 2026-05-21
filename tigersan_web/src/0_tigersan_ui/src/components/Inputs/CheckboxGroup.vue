@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import { CheckboxGroupModel } from '../../models'
 
 // 字段:
@@ -16,7 +16,7 @@ const { model } = defineProps({
     }
 })
 
-const refGroup = ref<HTMLElement | undefined>()
+const refGroup = shallowRef<HTMLElement | undefined>()
 const checkboxes = ref<HTMLInputElement[]>([])
 
 // 过程:

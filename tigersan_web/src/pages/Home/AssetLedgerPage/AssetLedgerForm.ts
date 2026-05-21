@@ -1,17 +1,21 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
+import { AssetFilter } from './AssetFilter'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
-import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetState, AssetModel, ErrorType, siteHelper } from '@/models'
+import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper } from '@/models'
 
 // 选择框:
 /** 筛选 */
-const selectOnlineState = OnlineState.GetSelectModel()
-const selectCompany = companyHelper.GetIdNameSelectModel()
-const selectDepartment = departmentHelper.GetIdNameSelectModel()
-selectDepartment._getItemsAsync = async () => selectCompany.Value.value ? await departmentHelper.SelectIdNameByCompanyAsync(selectCompany.Value.value?.id) : []
-const selectAssetType = assetTypeHelper.GetIdNameSelectModel()
-const selectAssetState = AssetState.GetSelectModel()
-const selectErrorType = ErrorType.GetSelectModel()
+export const filter = new AssetFilter(Refresh)
+const {
+    searchAssetId,
+    selectOnlineState,
+    selectCompany,
+    selectDepartment,
+    selectAssetType,
+    selectAssetState,
+    selectErrorType,
+} = filter
 /** 表单 */
 const selectCompanyForm = companyHelper.GetIdNameSelectModel()
 const selectDepartmentForm = departmentHelper.GetIdNameSelectModel()
@@ -24,13 +28,6 @@ selectSiteOutboundForm._getItemsAsync = async () => selectCompanyForm.Value.valu
 // 更新:
 selectCompanyForm._onChange = selectDepartmentForm.UpdateItemsAsync
 selectCompanyOutboundForm._onChange = selectSiteOutboundForm.UpdateItemsAsync
-
-/** 搜索框 */
-const searchAssetId = new SearchModel()
-searchAssetId.PlaceholderCN.value = '资产ID'
-searchAssetId.PlaceholderEN.value = 'Asset ID'
-searchAssetId._onChange = Refresh
-searchAssetId._onSearch = Refresh
 
 /** “公司”项目配置 */
 const configCompany: FormItemConfig<AssetModel, IdNameModel> = {
@@ -141,12 +138,7 @@ async function Refresh() {
     try {
         loading.IsShow.value = true
 
-        await companyHelper.UpdateIdNames()
-        await departmentHelper.UpdateIdNames()
-        await assetTypeHelper.UpdateIdNames()
-        await selectCompany.UpdateItemsAsync()
-        await selectDepartment.UpdateItemsAsync()
-        await selectAssetType.UpdateItemsAsync()
+        await filter.UpdateIdNames()
 
         pagination.Count.value = await assetHelper.GetCount({
             company: selectCompany.Value.value?.id,
@@ -177,12 +169,6 @@ async function Refresh() {
 }
 
 pagination._onChange = Refresh
-selectCompany._onChange = Refresh
-selectDepartment._onChange = Refresh
-selectAssetType._onChange = Refresh
-selectAssetState._onChange = Refresh
-selectOnlineState._onChange = Refresh
-selectErrorType._onChange = Refresh
 
 /** 增 */
 async function Add() {
@@ -351,13 +337,6 @@ async function Outbound() {
 }
 
 export const assetLedgerForm = {
-    searchAssetId,
-    selectOnlineState,
-    selectCompany,
-    selectDepartment,
-    selectAssetType,
-    selectAssetState,
-    selectErrorType,
     selectCompanyForm,
     selectDepartmentForm,
     selectAssetTypeForm,

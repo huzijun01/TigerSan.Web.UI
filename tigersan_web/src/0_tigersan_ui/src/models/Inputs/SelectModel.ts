@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { ref, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
+import { ref, shallowRef, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
 import { Texts } from "../../texts"
 import { TextModel } from "../Text/TextModel"
 import { ConverterBase } from "./ConverterBase"
@@ -84,9 +84,9 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     private readonly top = ref(0)
     private readonly bottom = ref(0)
     private readonly isTopOpen = ref(false)
-    readonly refRoot = ref<HTMLElement | undefined>()
-    readonly refMenu = ref<HTMLElement | undefined>()
-    readonly refInput = ref<HTMLElement | undefined>()
+    readonly refRoot = shallowRef<HTMLElement | undefined>()
+    readonly refMenu = shallowRef<HTMLElement | undefined>()
+    readonly refInput = shallowRef<HTMLElement | undefined>()
     //#endregion [内部维护]
 
     /** 宽度 */

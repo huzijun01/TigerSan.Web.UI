@@ -26,6 +26,7 @@ export * from './models/Inputs/TextBoxModel'
 export * from './models/Map/ClusterMarkerModel'
 export * from './models/Map/MapModel'
 export * from './models/Map/MapTypes'
+export * from './models/Map/MarkerModel'
 
 /* NavBar: */
 export * from './models/NavBar/NavBarModel'

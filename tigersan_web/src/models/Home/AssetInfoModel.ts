@@ -13,11 +13,27 @@ export class AssetInfoModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
+    /** 资产位置 */
     readonly Position: Reactive<AssetPosition>
+    /** 图标 */
     readonly Icon = ref(Icons.Product)
+    /** 背景 */
+    readonly Background = ref<string | undefined>()
+
+    //#region [computed]
+    /** 标题 */
     readonly Title = computed(() => this.Position.assetId)
+    /** “类型”文本 */
     readonly TypeText = computed(() => assetTypeHelper.GetName(this.Position.type))
+    /** “上报时间”文本 */
     readonly ReportTimeText = computed(() => ObjectHelper.GetDateString(this.Position.reportTime))
+    /** 样式对象 */
+    readonly StyleObj = computed(() => {
+        return {
+            background: this.Background.value
+        }
+    })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Ctor】

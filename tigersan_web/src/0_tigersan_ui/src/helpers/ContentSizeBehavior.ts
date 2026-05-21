@@ -1,4 +1,4 @@
-import { computed, ref } from "vue"
+import { computed, ref, shallowRef } from "vue"
 
 export class ContentSizeBehavior {
     //#region 【Fields】
@@ -18,7 +18,7 @@ export class ContentSizeBehavior {
     readonly ContentHeight = ref(0)
     /** 尺寸容器 
      * （需绑定到“尺寸容器”上） */
-    readonly refSizePanel = ref<HTMLElement | undefined>()
+    readonly refSizePanel = shallowRef<HTMLElement | undefined>()
 
     //#region [computed]
     /** “箭头”样式对象

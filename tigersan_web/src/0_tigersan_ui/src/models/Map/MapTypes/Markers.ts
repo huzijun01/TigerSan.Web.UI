@@ -186,8 +186,8 @@ declare global {
             imageSize: Size | Vector2
         }
 
-        class DataCluster{
-            
+        class DataCluster {
+
         }
 
         /** 标记聚合 */
@@ -197,7 +197,7 @@ declare global {
             /** 权重 */
             weight: number
 
-            constructor(map: Map, dataOptions: DataOptions[], MarkerClusterOptions: Object)
+            constructor(map: Map, dataOptions: DataOptions[], MarkerClusterOptions: MarkerClusterOptions)
 
             /** 添加“数据” */
             addData(dataOptions: DataOptions): void
@@ -246,13 +246,20 @@ declare global {
             /** 图标样式 */
             styles?: Array<Object>
             /** “标记聚合”渲染方法 */
-            renderClusterMarker?: (context: AMap.RenderClusterMarkerObject) => void
+            renderMarker?: (context: AMap.RenderMarkerObject) => void
             /** “标记聚合”渲染方法 */
-            renderMarker?: (context: AMap.RenderClusterMarkerObject) => void
+            renderClusterMarker?: (context: AMap.RenderClusterMarkerObject) => void
+        }
+
+        class RenderMarkerObject {
+            data: DataOptions[]
+            count: number
+            indexs?: number[]
+            marker: Marker
         }
 
         class RenderClusterMarkerObject {
-            clusterData: Marker[]
+            clusterData: DataOptions[]
             count: number
             indexs?: number[]
             marker: Marker

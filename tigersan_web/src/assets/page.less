@@ -33,28 +33,6 @@
             flex-shrink: 0;
         }
 
-        .filter-panel {
-            // 尺寸:
-            .child-margin-bottom();
-
-            .row-panel {
-                // 显示:
-                .flex-left();
-                .child-margin-right();
-            }
-        }
-
-        .button-panel {
-            // 尺寸:
-            padding-left: 20px;
-            .child-margin-bottom();
-
-            .row-panel {
-                // 显示:
-                .flex-right();
-                .child-margin-right();
-            }
-        }
     }
 
     /* 底部: */
@@ -62,5 +40,28 @@
         // 显示:
         flex-shrink: 0;
         overflow: auto;
+    }
+}
+
+.filter-panel {
+    // 尺寸:
+    .child-margin-bottom();
+
+    .row-panel {
+        // 显示:
+        .flex-left();
+        .child-margin-right();
+    }
+}
+
+.button-panel {
+    // 尺寸:
+    padding-left: 20px;
+    .child-margin-bottom();
+
+    .row-panel {
+        // 显示:
+        .flex-right();
+        .child-margin-right();
     }
 }

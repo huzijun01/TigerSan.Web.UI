@@ -1,10 +1,14 @@
 export class ClusterMarkerModel<TData> {
-    readonly count: number = 0
-    readonly totalCount: number = 0
-    readonly data?: TData
-    onClick?: (data: any) => void
-    readonly offset: number = 0
     readonly size: number = 0
+    readonly offset: number = 0
+    /** 个数 */
+    readonly count: number = 0
+    /** 总数 */
+    readonly totalCount: number = 0
+    /** 数据 */
+    data?: TData
+    /** 点击时 */
+    onClick?: (data: any) => void
 
     constructor(opts?: ClusterMarkerModelOptions<TData>) {
         if (!opts) return
@@ -17,8 +21,12 @@ export class ClusterMarkerModel<TData> {
 }
 
 export type ClusterMarkerModelOptions<TData> = {
+    /** 个数 */
     count?: number
+    /** 总数 */
     totalCount?: number
+    /** 数据 */
     data?: TData
+    /** 点击时 */
     onClick?: (data: any) => void
 }

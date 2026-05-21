@@ -1,10 +1,24 @@
+import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
+import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
-import { loading, SelectModel, MapModel, ThemeHelper, PaginationModel } from "@/0_tigersan_ui/tigerui"
+import { loading, SelectModel, MapModel, ThemeHelper, PaginationModel, LnglatData } from "@/0_tigersan_ui/tigerui"
 
 /** 总数 */
 export const Count = ref<number>(0)
 watch(Count, count => pagination.Count.value = count)
+
+/** 筛选 */
+export const filter = new AssetFilter(Refresh)
+const {
+    searchAssetId,
+    selectOnlineState,
+    selectCompany,
+    selectDepartment,
+    selectAssetType,
+    selectAssetState,
+    selectErrorType,
+} = filter
 
 /** 分页器 */
 export const pagination = new PaginationModel()
@@ -33,7 +47,7 @@ watch(Positions, UpdateAssetInfoes)
 export const AssetInfoes = shallowReactive<AssetInfoModel[]>([])
 
 /** 地图 */
-export const map = new MapModel(undefined, ThemeHelper.IsDark)
+export const map = new MapModel<AssetPosition>(undefined, ThemeHelper.IsDark)
 map._onInitAsync = async () => {
     const placeSearch = await MapModel.GetPlaceSearchAsync(res => {
         selectAddr.SetItems(res.poiList.pois)
@@ -47,7 +61,15 @@ map._onInitAsync = async () => {
         }
     }
 
-    const positions = await assetHelper.GetPositionList({})
+    const positions = await assetHelper.GetPositionList({
+        company: selectCompany.Value.value?.id,
+        department: selectDepartment.Value.value?.id,
+        type: selectAssetType.Value.value?.id,
+        state: selectAssetState.Value.value,
+        onlineState: selectOnlineState.Value.value,
+        errorType: selectErrorType.Value.value,
+        assetId: searchAssetId.Value.value,
+    })
     Positions.splice(0)
     Positions.push(...positions)
 }
@@ -55,6 +77,7 @@ map._onInitAsync = async () => {
 /** 刷新 */
 export async function Refresh() {
     loading.IsShow.value = true
+    await filter.UpdateIdNames()
     await AssetInfoModel.UpdateTypeAsync()
     await map.InitAsync()
     loading.IsShow.value = false
@@ -66,11 +89,17 @@ export function UpdateAssetInfoes() {
     Count.value = Positions.length
 
     // 标记:
-    const points: AMap.Vector2[] = []
+    const points: LnglatData<AssetPosition>[] = []
     const positions = toRaw(Positions)
     positions.forEach(position => {
         if (position.longitude != undefined && position.latitude != undefined) {
-            points.push([position.longitude, position.latitude])
+            const infoModel = new AssetInfoModel(position)
+            infoModel.Background.value = 'var(--theme-input-background)'
+            const ld = new LnglatData([position.longitude, position.latitude], position)
+            ld.info = AssetInfo
+            ld.infoModel = infoModel
+            ld.onClick = OnMarkerClick
+            points.push(ld)
         }
     })
     map.InitClusterAsync(points)
@@ -79,13 +108,18 @@ export function UpdateAssetInfoes() {
     AssetInfoes.splice(0)
     pagination.GetPage(positions).forEach(position => {
         const assetInfo = new AssetInfoModel(position)
-        assetInfo._onClick = OnClick
+        assetInfo._onClick = OnItemClick
         AssetInfoes.push(assetInfo)
     })
 }
 
-/** 点击时 */
-function OnClick(info: AssetInfoModel) {
-    if (info.Position.longitude === undefined || info.Position.latitude === undefined) return
-    map.ZoomByVector2([info.Position.longitude, info.Position.latitude])
+/** 点击“标记”时 */
+function OnMarkerClick(position?: AssetPosition) {
+}
+
+/** 点击“项目”时 */
+function OnItemClick(info: AssetInfoModel) {
+    const position = toRaw(info.Position)
+    if (!position.longitude || !position.latitude) return
+    map.ZoomByVector2([position.longitude, position.latitude])
 }

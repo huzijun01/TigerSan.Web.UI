@@ -5,16 +5,16 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
-                        <Select :model="form.selectDepartment"></Select>
-                        <Select :model="form.selectAssetState"></Select>
+                        <Select :model="filter.selectCompany"></Select>
+                        <Select :model="filter.selectDepartment"></Select>
+                        <Select :model="filter.selectAssetState"></Select>
                         <Select :model="selectColumnFilter"></Select>
                     </div>
                     <div class="row-panel">
-                        <Select :model="form.selectAssetType"></Select>
-                        <Search :model="form.searchAssetId"></Search>
-                        <Select :model="form.selectOnlineState"></Select>
-                        <Select :model="form.selectErrorType"></Select>
+                        <Select :model="filter.selectAssetType"></Select>
+                        <Search :model="filter.searchAssetId" />
+                        <Select :model="filter.selectOnlineState"></Select>
+                        <Select :model="filter.selectErrorType"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -24,7 +24,8 @@
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">{{
+                            Texts.Add.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
@@ -106,7 +107,7 @@
 import AssetRecordPage from './AssetRecordPage.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
-import { assetLedgerForm as form } from './AssetLedgerForm'
+import { assetLedgerForm as form, filter } from './AssetLedgerForm'
 import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetLedgerTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
