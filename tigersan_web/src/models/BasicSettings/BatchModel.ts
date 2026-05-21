@@ -1,4 +1,4 @@
-import { IdModel, IdModelHelper, SelectModel, IdValueModel } from "@/0_tigersan_ui/tigerui"
+import { IdModel, IdModelHelper, SelectModel, IdValueModel, StringHelper } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper } from "../base/AxiosHelper"
 
 /** "批次"模型 */
@@ -33,7 +33,7 @@ class BatchHelper extends IdModelHelper<BatchModel> {
         filter: {
             filters: [
                 { propName: 'Scenario', value: param.scenario },
-                { propName: 'BatchId', value: param.batchId },
+                { propName: 'BatchId', value: StringHelper.IsNotEmpty(param.batchId) ? param.batchId : undefined },
             ],
             parent: {
                 id: param.company,
@@ -54,7 +54,7 @@ class BatchHelper extends IdModelHelper<BatchModel> {
         filter: {
             filters: [
                 { propName: 'Scenario', value: param.scenario },
-                { propName: 'BatchId', value: param.batchId },
+                { propName: 'BatchId', value: StringHelper.IsNotEmpty(param.batchId) ? param.batchId : undefined },
             ],
             parent: {
                 id: param.company,
