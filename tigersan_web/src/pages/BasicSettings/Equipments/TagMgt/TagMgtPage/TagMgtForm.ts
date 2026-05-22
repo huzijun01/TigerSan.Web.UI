@@ -1,14 +1,11 @@
 import { ref, watch } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, SelectModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, TimerHelper, IsEnable, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
 import { tagMgtTable } from './TagMgtTable'
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper, tagHelper } from '@/models'
 
 // 字段:
 const onlineCount = ref(0)
 const offlineCount = ref(0)
-
-// 定时器:
-const timer = new TimerHelper(UpdateRowDatas, 10000)
 
 // 分页器:
 const pagination = new PaginationModel()
@@ -326,7 +323,6 @@ function Repair() {
 }
 
 export const tagMgtForm = {
-    timer,
     pagination,
     onlineCount,
     offlineCount,

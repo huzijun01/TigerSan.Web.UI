@@ -2,7 +2,7 @@ import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
-import { loading, SelectModel, MapModel, ThemeHelper, PaginationModel, LnglatData } from "@/0_tigersan_ui/tigerui"
+import { loading, SelectModel, MapModel, PaginationModel, LnglatData } from "@/0_tigersan_ui/tigerui"
 
 /** 总数 */
 export const Count = ref<number>(0)
@@ -47,7 +47,7 @@ watch(Positions, UpdateAssetInfoes)
 export const AssetInfoes = shallowReactive<AssetInfoModel[]>([])
 
 /** 地图 */
-export const map = new MapModel<AssetPosition>(undefined, ThemeHelper.IsDark)
+export const map = new MapModel<AssetPosition>()
 map._onInitAsync = async () => {
     const placeSearch = await MapModel.GetPlaceSearchAsync(res => {
         selectAddr.SetItems(res.poiList.pois)

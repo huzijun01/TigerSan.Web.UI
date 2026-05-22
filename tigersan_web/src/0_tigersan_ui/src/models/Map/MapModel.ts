@@ -2,12 +2,12 @@ import "./MapTypes"
 import AMapLoader from "@amap/amap-jsapi-loader"
 import Marker from '../../components/Map/Marker.vue'
 import ClusterMarker from '../../components/Map/ClusterMarker.vue'
-import { ref, shallowRef, watch, type Component, type Ref } from "vue"
+import { shallowRef, watch, type Component } from "vue"
 import { MarkerModel } from "./MarkerModel"
 import type { ActionAsync } from "../../types"
-import { ComponentHelper } from "../../helpers"
 import { MapPlugins } from "./MapTypes/MapPlugins"
 import { ClusterMarkerModel } from "./ClusterMarkerModel"
+import { ComponentHelper, ThemeHelper } from "../../helpers"
 import { MapEvents, DataOptions, MapStyle } from "./MapTypes"
 
 /** “经纬度数据”模型 */
@@ -41,6 +41,8 @@ export class MapModel<TData> {
     _opts?: AMap.MapOptions
     /** 标记聚合 */
     _cluster?: AMap.MarkerCluster
+    /** “多边形”编辑器 */
+    _polygonEditor?: AMap.PolygonEditor
     /** 初始化前 */
     _beforeInit?: Function
     /** 初始化前（异步） */
@@ -53,13 +55,12 @@ export class MapModel<TData> {
 
     //#region 【Properties】
     /** 是否为“黑暗模式” */
-    IsDark = ref<boolean>()
+    IsDark = ThemeHelper.IsDark
     //#endregion 【Ctor】
 
     //#region 【Ctor】
-    constructor(opts?: AMap.MapOptions, isDark?: Ref<boolean>) {
+    constructor(opts?: AMap.MapOptions) {
         this._opts = opts
-        if (isDark) this.IsDark = isDark
         watch(this.IsDark, this.UpdateMapStyle)
     }
     //#endregion 【Ctor】
@@ -199,6 +200,7 @@ export class MapModel<TData> {
     }
     //#endregion [static]
 
+    //#region [Map]
     /** 初始化 */
     readonly InitAsync = async (opts?: AMap.MapOptions) => {
         if (!window.AMap) {
@@ -227,11 +229,26 @@ export class MapModel<TData> {
         }
 
         this._map = new AMap.Map(this.refContainer.value, opts1)
+        this._cluster = undefined
+        this._polygonEditor = undefined
 
         this._onInit?.()
         await this._onInitAsync?.()
     }
 
+    /** 更新"地图样式" */
+    readonly UpdateMapStyle = () => {
+        if (!this._map) return
+        if (this._opts && this._opts.mapStyle) {
+            this._map.setMapStyle(this._opts.mapStyle)
+            return
+        }
+
+        this._map.setMapStyle(this.IsDark.value ? MapStyle.grey : MapStyle.normal)
+    }
+    //#endregion [Map]
+
+    //#endregion [Tool]
     /** 初始化"标记聚合" */
     readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData>[], options?: AMap.MarkerClusterOptions) => {
         if (!await MapModel.LoadPluginAsync([MapPlugins.MarkerCluster])) return
@@ -255,7 +272,7 @@ export class MapModel<TData> {
             renderClusterMarker: c => MapModel.RenderClusterMarker(c, arrOpts.length),
             ...options
         })
-        this._cluster.on(MapEvents.click, e => {
+        this._cluster.on(MapEvents.click, (e: AMap.MarkerClusterArgs) => {
             this.ZoomByClusterData(e.clusterData)
             const cd = e.clusterData[0]
             if (cd) {
@@ -267,30 +284,27 @@ export class MapModel<TData> {
         })
     }
 
-    /** 更新"地图样式" */
-    readonly UpdateMapStyle = () => {
-        if (!this._map) return
-        if (this._opts && this._opts.mapStyle) {
-            this._map.setMapStyle(this._opts.mapStyle)
+    /** 获取“多边形编辑器” */
+    readonly GetPolygonEditorAsync = async () => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
             return
         }
 
-        this._map.setMapStyle(this.IsDark.value ? MapStyle.grey : MapStyle.normal)
-    }
+        if (!await MapModel.LoadPluginAsync([MapPlugins.PolygonEditor])) return
 
+        if (!this._polygonEditor) {
+            this._polygonEditor = new AMap.PolygonEditor(this._map)
+        }
+
+        return this._polygonEditor
+    }
+    //#endregion [Tool]
+
+    //#region [Zoom]
     /** 缩放到 */
     readonly ZoomTo = (lnglat: AMap.LngLat, zoom?: number) => {
         this._map?.setZoomAndCenter(zoom ?? 10, lnglat)
-    }
-
-    /** 根据“集群数据”缩放 */
-    readonly ZoomByClusterData = (clusterData: DataOptions[], padding: number = 60) => {
-        if (!this._map) return
-        const lnglats = clusterData.map(c => c.lnglat as AMap.LngLat)
-        const bounds = MapModel.GetBounds(lnglats)
-        if (!bounds) return
-        const zoomCenter = this._map.getFitZoomAndCenterByBounds(bounds, [padding, padding, padding, padding])
-        this._map.setZoomAndCenter(zoomCenter[0], zoomCenter[1])
     }
 
     /** 根据“经纬度”缩放 */
@@ -300,9 +314,41 @@ export class MapModel<TData> {
     }
 
     /** 根据“向量”缩放 */
-    readonly ZoomByVector2 = (point: AMap.Vector2, zoom: number = 20) => {
+    readonly ZoomByVector2 = (vector: AMap.Vector2, zoom: number = 20) => {
         if (!this._map) return
-        this._map.setZoomAndCenter(zoom, new AMap.LngLat(point[0], point[1]))
+        this._map.setZoomAndCenter(zoom, new AMap.LngLat(vector[0], vector[1]))
     }
+
+    /** 根据“经纬度集合”缩放 */
+    readonly ZoomByLngLats = (lnglats: AMap.LngLat[], padding: number = 60) => {
+        if (!this._map) return
+        const bounds = MapModel.GetBounds(lnglats)
+        if (!bounds) return
+        const zoomCenter = this._map.getFitZoomAndCenterByBounds(bounds, [padding, padding, padding, padding])
+        this._map.setZoomAndCenter(zoomCenter[0], zoomCenter[1])
+    }
+
+    /** 根据“向量集合”缩放 */
+    readonly ZoomByVector2s = (vectors: AMap.Vector2[], padding: number = 60) => {
+        if (!this._map) return
+        const lnglats = vectors.map(v => new AMap.LngLat(v[0], v[1]))
+        this.ZoomByLngLats(lnglats, padding)
+    }
+
+    /** 根据“多个向量集合”缩放 */
+    readonly ZoomByMultiVector2s = (arrVectors: AMap.Vector2[][], padding: number = 60) => {
+        if (!this._map) return
+        const vectors: AMap.Vector2[] = []
+        arrVectors.forEach(v => vectors.push(...v))
+        this.ZoomByVector2s(vectors, padding)
+    }
+
+    /** 根据“集群数据”缩放 */
+    readonly ZoomByClusterData = (clusterData: DataOptions[], padding: number = 60) => {
+        if (!this._map) return
+        const lnglats = clusterData.map(c => c.lnglat as AMap.LngLat)
+        this.ZoomByLngLats(lnglats, padding)
+    }
+    //#endregion [Zoom]
     //#endregion 【Functions】
 }

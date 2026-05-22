@@ -2,6 +2,7 @@ export * from './MapTypes/Map'
 export * from './MapTypes/Events'
 export * from './MapTypes/Markers'
 export * from './MapTypes/MapPlugins'
+export * from './MapTypes/Tools'
 
 declare global {
     interface Window {

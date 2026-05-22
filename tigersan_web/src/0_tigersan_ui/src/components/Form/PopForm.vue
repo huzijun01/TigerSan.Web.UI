@@ -1,16 +1,31 @@
 <template>
     <Pop :isShow="model.IsShow.value">
-        <div class="form-panel">
+        <div class="form-panel" :style="model.FormPanelStyle.value">
             <div class="title-panel flex-between">
                 <span class="title">{{ model.Title.value }}</span>
                 <span class="close iconfont" @click="model.Close">{{ Icons.Close }}</span>
             </div>
-            <div class="content-panel">
-                <table>
-                    <tbody>
-                        <slot></slot>
-                    </tbody>
-                </table>
+            <div class="content-panel" :style="model.ContentPanelStyle.value">
+                <div class="center-content">
+                    <slot name="center"></slot>
+                    <table>
+                        <tbody>
+                            <slot></slot>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="top-content">
+                    <slot name="top"></slot>
+                </div>
+                <div class="bottom-content">
+                    <slot name="bottom"></slot>
+                </div>
+                <div class="left-content">
+                    <slot name="left"></slot>
+                </div>
+                <div class="right-content">
+                    <slot name="right"></slot>
+                </div>
             </div>
             <div class="button-panel flex-right">
                 <button class="cancel" @click="model.Close">{{ model.CancelText.value }}</button>
@@ -40,8 +55,11 @@ const { model } = defineProps({
 </script>
 
 <style lang="less" scoped>
-@margin-bottom: 25px;
+@1: 1/2;
+@2: 2/3;
+@3: 3/4;
 @margin-right: 20px;
+@margin-bottom: 25px;
 
 table {
     border-collapse: separate;
@@ -74,8 +92,36 @@ table {
 
     .content-panel {
         flex-grow: 1;
+        display: grid;
+        grid-template-rows: 0 auto 0;
+        grid-template-columns: 0 auto 0;
         padding: 24px;
         overflow: auto;
+
+        .center-content {
+            grid-row: @2;
+            grid-column: @2;
+        }
+
+        .top-content {
+            grid-row: @1;
+            grid-column: @2;
+        }
+
+        .bottom-content {
+            grid-row: @3;
+            grid-column: @2;
+        }
+
+        .left-content {
+            grid-row: @2;
+            grid-column: @1;
+        }
+
+        .right-content {
+            grid-row: @2;
+            grid-column: @3;
+        }
     }
 
     .button-panel {

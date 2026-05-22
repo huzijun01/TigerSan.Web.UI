@@ -15,8 +15,4 @@ let { isShow } = defineProps({
 })
 </script>
 
-<style lang="less" scoped>
-.pop-mask {
-    backdrop-filter: none;
-}
-</style>
+<style lang="less" scoped></style>

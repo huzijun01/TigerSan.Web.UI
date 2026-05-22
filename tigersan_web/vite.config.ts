@@ -14,7 +14,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    // vueDevTools(),
     vueSetupExtend(),
     AutoImport({
       imports: ['vue'], // 自动导入Vue相关函数，如：ref、reactive、toRef等

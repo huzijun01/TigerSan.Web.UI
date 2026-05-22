@@ -12,9 +12,12 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning" :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
-                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger" :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">{{ Texts.Add.value
+                            }}</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning"
+                            :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                        <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger"
+                            :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -71,6 +74,11 @@
                 <input type="text" v-model="form.configComment.Target.value">
             </FormItem>
         </FormRow>
+        <template v-slot:right>
+            <div class="map-panel">
+                <Map :model="map"></Map>
+            </div>
+        </template>
     </PopForm>
 </template>
 
@@ -78,8 +86,8 @@
 import { onMounted } from 'vue'
 import { siteMgtTable } from './SiteMgtTable'
 import { Authorities } from '@/navs/Authorities'
-import { siteMgtForm as form } from './SiteMgtForm'
-import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Texts } from '@/0_tigersan_ui/tigerui'
+import { siteMgtForm as form, map } from './SiteMgtForm'
+import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Texts, Map } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
@@ -107,5 +115,13 @@ onMounted(() => {
 .tree-box {
     max-height: 500px;
     overflow: auto;
+}
+
+.map-panel {
+    width: 100%;
+    height: 100%;
+    min-width: 600px;
+    min-height: 600px;
+    margin-left: 15px;
 }
 </style>

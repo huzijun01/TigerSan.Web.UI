@@ -53,7 +53,7 @@ export class PanelBehavior {
         const content = this._getContent()
         if (content) {
             content.unmount()
-            this._setContent(undefined)
+            this._setContent()
         }
 
         const contentApp = ComponentHelper.CreateApp(this._component, { model })
@@ -66,7 +66,7 @@ export class PanelBehavior {
         const content = this._getContent()
         if (content) {
             content.unmount()
-            this._setContent(undefined)
+            this._setContent()
         }
     }
     //#endregion 【Functions】

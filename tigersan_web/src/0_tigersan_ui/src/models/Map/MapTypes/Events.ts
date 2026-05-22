@@ -1,7 +1,6 @@
-import type { DataOptions } from "./Markers"
-
 /** 地图事件 */
 export enum MapEvents {
+    add = 'add',
     resize = 'resize',
     complete = 'complete',
     click = 'click',
@@ -47,28 +46,28 @@ declare global {
             // Function:
             /** 绑定回调 */
             on(
-                type: MapEvents,
-                callback: (e: MapsEvent) => void,
+                type: string,
+                callback: Function,
                 context?: object,
                 once?: boolean): void
             /** 解绑回调 */
             off(
-                type: MapEvents,
-                callback: (e: MapsEvent) => void,
+                type: string,
+                callback: Function,
                 context?: object): void
             /** 是否已绑定回调 */
             hasEvents(
-                type: MapEvents,
-                callback: (e: MapsEvent) => void,
+                type: string,
+                callback: Function,
                 context?: object): void
             /** 清除某一类型的全部回调 */
-            clearEvents(type: MapEvents): void
+            clearEvents(type: string): void
             /** 触发事件 */
-            emit(type: MapEvents, data?: object): void
+            emit(type: string, data?: object): void
         }
 
-        /** 地图事件对象 */
-        class MapsEvent {
+        /** “地图”回调参数 */
+        type MapsArgs = {
             /** 经纬度 */
             lnglat: LngLat
             /** 像素坐标 */
@@ -77,14 +76,6 @@ declare global {
             type: string
             /** 目标对象 */
             target: object
-
-            // 附加:
-            /** 聚合 */
-            cluster: DataCluster
-            /** 聚合数据 */
-            clusterData: DataOptions[]
-            /** 标记 */
-            marker: Marker
         }
     }
 }

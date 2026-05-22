@@ -6,19 +6,33 @@ import { loading } from "../Dialog/LoadingModel"
 import { FormConfig, SetFormModel } from './FormConfig'
 import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
 
-type FormVerify<TSource extends object> = (source: TSource, isEdit: boolean) => VerifyResult
-type FormSubmit<TSource extends object> = (source: TSource, isEdit: boolean) => SubmitResult
-type FormSubmitAsync<TSource extends object> = (source: TSource, isEdit: boolean) => Promise<SubmitResult>
+export type FormVerify<TSource extends object> = (source: TSource, isEdit: boolean) => VerifyResult
+export type FormSubmit<TSource extends object> = (source: TSource, isEdit: boolean) => SubmitResult
+export type FormSubmitAsync<TSource extends object> = (source: TSource, isEdit: boolean) => Promise<SubmitResult>
+
+/** 填充配置 */
+export type FillOpts = {
+    /** 是否填充“中心”。默认值：auto */
+    center?: boolean
+    /** 是否填充“上部”。默认值：0px */
+    top?: boolean
+    /** 是否填充“下部”。默认值：0px */
+    bottom?: boolean
+    /** 是否填充“左侧”。默认值：0px */
+    left?: boolean
+    /** 是否填充“右侧”。默认值：0px */
+    right?: boolean
+}
 
 /** 表单结果 */
-enum FormResult {
+export enum FormResult {
     OK,
     Error,
     Warning,
 }
 
 /** 验证结果 */
-class VerifyResult {
+export class VerifyResult {
     VerifyState: FormResult
     VerifyText: string
 
@@ -44,7 +58,7 @@ class VerifyResult {
 }
 
 /** 提交结果 */
-class SubmitResult {
+export class SubmitResult {
     Msg: string
     Result: FormResult
 
@@ -58,7 +72,7 @@ class SubmitResult {
 }
 
 /** 表单模型 */
-class FormModel<TSource extends object> {
+export class FormModel<TSource extends object> {
     //#region 【Fields】
     /** 是否“为编辑” */
     _isEdit = false
@@ -93,6 +107,37 @@ class FormModel<TSource extends object> {
     readonly CancelText = ref('Cancel')
     /** “提交”文本 */
     readonly SubmitText = ref('Submit')
+    /** 最小宽度 */
+    readonly MinWidth = ref<string | undefined>()
+    /** 最小高度 */
+    readonly MinHeight = ref<string | undefined>()
+    /** 填充配置 */
+    readonly FillOpts = ref<FillOpts | undefined>()
+    /** “表单容器”样式对象 */
+    readonly FormPanelStyle = computed(() => {
+        return {
+            minWidth: this.MinWidth.value,
+            minHeight: this.MinHeight.value,
+        }
+    })
+    /** “内容容器”样式对象 */
+    readonly ContentPanelStyle = computed(() => {
+        const opts = this.FillOpts.value
+        if (!opts) return
+
+        function size(opt?: boolean, isCenter: boolean = false) {
+            if (opt === undefined) return isCenter ? 'auto' : '0px'
+            return opt ? '1fr' : 'auto'
+        }
+
+        const gridTemplateRows = `${size(opts.top)} ${size(opts.center, true)} ${size(opts.bottom)}`
+        const gridTemplateColumns = `${size(opts.left)} ${size(opts.center, true)} ${size(opts.right)}`
+
+        return {
+            gridTemplateRows,
+            gridTemplateColumns,
+        }
+    })
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -291,7 +336,7 @@ class FormModel<TSource extends object> {
 }
 
 /** 表单项目模型 */
-class FormItemModel<TSource extends object, TTarget> {
+export class FormItemModel<TSource extends object, TTarget> {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
@@ -446,15 +491,4 @@ class FormItemModel<TSource extends object, TTarget> {
         }
     }
     //#endregion 【Functions】
-}
-
-export {
-    type FormVerify,
-    type FormSubmit,
-    type FormSubmitAsync,
-    FormResult,
-    VerifyResult,
-    SubmitResult,
-    FormModel,
-    FormItemModel
 }

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, MapModel, PolygonEditorEvent } from '@/0_tigersan_ui/tigerui'
 import { siteMgtTable } from './SiteMgtTable'
 import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 
@@ -107,8 +107,6 @@ let configSiteMgtForm: FormConfig<SiteModel> = {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectTypeForm.IsEnabled.value = !isEdit
 
-        await companyHelper.UpdateIdNames()
-
         if (isEdit) {
             const rowData = siteMgtTable.SelectedRowDatas.value[0]
             if (!rowData) {
@@ -137,6 +135,9 @@ let configSiteMgtForm: FormConfig<SiteModel> = {
 
 /** “场地”表单模型 */
 const siteForm = new FormModel(configSiteMgtForm)
+siteForm.MinWidth.value = '80vw'
+siteForm.MinHeight.value = '80vh'
+siteForm.FillOpts.value = { right: true }
 
 /** 查 */
 async function Refresh() {
@@ -204,6 +205,7 @@ async function Edit() {
     siteForm._onSubmitAsync = async source => {
         const res = await siteHelper.Edit(source)
 
+        map._polygonEditor?.close()
         await Refresh()
         return GetSubmitResult(res, '修改成功')
     }
@@ -262,4 +264,44 @@ export const siteMgtForm = {
     Add,
     Edit,
     Delete,
+}
+
+/** 地图 */
+export const map = new MapModel<any>()
+
+map._onInitAsync = async () => {
+    await companyHelper.UpdateIdNames()
+
+    const editor = await map.GetPolygonEditorAsync()
+    if (!editor) {
+        console.warn('The editor is undefined!')
+        return
+    }
+
+    const path1: AMap.Vector2[] = [[116.475334, 39.997534], [116.476627, 39.998315], [116.478603, 39.99879], [116.478529, 40.000296], [116.475082, 40.000151], [116.473421, 39.998717]]
+    const path2: AMap.Vector2[] = [[116.474595, 40.001321], [116.473526, 39.999865], [116.476284, 40.000917]]
+    const polygon1 = new AMap.Polygon({
+        path: path1
+    })
+    const polygon2 = new AMap.Polygon({
+        path: path2
+    })
+
+    editor.addAdsorbPolygons([polygon1, polygon2])
+    map._map?.add(polygon1)
+    map._map?.add(polygon2)
+    map.ZoomByMultiVector2s([path1, path2])
+    editor.close()
+    editor.setTarget(polygon2)
+    editor.open()
+
+    editor.on(PolygonEditorEvent.adjust, (args: AMap.PolygonEditorArgs) => {
+        console.log(args.target.getPath())
+
+    })
+
+    editor.on(PolygonEditorEvent.end, (args: AMap.PolygonEditorEndArgs) => {
+        console.log(args.target.getPath())
+
+    })
 }

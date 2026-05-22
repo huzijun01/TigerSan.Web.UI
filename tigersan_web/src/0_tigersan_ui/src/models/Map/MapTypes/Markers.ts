@@ -251,6 +251,18 @@ declare global {
             renderClusterMarker?: (context: AMap.RenderClusterMarkerObject) => void
         }
 
+        /** “标记聚合”回调参数 */
+        type MarkerClusterArgs = {
+            /** 经纬度 */
+            lnglat: LngLat
+            /** 聚合 */
+            cluster: DataCluster
+            /** 聚合数据 */
+            clusterData: DataOptions[]
+            /** 标记 */
+            marker: Marker
+        }
+
         class RenderMarkerObject {
             data: DataOptions[]
             count: number

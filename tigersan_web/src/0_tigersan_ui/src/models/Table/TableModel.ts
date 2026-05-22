@@ -405,7 +405,7 @@ export class TableHeaderModel<TSource extends object> {
     /** 文本 */
     readonly Text = ref('null')
     /** 宽度 */
-    readonly Width = ref<number | undefined>(undefined)
+    readonly Width = ref<number | undefined>()
     /** 文本对齐 */
     readonly TextAlign = ref(TextAlign.Center)
     /** 是否显示 */

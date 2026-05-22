@@ -18,14 +18,16 @@ declare global {
             constructor(lng: number, lat: number, noWrap?: Boolean)
 
             // Function:
-            /** 设置经度 */
+            /** 设置“经度” */
             setLng(lng: number): void
-            /** 设置纬度 */
-            setLat(lat: number): void
-            /** 获取经度 */
+            /** 获取“经度” */
             getLng(): number
-            /** 获取纬度 */
+
+            /** 设置“纬度” */
+            setLat(lat: number): void
+            /** 获取“纬度” */
             getLat(): number
+
             /** 相等 */
             equals(another: LngLat): boolean
             /** 加 */
