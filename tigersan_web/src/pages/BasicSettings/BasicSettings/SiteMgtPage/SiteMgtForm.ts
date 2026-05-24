@@ -1,7 +1,45 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, MapModel, PolygonEditorEvent } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, MapModel } from '@/0_tigersan_ui/tigerui'
 import { siteMgtTable } from './SiteMgtTable'
 import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
+
+/** 地图 */
+export const map = new MapModel<any>()
+map.IsAllowMultiPolygon.value = false
+map._onInitAsync = async () => {
+    await companyHelper.UpdateIdNames()
+
+    const editor = await map.InitPolygonEditorAsync({
+        adjust: args => {
+        },
+        end: args => {
+            const polygons = map.GetPolygons()
+            if (!polygons) return
+
+            const pathes = MapModel.PolygonsToPathes<AMap.LngLat[]>(polygons)
+            console.log(pathes)
+        },
+    })
+
+    if (!editor) {
+        console.warn('The editor is undefined!')
+        return
+    }
+
+    const site = siteForm._source
+    if (!site) {
+        console.warn('The site is undefined!')
+        return
+    }
+
+    if (site.fencePath) {
+        const pathes = MapModel.GetPathes(site.fencePath)
+        if (!pathes) return
+        map.ZoomByMultiVector2s(pathes)
+    } else if (site.latitude > 0 && site.longitude > 0) {
+        map.ZoomByVector2([site.latitude, site.longitude])
+    }
+}
 
 // 选择框:
 /** 筛选 */
@@ -264,44 +302,4 @@ export const siteMgtForm = {
     Add,
     Edit,
     Delete,
-}
-
-/** 地图 */
-export const map = new MapModel<any>()
-
-map._onInitAsync = async () => {
-    await companyHelper.UpdateIdNames()
-
-    const editor = await map.GetPolygonEditorAsync()
-    if (!editor) {
-        console.warn('The editor is undefined!')
-        return
-    }
-
-    const path1: AMap.Vector2[] = [[116.475334, 39.997534], [116.476627, 39.998315], [116.478603, 39.99879], [116.478529, 40.000296], [116.475082, 40.000151], [116.473421, 39.998717]]
-    const path2: AMap.Vector2[] = [[116.474595, 40.001321], [116.473526, 39.999865], [116.476284, 40.000917]]
-    const polygon1 = new AMap.Polygon({
-        path: path1
-    })
-    const polygon2 = new AMap.Polygon({
-        path: path2
-    })
-
-    editor.addAdsorbPolygons([polygon1, polygon2])
-    map._map?.add(polygon1)
-    map._map?.add(polygon2)
-    map.ZoomByMultiVector2s([path1, path2])
-    editor.close()
-    editor.setTarget(polygon2)
-    editor.open()
-
-    editor.on(PolygonEditorEvent.adjust, (args: AMap.PolygonEditorArgs) => {
-        console.log(args.target.getPath())
-
-    })
-
-    editor.on(PolygonEditorEvent.end, (args: AMap.PolygonEditorEndArgs) => {
-        console.log(args.target.getPath())
-
-    })
 }

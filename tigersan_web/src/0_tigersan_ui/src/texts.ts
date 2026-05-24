@@ -6,6 +6,8 @@ class Texts {
     static readonly Add = TextModel.Computed('Add', '新增')
     static readonly Edit = TextModel.Computed('Edit', '修改')
     static readonly Delete = TextModel.Computed('Delete', '删除')
+    static readonly End = TextModel.Computed('End', '结束')
+    static readonly Save = TextModel.Computed('Save', '保存')
     static readonly Yes = TextModel.Computed('Yes', '是')
     static readonly No = TextModel.Computed('No', '否')
     static readonly Cancel = TextModel.Computed('Cancel', '取消')

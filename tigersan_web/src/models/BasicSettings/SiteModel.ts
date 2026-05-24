@@ -7,6 +7,9 @@ export class SiteModel extends IdNameModel {
     type: bigint = 0n
     addr = ''
     addrDetail = ''
+    longitude: number = 0
+    latitude: number = 0
+    fencePath?: string
     manager? = ''
     phone? = ''
     comment? = ''

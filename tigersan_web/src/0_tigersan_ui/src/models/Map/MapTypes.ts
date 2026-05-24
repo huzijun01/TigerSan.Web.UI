@@ -21,3 +21,15 @@ declare global {
         function plugin(pluginName: string, callback: Function): void
     }
 }
+
+/** 类名 */
+export class ClassNames {
+    static readonly Polygon = 'Overlay.Polygon'
+    static readonly Polyline = 'Overlay.Polyline'
+    static readonly BezierCurve = 'Overlay.BezierCurve'
+    static readonly Circle = 'Overlay.Circle'
+    static readonly CircleMarker = 'Overlay.CircleMarker'
+    static readonly Ellipse = 'Overlay.Ellipse'
+    static readonly Rectangle = 'Overlay.Rectangle'
+    static readonly GeoJSON = 'Overlay.GeoJSON'
+}

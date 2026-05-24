@@ -9,8 +9,10 @@
                     <div class="row-panel">
                         <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
                         <button @click="model.Add">{{ Texts.Add.value }}</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
+                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value
+                            }}</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">{{
+                            Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -68,17 +70,4 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
-
-.readonly-panel {
-    margin: 0px 5px 15px 5px;
-
-    .text {
-        color: var(--color-warning);
-    }
-}
-
-.tree-box {
-    max-height: 500px;
-    overflow: auto;
-}
 </style>

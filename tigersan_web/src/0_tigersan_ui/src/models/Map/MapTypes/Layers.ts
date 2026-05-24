@@ -1,8 +1,14 @@
+/** 切片图层事件 */
+export enum TileLayerEvent {
+    /** 加载完成 */
+    complete = 'complete',
+}
+
 declare global {
     namespace AMap {
         // 高德官方图层:
         /** 图层基类 */
-        class LayerBase {
+        class LayerBase extends EventBase {
             /** 设置“图层参数” */
             setOptions(opts: LayerOptionsBase): void
             /** 获取“图层参数” */

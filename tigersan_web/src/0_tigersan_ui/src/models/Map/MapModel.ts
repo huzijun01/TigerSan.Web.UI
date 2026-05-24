@@ -2,13 +2,14 @@ import "./MapTypes"
 import AMapLoader from "@amap/amap-jsapi-loader"
 import Marker from '../../components/Map/Marker.vue'
 import ClusterMarker from '../../components/Map/ClusterMarker.vue'
-import { shallowRef, watch, type Component } from "vue"
+import { computed, ref, shallowRef, watch, type Component } from "vue"
 import { MarkerModel } from "./MarkerModel"
 import type { ActionAsync } from "../../types"
 import { MapPlugins } from "./MapTypes/MapPlugins"
+import { SelectModel } from "../Inputs/SelectModel"
 import { ClusterMarkerModel } from "./ClusterMarkerModel"
-import { ComponentHelper, ThemeHelper } from "../../helpers"
-import { MapEvents, DataOptions, MapStyle } from "./MapTypes"
+import { ArrayHelper, ComponentHelper, ThemeHelper } from "../../helpers"
+import { MapEvents, DataOptions, MapStyle, PolygonEditorEvent, ClassNames } from "./MapTypes"
 
 /** “经纬度数据”模型 */
 export class LnglatData<TData> {
@@ -31,8 +32,6 @@ export class MapModel<TData> {
     static _appKey: string = ''
     /** “插件”集合 */
     static _plugins?: string[]
-    /** 地图容器 */
-    readonly refContainer = shallowRef<HTMLDivElement>()
     /** “标记数据”映射 */
     readonly _markerDataMap = new Map<DataOptions, LnglatData<TData>>()
     /** 地图实例 */
@@ -41,7 +40,9 @@ export class MapModel<TData> {
     _opts?: AMap.MapOptions
     /** 标记聚合 */
     _cluster?: AMap.MarkerCluster
-    /** “多边形”编辑器 */
+    /** 地址查询 */
+    _placeSearch?: AMap.PlaceSearch
+    /** 多边形编辑器 */
     _polygonEditor?: AMap.PolygonEditor
     /** 初始化前 */
     _beforeInit?: Function
@@ -56,11 +57,41 @@ export class MapModel<TData> {
     //#region 【Properties】
     /** 是否为“黑暗模式” */
     IsDark = ThemeHelper.IsDark
+    /** 是否“正在新建” */
+    private readonly _IsCreating = ref(false)
+    /** 是否“正在编辑” */
+    private readonly _IsEditing = ref(false)
+    /** “多边形”个数 */
+    private readonly _PolygonCount = ref(0)
+    /** “地址”选择器 */
+    readonly SelectAddr: SelectModel<AMap.POI>
+    /** 地图容器 */
+    readonly refContainer = shallowRef<HTMLDivElement>()
+    /** 是否“显示选择框” */
+    readonly IsShowSelect = ref(true)
+    /** 是否“显示按钮” */
+    readonly IsShowButton = ref(true)
+    /** 是否“允许创建多个多边形” */
+    readonly IsAllowMultiPolygon = ref(true)
+    /** 是否“正在新建” */
+    readonly IsCreating = computed(() => { return this._IsCreating.value })
+    /** 是否“允许创建” */
+    readonly IsAllowCreate = computed(() => {
+        return !this._IsCreating.value
+            && (this.IsAllowMultiPolygon.value || this._PolygonCount.value < 1)
+    })
+    /** 是否“正在编辑” */
+    readonly IsEditing = computed(() => { return this._IsEditing.value })
+    /** “多边形”个数 */
+    readonly PolygonCount = computed(() => { return this._PolygonCount.value })
+    /** 是否有“多边形” */
+    readonly HasPolygon = computed(() => { return this._PolygonCount.value > 0 })
     //#endregion 【Ctor】
 
     //#region 【Ctor】
     constructor(opts?: AMap.MapOptions) {
         this._opts = opts
+        this.SelectAddr = this.GetAddrSelect()
         watch(this.IsDark, this.UpdateMapStyle)
     }
     //#endregion 【Ctor】
@@ -136,7 +167,7 @@ export class MapModel<TData> {
     }
 
     /** 获取"地址查询" */
-    static async GetPlaceSearchAsync(callback: (res: AMap.SearchResult) => void) {
+    static async GetPlaceSearchAsync(callback?: (res: AMap.SearchResult) => void) {
         if (!await MapModel.LoadPluginAsync([MapPlugins.PlaceSearch])) return undefined
 
         const placeSearch = new AMap.PlaceSearch({})
@@ -198,6 +229,133 @@ export class MapModel<TData> {
         context.marker.setOffset(new AMap.Pixel(model.offset, model.offset))
         context.marker.setContent(marker as HTMLElement)
     }
+
+    /** 添加“事件” */
+    static AddEvent(obj: AMap.EventBase, callback?: AMap.MapCallback) {
+        if (!callback) return
+        if (callback.add) obj.on(MapEvents.add, callback.add)
+        if (callback.resize) obj.on(MapEvents.resize, callback.resize)
+        if (callback.complete) obj.on(MapEvents.complete, callback.complete)
+        if (callback.click) obj.on(MapEvents.click, callback.click)
+        if (callback.dblclick) obj.on(MapEvents.dblclick, callback.dblclick)
+        if (callback.mapmove) obj.on(MapEvents.mapmove, callback.mapmove)
+        if (callback.hotspotclick) obj.on(MapEvents.hotspotclick, callback.hotspotclick)
+        if (callback.hotspotover) obj.on(MapEvents.hotspotover, callback.hotspotover)
+        if (callback.hotspotout) obj.on(MapEvents.hotspotout, callback.hotspotout)
+        if (callback.movestart) obj.on(MapEvents.movestart, callback.movestart)
+        if (callback.moveend) obj.on(MapEvents.moveend, callback.moveend)
+        if (callback.zoomchange) obj.on(MapEvents.zoomchange, callback.zoomchange)
+        if (callback.zoomstart) obj.on(MapEvents.zoomstart, callback.zoomstart)
+        if (callback.zoomend) obj.on(MapEvents.zoomend, callback.zoomend)
+        if (callback.rotatechange) obj.on(MapEvents.rotatechange, callback.rotatechange)
+        if (callback.rotatestart) obj.on(MapEvents.rotatestart, callback.rotatestart)
+        if (callback.rotateend) obj.on(MapEvents.rotateend, callback.rotateend)
+        if (callback.mousemove) obj.on(MapEvents.mousemove, callback.mousemove)
+        if (callback.mousewheel) obj.on(MapEvents.mousewheel, callback.mousewheel)
+        if (callback.mouseover) obj.on(MapEvents.mouseover, callback.mouseover)
+        if (callback.mouseout) obj.on(MapEvents.mouseout, callback.mouseout)
+        if (callback.mouseup) obj.on(MapEvents.mouseup, callback.mouseup)
+        if (callback.mousedown) obj.on(MapEvents.mousedown, callback.mousedown)
+        if (callback.rightclick) obj.on(MapEvents.rightclick, callback.rightclick)
+        if (callback.dragstart) obj.on(MapEvents.dragstart, callback.dragstart)
+        if (callback.dragging) obj.on(MapEvents.dragging, callback.dragging)
+        if (callback.dragend) obj.on(MapEvents.dragend, callback.dragend)
+        if (callback.touchstart) obj.on(MapEvents.touchstart, callback.touchstart)
+        if (callback.touchmove) obj.on(MapEvents.touchmove, callback.touchmove)
+        if (callback.touchend) obj.on(MapEvents.touchend, callback.touchend)
+    }
+
+    /** 移除“事件” */
+    static RemoveEvent(obj: AMap.EventBase, callback?: AMap.MapCallback) {
+        if (!callback) return
+        if (callback.add) obj.off(MapEvents.add, callback.add)
+        if (callback.resize) obj.off(MapEvents.resize, callback.resize)
+        if (callback.complete) obj.off(MapEvents.complete, callback.complete)
+        if (callback.click) obj.off(MapEvents.click, callback.click)
+        if (callback.dblclick) obj.off(MapEvents.dblclick, callback.dblclick)
+        if (callback.mapmove) obj.off(MapEvents.mapmove, callback.mapmove)
+        if (callback.hotspotclick) obj.off(MapEvents.hotspotclick, callback.hotspotclick)
+        if (callback.hotspotover) obj.off(MapEvents.hotspotover, callback.hotspotover)
+        if (callback.hotspotout) obj.off(MapEvents.hotspotout, callback.hotspotout)
+        if (callback.movestart) obj.off(MapEvents.movestart, callback.movestart)
+        if (callback.moveend) obj.off(MapEvents.moveend, callback.moveend)
+        if (callback.zoomchange) obj.off(MapEvents.zoomchange, callback.zoomchange)
+        if (callback.zoomstart) obj.off(MapEvents.zoomstart, callback.zoomstart)
+        if (callback.zoomend) obj.off(MapEvents.zoomend, callback.zoomend)
+        if (callback.rotatechange) obj.off(MapEvents.rotatechange, callback.rotatechange)
+        if (callback.rotatestart) obj.off(MapEvents.rotatestart, callback.rotatestart)
+        if (callback.rotateend) obj.off(MapEvents.rotateend, callback.rotateend)
+        if (callback.mousemove) obj.off(MapEvents.mousemove, callback.mousemove)
+        if (callback.mousewheel) obj.off(MapEvents.mousewheel, callback.mousewheel)
+        if (callback.mouseover) obj.off(MapEvents.mouseover, callback.mouseover)
+        if (callback.mouseout) obj.off(MapEvents.mouseout, callback.mouseout)
+        if (callback.mouseup) obj.off(MapEvents.mouseup, callback.mouseup)
+        if (callback.mousedown) obj.off(MapEvents.mousedown, callback.mousedown)
+        if (callback.rightclick) obj.off(MapEvents.rightclick, callback.rightclick)
+        if (callback.dragstart) obj.off(MapEvents.dragstart, callback.dragstart)
+        if (callback.dragging) obj.off(MapEvents.dragging, callback.dragging)
+        if (callback.dragend) obj.off(MapEvents.dragend, callback.dragend)
+        if (callback.touchstart) obj.off(MapEvents.touchstart, callback.touchstart)
+        if (callback.touchmove) obj.off(MapEvents.touchmove, callback.touchmove)
+        if (callback.touchend) obj.off(MapEvents.touchend, callback.touchend)
+    }
+
+    /** 获取"路径"集合 */
+    static GetPathes(strPathes: string): AMap.Vector2[][] | undefined {
+        try {
+            const parsed = JSON.parse(strPathes)
+
+            // 验证是否为数组
+            if (!Array.isArray(parsed)) {
+                console.warn('[GetPathes] 解析结果不是数组')
+                return undefined
+            }
+
+            // 验证数组结构：每项必须是 [number, number]
+            for (let i = 0; i < parsed.length; i++) {
+                const path = parsed[i]
+                if (!Array.isArray(path) || path.length !== 2) {
+                    console.warn(`The format of the path is incorrect! (${i})`, path)
+                    return undefined
+                }
+                if (typeof path[0] !== 'number' || typeof path[1] !== 'number' ||
+                    !Number.isFinite(path[0]) || !Number.isFinite(path[1])) {
+                    console.warn(`The path contains invalid numbers! (${i})`, path)
+                    return undefined
+                }
+            }
+
+            return parsed as AMap.Vector2[][]
+        } catch (e) {
+            console.error('Deserialization failed!', e)
+            return undefined
+        }
+    }
+
+    /** 获取"路径集合"字符串 */
+    static GetPathesString(pathes: AMap.Vector2[][]): string {
+        try {
+            // 验证输入
+            if (!Array.isArray(pathes)) {
+                throw new Error('Input is not an array!')
+            }
+
+            for (let i = 0; i < pathes.length; i++) {
+                const path = pathes[i]
+                if (!Array.isArray(path) || path.length !== 2) {
+                    throw new Error(`The format of the path is incorrect! (${i})`)
+                }
+                if (typeof path[0] !== 'number' || typeof path[1] !== 'number') {
+                    throw new Error(`The path contains non-numeric characters! (${i})`)
+                }
+            }
+
+            return JSON.stringify(pathes)
+        } catch (e) {
+            console.error('Serialization failed!', e)
+            return ''
+        }
+    }
     //#endregion [static]
 
     //#region [Map]
@@ -230,6 +388,7 @@ export class MapModel<TData> {
 
         this._map = new AMap.Map(this.refContainer.value, opts1)
         this._cluster = undefined
+        this._placeSearch = undefined
         this._polygonEditor = undefined
 
         this._onInit?.()
@@ -246,11 +405,110 @@ export class MapModel<TData> {
 
         this._map.setMapStyle(this.IsDark.value ? MapStyle.grey : MapStyle.normal)
     }
+
+    /** 添加“覆盖物/图层” */
+    readonly Add = (features: AMap.Overlay | AMap.LayerBase | Array<AMap.Overlay | AMap.LayerBase>, opts?: AMap.MapCallback) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        this._map.add(features)
+
+        if (!opts) return
+        if (features instanceof Array) {
+            features.forEach(f => MapModel.AddEvent(f, opts))
+        }
+        else {
+            MapModel.AddEvent(features, opts)
+        }
+    }
+
+    /** 移除“覆盖物/图层” */
+    readonly Remove = (features: AMap.Overlay | AMap.LayerBase | Array<AMap.Overlay | AMap.LayerBase>) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        this._map.remove(features)
+        this.UpdatePolygonCount()
+    }
+
+    /** 添加“事件” */
+    readonly AddEvent = (opts?: AMap.MapCallback) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        MapModel.AddEvent(this._map, opts)
+    }
+
+    /** 移除“事件” */
+    readonly RemoveEvent = (callback?: AMap.MapCallback) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        MapModel.RemoveEvent(this._map, callback)
+    }
+
+    /** 地址查询 */
+    readonly SearchAsync = async (search: string): Promise<AMap.POI[] | undefined> => {
+        if (!this._placeSearch) {
+            this._placeSearch = await MapModel.GetPlaceSearchAsync()
+        }
+
+        return new Promise((resolve, reject) => {
+            if (!this._placeSearch) {
+                console.warn('The _placeSearch is undefined!')
+                return
+            }
+
+            console.log(this._placeSearch.on);
+
+            this._placeSearch.on(MapEvents.complete, (res: AMap.SearchResult) => {
+                resolve(res.poiList.pois)
+            }, undefined, true)
+
+            this._placeSearch.on(MapEvents.error, (err: any) => {
+                console.error('Search error:', err)
+                resolve(undefined)
+            }, undefined, true)
+
+            this._placeSearch.search(search)
+        })
+    }
     //#endregion [Map]
 
     //#endregion [Tool]
+    /** 获取“地址选择器” */
+    readonly GetAddrSelect = () => {
+        const selectAddr = new SelectModel<AMap.POI>()
+        selectAddr.IsAllowSearch.value = true
+        selectAddr.PlaceholderCN.value = '地址'
+        selectAddr.PlaceholderEN.value = 'Addr'
+        selectAddr._converter = source => source.name
+        selectAddr._onSearchTextChange = search => {
+            selectAddr.IsLoading.value = true
+            this.SearchAsync(search).then(res => {
+                if (!res) return
+                selectAddr.SetItems(res)
+                selectAddr.IsLoading.value = false
+            })
+        }
+        selectAddr._onSelect = item => {
+            var poi = item.Value.value
+            if (poi == undefined) return
+            this.ZoomTo(poi.location, MapModel.GetZoom(poi.shopinfo))
+        }
+        return selectAddr
+    }
+
     /** 初始化"标记聚合" */
-    readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData>[], options?: AMap.MarkerClusterOptions) => {
+    readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData>[], opts?: AMap.MarkerClusterOptions) => {
         if (!await MapModel.LoadPluginAsync([MapPlugins.MarkerCluster])) return
 
         if (!this._map) {
@@ -270,7 +528,7 @@ export class MapModel<TData> {
         this._cluster = new AMap.MarkerCluster(this._map, arrOpts, {
             renderMarker: m => MapModel.RenderMarker(m, this),
             renderClusterMarker: c => MapModel.RenderClusterMarker(c, arrOpts.length),
-            ...options
+            ...opts
         })
         this._cluster.on(MapEvents.click, (e: AMap.MarkerClusterArgs) => {
             this.ZoomByClusterData(e.clusterData)
@@ -284,8 +542,8 @@ export class MapModel<TData> {
         })
     }
 
-    /** 获取“多边形编辑器” */
-    readonly GetPolygonEditorAsync = async () => {
+    /** 初始化“多边形编辑器” */
+    readonly InitPolygonEditorAsync = async (callback?: AMap.PolygonEditorCallback) => {
         if (!this._map) {
             console.warn('The _map is undefined!')
             return
@@ -297,7 +555,179 @@ export class MapModel<TData> {
             this._polygonEditor = new AMap.PolygonEditor(this._map)
         }
 
+        this.AddEvent({
+            click: args => {
+                if (this._IsCreating.value) return
+                this.SavePolygon()
+            },
+        })
+
+        this._polygonEditor.on(PolygonEditorEvent.end, (args: AMap.PolygonEditorEndArgs) => {
+            args.target.on(MapEvents.dblclick, () => {
+                this.EditPolygon(args.target as AMap.Polygon)
+            })
+        })
+
+        if (callback) {
+            if (callback.add) this._polygonEditor.on(PolygonEditorEvent.add, callback.add)
+            if (callback.addnode) this._polygonEditor.on(PolygonEditorEvent.addnode, callback.addnode)
+            if (callback.adjust) this._polygonEditor.on(PolygonEditorEvent.adjust, callback.adjust)
+            if (callback.end) this._polygonEditor.on(PolygonEditorEvent.end, callback.end)
+            if (callback.move) this._polygonEditor.on(PolygonEditorEvent.move, callback.move)
+            if (callback.removenode) this._polygonEditor.on(PolygonEditorEvent.removenode, callback.removenode)
+        }
+
         return this._polygonEditor
+    }
+
+    /** 编辑“多边形” */
+    readonly EditPolygon = (features: AMap.Polygon) => {
+        if (!this._polygonEditor) {
+            console.warn('The _polygonEditor is undefined!')
+            return
+        }
+        if (this._IsEditing.value) return
+
+        this._polygonEditor.setTarget(features)
+        this._polygonEditor.open()
+
+        this._IsEditing.value = true
+    }
+
+    /** 保存“多边形” */
+    readonly SavePolygon = () => {
+        if (!this._polygonEditor) {
+            console.warn('The _polygonEditor is undefined!')
+            return
+        }
+
+        if (!this._IsEditing.value) return
+
+        this._polygonEditor.close()
+        this._polygonEditor.setTarget()
+        this.UpdatePolygonCount()
+
+        this._IsEditing.value = false
+        this._IsCreating.value = false
+    }
+
+    /** 新建“多边形” */
+    readonly NewPolygon = () => {
+        if (this._IsEditing.value) return
+
+        const editor = this._polygonEditor
+        if (!editor) {
+            console.warn('The editor is undefined!')
+            return
+        }
+
+        editor.close()
+        editor.setTarget()
+        editor.open()
+
+        this._IsEditing.value = true
+        this._IsCreating.value = true
+    }
+
+    /** 添加“多边形” */
+    readonly AddPolygon = (features: AMap.Polygon | Array<AMap.Polygon>, setTaget: boolean = false) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        this.Add(features, {
+            dblclick: args => {
+                this.EditPolygon(args.target as AMap.Polygon)
+            },
+        })
+        this.UpdatePolygonCount()
+
+        const editor = this._polygonEditor
+        if (setTaget && editor) {
+            if (features instanceof Array) {
+                editor.setTarget(ArrayHelper.GetLast(features))
+            } else {
+                editor.setTarget(features)
+            }
+        }
+    }
+
+    /** 添加“多边形” */
+    readonly AddPolygonByPath = (path: AMap.PolygonPath, opts?: AMap.PolygonOptions) => {
+        const polygon = new AMap.Polygon({
+            path: path,
+            ...opts
+        })
+        this.AddPolygon(polygon)
+        return polygon
+    }
+
+    /** 移除“目标多边形” */
+    readonly RemoveTagetPolygon = () => {
+        const editor = this._polygonEditor
+        if (!editor) {
+            console.warn('The editor is undefined!')
+            return
+        }
+
+        const target = editor.getTarget()
+        if (!target) return
+
+        this.Remove(target)
+        this.SavePolygon()
+    }
+
+    /** 获取“覆盖物”集合 */
+    readonly GetAllOverlays = (): AMap.Overlay[] | undefined => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return undefined
+        }
+
+        return this._map.getAllOverlays()
+    }
+
+    /** 获取“覆盖物”集合 */
+    readonly GetOverlays = <TOverlay extends AMap.Overlay>(className: string): TOverlay[] | undefined => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return undefined
+        }
+
+        return this._map.getAllOverlays().filter(i => i.className === className) as TOverlay[]
+    }
+
+    /** 获取“覆盖物”个数 */
+    readonly GetOverlayCount = (className: string): number => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return 0
+        }
+
+        return this._map.getAllOverlays().filter(i => i.className === className).length
+    }
+
+    /** 获取“多边形”集合 */
+    readonly GetPolygons = (): AMap.Polygon[] | undefined => {
+        return this.GetOverlays<AMap.Polygon>(ClassNames.Polygon)
+    }
+
+    /** 获取“多边形”个数 */
+    readonly GetPolygonCount = (): number => {
+        return this.GetOverlayCount(ClassNames.Polygon)
+    }
+
+    /** 更新“多边形”个数 */
+    readonly UpdatePolygonCount = () => {
+        this._PolygonCount.value = this.GetPolygonCount()
+    }
+
+    /** “多边形集合”转“路径集合” */
+    static readonly PolygonsToPathes = <TPath extends AMap.PolygonPath>(polygons: AMap.Polygon[]): TPath[] => {
+        const pathes: TPath[] = []
+        polygons.forEach(p => pathes.push(p.getPath() as TPath))
+        return pathes
     }
     //#endregion [Tool]
 

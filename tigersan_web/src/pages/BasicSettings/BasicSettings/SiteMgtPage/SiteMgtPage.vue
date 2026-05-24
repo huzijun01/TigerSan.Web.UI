@@ -75,9 +75,7 @@
             </FormItem>
         </FormRow>
         <template v-slot:right>
-            <div class="map-panel">
-                <Map :model="map"></Map>
-            </div>
+            <Map :model="map"></Map>
         </template>
     </PopForm>
 </template>
@@ -103,25 +101,4 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
-
-.readonly-panel {
-    margin: 0px 5px 15px 5px;
-
-    .text {
-        color: var(--color-warning);
-    }
-}
-
-.tree-box {
-    max-height: 500px;
-    overflow: auto;
-}
-
-.map-panel {
-    width: 100%;
-    height: 100%;
-    min-width: 600px;
-    min-height: 600px;
-    margin-left: 15px;
-}
 </style>

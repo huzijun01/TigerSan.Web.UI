@@ -1,5 +1,8 @@
 declare global {
     namespace AMap {
+        /** “多边形”路径 */
+        type PolygonPath = LngLat[] | LngLat[][] | LngLat[][][]
+
         /** 多边形 */
         class Polygon extends EventBase {
             // Ctor:
@@ -26,9 +29,9 @@ declare global {
             setOptions(opts: PolygonOptions): void
 
             /** 获取“路径” */
-            getPath(): LngLatLike[] | LngLatLike[][] | LngLatLike[][][]
+            getPath(): PolygonPath
             /** 设置“路径” */
-            setPath(path: LngLatLike[] | LngLatLike[][] | LngLatLike[][][]): void
+            setPath(path: PolygonPath): void
 
             /** 获取“高度” */
             getExtrusionHeight(): number
@@ -50,7 +53,7 @@ declare global {
         /** “多边形”配置 */
         type PolygonOptions = {
             /** 路径（普通多边形 | 单个带孔多边形 | 多个带孔多边形） */
-            path?: LngLatLike[] | LngLatLike[][] | LngLatLike[][][]
+            path?: PolygonPath
             /** Z轴层级。默认值：10 */
             zIndex?: number
             /** 是否“冒泡”。默认值：false */

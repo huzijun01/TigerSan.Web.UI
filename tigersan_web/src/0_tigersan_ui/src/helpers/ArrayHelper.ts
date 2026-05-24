@@ -19,6 +19,12 @@ export class ArrayHelper {
         return arr[0]
     }
 
+    /** 获取“末尾元素” */
+    static GetLast<T>(arr: T[]): T | undefined {
+        if (arr.length < 1) return undefined
+        return arr[arr.length - 1]
+    }
+
     /** 过滤元素（修改源数据） */
     static Filter<T>(arr: T[], fn: (item: T) => boolean) {
         const filter = arr.filter(fn)

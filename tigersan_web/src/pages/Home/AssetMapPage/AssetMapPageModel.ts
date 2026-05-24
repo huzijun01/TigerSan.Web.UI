@@ -2,7 +2,7 @@ import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
-import { loading, SelectModel, MapModel, PaginationModel, LnglatData } from "@/0_tigersan_ui/tigerui"
+import { loading, MapModel, PaginationModel, LnglatData } from "@/0_tigersan_ui/tigerui"
 
 /** 总数 */
 export const Count = ref<number>(0)
@@ -27,18 +27,6 @@ pagination.IsShowPageSize.value = false
 pagination.IsShowPageTextBox.value = false
 pagination._onChange = UpdateAssetInfoes
 
-/** “地址”选择器 */
-export const selectAddr = new SelectModel<AMap.POI>()
-selectAddr.IsAllowSearch.value = true
-selectAddr.PlaceholderCN.value = '地址'
-selectAddr.PlaceholderEN.value = 'Addr'
-selectAddr._converter = source => source.name
-selectAddr._onSelect = item => {
-    var poi = item.Value.value
-    if (poi == undefined) return
-    map.ZoomTo(poi.location, MapModel.GetZoom(poi.shopinfo))
-}
-
 /** “位置”集合 */
 const Positions = shallowReactive<AssetPosition[]>([])
 watch(Positions, UpdateAssetInfoes)
@@ -48,19 +36,8 @@ export const AssetInfoes = shallowReactive<AssetInfoModel[]>([])
 
 /** 地图 */
 export const map = new MapModel<AssetPosition>()
+map.IsShowButton.value = false
 map._onInitAsync = async () => {
-    const placeSearch = await MapModel.GetPlaceSearchAsync(res => {
-        selectAddr.SetItems(res.poiList.pois)
-        selectAddr.IsLoading.value = false
-    })
-
-    if (placeSearch) {
-        selectAddr._onSearchTextChange = search => {
-            selectAddr.IsLoading.value = true
-            placeSearch.search(search)
-        }
-    }
-
     const positions = await assetHelper.GetPositionList({
         company: selectCompany.Value.value?.id,
         department: selectDepartment.Value.value?.id,

@@ -16,6 +16,11 @@ export type ObjectFunc = (obj: object) => void
 export type BooleanFunc = (bool: boolean) => void
 export type UnknownFunc = (value: unknown) => void
 export type TFuncAsync<T> = (value: T) => Promise<void>
+export type NumberFuncAsync = (num: number) => Promise<void>
+export type StringFuncAsync = (str: string) => Promise<void>
+export type ObjectFuncAsync = (obj: object) => Promise<void>
+export type BooleanFuncAsync = (bool: boolean) => Promise<void>
+export type UnknownFuncAsync = (value: unknown) => Promise<void>
 
 // Array Func:
 export type TArrayFunc<T> = (arr: T[]) => void

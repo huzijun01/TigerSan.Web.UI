@@ -102,9 +102,9 @@ function GetWidth(): number {
 </script>
 
 <style lang="less" scoped>
-@offset-x: 10px;
 @logo-size: 25px;
 @nav-padding: 15px;
+@logo-offset-x: 10px;
 
 .nav-panel {
     position: relative;
@@ -122,7 +122,7 @@ function GetWidth(): number {
         align-items: center;
         justify-content: center;
         grid-row: 1 / 2;
-        padding: @nav-padding @offset-x @nav-padding 0px;
+        padding: @nav-padding @logo-offset-x @nav-padding 0px;
 
         .logo-mask {
             display: flex;
@@ -176,7 +176,7 @@ function GetWidth(): number {
         grid-row: 3 / 4;
         /* 尺寸: */
         padding: @nav-padding;
-        padding: @nav-padding @nav-padding + @offset-x @nav-padding @nav-padding;
+        padding: @nav-padding @nav-padding @nav-padding @nav-padding;
     }
 }
 </style>

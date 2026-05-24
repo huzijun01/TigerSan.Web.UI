@@ -1,13 +1,21 @@
 declare global {
     namespace AMap {
-        class PlaceSearch {
+        /** 地址查询 */
+        class PlaceSearch extends EventBase {
             constructor(opts?: PlaceSearchOptions)
 
             PlaceSearch(pluginName: string, callback: Function): void
             /** 绑定回调 */
-            on(type: string, callback: (res: SearchResult) => void): void
+            on(
+                type: string,
+                callback: (res: SearchResult) => void,
+                context?: object,
+                once?: boolean): void
             /** 绑定回调 */
-            off(type: string, callback: (res: SearchResult) => void): void
+            off(
+                type: string,
+                callback: (res: SearchResult) => void,
+                context?: object): void
             /** 搜索 */
             search(keyword: string, callback?: (res: SearchResult) => void): void
             /** 范围搜索 */

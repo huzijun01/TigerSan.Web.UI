@@ -294,7 +294,7 @@ declare global {
         }
 
         /** 覆盖物 */
-        class Overlay {
+        class Overlay extends EventBase {
 
         }
 

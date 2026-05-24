@@ -5,7 +5,12 @@
       <!-- 导航栏: -->
       <NavBar :model="navModel" :title="AppConfig.Title">
         <div class="footer-panel flex-center">
-          <span class="skin iconfont" @click="ThemeHelper.Toggle">{{ Icons.Skin }}</span>
+          <div class="button-panel flex-center">
+            <IconButton :iconSize="18" :fontSize="14" :icon="Icons.Skin" :text="Texts.Theme.value"
+              :click="ThemeHelper.Toggle" />
+            <IconButton :iconSize="18" :fontSize="14" :icon="Icons.Global_Linear" :text="Texts.Language.value"
+              :click="config.ToggleLocale" />
+          </div>
           <span class="version">{{ Texts.Version.value }}{{ AppConfig.Version }}</span>
         </div>
       </NavBar>
@@ -24,7 +29,6 @@
             :click="navData.InitHome" />
           <IconButton v-if="navData.IsAtHome.value" :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value"
             :click="navData.InitBasicSettings" />
-          <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale" />
           <IconButton :icon="Icons.Question" :text="Texts.Help.value" />
           <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value" />
           <IconButton :icon="Icons.User" :text="userInfo.nickname" :click="form.Edit" />
@@ -183,13 +187,13 @@ onMounted(() => {
   }
 }
 
-.skin {
-  cursor: pointer;
-  margin-right: 10px;
-}
+.footer-panel {
+  flex-direction: column;
 
-.version {
-  font-size: 12px;
-  color: var(--theme-color);
+  .version {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--theme-color-placeholder);
+  }
 }
 </style>

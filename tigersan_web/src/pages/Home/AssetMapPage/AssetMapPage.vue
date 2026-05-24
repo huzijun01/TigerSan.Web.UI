@@ -5,16 +5,15 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="selectAddr"></Select>
-                        <Search :model="filter.searchAssetId" />
-                        <Select :model="filter.selectOnlineState"></Select>
-                        <Select :model="filter.selectErrorType"></Select>
-                    </div>
-                    <div class="row-panel">
                         <Select :model="filter.selectCompany"></Select>
                         <Select :model="filter.selectDepartment"></Select>
-                        <Select :model="filter.selectAssetType"></Select>
                         <Select :model="filter.selectAssetState"></Select>
+                    </div>
+                    <div class="row-panel">
+                        <Search :model="filter.searchAssetId" />
+                        <Select :model="filter.selectAssetType"></Select>
+                        <Select :model="filter.selectOnlineState"></Select>
+                        <Select :model="filter.selectErrorType"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
@@ -45,7 +44,7 @@
 import AssetInfo from '@/components/AssetInfo.vue'
 import { onMounted } from 'vue'
 import { PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
-import { map, selectAddr, Refresh, pagination, Count, AssetInfoes, filter } from './AssetMapPageModel'
+import { map, Refresh, pagination, Count, AssetInfoes, filter } from './AssetMapPageModel'
 // 【字段】:
 
 // 【过程】:

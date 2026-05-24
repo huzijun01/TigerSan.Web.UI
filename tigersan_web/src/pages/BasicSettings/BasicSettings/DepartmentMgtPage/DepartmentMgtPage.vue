@@ -11,7 +11,8 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.DepartmentMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.DepartmentMgtPage.IsReadonly.value" @click="form.Add">{{
+                            Texts.Add.value }}</button>
                         <button v-if="!Authorities.DepartmentMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.DepartmentMgtPage.IsReadonly.value" class="bg-danger"
@@ -66,17 +67,4 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
-
-.readonly-panel {
-    margin: 0px 5px 15px 5px;
-
-    .text {
-        color: var(--color-warning);
-    }
-}
-
-.tree-box {
-    max-height: 500px;
-    overflow: auto;
-}
 </style>

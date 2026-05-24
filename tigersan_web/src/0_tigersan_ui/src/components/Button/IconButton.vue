@@ -1,14 +1,13 @@
 <template>
     <div class="icon-button flex-center" @click="OnClick">
-        <div class="icon iconfont" v-if="isShowIcon">{{ icon }}</div>
-        <div class="text ellipsis" v-if="isShowText">{{ text }}</div>
+        <div class="icon iconfont" v-if="isShowIcon" :style="iconStyle">{{ icon }}</div>
+        <div class="text ellipsis" v-if="isShowText" :style="textStyle">{{ text }}</div>
     </div>
 </template>
 <script lang="ts" setup>
 import { Icons } from '../../base'
-import { computed } from 'vue';
 
-let { icon, text, click } = defineProps({
+const { icon, text, click, iconSize, fontSize } = defineProps({
     icon: {
         type: String,
         default: Icons.About
@@ -17,18 +16,25 @@ let { icon, text, click } = defineProps({
         type: String,
         default: 'Button'
     },
+    iconSize: {
+        type: Number,
+        default: 20
+    },
+    fontSize: {
+        type: Number,
+        default: 16
+    },
     click: {
         type: Function,
     }
 })
 
-const isShowIcon = computed(() => {
-    return icon.trim() != ''
-})
-
-const isShowText = computed(() => {
-    return text.trim() != ''
-})
+const isShowIcon = icon.trim() != ''
+const isShowText = text.trim() != ''
+const strIconSize = iconSize > 0 ? `${iconSize}px` : undefined
+const strFontSize = fontSize > 0 ? `${fontSize}px` : undefined
+const iconStyle: any = { fontSize: strIconSize, width: strIconSize, height: strIconSize }
+const textStyle: any = { fontSize: strFontSize }
 
 function OnClick(payload: PointerEvent) {
     if (click) {
@@ -37,25 +43,18 @@ function OnClick(payload: PointerEvent) {
 }
 </script>
 <style lang="less" scoped>
-@size: 24px;
-
 .icon-button {
     cursor: pointer;
 
     &:hover {
         * {
+            font-weight: bold;
             color: var(--theme-brand);
         }
     }
 
     * {
         line-height: 1;
-    }
-
-    .icon {
-        width: @size;
-        height: @size;
-        font-size: @size;
     }
 
     .text {
