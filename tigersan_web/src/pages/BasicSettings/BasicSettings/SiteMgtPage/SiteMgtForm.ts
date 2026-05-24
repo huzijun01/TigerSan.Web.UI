@@ -154,6 +154,7 @@ const configSiteMgtForm: FormConfig<SiteModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _onInit: UpdateFence,
+    _onClose: map.SavePolygon,
     _beforeInitAsync: async isEdit => {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectTypeForm.IsEnabled.value = !isEdit

@@ -9,6 +9,8 @@ class FormConfig<TSource extends object> {
     _itemConfigs?: FormItemConfig<TSource, any>[]
     /** “源数据获取”方法  */
     _getSource: TObjectAction<TSource>
+    /** 关闭后 */
+    _onClose?: Function
     /** 提交时 */
     _onSubmit?: FormSubmit<TSource>
     /** 提交时（异步） */
@@ -86,6 +88,7 @@ class FormItemConfig<TSource extends object, TTarget> {
 function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>) {
     // Fields:
     formModel._itemModels = GetItemModels(formModel, formConfig)
+    formModel._onClose = formConfig._onClose
     formModel._onSubmit = formConfig._onSubmit
     formModel._onSubmitAsync = formConfig._onSubmitAsync
     formModel._beforeInit = formConfig._beforeInit

@@ -86,6 +86,8 @@ export class FormModel<TSource extends object> {
     /** “表单项目模型”集合
      * （由“FormModel”内部维护） */
     _itemModels = new Array<FormItemModel<TSource, any>>()
+    /** 关闭后 */
+    _onClose?: Function
     /** 获取“源数据”  */
     _getSource: TObjectAction<TSource>
     /** 提交时 */
@@ -158,6 +160,8 @@ export class FormModel<TSource extends object> {
         watch(this.IsShow, isShow => {
             if (isShow) {
                 this.Init()
+            } else {
+                this._onClose?.()
             }
         })
     }
