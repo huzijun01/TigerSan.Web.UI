@@ -96,6 +96,10 @@ export class FormModel<TSource extends object> {
     _beforeInit?: (isEdit: boolean) => void
     /** 初始化前（异步）：优先执行该方法 */
     _beforeInitAsync?: (isEdit: boolean) => Promise<void>
+    /** 初始化后 */
+    _onInit?: (isEdit: boolean) => void
+    /** 初始化后（异步）：优先执行该方法 */
+    _onInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -235,10 +239,17 @@ export class FormModel<TSource extends object> {
             }
 
             if (this._beforeInitAsync) {
-                await this._beforeInitAsync(this._isEdit).then(init)
+                await this._beforeInitAsync(this._isEdit)
+                    .then(init)
             } else {
                 this._beforeInit?.(this._isEdit)
                 init()
+            }
+
+            if (this._onInitAsync) {
+                await this._onInitAsync(this._isEdit)
+            } else {
+                this._onInit?.(this._isEdit)
             }
         } finally {
             loading.IsShow.value = false

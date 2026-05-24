@@ -11,6 +11,7 @@ export * from "./helpers/ContentSizeBehavior"
 export * from './helpers/DictionaryHelper'
 export * from "./helpers/DomHelper"
 export * from "./helpers/FolderBehavior"
+export * from "./helpers/MathHelper"
 export * from "./helpers/ObjectHelper"
 export * from "./helpers/PanelBehavior"
 export * from "./helpers/RectHelper"

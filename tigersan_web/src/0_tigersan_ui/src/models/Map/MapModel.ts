@@ -8,7 +8,7 @@ import type { ActionAsync } from "../../types"
 import { MapPlugins } from "./MapTypes/MapPlugins"
 import { SelectModel } from "../Inputs/SelectModel"
 import { ClusterMarkerModel } from "./ClusterMarkerModel"
-import { ArrayHelper, ComponentHelper, ThemeHelper } from "../../helpers"
+import { ArrayHelper, ComponentHelper, MathHelper, Point2, ThemeHelper } from "../../helpers"
 import { MapEvents, DataOptions, MapStyle, PolygonEditorEvent, ClassNames } from "./MapTypes"
 
 /** “经纬度数据”模型 */
@@ -300,61 +300,22 @@ export class MapModel<TData> {
         if (callback.touchend) obj.off(MapEvents.touchend, callback.touchend)
     }
 
-    /** 获取"路径"集合 */
-    static GetPathes(strPathes: string): AMap.Vector2[][] | undefined {
-        try {
-            const parsed = JSON.parse(strPathes)
-
-            // 验证是否为数组
-            if (!Array.isArray(parsed)) {
-                console.warn('[GetPathes] 解析结果不是数组')
-                return undefined
-            }
-
-            // 验证数组结构：每项必须是 [number, number]
-            for (let i = 0; i < parsed.length; i++) {
-                const path = parsed[i]
-                if (!Array.isArray(path) || path.length !== 2) {
-                    console.warn(`The format of the path is incorrect! (${i})`, path)
-                    return undefined
-                }
-                if (typeof path[0] !== 'number' || typeof path[1] !== 'number' ||
-                    !Number.isFinite(path[0]) || !Number.isFinite(path[1])) {
-                    console.warn(`The path contains invalid numbers! (${i})`, path)
-                    return undefined
-                }
-            }
-
-            return parsed as AMap.Vector2[][]
-        } catch (e) {
-            console.error('Deserialization failed!', e)
-            return undefined
-        }
+    /** 根据“点集合”获取"路径" */
+    static GetPathByPoints(points: Point2[]): AMap.Vector2[] {
+        return points.map(p => [p.x, p.y])
     }
 
-    /** 获取"路径集合"字符串 */
-    static GetPathesString(pathes: AMap.Vector2[][]): string {
-        try {
-            // 验证输入
-            if (!Array.isArray(pathes)) {
-                throw new Error('Input is not an array!')
-            }
+    /** 获取"路径"字符串 */
+    static GetPathString(path: AMap.Vector2[]): string | undefined {
+        return MathHelper.GetPathString(path.map(p => new Point2(p[0], p[1])))
+    }
 
-            for (let i = 0; i < pathes.length; i++) {
-                const path = pathes[i]
-                if (!Array.isArray(path) || path.length !== 2) {
-                    throw new Error(`The format of the path is incorrect! (${i})`)
-                }
-                if (typeof path[0] !== 'number' || typeof path[1] !== 'number') {
-                    throw new Error(`The path contains non-numeric characters! (${i})`)
-                }
-            }
-
-            return JSON.stringify(pathes)
-        } catch (e) {
-            console.error('Serialization failed!', e)
-            return ''
-        }
+    /** 获取"路径"字符串 */
+    static GetPathStringByPolygon(polygon?: AMap.Polygon): string | undefined {
+        if (!polygon) return
+        const lngLats = MapModel.PolygonsToPath<AMap.LngLat[]>(polygon)
+        const path = lngLats.map(p => new Point2(p.lng, p.lat))
+        return MathHelper.GetPathString(path)
     }
     //#endregion [static]
 
@@ -483,7 +444,7 @@ export class MapModel<TData> {
     }
     //#endregion [Map]
 
-    //#endregion [Tool]
+    //#region [Tool]
     /** 获取“地址选择器” */
     readonly GetAddrSelect = () => {
         const selectAddr = new SelectModel<AMap.POI>()
@@ -653,7 +614,7 @@ export class MapModel<TData> {
         }
     }
 
-    /** 添加“多边形” */
+    /** 根据“路径”添加“多边形” */
     readonly AddPolygonByPath = (path: AMap.PolygonPath, opts?: AMap.PolygonOptions) => {
         const polygon = new AMap.Polygon({
             path: path,
@@ -661,6 +622,12 @@ export class MapModel<TData> {
         })
         this.AddPolygon(polygon)
         return polygon
+    }
+
+    /** 根据“点集合”添加“多边形” */
+    readonly AddPolygonByPoints = (points: AMap.Vector2[], opts?: AMap.PolygonOptions) => {
+        const path = points.map(p => new AMap.LngLat(p[0], p[1]))
+        return this.AddPolygonByPath(path, opts)
     }
 
     /** 移除“目标多边形” */
@@ -723,11 +690,9 @@ export class MapModel<TData> {
         this._PolygonCount.value = this.GetPolygonCount()
     }
 
-    /** “多边形集合”转“路径集合” */
-    static readonly PolygonsToPathes = <TPath extends AMap.PolygonPath>(polygons: AMap.Polygon[]): TPath[] => {
-        const pathes: TPath[] = []
-        polygons.forEach(p => pathes.push(p.getPath() as TPath))
-        return pathes
+    /** “多边形集合”转“路径” */
+    static readonly PolygonsToPath = <TPath extends AMap.PolygonPath>(polygon: AMap.Polygon): TPath => {
+        return polygon.getPath() as TPath
     }
     //#endregion [Tool]
 

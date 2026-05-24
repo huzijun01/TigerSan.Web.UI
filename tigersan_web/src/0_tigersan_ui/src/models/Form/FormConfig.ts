@@ -17,6 +17,10 @@ class FormConfig<TSource extends object> {
     _beforeInit?: (isEdit: boolean) => void
     /** 初始化前（异步） */
     _beforeInitAsync?: (isEdit: boolean) => Promise<void>
+    /** 初始化后 */
+    _onInit?: (isEdit: boolean) => void
+    /** 初始化后（异步）：优先执行该方法 */
+    _onInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -86,6 +90,8 @@ function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, for
     formModel._onSubmitAsync = formConfig._onSubmitAsync
     formModel._beforeInit = formConfig._beforeInit
     formModel._beforeInitAsync = formConfig._beforeInitAsync
+    formModel._onInit = formConfig._onInit
+    formModel._onInitAsync = formConfig._onInitAsync
 
     // Properties:
     if (formConfig.IsShow != undefined) formModel.IsShow.value = formConfig.IsShow

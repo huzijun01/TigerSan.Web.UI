@@ -3,6 +3,9 @@ import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormMode
 import { siteMgtTable } from './SiteMgtTable'
 import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 
+/** 围栏路径 */
+const FencePath = ref<string | undefined>()
+
 /** 地图 */
 export const map = new MapModel<any>()
 map.IsAllowMultiPolygon.value = false
@@ -14,10 +17,7 @@ map._onInitAsync = async () => {
         },
         end: args => {
             const polygons = map.GetPolygons()
-            if (!polygons) return
-
-            const pathes = MapModel.PolygonsToPathes<AMap.LngLat[]>(polygons)
-            console.log(pathes)
+            FencePath.value = polygons ? MapModel.GetPathStringByPolygon(polygons[0]) : undefined
         },
     })
 
@@ -25,17 +25,20 @@ map._onInitAsync = async () => {
         console.warn('The editor is undefined!')
         return
     }
+}
 
+/** 更行“围栏” */
+function UpdateFence() {
     const site = siteForm._source
     if (!site) {
         console.warn('The site is undefined!')
         return
     }
 
-    if (site.fencePath) {
-        const pathes = MapModel.GetPathes(site.fencePath)
-        if (!pathes) return
-        map.ZoomByMultiVector2s(pathes)
+    if (site.fencePoints) {
+        const points = MapModel.GetPathByPoints(site.fencePoints)
+        map.AddPolygonByPoints(points)
+        map.ZoomByVector2s(points)
     } else if (site.latitude > 0 && site.longitude > 0) {
         map.ZoomByVector2([site.latitude, site.longitude])
     }
@@ -106,6 +109,15 @@ const configAddrDetail: FormItemConfig<SiteModel, string> = {
     _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.addrDetail)
 }
 
+/** “围栏路径”项目配置 */
+const configFencePath: FormItemConfig<SiteModel, string> = {
+    _propName: 'fencePath',
+    PropText: '围栏路径',
+    IsEquired: true,
+    Target: FencePath,
+    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.fencePath)
+}
+
 /** “联系人”项目配置 */
 const configManager: FormItemConfig<SiteModel, string> = {
     _propName: 'manager',
@@ -137,10 +149,11 @@ const configComment: FormItemConfig<SiteModel, string> = {
 const AddGetSource = () => new SiteModel()
 
 /** “场地”表单配置 */
-let configSiteMgtForm: FormConfig<SiteModel> = {
+const configSiteMgtForm: FormConfig<SiteModel> = {
     CancelText: '取消',
     SubmitText: '确定',
     _getSource: AddGetSource,
+    _onInit: UpdateFence,
     _beforeInitAsync: async isEdit => {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectTypeForm.IsEnabled.value = !isEdit
@@ -165,6 +178,7 @@ let configSiteMgtForm: FormConfig<SiteModel> = {
         configName,
         configAddr,
         configAddrDetail,
+        configFencePath,
         configManager,
         configPhone,
         configComment,
@@ -294,6 +308,7 @@ export const siteMgtForm = {
     configName,
     configAddr,
     configAddrDetail,
+    configFencePath,
     configManager,
     configPhone,
     configComment,

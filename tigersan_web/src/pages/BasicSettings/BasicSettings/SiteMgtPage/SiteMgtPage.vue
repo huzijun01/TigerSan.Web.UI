@@ -60,6 +60,11 @@
             </FormItem>
         </FormRow>
         <FormRow>
+            <FormItem :model="form.configFencePath.ItemModel">
+                <input type="text" readonly v-model="form.configFencePath.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="form.configManager.ItemModel">
                 <input type="text" v-model="form.configManager.Target.value">
             </FormItem>

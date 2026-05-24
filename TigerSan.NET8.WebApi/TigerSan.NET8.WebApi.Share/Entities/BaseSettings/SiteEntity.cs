@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using TigerSan.JsonConverter;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Attributes;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
@@ -22,21 +22,12 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string? FencePath { get; set; }
         [NotMapped]
-        public List<List<(double X, double Y)>>? Fence { get => GetFence(); }
+        public List<Point2>? FencePoints { get => MathHelper.GetPoint2s(FencePath); }
         [SnakeColumn]
         public string? Manager { get; set; } = string.Empty;
         [SnakeColumn]
         public string? Phone { get; set; } = string.Empty;
         [SnakeColumn]
         public string? Comment { get; set; } = string.Empty;
-
-        #region 获取围栏
-        /// <summary>获取围栏</summary>
-        List<List<(double X, double Y)>>? GetFence()
-        {
-            if (FencePath == null) return null;
-            return JsonHelper.Deserialize<List<List<(double X, double Y)>>>(FencePath);
-        }
-        #endregion
     }
 }

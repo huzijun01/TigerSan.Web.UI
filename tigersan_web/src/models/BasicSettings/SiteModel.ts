@@ -1,4 +1,4 @@
-import { IdNameModel, IdNameModelHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { IdNameModel, IdNameModelHelper, Point2, SelectModel } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper } from "../base/AxiosHelper"
 
 /** "组织机构"模型 */
@@ -10,6 +10,7 @@ export class SiteModel extends IdNameModel {
     longitude: number = 0
     latitude: number = 0
     fencePath?: string
+    fencePoints?: Point2[]
     manager? = ''
     phone? = ''
     comment? = ''
