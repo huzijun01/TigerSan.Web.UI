@@ -515,6 +515,8 @@ export class MapModel<TData> {
         if (!this._polygonEditor) {
             this._polygonEditor = new AMap.PolygonEditor(this._map)
         }
+        
+        this.SavePolygon()
 
         this.AddEvent({
             click: args => {

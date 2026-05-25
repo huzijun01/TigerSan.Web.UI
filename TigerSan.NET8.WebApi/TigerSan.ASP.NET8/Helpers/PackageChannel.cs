@@ -23,13 +23,18 @@ namespace TigerSan.NET8.WebApi.Helpers
         private IServiceProvider _serviceProvider;
         /// <summary>“在线状态”更新定时器</summary>
         public ActionTimer _onlineStateUpdater = new ActionTimer(Constants.OnlineStateUpdater_Interval_Seconds * 1000, true);
+        #endregion 【Fields】
+
+        #region 【Properties】
         /// <summary>“标签”服务</summary>
         private ITagService TagService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ITagService>(); }
+        /// <summary>“场地”服务</summary>
+        private ISiteService SiteService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISiteService>(); }
         /// <summary>“基站”服务</summary>
         private IBaseStationService BaseStationService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IBaseStationService>(); }
         /// <summary>“资产记录”服务</summary>
         private IAssetRecordService AssetRecordService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IAssetRecordService>(); }
-        #endregion 【Fields】
+        #endregion 【Properties】
 
         #region 【Ctor】
         public PackageChannel(IServiceProvider serviceProvider)
@@ -183,7 +188,6 @@ namespace TigerSan.NET8.WebApi.Helpers
         public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BluetoothTagPackage package)
         {
             var tagService = TagService;
-            var res = MyResults<object>.OperationSuccess;
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
 
             foreach (var tagData in package.Data.TagDatas)
@@ -197,28 +201,43 @@ namespace TigerSan.NET8.WebApi.Helpers
                 newTag.ReportTime = GetUtc(package.ReportTime);
                 newTag.OnlineState = OnlineStates.Online;
                 newTag.Station = baseStation?.Id;
-                newTag.Longitude = package.Data.Longitude;
-                newTag.Latitude = tagData.Latitude;
                 newTag.Battery = tagData.Voltage;
                 newTag.Temperature = tagData.Temperature;
                 newTag.Signal = tagData.Signal;
 
+                #region 计算“经纬度”
+                if (baseStation == null)
+                {
+                    newTag.Longitude = 0;
+                    newTag.Latitude = 0;
+                }
+                else
+                {
+                    var resGetSite = await SiteService.Get(baseStation.Site);
+                    var site = resGetSite.Data;
+                    if (site == null)
+                    {
+                        return resGetSite.Convert<object>();
+                    }
+                    newTag.Longitude = site.Longitude;
+                    newTag.Latitude = site.Latitude;
+                }
+                #endregion 计算“经纬度”
+
                 var resEdit = await tagService.Edit(newTag);
                 if (!resEdit.IsSuccess)
                 {
-                    LogHelper.Instance.Error(resEdit.Message);
-                    res = resEdit;
+                    return resEdit.Convert<object>();
                 }
 
                 var resAsset = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
                 if (!resAsset.IsSuccess)
                 {
-                    LogHelper.Instance.Error(resAsset.Message);
-                    res = resAsset;
+                    return resAsset.Convert<object>();
                 }
             }
 
-            return res;
+            return MyResults<object>.Success();
         }
         #endregion
 
@@ -227,7 +246,6 @@ namespace TigerSan.NET8.WebApi.Helpers
         public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(Locator4gPackage package)
         {
             var tagService = TagService;
-            var res = MyResults<object>.OperationSuccess;
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
 
             foreach (var tagData in package.Data.TagDatas)
@@ -244,22 +262,32 @@ namespace TigerSan.NET8.WebApi.Helpers
                 newTag.Battery = package.Data.Battery;
                 newTag.Signal = tagData.SignalStrength;
 
+                #region 计算“经纬度”
+                var resGetLocation = await MapHelper.GetLocationByCellTowersAsync(package.Data.SCell, package.Data.NCell, null, Constants.AMapKey);
+                var location = resGetLocation.Data;
+                if (location == null)
+                {
+                    return resGetLocation.Convert<object>();
+                }
+
+                newTag.Longitude = location.Longitude;
+                newTag.Latitude = location.Latitude;
+                #endregion 计算“经纬度”
+
                 var resEdit = await tagService.Edit(newTag);
                 if (!resEdit.IsSuccess)
                 {
-                    LogHelper.Instance.Error(resEdit.Message);
-                    res = resEdit;
+                    return resEdit.Convert<object>();
                 }
 
                 var resAsset = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
                 if (!resAsset.IsSuccess)
                 {
-                    LogHelper.Instance.Error(resAsset.Message);
-                    res = resAsset;
+                    return resAsset.Convert<object>();
                 }
             }
 
-            return res;
+            return MyResults<object>.Success();
         }
         #endregion
 

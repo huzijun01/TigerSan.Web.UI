@@ -5,29 +5,20 @@ import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 
 /** 围栏路径 */
 const FencePath = ref<string | undefined>()
+/** 经度 */
+const Longitude = ref<number | undefined>()
+/** 纬度 */
+const Latitude = ref<number | undefined>()
 
 /** 地图 */
 export const map = new MapModel<any>()
 map.IsAllowMultiPolygon.value = false
 map._onInitAsync = async () => {
     await companyHelper.UpdateIdNames()
-
-    const editor = await map.InitPolygonEditorAsync({
-        adjust: args => {
-        },
-        end: args => {
-            const polygons = map.GetPolygons()
-            FencePath.value = polygons ? MapModel.GetPathStringByPolygon(polygons[0]) : undefined
-        },
-    })
-
-    if (!editor) {
-        console.warn('The editor is undefined!')
-        return
-    }
+    await map.InitPolygonEditorAsync({ end: SaveFence })
 }
 
-/** 更行“围栏” */
+/** 更新“围栏” */
 function UpdateFence() {
     const site = siteForm._source
     if (!site) {
@@ -42,6 +33,21 @@ function UpdateFence() {
     } else if (site.latitude > 0 && site.longitude > 0) {
         map.ZoomByVector2([site.latitude, site.longitude])
     }
+}
+
+/** 保存“围栏” */
+function SaveFence() {
+    FencePath.value = undefined
+    Longitude.value = 0
+    Latitude.value = 0
+    const polygons = map.GetPolygons()
+    if (!polygons) return
+    const polygon = polygons[0]
+    if (!polygon) return
+    FencePath.value = MapModel.GetPathStringByPolygon(polygon)
+    const center = polygon.getBounds().getCenter()
+    Longitude.value = center.lng
+    Latitude.value = center.lat
 }
 
 // 选择框:
@@ -118,6 +124,24 @@ const configFencePath: FormItemConfig<SiteModel, string> = {
     _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.fencePath)
 }
 
+/** “经度”项目配置 */
+const configLongitude: FormItemConfig<SiteModel, number> = {
+    _propName: 'longitude',
+    PropText: '经度',
+    IsEquired: true,
+    Target: Longitude,
+    _isVerifyOk: source => Verify.IsGreaterThan(source.longitude)
+}
+
+/** “纬度”项目配置 */
+const configLatitude: FormItemConfig<SiteModel, number> = {
+    _propName: 'latitude',
+    PropText: '纬度',
+    IsEquired: true,
+    Target: Latitude,
+    _isVerifyOk: source => Verify.IsGreaterThan(source.latitude)
+}
+
 /** “联系人”项目配置 */
 const configManager: FormItemConfig<SiteModel, string> = {
     _propName: 'manager',
@@ -154,7 +178,6 @@ const configSiteMgtForm: FormConfig<SiteModel> = {
     SubmitText: '确定',
     _getSource: AddGetSource,
     _onInit: UpdateFence,
-    _onClose: map.SavePolygon,
     _beforeInitAsync: async isEdit => {
         selectCompanyForm.IsEnabled.value = !isEdit
         selectTypeForm.IsEnabled.value = !isEdit
@@ -180,6 +203,8 @@ const configSiteMgtForm: FormConfig<SiteModel> = {
         configAddr,
         configAddrDetail,
         configFencePath,
+        configLongitude,
+        configLatitude,
         configManager,
         configPhone,
         configComment,
@@ -310,6 +335,8 @@ export const siteMgtForm = {
     configAddr,
     configAddrDetail,
     configFencePath,
+    configLongitude,
+    configLatitude,
     configManager,
     configPhone,
     configComment,

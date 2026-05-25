@@ -13,7 +13,7 @@
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
                         <button v-if="!Authorities.SiteMgt.IsReadonly.value" @click="form.Add">{{ Texts.Add.value
-                            }}</button>
+                        }}</button>
                         <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.SiteMgt.IsReadonly.value" class="bg-danger"
@@ -61,7 +61,17 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configFencePath.ItemModel">
-                <input type="text" readonly v-model="form.configFencePath.Target.value">
+                <input type="text" disabled v-model="form.configFencePath.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configLongitude.ItemModel">
+                <input type="text" disabled v-model="form.configLongitude.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configLatitude.ItemModel">
+                <input type="text" disabled v-model="form.configLatitude.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>

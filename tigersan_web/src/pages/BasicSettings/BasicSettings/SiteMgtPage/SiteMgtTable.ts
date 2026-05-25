@@ -35,6 +35,13 @@ const siteMgtTable = new TableModel<SiteModel>([
         IsReadonly: true,
         Type: ItemType.TextBox,
     },
+    // {
+    //     _propName: 'longitude',
+    //     Text: '经纬度',
+    //     IsReadonly: true,
+    //     Type: ItemType.TextBox,
+    //     _getString: source => `${source.longitude}, ${source.latitude}`
+    // },
     {
         _propName: 'manager',
         Text: '联系人',
