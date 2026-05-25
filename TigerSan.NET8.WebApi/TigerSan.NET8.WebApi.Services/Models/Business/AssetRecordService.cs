@@ -67,6 +67,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return MyResults<object>.OperationSuccess;
         }
         #endregion
+
+        #region 是否“移动”
+        /// <summary>是否“移动”</summary>
+        private bool IsMoved(TagDto oldTag, TagDto newTag)
+        {
+            if (oldTag.Longitude == null
+                || oldTag.Latitude == null
+                || newTag.Longitude == null
+                || newTag.Latitude == null) return false;
+            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
+            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
+            return p1.Distance(p2) > Constants.Distance_Threshold_LatLng;
+        }
+        #endregion
         #endregion [Private]
 
         #region [查]
@@ -511,6 +525,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             };
                         }
 
+                        // 新增记录:
+                        var res = await Add(newRecord, false);
+                        if (res.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(res.Message);
+                            return res.Convert<object>();
+                        }
+                    }
+                    else if (IsMoved(oldTag, newTag)) // 移动
+                    {
                         // 新增记录:
                         var res = await Add(newRecord, false);
                         if (res.IsError)
