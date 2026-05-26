@@ -1,137 +1,116 @@
-import type { BooleanAction, BooleanFunc, BooleanGetter, BooleanSetter } from '../types'
-
-type CheckboxModelsGetter = () => CheckboxBehaviorModel[]
+import { watch, type Ref, type ComputedRef, type WatchHandle } from 'vue'
 
 /** 复选框模型 */
-class CheckboxBehaviorModel {
+export class CheckboxBehaviorModel {
     //#region 【Fields】
-    private _getIsChecked: BooleanGetter
-    private _setIsChecked: BooleanSetter
     /** 行模型 */
-    _rowModel: object
+    _itemModel: object
+    /** “选中状态”改变后
+     * （由“CheckboxBehavior”传入） */
+    _onIsCheckedChanged?: (itemModel?: object) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 是否“选中” */
-    get IsChecked() {
-        return this._getIsChecked(this._rowModel)
-    }
-    set IsChecked(bool: boolean) {
-        this._setIsChecked(this._rowModel, bool)
-    }
+    readonly IsChecked: Ref<boolean>
     //#endregion 【Properties】
 
     //#region 【Ctor】
     constructor(
-        rowModel: object,
-        getIsChecked: BooleanGetter,
-        setIsChecked: BooleanSetter,
+        itemModel: object,
+        isChecked: Ref<boolean>,
     ) {
-        this._rowModel = rowModel
-        this._getIsChecked = getIsChecked
-        this._setIsChecked = setIsChecked
+        this._itemModel = itemModel
+        this.IsChecked = isChecked
+        watch(this.IsChecked, () => {
+            this._onIsCheckedChanged?.(this._itemModel)
+        })
     }
     //#endregion 【Ctor】
 }
 
 /** 复选框行为 */
-class CheckboxBehavior {
+export class CheckboxBehavior {
     //#region 【Fields】
     /** 是否“联动” */
     private _isJoint = true
-    private _getIsSelectAll: BooleanAction
-    private _setIsSelectAll: BooleanFunc
-    private _getCheckboxModels: CheckboxModelsGetter
+    /** “全选状态”监听 */
+    private _isSelectAllWatch: WatchHandle
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 是否“全选” */
-    get IsSelectAll() {
-        return this._getIsSelectAll()
-    }
-    set IsSelectAll(bool: boolean) {
-        this._setIsSelectAll(bool)
-    }
-
+    readonly IsSelectAll: Ref<boolean>
     /** 是否“允许多选” */
-    get IsAllowMultiSelect() {
-        return this._isAllowMultiSelect
-    }
-    set IsAllowMultiSelect(bool: boolean) {
-        this._isAllowMultiSelect = bool
-        this.InitState()
-    }
-    private _isAllowMultiSelect = true
-
+    readonly IsAllowMultiSelect: Ref<boolean>
     /** “复选框模型”集合 */
-    get CheckboxModels() {
-        return this._getCheckboxModels()
-    }
+    readonly CheckboxModels: ComputedRef<CheckboxBehaviorModel[]>
     //#endregion 【Properties】
 
     //#region 【Ctor】
     constructor(
-        getIsSelectAll: BooleanAction,
-        setIsSelectAll: BooleanFunc,
-        getCheckboxModels: CheckboxModelsGetter,
+        isSelectAll: Ref<boolean>,
+        isAllowMultiSelect: Ref<boolean>,
+        checkboxModels: ComputedRef<CheckboxBehaviorModel[]>,
     ) {
-        this._getIsSelectAll = getIsSelectAll
-        this._setIsSelectAll = setIsSelectAll
-        this._getCheckboxModels = getCheckboxModels
+        this.IsSelectAll = isSelectAll
+        this.CheckboxModels = checkboxModels
+        this.IsAllowMultiSelect = isAllowMultiSelect
+        watch(this.CheckboxModels, this.InitState)
+        watch(this.IsAllowMultiSelect, this.InitState)
+        this._isSelectAllWatch = this.InitIsSelectAllWatch()
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    //#region [private]
+    private InitIsSelectAllWatch = () => watch(this.IsSelectAll, this.onIsSelectAllChanged)
+
     /** 取消选择“其它复选框” */
-    UncheckOtherCheckboxs(rowModel?: object) {
-        let checkboxModels = this.CheckboxModels
-        checkboxModels.forEach(checkboxModel => {
-            if (checkboxModel._rowModel === rowModel) return
-            checkboxModel.IsChecked = false
+    private UncheckOtherCheckboxs = (itemModel?: object) => {
+        this.CheckboxModels.value.forEach(c => {
+            if (c._itemModel === itemModel) return
+            c.IsChecked.value = false
         })
     }
 
-    /** 初始化“状态"
-     * （需在“集合改变后”手动调用） */
-    InitState = () => {
-        this.IsSelectAll = false
+    /** 初始化“状态" */
+    private InitState = () => {
+        this.CheckboxModels.value.forEach(c => c._onIsCheckedChanged = this.onIsCheckedChanged)
     }
 
-    /** “全选状态”改变后
-     * （需在“全选状态改变后”手动调用） */
-    onIsSelectAllChanged = () => {
+    /** “全选状态”改变后 */
+    private onIsSelectAllChanged = (isSelectAll: boolean) => {
         if (!this._isJoint || !this.IsAllowMultiSelect) return
 
         this._isJoint = false
 
-        let checkboxModels = this.CheckboxModels
-        checkboxModels.forEach(checkboxModel => {
-            checkboxModel.IsChecked = this.IsSelectAll
-        })
+        this.CheckboxModels.value.forEach(c => c.IsChecked.value = isSelectAll)
 
         this._isJoint = true
     }
 
-    /** “选中状态”改变后
-     * （需在“选中状态改变后”手动调用） */
-    onIsCheckedChanged = (rowModel?: object) => {
+    /** “选中状态”改变后 */
+    private onIsCheckedChanged = (itemModel?: object) => {
         if (!this._isJoint) return
 
         this._isJoint = false
 
         if (!this.IsAllowMultiSelect) {
-            this.UncheckOtherCheckboxs(rowModel)
+            this.UncheckOtherCheckboxs(itemModel)
         }
 
-        this.IsSelectAll = this.CheckboxModels.every(cm => cm.IsChecked)
+        this._isSelectAllWatch.stop()
+        this.IsSelectAll.value = this.CheckboxModels.value.every(cm => cm.IsChecked.value)
+        this._isSelectAllWatch = this.InitIsSelectAllWatch()
 
         this._isJoint = true
     }
-    //#endregion 【Functions】
-}
+    //#endregion [private]
 
-export {
-    type CheckboxModelsGetter,
-    CheckboxBehaviorModel,
-    CheckboxBehavior
+    /** 反转“全选状态” */
+    Toggle = () => {
+        this.IsSelectAll.value = !this.IsSelectAll.value
+    }
+    //#endregion 【Functions】
 }

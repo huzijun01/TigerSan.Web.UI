@@ -2,8 +2,8 @@ import { nanoid } from 'nanoid'
 import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive } from "vue"
 import { Colors, Theme } from '../../base'
 import { SelectModel } from '../Inputs/SelectModel'
-import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase } from '../../helpers'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
+import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase } from '../../helpers'
 
 export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
 export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
@@ -109,15 +109,12 @@ export class TableModel<TSource extends object> {
 
     /** “被选中”的“行数据”集合 */
     readonly SelectedRowDatas = computed(() => {
-        let list = new Array<TSource>()
+        return this.RowModels.filter(r => r.IsChecked.value).map(r => r._rowData)
+    })
 
-        this.RowModels.forEach(rowModel => {
-            if (rowModel.IsChecked.value) {
-                list.push(rowModel._rowData)
-            }
-        })
-
-        return list
+    /** “复选框模型”集合 */
+    readonly CheckboxModels = computed(() => {
+        return this.RowModels.map(i => new CheckboxBehaviorModel(i, i.IsChecked))
     })
     //#endregion [computed]
     //#endregion 【Properties】
@@ -135,26 +132,10 @@ export class TableModel<TSource extends object> {
 
         // 初始化“复选框行为”:
         this._checkboxBehavior = new CheckboxBehavior(
-            () => this.IsSelectAll.value,
-            bool => this.IsSelectAll.value = bool,
-            () => {
-                let CheckboxModels = new Array<CheckboxBehaviorModel>()
-                this.RowModels.forEach(rowModel => {
-                    let checkboxModel = new CheckboxBehaviorModel(
-                        rowModel,
-                        rowModel => (rowModel as TableRowModel<TSource>).IsChecked.value,
-                        (rowModel, bool) => { (rowModel as TableRowModel<TSource>).IsChecked.value = bool }
-                    )
-                    CheckboxModels.push(checkboxModel)
-                })
-                return CheckboxModels
-            }
+            this.IsSelectAll,
+            this.IsAllowMultiSelect,
+            this.CheckboxModels
         )
-
-        this._checkboxBehavior.IsAllowMultiSelect = this.IsAllowMultiSelect.value
-        watch(this.IsAllowMultiSelect, () => {
-            this._checkboxBehavior.IsAllowMultiSelect = this.IsAllowMultiSelect.value
-        })
     }
     //#endregion 【Ctor】
 
@@ -196,8 +177,6 @@ export class TableModel<TSource extends object> {
             })
         })
 
-        this._checkboxBehavior.InitState()
-
         this._onInitRowModels?.(toRaw(this.RowDatas))
     }
 
@@ -225,8 +204,7 @@ export class TableModel<TSource extends object> {
         this.UpdateTexts()
     }
 
-    /** 触发“选中状态”改变
-     * （由“Table”内部自动调用） */
+    /** 触发“选中状态”改变 */
     readonly RiseOnSelectStateChange = () => {
         if (!this._onSelectStateChange) return
         this._onSelectStateChange(this.SelectedRowDatas.value)

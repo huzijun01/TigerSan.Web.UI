@@ -15,6 +15,7 @@ class Texts {
     static readonly To = TextModel.Computed('To', '到')
     static readonly page = TextModel.Computed('page', '页')
     static readonly Select = TextModel.Computed('Select', '选中')
+    static readonly SelectAll = TextModel.Computed('SelectAll', '全选')
     static readonly Colon = TextModel.Computed(': ', '：')
     static readonly PleaseEnter = TextModel.Computed('Please enter.', '请输入')
     static readonly PleaseSelect = TextModel.Computed('Please select.', '请选择')

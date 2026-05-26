@@ -1,6 +1,10 @@
 <template>
     <div class="select-menu" ref="refMenu" v-if="model.IsOpen.value" :class="model.RootClass.value"
         :style="model.menuStyleObj.value">
+        <div class="menu-item select-all flex-left" v-if="model.IsAllowMultiSelect.value" @click="OnSelectAllClick">
+            <input type="checkbox" v-model="model.IsSelectAll.value">
+            <span>{{ Texts.SelectAll.value }}</span>
+        </div>
         <div v-for="i in model.ItemModels.value" :key="i._id">
             <div class="menu-item flex-left" v-if="i.IsShow.value" @click="i.OnClick">
                 <input type="checkbox" v-if="model.IsAllowMultiSelect.value" v-model="i.IsChecked.value">
@@ -39,6 +43,11 @@ const refMenuWatch = watch(refMenu, menu => {
 onUnmounted(() => {
     refMenuWatch.stop()
 })
+
+// 方法:
+function OnSelectAllClick() {
+    model._checkboxBehavior.Toggle()
+}
 </script>
 
 <style lang="less" scoped>
@@ -81,6 +90,11 @@ onUnmounted(() => {
 
         input {
             margin-right: 5px;
+        }
+
+        &.select-all {
+            border: solid var(--theme-border-divider);
+            border-width: 0 0 2px 0;
         }
     }
 

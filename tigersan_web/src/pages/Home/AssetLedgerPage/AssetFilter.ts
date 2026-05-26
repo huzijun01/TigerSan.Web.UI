@@ -23,7 +23,7 @@ export class AssetFilter {
         this.selectCompany._onChange = this._refresh
         this.selectDepartment._onChange = this._refresh
         this.selectAssetType._onChange = this._refresh
-        this.selectAssetState.CheckAll()
+        this.selectAssetState.IsSelectAll.value = true
         this.selectAssetState.IsAllowMultiSelect.value = true
         this.selectAssetState._onCheckedItemsChange = this._refresh
         this.selectOnlineState._onChange = this._refresh

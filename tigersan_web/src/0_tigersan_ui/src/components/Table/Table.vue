@@ -6,7 +6,7 @@
                 <tr>
                     <th v-if="model.IsShowCheckBox.value" class="checkbox">
                         <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
-                            v-model="model.IsSelectAll.value" v-on:change="OnIsSelectAllChanged">
+                            v-model="model.IsSelectAll.value" v-on:change="model.RiseOnSelectStateChange">
                     </th>
                     <th v-for="h in model.HeaderModels" :key="h._id" :style="h.styleObj.value">
                         <span class="ellipsis">{{ h.Text.value }}</span>
@@ -18,7 +18,7 @@
             <tbody>
                 <tr v-for="r in model.RowModels" :key="r._id" :class="{ 'select': r.IsChecked.value }">
                     <td v-if="model.IsShowCheckBox.value" class="checkbox">
-                        <input type="checkbox" v-model="r.IsChecked.value" v-on:change="OnIsCheckedChanged(r)">
+                        <input type="checkbox" v-model="r.IsChecked.value" v-on:change="model.RiseOnSelectStateChange">
                     </td>
                     <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.styleObj.value">
                         <TableItem type="checkbox" :model="i" />
@@ -50,18 +50,6 @@ let styleObj = {
 onMounted(() => {
     model.Refresh(true)
 })
-
-// 方法:
-function OnIsSelectAllChanged() {
-    model._checkboxBehavior?.onIsSelectAllChanged()
-    model.RiseOnSelectStateChange()
-}
-
-function OnIsCheckedChanged(rowModel: TableRowModel<any>) {
-    let source = rowModel.IsChecked.value ? rowModel : undefined
-    model._checkboxBehavior.onIsCheckedChanged(source)
-    model.RiseOnSelectStateChange()
-}
 </script>
 
 <style lang="less" scoped>

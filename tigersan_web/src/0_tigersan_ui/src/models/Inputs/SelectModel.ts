@@ -2,9 +2,9 @@ import { nanoid } from "nanoid"
 import { ref, shallowRef, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
 import { Texts } from "../../texts"
 import { TextModel } from "../Text/TextModel"
-import { ConverterBase } from "./ConverterBase"
-import { RectPosition, RectHelper, ObjectHelper, TimerHelper } from '../../helpers'
 import type { StringFunc } from "../../types"
+import { ConverterBase } from "./ConverterBase"
+import { RectPosition, RectHelper, ObjectHelper, TimerHelper, CheckboxBehavior, CheckboxBehaviorModel } from '../../helpers'
 
 export type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
 export type MenuItemModelsAction<TSource> = (itemModels: MenuItemModel<TSource>[]) => void
@@ -66,6 +66,9 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     /** 菜单实例
      * （由“Select”内部维护） */
     static _appMenu?: App
+    /** 复选框行为
+     * （由“Select”内部维护） */
+    _checkboxBehavior: CheckboxBehavior
     /** 获取“项目集合” */
     _getItems?: () => ShallowReactive<TSource[]>
     /** 获取“项目集合”（异步）：优先执行该方法 */
@@ -103,6 +106,8 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     readonly IsEnabled = ref(true)
     /** 是否“正在加载” */
     readonly IsLoading = ref(false)
+    /** 是否“全选” */
+    readonly IsSelectAll = ref(false)
     /** 是否“允许搜索” */
     readonly IsAllowSearch = ref(false)
     /** 是否“允许多选” */
@@ -122,14 +127,12 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     readonly ShowPlaceholder = TextModel.DefaultComputed(this.PlaceholderEN, this.PlaceholderCN, Texts.PleaseSelect)
     /** 是否“无内容” */
     readonly IsNoContent = computed(() => this.Items.length < 1)
-    /** 是否“全选” */
-    readonly IsCheckAll = computed(() => this.CheckedItems.value.length === this.Items.length)
     /** “选中项目”集合 */
     readonly CheckedItems = computed(() => this.ItemModels.value.filter(i => i.IsChecked.value))
     /** “选中值”集合 */
     readonly CheckedValues = computed(() => this.CheckedItems.value.map(i => i.Value.value))
     /** “非全选选中值”集合 */
-    readonly NotCheckAllCheckedValues = computed(() => this.IsCheckAll.value ? undefined : this.CheckedValues.value)
+    readonly NotCheckAllCheckedValues = computed(() => this.IsSelectAll.value ? undefined : this.CheckedValues.value)
 
     /** 项目集合 */
     readonly ItemModels = computed(() => {
@@ -192,6 +195,11 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
 
         return obj
     })
+
+    /** “复选框模型”集合 */
+    readonly CheckboxModels = computed(() => {
+        return this.ItemModels.value.map(i => new CheckboxBehaviorModel(i, i.IsChecked))
+    })
     //#endregion [computed]
     //#endregion 【Properties】
 
@@ -201,6 +209,14 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
 
         this._timer = new TimerHelper(this.OnSearchTextChange, 2000, false)
 
+        // 初始化“复选框行为”:
+        this._checkboxBehavior = new CheckboxBehavior(
+            this.IsSelectAll,
+            this.IsAllowMultiSelect,
+            this.CheckboxModels
+        )
+
+        // 设置“监听”:
         watch(this.SearchText, search => {
             if (!this._onSearchTextChange || search === '') {
                 if (this._timer.IsStarted) {
@@ -213,7 +229,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
             this._timer.Start()
         })
 
-        watch(this.IsOpen, isOpen => {
+        watch(this.IsOpen, () => {
             this.SearchText.value = ''
             this.UpdateText()
         })
@@ -294,11 +310,6 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     /** 清空“项目集合” */
     readonly Clear = () => {
         this.Items.splice(0)
-    }
-
-    /** 全选 */
-    readonly CheckAll = (isChecked: boolean = true) => {
-        this.ItemModels.value.forEach(i => i.IsChecked.value = isChecked)
     }
     //#endregion 【Functions】
 }
