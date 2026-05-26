@@ -3,15 +3,24 @@
         <!-- 顶部: -->
         <div class="top-panel flex-between">
             <div class="filter-panel">
+                <Select :model="model.selectAssetState" />
             </div>
             <div class="button-panel">
                 <div class="row-panel">
-                    <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
-                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">{{ Texts.Add.value }}</button>
+                    <button class="bg-success" @click="model.Refresh">
+                        {{ Texts.Refresh.value }}
+                    </button>
+                    <button v-if="!Authorities.AssetReportPage.IsReadonly.value" @click="model.Add">
+                        {{ Texts.Add.value }}
+                    </button>
                     <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-warning"
-                        :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
+                        :disabled="!IsOnlySelected" @click="model.Edit">
+                        {{ Texts.Edit.value }}
+                    </button>
                     <button v-if="!Authorities.AssetReportPage.IsReadonly.value" class="bg-danger"
-                        :disabled="!IsOnlySelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
+                        :disabled="!IsOnlySelected" @click="model.Delete">
+                        {{ Texts.Delete.value }}
+                    </button>
                 </div>
             </div>
         </div>

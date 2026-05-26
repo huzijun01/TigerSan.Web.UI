@@ -120,12 +120,16 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     //#region [computed]
     /** 显示的“占位文本” */
     readonly ShowPlaceholder = TextModel.DefaultComputed(this.PlaceholderEN, this.PlaceholderCN, Texts.PleaseSelect)
-
     /** 是否“无内容” */
     readonly IsNoContent = computed(() => this.Items.length < 1)
-
-    /** 选中项目集合 */
+    /** 是否“全选” */
+    readonly IsCheckAll = computed(() => this.CheckedItems.value.length === this.Items.length)
+    /** “选中项目”集合 */
     readonly CheckedItems = computed(() => this.ItemModels.value.filter(i => i.IsChecked.value))
+    /** “选中值”集合 */
+    readonly CheckedValues = computed(() => this.CheckedItems.value.map(i => i.Value.value))
+    /** “非全选选中值”集合 */
+    readonly NotCheckAllCheckedValues = computed(() => this.IsCheckAll.value ? undefined : this.CheckedValues.value)
 
     /** 项目集合 */
     readonly ItemModels = computed(() => {
@@ -290,6 +294,11 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     /** 清空“项目集合” */
     readonly Clear = () => {
         this.Items.splice(0)
+    }
+
+    /** 全选 */
+    readonly CheckAll = (isChecked: boolean = true) => {
+        this.ItemModels.value.forEach(i => i.IsChecked.value = isChecked)
     }
     //#endregion 【Functions】
 }

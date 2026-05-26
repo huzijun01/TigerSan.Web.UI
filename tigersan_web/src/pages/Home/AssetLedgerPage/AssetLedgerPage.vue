@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts" setup>
-import AssetRecordPage from './AssetRecordPage.vue'
+import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { assetLedgerForm as form, filter } from './AssetLedgerForm'

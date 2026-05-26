@@ -40,6 +40,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         company?: bigint,
         department?: bigint,
         state?: number,
+        states?: Array<number | undefined>,
         station?: bigint,
         onlineState?: OnlineStates,
     }) => await axiosHelper.GetCount(this._action, {
@@ -54,7 +55,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
                 }
             },
             filters: [
-                { propName: 'State', value: param.state },
+                { propName: 'State', value: param.state, values: param.states },
                 { propName: 'Station', value: param.station },
                 { propName: 'OnlineState', value: param.onlineState },
             ],
@@ -69,6 +70,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
         company?: bigint,
         department?: bigint,
         state?: number,
+        states?: Array<number | undefined>,
         station?: bigint,
         onlineState?: OnlineStates,
     }) => await axiosHelper.GetList<AssetRecordModel>(this._action, {
@@ -88,7 +90,7 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
                 }
             },
             filters: [
-                { propName: 'State', value: param.state },
+                { propName: 'State', value: param.state, values: param.states },
                 { propName: 'Station', value: param.station },
                 { propName: 'OnlineState', value: param.onlineState },
             ],

@@ -43,6 +43,7 @@ map._onInitAsync = async () => {
         department: selectDepartment.Value.value?.id,
         type: selectAssetType.Value.value?.id,
         state: selectAssetState.Value.value,
+        states: selectAssetState.NotCheckAllCheckedValues.value,
         onlineState: selectOnlineState.Value.value,
         errorType: selectErrorType.Value.value,
         assetId: searchAssetId.Value.value,

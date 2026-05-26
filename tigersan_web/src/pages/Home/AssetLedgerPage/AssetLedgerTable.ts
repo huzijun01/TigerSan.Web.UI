@@ -1,6 +1,6 @@
 import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel, SelectModel, TableHeaderModel, ColumnSelectModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
-import { AssetRecordPageModel } from './AssetRecordPageModel'
+import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
 import { computed } from 'vue'
 
 // 字段:

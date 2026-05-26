@@ -1,13 +1,16 @@
 import { ref } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
+import { AssetFilter } from '../AssetFilter'
 import { assetRecordTable, pagination } from './AssetRecordTable'
 import { assetRecordHelper, AssetRecordModel, baseStationHelper } from '@/models'
 
 export class AssetRecordPageModel {
     _asset?: bigint
+    _filter: AssetFilter
 
     // 选择框:
     /** 筛选 */
+    get selectAssetState() { return this._filter.selectAssetState }
     /** 表单 */
     readonly selectStationForm = baseStationHelper.GetIdNameSelectModel()
     // 更新:
@@ -71,6 +74,7 @@ export class AssetRecordPageModel {
 
     constructor() {
         pagination._onChange = this.Refresh
+        this._filter = new AssetFilter(this.Refresh)
     }
 
     /** 查 */
@@ -79,11 +83,13 @@ export class AssetRecordPageModel {
 
         pagination.Count.value = await assetRecordHelper.GetCount({
             asset: this._asset,
+            states: this.selectAssetState.NotCheckAllCheckedValues.value
         })
         await assetRecordHelper.GetList({
             pageSize: pagination.PageSize.value,
             pageNumber: pagination.SelectedNum.value,
             asset: this._asset,
+            states: this.selectAssetState.NotCheckAllCheckedValues.value
         }).then(arr => {
             ArrayHelper.Set(assetRecordTable.RowDatas, arr)
         })
