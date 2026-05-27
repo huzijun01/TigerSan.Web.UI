@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from '../AssetFilter'
 import { assetRecordTable, pagination } from './AssetRecordTable'
 import { assetRecordHelper, AssetRecordModel, baseStationHelper } from '@/models'
@@ -79,20 +79,26 @@ export class AssetRecordPageModel {
 
     /** 查 */
     readonly Refresh = async () => {
-        await baseStationHelper.UpdateIdNames()
+        try {
+            loading.IsShow.value = true
 
-        pagination.Count.value = await assetRecordHelper.GetCount({
-            asset: this._asset,
-            states: this.selectAssetState.NotCheckAllCheckedValues.value
-        })
-        await assetRecordHelper.GetList({
-            pageSize: pagination.PageSize.value,
-            pageNumber: pagination.SelectedNum.value,
-            asset: this._asset,
-            states: this.selectAssetState.NotCheckAllCheckedValues.value
-        }).then(arr => {
-            ArrayHelper.Set(assetRecordTable.RowDatas, arr)
-        })
+            await baseStationHelper.UpdateIdNames()
+
+            pagination.Count.value = await assetRecordHelper.GetCount({
+                asset: this._asset,
+                states: this.selectAssetState.NotCheckAllCheckedValues.value
+            })
+            await assetRecordHelper.GetList({
+                pageSize: pagination.PageSize.value,
+                pageNumber: pagination.SelectedNum.value,
+                asset: this._asset,
+                states: this.selectAssetState.NotCheckAllCheckedValues.value
+            }).then(arr => {
+                ArrayHelper.Set(assetRecordTable.RowDatas, arr)
+            })
+        } finally {
+            loading.IsShow.value = false
+        }
     }
 
     /** 增 */

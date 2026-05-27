@@ -20,10 +20,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> SomeAuthoritiesUnavailable { get => new MyActionResult<TData>(ActionResultCode.Warning, "Some authorities are unavailable!"); }
         public static MyActionResult<TData> CannotModifyOwnRole { get => new MyActionResult<TData>(ActionResultCode.Error, "User cannot modify their own role!"); }
         public static MyActionResult<TData> ApiUnavailable { get => new MyActionResult<TData>(ActionResultCode.Error, "This API is unavailable!"); }
-        public static MyActionResult<TData> ResourceNotFound { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource not found!"); }
+        public static MyActionResult<TData> ResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource do not exist!"); }
         public static MyActionResult<TData> SomeResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "Some resources do not exist!"); }
         public static MyActionResult<TData> ResourceExists { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource already exist!"); }
-        public static MyActionResult<TData> ResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource do not exist!"); }
         public static MyActionResult<TData> ResourceBeenOccupied { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource have been occupied!"); }
         public static MyActionResult<TData> NameRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The name cannot be repeated!"); }
         public static MyActionResult<TData> BrandIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The BrandId cannot be repeated!"); }
@@ -33,7 +32,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> PasswordIncorrect { get => new MyActionResult<TData>(ActionResultCode.Error, "The password is incorrect!"); }
         public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
         public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
+        public static MyActionResult<TData> TagNotBoundAsset { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag is not bound to a asset!"); }
         public static MyActionResult<TData> AssetNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset do not exist!"); }
+        public static MyActionResult<TData> AccessibleCompaniesCannotBeNull { get => new MyActionResult<TData>(ActionResultCode.Error, "The AccessibleCompanies cannot be null!"); }
         public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Authorization header is missing!"); }
         public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Invalid or expired token!"); }
         public static MyActionResult<TData> LoggedInByAnotherUser { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Account logged in by others!"); }

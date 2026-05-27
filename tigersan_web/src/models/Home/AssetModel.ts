@@ -1,6 +1,6 @@
 import { IdModel, IdModelHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
-import { AssetStates, ErrorTypes } from "../base/AssetStates"
 import { axiosHelper } from "../base/AxiosHelper"
+import { AssetStates, ErrorTypes } from "../base/AssetStates"
 
 /** "资产基类"模型 */
 class AssetBaseModel extends IdModel {
@@ -54,6 +54,12 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         super('Asset')
     }
 
+    /** 根据“id”或“TagId”获取“单条数据” */
+    readonly GetFull = async (id?: bigint, rfid?: string) => await axiosHelper.Get(`${this._action}/Full`, [
+        { key: 'tagId', value: id ? id.toString() : undefined },
+        { key: 'rfid', value: rfid }
+    ], false)
+
     /** 筛选“总数” */
     readonly GetCount = async (param: {
         company?: bigint,
@@ -64,23 +70,31 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         onlineState?: OnlineStates,
         errorType?: ErrorTypes,
         assetId?: string,
-    }) => await axiosHelper.GetCount(this._action, {
-        filter: {
-            parent: {
-                id: param.department,
-                parent: {
-                    id: param.company,
-                },
-            },
-            filters: [
-                { propName: 'Type', value: param.type },
-                { propName: 'State', value: param.state, values: param.states },
-                { propName: 'OnlineState', value: param.onlineState },
-                { propName: 'ErrorType', value: param.errorType },
-                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
-            ],
+        rfid?: string,
+    }) => {
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, param.rfid)
+            return res.data ? 1 : 0
+        } else {
+            return await axiosHelper.GetCount(this._action, {
+                filter: {
+                    parent: {
+                        id: param.department,
+                        parent: {
+                            id: param.company,
+                        },
+                    },
+                    filters: [
+                        { propName: 'Type', value: param.type },
+                        { propName: 'State', value: param.state, values: param.states },
+                        { propName: 'OnlineState', value: param.onlineState },
+                        { propName: 'ErrorType', value: param.errorType },
+                        { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
+                    ],
+                }
+            })
         }
-    })
+    }
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -94,26 +108,35 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         onlineState?: OnlineStates,
         errorType?: ErrorTypes,
         assetId?: string,
-    }) => await axiosHelper.GetList<AssetModel>(this._action, {
-        strList: 'FullList',
-        pageSize: param.pageSize,
-        pageNumber: param.pageNumber,
-        filter: {
-            parent: {
-                id: param.department,
-                parent: {
-                    id: param.company,
-                },
-            },
-            filters: [
-                { propName: 'Type', value: param.type },
-                { propName: 'State', value: param.state, values: param.states },
-                { propName: 'OnlineState', value: param.onlineState },
-                { propName: 'ErrorType', value: param.errorType },
-                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
-            ],
+        rfid?: string,
+    }) => {
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, param.rfid)
+            const asset = res.data as AssetModel
+            return asset ? [asset] : new Array<AssetModel>()
+        } else {
+            return await axiosHelper.GetList<AssetModel>(this._action, {
+                strList: 'FullList',
+                pageSize: param.pageSize,
+                pageNumber: param.pageNumber,
+                filter: {
+                    parent: {
+                        id: param.department,
+                        parent: {
+                            id: param.company,
+                        },
+                    },
+                    filters: [
+                        { propName: 'Type', value: param.type },
+                        { propName: 'State', value: param.state, values: param.states },
+                        { propName: 'OnlineState', value: param.onlineState },
+                        { propName: 'ErrorType', value: param.errorType },
+                        { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
+                    ],
+                }
+            })
         }
-    })
+    }
 
     /** 筛选“位置”集合 */
     readonly GetPositionList = async (param: {

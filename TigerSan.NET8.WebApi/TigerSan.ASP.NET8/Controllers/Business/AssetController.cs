@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Attributes;
-using TigerSan.NET8.WebApi.Interfaces.Models;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
 {
@@ -17,6 +17,23 @@ namespace TigerSan.NET8.WebApi.Controllers
 
         #region 【Functions】
         #region [查]
+        [HttpGet]
+        [Route("Full")]
+        /// <summary>根据“id”或“TagId”获取“单条数据”</summary>
+        public async Task<MyActionResult<AssetDto>> GetFull(long? id = null, string? rfid = null)
+        {
+            if (AccessibleCompanies == null) return MyResults<AssetDto>.AccessibleCompaniesCannotBeNull;
+            return await _service.GetFull(AccessibleCompanies.Select(i => i.Id).ToList(), id, rfid);
+        }
+
+        [HttpGet]
+        [Route("ByRFID/{rfid}")]
+        /// <summary>根据“RFID”获取“单条数据”</summary>
+        public async Task<MyActionResult<AssetEntity>> GetByRFID(string rfid)
+        {
+            return await _service.GetByRFID(rfid);
+        }
+
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>

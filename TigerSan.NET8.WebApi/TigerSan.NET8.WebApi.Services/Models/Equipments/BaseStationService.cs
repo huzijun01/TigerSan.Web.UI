@@ -37,7 +37,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.MacAddr == macAddr);
                 if (entity == null)
                 {
-                    return MyResults<BaseStationEntity>.ResourceNotFound;
+                    return MyResults<BaseStationEntity>.ResourceNotExist;
                 }
                 return MyResults<BaseStationEntity>.Success(null, entity);
             }

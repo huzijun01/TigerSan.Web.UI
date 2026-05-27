@@ -21,6 +21,9 @@ export class IdModelHelper<TModel extends IdModel> {
     }
 
     // 查:
+    readonly Get = async (id: bigint) =>
+        await axiosHelper.Get(`${this._action}/${id.toString()}`)
+
     readonly GetCount = async (param: {}) =>
         await axiosHelper.GetCount(this._action, {})
 

@@ -5,6 +5,11 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IAssetService : IIdServiceBase<AssetEntity>
     {
+        public Task<MyActionResult<AssetDto>> GetFull(
+            List<long> companies,
+            long? id = null,
+            string? rfid = null);
+        public Task<MyActionResult<AssetEntity>> GetByRFID(string rfid);
         public Task<MyActionResult<List<AssetDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,

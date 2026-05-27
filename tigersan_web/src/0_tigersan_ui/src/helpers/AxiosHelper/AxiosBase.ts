@@ -51,7 +51,10 @@ export class AxiosBase {
         this._api.defaults.headers.common['Authorization'] = authorization ? authorization : undefined
     }
 
-    readonly Get = async (action: string, params?: KeyValue[]): Promise<MyActionResult> => {
+    readonly Get = async (
+        action: string,
+        params?: KeyValue[],
+        isShowResult: boolean = true): Promise<MyActionResult> => {
         try {
             let url = action
             if (params) {
@@ -65,7 +68,7 @@ export class AxiosBase {
                 dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
-            else if (!MyActionResult.IsSuccess(actionResult)) {
+            else if (isShowResult && !MyActionResult.IsSuccess(actionResult)) {
                 MyActionResult.ShowResult(actionResult)
             }
 

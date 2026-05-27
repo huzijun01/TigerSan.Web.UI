@@ -5,20 +5,23 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectState"></Select>
-                        <Select :model="form.selectIsEnable"></Select>
-                        <Search :model="form.searchTagId"></Search>
-                    </div>
-                    <div class="row-panel">
                         <Select :model="form.selectBatch"></Select>
                         <Select :model="form.selectType"></Select>
                         <Select :model="form.selectStation"></Select>
+                    </div>
+                    <div class="row-panel">
+                        <Search :model="form.searchTagId"></Search>
+                        <Search :model="form.searchRfid"></Search>
+                        <Select :model="form.selectState"></Select>
+                        <Select :model="form.selectIsEnable"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.TagMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.TagMgtPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}
+                        </button>
                         <button v-if="!Authorities.TagMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.TagMgtPage.IsReadonly.value" class="bg-danger"
@@ -86,7 +89,7 @@ import { onMounted } from 'vue'
 import { tagMgtTable } from './TagMgtTable'
 import { Authorities } from '@/navs/Authorities'
 import { tagMgtForm as form } from './TagMgtForm'
-import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, TimerHelper } from '@/0_tigersan_ui/tigerui'
+import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

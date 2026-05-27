@@ -5,6 +5,7 @@ export class AssetFilter {
     _refresh?: any
     /** 搜索框 */
     readonly searchAssetId = new SearchModel()
+    readonly searchRfid = new SearchModel()
     /** 筛选 */
     readonly selectOnlineState = OnlineState.GetSelectModel()
     readonly selectCompany = companyHelper.GetIdNameSelectModel()
@@ -19,6 +20,11 @@ export class AssetFilter {
         this.searchAssetId.PlaceholderEN.value = 'Asset ID'
         this.searchAssetId._onChange = this._refresh
         this.searchAssetId._onSearch = this._refresh
+
+        this.searchRfid.PlaceholderCN.value = 'RFID'
+        this.searchRfid.PlaceholderEN.value = 'RFID'
+        this.searchRfid._onChange = this._refresh
+        this.searchRfid._onSearch = this._refresh
 
         this.selectCompany._onChange = this._refresh
         this.selectDepartment._onChange = this._refresh

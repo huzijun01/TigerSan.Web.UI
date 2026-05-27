@@ -109,6 +109,44 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
+        #region 根据“RFID”获取“单条数据”
+        /// <summary>根据“RFID”获取“单条数据”</summary>
+        public async Task<MyActionResult<TagEntity>> GetByRFID(string rfid)
+        {
+            try
+            {
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Rfid == rfid);
+                if (entity == null)
+                {
+                    return MyResults<TagEntity>.ResourceNotExist;
+                }
+                return MyResults<TagEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                return MyResults<TagEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“完整数据”
+        /// <summary>获取“完整数据”</summary>
+        public async Task<MyActionResult<TagDto>> GetFull(
+            List<long> companies,
+            string? tagId = null,
+            string? rfid = null)
+        {
+            if (tagId == null && rfid == null) return MyResults<TagDto>.Success();
+
+            var res = await GetFullList1(companies, 1, 1, null, null, tagId, rfid);
+            if (res.Data == null)
+            {
+                return MyResults<TagDto>.Error(res.Message);
+            }
+            return MyResults<TagDto>.Success(null, res.Data.FirstOrDefault());
+        }
+        #endregion
+
         #region 获取“完整数据”集合（根据ID列表）
         /// <summary>获取“完整数据”集合（根据ID列表）</summary>
         public async Task<MyActionResult<List<TagDto>>> GetFullList(List<long> ids)
@@ -276,42 +314,39 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“完整数据”集合（tagId、company）
-        /// <summary>获取“完整数据”集合（tagId、company）</summary>
+        #region 获取“完整数据”集合（tagId、rfid）
+        /// <summary>获取“完整数据”集合（tagId、rfid）</summary>
         public async Task<MyActionResult<List<TagDto>>> GetFullList1(
+            List<long> companies,
             int? pageSize = null,
             int? pageNumber = null,
             string? sort = null,
             bool? ascending = null,
             string? tagId = null,
-            long? company = null)
+            string? rfid = null)
         {
+            var filters = new List<PropFilter>();
+            if (tagId != null)
+            {
+                filters.Add(new PropFilter(nameof(TagEntity.TagId), tagId));
+            }
+
+            if (rfid != null)
+            {
+                filters.Add(new PropFilter(nameof(TagEntity.Rfid), rfid));
+            }
+
             return await GetFullList(pageSize, pageNumber, sort, ascending, new FilterDto()
             {
                 Parent = new ParentFilter()
                 {
                     Parent = new ParentFilter()
                     {
-                        Id = company,
+                        Ids = companies,
                     }
                 },
-                Filters = [new PropFilter() { PropName = nameof(TagEntity.TagId), Value = tagId }],
+                Filters = filters,
             });
-        }
-        #endregion
-
-        #region 获取“完整数据”
-        /// <summary>获取“完整数据”</summary>
-        public async Task<MyActionResult<TagDto>> GetFull(
-            string? tagId = null,
-            long? company = null)
-        {
-            var res = await GetFullList1(1, 1, null, null, tagId, company);
-            if (res.Data == null)
-            {
-                return MyResults<TagDto>.Error(res.Message);
-            }
-            return MyResults<TagDto>.Success(null, res.Data.FirstOrDefault());
         }
         #endregion
         #endregion [查]

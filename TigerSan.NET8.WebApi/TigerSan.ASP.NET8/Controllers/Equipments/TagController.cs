@@ -18,6 +18,15 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         [HttpGet]
+        [Route("Full")]
+        /// <summary>根据“TagId”或“RFID”获取“单条数据”</summary>
+        public async Task<MyActionResult<TagDto>> GetFull(string? tagId = null, string? rfid = null)
+        {
+            if (AccessibleCompanies == null) return MyResults<TagDto>.AccessibleCompaniesCannotBeNull;
+            return await _service.GetFull(AccessibleCompanies.Select(i => i.Id).ToList(), tagId, rfid);
+        }
+
+        [HttpGet]
         [Route("ByTagId/{tagId}")]
         /// <summary>根据“TagId”获取“单条数据”</summary>
         public async Task<MyActionResult<TagEntity>> GetByTagId(string tagId)
@@ -31,6 +40,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<TagDto>> GetFullByTagId(string tagId)
         {
             return await _service.GetFullByTagId(tagId);
+        }
+
+        [HttpGet]
+        [Route("ByRFID/{rfid}")]
+        /// <summary>根据“RFID”获取“单条数据”</summary>
+        public async Task<MyActionResult<TagEntity>> GetByRFID(string rfid)
+        {
+            return await _service.GetByRFID(rfid);
         }
 
         [HttpPost]

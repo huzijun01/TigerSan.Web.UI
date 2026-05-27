@@ -21,6 +21,17 @@
         public object? Value { get; set; }
         /// <summary>值集合</summary>
         public List<object>? Values { get; set; }
+
+        public PropFilter() { }
+        public PropFilter(
+            string PropName,
+            object? Value,
+            List<object>? Values = null)
+        {
+            this.PropName = PropName;
+            this.Value = Value;
+            this.Values = Values;
+        }
     }
     #endregion
 

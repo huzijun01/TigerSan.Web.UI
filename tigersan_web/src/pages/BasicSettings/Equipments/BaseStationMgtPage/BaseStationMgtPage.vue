@@ -92,7 +92,7 @@ import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { baseStationMgtTable } from './BaseStationMgtTable'
 import { baseStationMgtForm as form } from './BaseStationMgtForm'
-import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, TimerHelper } from '@/0_tigersan_ui/tigerui'
+import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:

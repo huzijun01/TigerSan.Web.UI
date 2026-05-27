@@ -1,12 +1,11 @@
+import { computed } from 'vue'
 import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel, SelectModel, TableHeaderModel, ColumnSelectModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
-import { computed } from 'vue'
 
 // 字段:
 export const recordPage = new AssetRecordPageModel()
 export const assetDetail = new PopWindowModel()
-assetDetail.Title.value = '资产详情'
 /** 分页器 */
 export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
@@ -31,7 +30,9 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         IsReadonly: true,
         Type: ItemType.Link,
         _onItemClick: itemModel => {
-            recordPage._asset = itemModel._rowModel._rowData.id
+            const rowData = itemModel._rowModel._rowData
+            recordPage._asset = rowData.id
+            assetDetail.Title.value = `资产详情 - ${rowData.assetId}`
             recordPage.Refresh()
             assetDetail.Show()
         }

@@ -8,19 +8,24 @@
                         <Select :model="filter.selectCompany"></Select>
                         <Select :model="filter.selectDepartment"></Select>
                         <Select :model="filter.selectAssetState"></Select>
-                        <Select :model="selectColumnFilter"></Select>
-                    </div>
-                    <div class="row-panel">
-                        <Select :model="filter.selectAssetType"></Select>
-                        <Search :model="filter.searchAssetId" />
                         <Select :model="filter.selectOnlineState"></Select>
                         <Select :model="filter.selectErrorType"></Select>
+                    </div>
+                    <div class="row-panel">
+                        <Search :model="filter.searchAssetId" />
+                        <Search :model="filter.searchRfid" />
+                        <Select :model="filter.selectAssetType"></Select>
+                        <Select :model="selectColumnFilter"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button :disabled="!IsAllowInbound" @click="form.Inbound">入库</button>
-                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Outbound">出库</button>
+                        <button :disabled="!IsAllowInbound" @click="form.Inbound">
+                            {{ Texts.Inbound.value }}
+                        </button>
+                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Outbound">
+                            {{ Texts.Outbound.value }}
+                        </button>
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>

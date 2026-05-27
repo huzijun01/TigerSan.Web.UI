@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
+import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from './AssetFilter'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
 import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper } from '@/models'
@@ -9,6 +9,7 @@ import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetMod
 export const filter = new AssetFilter(Refresh)
 const {
     searchAssetId,
+    searchRfid,
     selectOnlineState,
     selectCompany,
     selectDepartment,
@@ -149,6 +150,7 @@ async function Refresh() {
             onlineState: selectOnlineState.Value.value,
             errorType: selectErrorType.Value.value,
             assetId: searchAssetId.Value.value,
+            rfid: searchRfid.Value.value,
         })
 
         await assetHelper.GetList({
@@ -162,6 +164,7 @@ async function Refresh() {
             onlineState: selectOnlineState.Value.value,
             errorType: selectErrorType.Value.value,
             assetId: searchAssetId.Value.value,
+            rfid: searchRfid.Value.value,
         }).then(arr => {
             ArrayHelper.Set(assetLedgerTable.RowDatas, arr)
         })

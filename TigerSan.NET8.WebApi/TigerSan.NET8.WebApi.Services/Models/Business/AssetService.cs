@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Data;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -265,6 +265,83 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion [Private]
 
         #region [查]
+        #region 根据“RFID”获取“单条数据”
+        /// <summary>根据“RFID”获取“单条数据”</summary>
+        public async Task<MyActionResult<AssetEntity>> GetByRFID(string rfid)
+        {
+            try
+            {
+                var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Rfid == rfid);
+                if (tag == null)
+                {
+                    return MyResults<AssetEntity>.ResourceNotExist;
+                }
+                else if (tag.Asset == null)
+                {
+                    return MyResults<AssetEntity>.TagNotBoundAsset;
+                }
+
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == tag.Asset);
+                if (entity == null)
+                {
+                    return MyResults<AssetEntity>.ResourceNotExist;
+                }
+                return MyResults<AssetEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“完整数据”
+        /// <summary>获取“完整数据”</summary>
+        public async Task<MyActionResult<AssetDto>> GetFull(
+            List<long> companies,
+            long? id = null,
+            string? rfid = null)
+        {
+            if (id == null && rfid == null) return MyResults<AssetDto>.Success();
+
+            AssetEntity? entity;
+
+            if (id != null)
+            {
+                entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+            }
+            else if (rfid != null)
+            {
+                var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Rfid == rfid);
+                if (tag == null) return MyResults<AssetDto>.ResourceNotExist;
+                if (tag.Asset == null) return MyResults<AssetDto>.TagNotBoundAsset;
+                entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == tag.Asset);
+            }
+            else
+            {
+                return MyResults<AssetDto>.Success();
+            }
+
+            var res = await GetFullList(1, 1, null, null, new FilterDto()
+            {
+                Parent = new ParentFilter()
+                {
+                    Parent = new ParentFilter()
+                    {
+                        Ids = companies,
+                    }
+                },
+                Filters = entity != null ? [new PropFilter(nameof(AssetEntity.Id), entity.Id)] : null,
+            });
+            if (res.Data == null)
+            {
+                return MyResults<AssetDto>.Error(res.Message);
+            }
+
+            return MyResults<AssetDto>.Success(null, res.Data.FirstOrDefault());
+        }
+        #endregion
+
         #region 获取“完整数据”集合
         /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult<List<AssetDto>>> GetFullList(
@@ -477,7 +554,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     dto.BindingTime = DateTime.Now;
 
                     // 修改“标签ID”:
-                    var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                    var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
                     tag = resGetFull.Data;
                     if (tag == null)
                     {
@@ -545,7 +622,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         dto.BindingTime = DateTime.Now;
 
                         // 修改“标签ID”:
-                        var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                        var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
                         if (resGetFull.Data == null)
                         {
                             return MyResults<object>.TagNotFound(dto.TagId);
@@ -636,7 +713,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     dto.BindingTime = DateTime.Now;
 
-                    var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                    var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
                     if (resGetFull.IsError)
                     {
                         return MyResults<object>.Error(resGetFull.Message);
@@ -723,7 +800,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         dto.BindingTime = DateTime.Now;
 
-                        var resGetFull = await _tagService.GetFull(dto.TagId, dto.Company);
+                        var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
                         if (resGetFull.IsError)
                         {
                             return MyResults<object>.Error(resGetFull.Message);

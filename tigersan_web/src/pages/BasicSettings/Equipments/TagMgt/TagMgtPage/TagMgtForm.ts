@@ -1,7 +1,8 @@
 import { ref, watch } from 'vue'
 import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
 import { tagMgtTable } from './TagMgtTable'
-import { TagModel, batchHelper, tagTypeHelper, baseStationHelper, tagHelper } from '@/models'
+import { AssetFilter } from '@/pages/Home/AssetLedgerPage/AssetFilter'
+import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 字段:
 const onlineCount = ref(0)
@@ -19,6 +20,7 @@ switchIsEnable._onChange = EditIsEnable
 
 // 选择框:
 /** 筛选 */
+const { searchRfid } = new AssetFilter(Refresh)
 const selectState = OnlineState.GetSelectModel()
 const selectIsEnable = IsEnable.GetSelectModel()
 const selectBatch = batchHelper.GetIdNameSelectModel()
@@ -36,7 +38,6 @@ searchTagId.PlaceholderCN.value = '标签ID'
 searchTagId.PlaceholderEN.value = 'Tag ID'
 searchTagId._onSearch = Refresh
 searchTagId._onChange = Refresh
-
 
 /** “批次”项目配置 */
 const configBatch: FormItemConfig<TagModel, IdValueModel> = {
@@ -145,6 +146,7 @@ async function RefreshBase() {
         isEnable: selectIsEnable.Value.value,
         state: OnlineStates.Online,
         tagId: searchTagId.Value.value,
+        rfid: searchRfid.Value.value,
     })
     offlineCount.value = await tagHelper.GetCount({
         batch: selectBatch.Value.value?.id,
@@ -153,6 +155,7 @@ async function RefreshBase() {
         isEnable: selectIsEnable.Value.value,
         state: OnlineStates.Offline,
         tagId: searchTagId.Value.value,
+        rfid: searchRfid.Value.value,
     })
     pagination.Count.value = await tagHelper.GetCount({
         batch: selectBatch.Value.value?.id,
@@ -161,6 +164,7 @@ async function RefreshBase() {
         isEnable: selectIsEnable.Value.value,
         state: selectState.Value.value,
         tagId: searchTagId.Value.value,
+        rfid: searchRfid.Value.value,
     })
 }
 
@@ -177,6 +181,7 @@ async function UpdateRowDatas() {
         state: selectState.Value.value,
         type: selectType.Value.value?.id,
         tagId: searchTagId.Value.value,
+        rfid: searchRfid.Value.value,
     }).then(arr => {
         tagMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
     })
@@ -198,6 +203,7 @@ async function Refresh() {
             state: selectState.Value.value,
             type: selectType.Value.value?.id,
             tagId: searchTagId.Value.value,
+            rfid: searchRfid.Value.value,
         }).then(arr => {
             ArrayHelper.Set(tagMgtTable.RowDatas, arr)
         })
@@ -328,6 +334,7 @@ export const tagMgtForm = {
     offlineCount,
     searchTagId,
     switchIsEnable,
+    searchRfid,
     selectState,
     selectIsEnable,
     selectBatch,

@@ -92,7 +92,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                 var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
                 if (entity == null)
                 {
-                    return MyResults<TEntity>.ResourceNotFound;
+                    return MyResults<TEntity>.ResourceNotExist;
                 }
                 return MyResults<TEntity>.Success(null, entity);
             }

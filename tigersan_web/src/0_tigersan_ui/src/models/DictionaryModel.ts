@@ -3,6 +3,7 @@ import { Colors } from '../base'
 import { dialog } from '../stores'
 import { IdNameModel } from './SelectModel'
 import { FormModel } from './Form/FormModel'
+import { loading } from './Dialog/LoadingModel'
 import { ItemType, TableModel } from './Table/TableModel'
 import { DialogMode, DialogState } from './DialogModel'
 import { PaginationModel } from './Pagination/PaginationModel'
@@ -69,13 +70,19 @@ export class DictionaryModel {
 
     /** 查 */
     readonly Refresh = async () => {
-        this.pagination.Count.value = await this._helper.GetCount({})
-        await this._helper.GetList({
-            pageSize: this.pagination.PageSize.value,
-            pageNumber: this.pagination.SelectedNum.value,
-        }).then(arr => {
-            ArrayHelper.Set(this.table.RowDatas, arr)
-        })
+        try {
+            loading.IsShow.value = true
+
+            this.pagination.Count.value = await this._helper.GetCount({})
+            await this._helper.GetList({
+                pageSize: this.pagination.PageSize.value,
+                pageNumber: this.pagination.SelectedNum.value,
+            }).then(arr => {
+                ArrayHelper.Set(this.table.RowDatas, arr)
+            })
+        } finally {
+            loading.IsShow.value = false
+        }
     }
 
     /** 增 */
