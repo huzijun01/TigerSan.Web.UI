@@ -83,8 +83,8 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             string btsParam = sortedCells.First().Cell;
             string nearbtsParam = string.Join("|", sortedCells.Skip(1).Take(7).Select(x => x.Cell));
 
-            Console.WriteLine($"【基站定位】bts参数: {btsParam}");
-            Console.WriteLine($"【基站定位】nearbts参数: {nearbtsParam}");
+            //Console.WriteLine($"【基站定位】bts参数: {btsParam}");
+            //Console.WriteLine($"【基站定位】nearbts参数: {nearbtsParam}");
 
             var urlBuilder = new StringBuilder($"{apiUrl}?accesstype=0&key={Uri.EscapeDataString(amapKey)}&cdma=0&network=GPRS&output=json");
             if (!string.IsNullOrEmpty(imei))
@@ -94,11 +94,11 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
                 urlBuilder.Append($"&nearbts={Uri.EscapeDataString(nearbtsParam)}");
 
             string requestUrl = urlBuilder.ToString();
-            Console.WriteLine($"【基站定位】请求URL: {requestUrl}");
+            //Console.WriteLine($"【基站定位】请求URL: {requestUrl}");
 
             var response = await httpClient.GetAsync(requestUrl);
             var responseStr = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"【高德基站定位响应】{responseStr}");
+            //Console.WriteLine($"【高德基站定位响应】{responseStr}");
 
             using var doc = JsonDocument.Parse(responseStr);
             var root = doc.RootElement;

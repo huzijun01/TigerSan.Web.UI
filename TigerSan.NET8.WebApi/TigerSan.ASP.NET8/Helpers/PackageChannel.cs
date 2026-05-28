@@ -248,45 +248,41 @@ namespace TigerSan.NET8.WebApi.Helpers
             var tagService = TagService;
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
 
-            foreach (var tagData in package.Data.TagDatas)
+            var resGetFullByTagId = await tagService.GetFullByTagId(package.Data.CollectorId);
+            var tag = resGetFullByTagId.Data;
+            if (tag == null) return MyResults<object>.IsNull(nameof(tag));
+
+            var newTag = new TagDto();
+            newTag.ShallowCopy(tag);
+            newTag.ReportTime = GetUtc(package.ReportTime);
+            newTag.OnlineState = OnlineStates.Online;
+            newTag.Station = baseStation?.Id;
+            newTag.Battery = package.Data.Battery;
+            newTag.Signal = package.Data.TagDatas.FirstOrDefault()?.SignalStrength;
+
+            #region 计算“经纬度”
+            var resGetLocation = await MapHelper.GetLocationByCellTowersAsync(package.Data.SCell, package.Data.NCell, null, Constants.AMapKey);
+            var location = resGetLocation.Data;
+            if (location == null)
             {
-                var resGetFullByTagId = await tagService.GetFullByTagId(tagData.MacAddr);
-                var tag = resGetFullByTagId.Data;
-                if (tag == null) return MyResults<object>.IsNull(nameof(tag));
-
-                var newTag = new TagDto();
-                newTag.ShallowCopy(tag);
-                newTag.ReportTime = GetUtc(package.ReportTime);
-                newTag.OnlineState = OnlineStates.Online;
-                newTag.Station = baseStation?.Id;
-                newTag.Battery = package.Data.Battery;
-                newTag.Signal = tagData.SignalStrength;
-
-                #region 计算“经纬度”
-                var resGetLocation = await MapHelper.GetLocationByCellTowersAsync(package.Data.SCell, package.Data.NCell, null, Constants.AMapKey);
-                var location = resGetLocation.Data;
-                if (location == null)
-                {
-                    return resGetLocation.Convert<object>();
-                }
-
-                newTag.Longitude = location.Longitude;
-                newTag.Latitude = location.Latitude;
-                #endregion 计算“经纬度”
-
-                var resEdit = await tagService.Edit(newTag);
-                if (!resEdit.IsSuccess)
-                {
-                    return resEdit.Convert<object>();
-                }
-
-                var resAsset = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
-                if (!resAsset.IsSuccess)
-                {
-                    return resAsset.Convert<object>();
-                }
+                return resGetLocation.Convert<object>();
             }
 
+            newTag.Longitude = location.Longitude;
+            newTag.Latitude = location.Latitude;
+            #endregion 计算“经纬度”
+
+            var resEdit = await tagService.Edit(newTag);
+            if (!resEdit.IsSuccess)
+            {
+                return resEdit.Convert<object>();
+            }
+
+            var resAsset = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
+            if (!resAsset.IsSuccess)
+            {
+                return resAsset.Convert<object>();
+            }
             return MyResults<object>.Success();
         }
         #endregion
