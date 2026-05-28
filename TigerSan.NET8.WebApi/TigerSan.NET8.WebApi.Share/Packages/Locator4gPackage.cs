@@ -66,9 +66,9 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("ncell")]
         public List<string> NCell { get; set; } = new List<string>();
 
-        /// <summary>标签数据集合</summary>
+        /// <summary>WiFi扫描</summary>
         [JsonProperty("wifiScan")]
-        public List<WifiScanItem> TagDatas { get; set; } = new List<WifiScanItem>();
+        public List<WifiScanItem> WifiScan { get; set; } = new List<WifiScanItem>();
     }
     #endregion
 

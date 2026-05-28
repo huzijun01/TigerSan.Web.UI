@@ -263,6 +263,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
         }
         #endregion
+
+        #region 获取“周转次数”
+        /// <summary>获取“周转次数”</summary>
+        private int GetMoves(List<AssetRecordEntity> records, DateTime? start = null)
+        {
+            int moves = 0;
+
+            if (start != null) records = records.Where(r => r.ReportTime > start).ToList();
+
+            AssetRecordEntity? inbound = null;
+            foreach (var record in records)
+            {
+                if (record.State == AssetStates.Inbound)
+                {
+                    if (inbound != null && inbound.Site == record.Site) continue;
+                    inbound = record;
+                    ++moves;
+                }
+                else if (record.State == AssetStates.Outbound)
+                {
+                    inbound = null;
+                }
+            }
+
+            return moves;
+        }
+        #endregion
         #endregion [Private]
 
         #region [查]
@@ -922,11 +949,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 // 计算“周转”:
                 var now = DateTimeHelper.GetUtcNow();
-                var todayStart = now.Date; // 当日0点
-                var monthStart = new DateTime(now.Year, now.Month, 1); // 当月1日0点
-                find.DailyMove = records.Count(r => r.ReportTime > todayStart && r.State == AssetStates.Inbound);
-                find.MonthlyMove = records.Count(r => r.ReportTime > monthStart && r.State == AssetStates.Inbound);
-                find.TotalMove = records.Count(r => r.State == AssetStates.Inbound);
+                find.DailyMove = GetMoves(records, now.Date); // 当日0点
+                find.MonthlyMove = GetMoves(records, new DateTime(now.Year, now.Month, 1)); // 当月1日0点
+                find.TotalMove = GetMoves(records);
 
                 // 计算“时长”:
                 find.StayDuration = GetStayDuration(records);

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, OnlineState, ItemType, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, OnlineState, ItemType, OnlineStates, PaginationModel, TableModel, Battery } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
 class AssetMgtTagModel {
@@ -118,26 +118,8 @@ assetMgtTagTable._initHeader = headerModel => {
 }
 
 assetMgtTagTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'OnlineState') {
-        if (itemModel.GetSource() === OnlineStates.Online) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'Battery') {
-        const battery = itemModel.GetSource() as number
-        if (battery >= 50) {
-            itemModel.Color.value = Colors.Success
-        } else if (battery >= 25) {
-            itemModel.Color.value = Colors.Warning
-        } else {
-            itemModel.Color.value = Colors.Danger
-        }
-    }
+    OnlineState.InitItemModel(itemModel)
+    Battery.InitItemModel(itemModel)
 }
 
 assetMgtTagTable._onInitRowModels = rowDatas => {

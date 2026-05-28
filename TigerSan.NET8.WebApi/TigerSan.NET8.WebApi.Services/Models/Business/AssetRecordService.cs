@@ -477,10 +477,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
                     }
 
-                    // 新增“入库记录”：
+                    // 新增“在途记录”或“入库记录”：
                     newRecord.TargetSite = null;
                     newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
-                    newRecord.State = AssetStates.Inbound;
+                    newRecord.State = newTag.Station == null ? AssetStates.InTransit : AssetStates.Inbound;
                     var res = await Add(newRecord, false);
                     if (res.IsError)
                     {

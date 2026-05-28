@@ -54,7 +54,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
                     int signal = rawSignal / 10;
                     if (signal < -100 || signal > -20)
                     {
-                        Console.WriteLine($"【基站定位】忽略信号过弱的基站: 原始={rawSignal}, 转换后={signal} dBm");
+                        //Console.WriteLine($"【基站定位】忽略信号过弱的基站: 原始={rawSignal}, 转换后={signal} dBm");
                         return;
                     }
 
@@ -88,10 +88,16 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
 
             var urlBuilder = new StringBuilder($"{apiUrl}?accesstype=0&key={Uri.EscapeDataString(amapKey)}&cdma=0&network=GPRS&output=json");
             if (!string.IsNullOrEmpty(imei))
+            {
                 urlBuilder.Append($"&imei={Uri.EscapeDataString(imei)}");
+            }
+
             urlBuilder.Append($"&bts={Uri.EscapeDataString(btsParam)}");
+
             if (!string.IsNullOrEmpty(nearbtsParam))
+            {
                 urlBuilder.Append($"&nearbts={Uri.EscapeDataString(nearbtsParam)}");
+            }
 
             string requestUrl = urlBuilder.ToString();
             //Console.WriteLine($"【基站定位】请求URL: {requestUrl}");

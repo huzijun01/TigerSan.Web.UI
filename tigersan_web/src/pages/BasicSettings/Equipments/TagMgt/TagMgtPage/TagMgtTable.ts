@@ -1,4 +1,4 @@
-import { Colors, IsEnable, ItemType, ObjectHelper, OnlineState, OnlineStates, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, Colors, IsEnable, ItemType, ObjectHelper, OnlineState, OnlineStates, Signal, TableModel } from '@/0_tigersan_ui/tigerui'
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 列头:
@@ -128,45 +128,8 @@ export const tagMgtTable = new TableModel<TagModel>([
 tagMgtTable.IsAllowMultiSelect.value = true
 
 tagMgtTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'isEnable') {
-        if (itemModel.GetSource()) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'onlineState') {
-        if (itemModel.GetSource() === OnlineStates.Online) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'signal') {
-        const signal = itemModel.GetSource() as number
-        if (signal < 30) {
-            itemModel.Color.value = Colors.Success
-        } else if (signal < 90) {
-            itemModel.Color.value = Colors.Warning
-        } else {
-            itemModel.Color.value = Colors.Danger
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'battery') {
-        const battery = itemModel.GetSource() as number
-        if (battery >= 50) {
-            itemModel.Color.value = Colors.Success
-        } else if (battery >= 25) {
-            itemModel.Color.value = Colors.Warning
-        } else {
-            itemModel.Color.value = Colors.Danger
-        }
-    }
+    IsEnable.InitItemModel(itemModel)
+    OnlineState.InitItemModel(itemModel)
+    Signal.InitItemModel(itemModel)
+    Battery.InitItemModel(itemModel)
 }

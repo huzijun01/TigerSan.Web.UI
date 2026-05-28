@@ -100,29 +100,9 @@ const baseStationMgtTable = new TableModel<BaseStationModel>([
 baseStationMgtTable.IsAllowMultiSelect.value = true
 
 baseStationMgtTable._initItem = itemModel => {
-    if (itemModel._headerModel._propName === 'isEnable') {
-        if (itemModel.GetSource()) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'onlineState') {
-        if (itemModel.GetSource() === OnlineStates.Online) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'battery') {
-        itemModel.Color.value = Battery.GetColor(itemModel.GetSource() as number)
-    }
+    IsEnable.InitItemModel(itemModel)
+    OnlineState.InitItemModel(itemModel)
+    Battery.InitItemModel(itemModel)
 }
 
 export {

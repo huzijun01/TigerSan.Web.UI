@@ -1,7 +1,8 @@
 import { Texts } from "../texts"
+import { Colors } from "../base"
+import { TableItemModel } from "../models"
 import { SelectModel } from "./Inputs/SelectModel"
 import { ObjectHelper } from "../helpers/ObjectHelper"
-import { Colors } from "../base"
 
 export enum OnlineStates {
     Offline = 0,
@@ -9,19 +10,19 @@ export enum OnlineStates {
 }
 
 export class OnlineState {
-    static readonly ToString = (value: OnlineStates) => {
+    static ToString(value: OnlineStates) {
         return value === OnlineStates.Online ? Texts.Online.value : Texts.Offline.value
     }
 
-    static readonly GetString = (obj: object, propName: string = 'OnlineState'): string => {
+    static GetString(obj: object, propName: string = 'OnlineState'): string {
         return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineStates.Online ? Texts.Online.value : Texts.Offline.value
     }
 
-    static readonly IsOnline = (obj: object, propName: string = 'OnlineState'): boolean => {
+    static IsOnline(obj: object, propName: string = 'OnlineState'): boolean {
         return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineStates.Online
     }
 
-    static readonly GetSelectModel = () => {
+    static GetSelectModel() {
         const select = new SelectModel<OnlineStates>()
         select.Width.value = 120
         select.Value.value = undefined
@@ -32,18 +33,31 @@ export class OnlineState {
         select._converter = OnlineState.ToString
         return select
     }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'onlineState') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource() === OnlineStates.Online) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            }
+        }
+    }
 }
 
 export class IsEnable {
-    static readonly ToString = (value: boolean) => {
+    static ToString(value: boolean) {
         return value ? Texts.Enable.value : Texts.Disable.value
     }
 
-    static readonly GetString = (obj: object, propName: string = 'IsEnable'): string => {
+    static GetString(obj: object, propName: string = 'IsEnable'): string {
         return ObjectHelper.DefaultTGetter(obj, propName, false) ? Texts.Enable.value : Texts.Disable.value
     }
 
-    static readonly GetSelectModel = () => {
+    static GetSelectModel() {
         const select = new SelectModel<boolean>()
         select.Width.value = 120
         select.Value.value = undefined
@@ -54,17 +68,49 @@ export class IsEnable {
         select._converter = IsEnable.ToString
         return select
     }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isEnable') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            }
+        }
+    }
 }
 
-
 export class Battery {
-    static readonly GetColor = (battery: number) => {
-        if (battery >= 50) {
-            return Colors.Success
-        } else if (battery >= 25) {
-            return Colors.Warning
-        } else {
-            return Colors.Danger
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'battery') {
+        if (itemModel._headerModel._propName === propName) {
+            const battery = itemModel.GetSource() as number
+            if (battery >= 50) {
+                itemModel.Color.value = Colors.Success
+            } else if (battery >= 25) {
+                itemModel.Color.value = Colors.Warning
+            } else {
+                itemModel.Color.value = Colors.Danger
+            }
+        }
+    }
+}
+
+export class Signal {
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'signal') {
+        if (itemModel._headerModel._propName === propName) {
+            const signal = itemModel.GetSource() as number
+            if (signal < 30) {
+                itemModel.Color.value = Colors.Success
+            } else if (signal < 90) {
+                itemModel.Color.value = Colors.Warning
+            } else {
+                itemModel.Color.value = Colors.Danger
+            }
         }
     }
 }

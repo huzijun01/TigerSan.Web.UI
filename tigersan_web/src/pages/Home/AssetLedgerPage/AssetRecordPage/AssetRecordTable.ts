@@ -1,4 +1,4 @@
-import { Battery, Colors, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, Colors, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, Signal, TableModel } from '@/0_tigersan_ui/tigerui'
 import { AssetRecordModel, AssetState } from '@/models'
 
 // 字段:
@@ -128,18 +128,7 @@ assetRecordTable.IsAllowMultiSelect.value = false
 
 assetRecordTable._initItem = itemModel => {
     AssetState.InitItemModel(itemModel)
-
-    if (itemModel._headerModel._propName === 'onlineState') {
-        if (itemModel.GetSource() === OnlineStates.Online) {
-            itemModel.Color.value = Colors.Success
-            itemModel.Background.value = Colors.Success10
-        } else {
-            itemModel.Color.value = Colors.Danger
-            itemModel.Background.value = Colors.Danger10
-        }
-    }
-
-    if (itemModel._headerModel._propName === 'battery') {
-        itemModel.Color.value = Battery.GetColor(itemModel.GetSource() as number)
-    }
+    OnlineState.InitItemModel(itemModel)
+    Battery.InitItemModel(itemModel)
+    Signal.InitItemModel(itemModel)
 }
