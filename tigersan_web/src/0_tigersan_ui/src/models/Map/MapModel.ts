@@ -428,8 +428,6 @@ export class MapModel<TData> {
                 return
             }
 
-            console.log(this._placeSearch.on);
-
             this._placeSearch.on(MapEvents.complete, (res: AMap.SearchResult) => {
                 resolve(res.poiList.pois)
             }, undefined, true)

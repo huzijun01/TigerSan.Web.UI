@@ -227,16 +227,16 @@ function Delete() {
 async function DeleteRowData(state: DialogState) {
     if (state != DialogState.Yes) return
 
-    const model = assetLedgerTable.SelectedRowDatas.value[0]
-    if (!model) {
-        console.warn('The model is undefined!')
+    const models = assetLedgerTable.SelectedRowDatas.value
+    if (!models) {
+        console.warn('The models is undefined!')
         return {}
     }
 
     try {
         loading.IsShow.value = true
 
-        await assetHelper.Delete(model.id).then(res => {
+        await assetHelper.DeleteRange(models.map(i => i.id)).then(res => {
             Refresh()
             MyActionResult.ShowResult(res, '删除成功')
         })

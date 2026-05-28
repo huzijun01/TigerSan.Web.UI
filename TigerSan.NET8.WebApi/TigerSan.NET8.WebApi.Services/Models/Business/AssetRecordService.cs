@@ -503,7 +503,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             return MyResults<object>.Error(resLastInbound.Message);
                         }
 
-                        newRecord.State = (DateTime.Now - lastInboundRecord.ReportTime).TotalHours
+                        newRecord.State = (DateTimeHelper.GetUtcNow() - lastInboundRecord.ReportTime).TotalHours
                             > Constants.Stolid_Threshold_Hours
                             ? AssetStates.Stolid : AssetStates.InStore;
                     }
@@ -521,7 +521,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 Tag = lastRecord.Tag,
                                 TargetSite = lastRecord.TargetSite,
                                 State = AssetStates.InTransit,
-                                ReportTime = DateTime.Now
+                                ReportTime = DateTimeHelper.GetUtcNow()
                             };
                         }
 

@@ -2,6 +2,7 @@
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
@@ -100,7 +101,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 entity.UpdateId();
-                entity.ShipmentTime = DateTime.Now;
+                entity.ShipmentTime = DateTimeHelper.GetUtcNow();
                 _dbSet.Add(entity);
 
                 await _db.SaveChangesAsync();
@@ -126,7 +127,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 entities.UpdateId();
-                entities.ForEach(e => e.ShipmentTime = DateTime.Now);
+                entities.ForEach(e => e.ShipmentTime = DateTimeHelper.GetUtcNow());
                 await _dbSet.AddRangeAsync(entities);
 
                 await _db.SaveChangesAsync();

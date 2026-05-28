@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Attributes;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
@@ -23,7 +24,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long MonthOffline { get; set; }
         [SnakeColumn]
-        public DateTime CreateTime { get; set; } = DateTime.Now;
+        public DateTime CreateTime { get; set; } = DateTimeHelper.GetUtcNow();
         [SnakeColumn]
         public DateTime? ReportTime { get; set; } = null;
     }

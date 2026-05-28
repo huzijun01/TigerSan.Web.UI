@@ -34,7 +34,7 @@
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsOnlySelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!IsSelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@ import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, recordPa
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts } from '@/0_tigersan_ui/tigerui'
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = assetLedgerTable
+const { IsOnlySelected, IsSelected } = assetLedgerTable
 
 // 【过程】:
 onMounted(() => {

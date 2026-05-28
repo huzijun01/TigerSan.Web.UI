@@ -3,6 +3,7 @@ using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Interfaces.Models;
@@ -74,7 +75,7 @@ namespace TigerSan.NET8.WebApi.Controllers
             }
 
             BluetoothTagPackage package = new BluetoothTagPackage();
-            package.ReportTime = DateTime.Now.ToLocalTime().ToString();
+            package.ReportTime = DateTimeHelper.GetUtcNow().ToString();
             package.Data.Topic = station.MacAddr;
             package.Data.Longitude = entity.Longitude ?? 0;
             package.Data.TagDatas.Add(new BluetoothTagData

@@ -291,7 +291,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 entity.UpdateId();
-                entity.CreateTime = DateTime.Now;
+                entity.CreateTime = DateTimeHelper.GetUtcNow();
                 entity.ReportTime = null;
                 _dbSet.Add(entity);
 
@@ -317,7 +317,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                entities.UpdateId(i => { i.CreateTime = DateTime.Now; i.ReportTime = null; });
+                entities.UpdateId(i => { i.CreateTime = DateTimeHelper.GetUtcNow(); i.ReportTime = null; });
                 await _dbSet.AddRangeAsync(entities);
 
                 await _db.SaveChangesAsync();

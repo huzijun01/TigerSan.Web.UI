@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Attributes;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
@@ -13,7 +14,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string BatchId { get; set; } = string.Empty;
         [SnakeColumn]
-        public DateTime ShipmentTime { get; set; } = DateTime.Now;
+        public DateTime ShipmentTime { get; set; } = DateTimeHelper.GetUtcNow();
         [SnakeColumn]
         public string? Manager { get; set; } = string.Empty;
         [SnakeColumn]

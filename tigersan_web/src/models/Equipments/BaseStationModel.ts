@@ -11,8 +11,8 @@ export class BaseStationModel extends IdNameModel {
     addr = ''
     addrDetail = ''
     onlineState = OnlineStates.Offline
-    heartbeatInterval = 0
-    reportInterval = 0
+    heartbeatInterval = 28800
+    reportInterval = 28800
     monthOffline: bigint = 0n
     createTime: Date = new Date()
     reportTime?: Date

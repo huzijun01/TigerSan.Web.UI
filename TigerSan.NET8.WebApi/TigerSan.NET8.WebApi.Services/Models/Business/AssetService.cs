@@ -1,8 +1,9 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
@@ -107,7 +108,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             if (inbound != null)
             {
-                duration += (DateTime.Now - inbound.ReportTime).TotalHours;
+                duration += (DateTimeHelper.GetUtcNow() - inbound.ReportTime).TotalHours;
             }
 
             return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
@@ -181,7 +182,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             if (outbound != null)
             {
-                duration += (DateTime.Now - outbound.ReportTime).TotalHours;
+                duration += (DateTimeHelper.GetUtcNow() - outbound.ReportTime).TotalHours;
             }
 
             return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
@@ -256,7 +257,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             if (offline != null)
             {
-                duration += (DateTime.Now - offline.ReportTime).TotalHours;
+                duration += (DateTimeHelper.GetUtcNow() - offline.ReportTime).TotalHours;
             }
 
             return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
@@ -375,7 +376,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     dtos.Add(dto);
                     dto.ShallowCopy(entity);
 
-                    // 添加“部门企业信息”:
+                    // 添加“记录企业信息”:
                     var departmentInfo = departmentInfoDic.GetValueOrDefault(entity.Department);
                     if (departmentInfo == null)
                     {
@@ -454,10 +455,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         (dto.LastRecord == null
                         || dto.CalculationTime == null
                         || dto.LastRecord != lastRecord.Id
-                        || (DateTime.Now - dto.CalculationTime.Value).TotalSeconds > Constants.Calculation_Interval_Seconds)
+                        || (DateTimeHelper.GetUtcNow() - dto.CalculationTime.Value).TotalSeconds > Constants.Calculation_Interval_Seconds)
                         || lastRecord == null && dto.LastRecord != null)
                     {
-                        dto.CalculationTime = DateTime.Now;
+                        dto.CalculationTime = DateTimeHelper.GetUtcNow();
                         var resCalculate = await Calculate(entity.Id, false);
                         if (resCalculate.IsError || resCalculate.Data == null)
                         {
@@ -551,7 +552,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 if (!string.IsNullOrEmpty(dto.TagId))
                 {
-                    dto.BindingTime = DateTime.Now;
+                    dto.BindingTime = DateTimeHelper.GetUtcNow();
 
                     // 修改“标签ID”:
                     var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
@@ -619,7 +620,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     if (!string.IsNullOrEmpty(dto.TagId))
                     {
-                        dto.BindingTime = DateTime.Now;
+                        dto.BindingTime = DateTimeHelper.GetUtcNow();
 
                         // 修改“标签ID”:
                         var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
@@ -711,7 +712,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else
                 {
-                    dto.BindingTime = DateTime.Now;
+                    dto.BindingTime = DateTimeHelper.GetUtcNow();
 
                     var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
                     if (resGetFull.IsError)
@@ -798,7 +799,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                     else
                     {
-                        dto.BindingTime = DateTime.Now;
+                        dto.BindingTime = DateTimeHelper.GetUtcNow();
 
                         var resGetFull = await _tagService.GetFull([dto.Company], dto.TagId);
                         if (resGetFull.IsError)
@@ -908,19 +909,19 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         LogHelper.Instance.Warning("Inbound record not found for asset in store!");
                     }
-                    else if ((DateTime.Now - lastInbound.ReportTime).TotalHours > Constants.Stolid_Threshold_Hours)
+                    else if ((DateTimeHelper.GetUtcNow() - lastInbound.ReportTime).TotalHours > Constants.Stolid_Threshold_Hours)
                     {
                         var stolid = new AssetRecordEntity();
                         stolid.ShallowCopy(lastRecord);
                         stolid.UpdateId();
-                        stolid.ReportTime = DateTime.Now;
+                        stolid.ReportTime = DateTimeHelper.GetUtcNow();
                         find.State = stolid.State = AssetStates.Stolid;
                         await _db.AssetRecords.AddAsync(stolid);
                     }
                 }
 
                 // 计算“周转”:
-                var now = DateTime.Now;
+                var now = DateTimeHelper.GetUtcNow();
                 var todayStart = now.Date; // 当日0点
                 var monthStart = new DateTime(now.Year, now.Month, 1); // 当月1日0点
                 find.DailyMove = records.Count(r => r.ReportTime > todayStart && r.State == AssetStates.Inbound);
@@ -933,7 +934,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 find.OfflineDuration = GetOfflineDuration(records);
 
                 // 计算时间:
-                find.CalculationTime = DateTime.Now;
+                find.CalculationTime = DateTimeHelper.GetUtcNow();
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
@@ -948,6 +949,76 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [改]
+
+        #region [删]
+        #region 删除“单条数据”
+        /// <summary>删除“单条数据”</summary>
+        public override async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == id);
+                if (entity == null)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+
+                // 删除“相关记录”：
+                await _db.AssetRecords.Where(i => i.Asset == id).ExecuteDeleteAsync();
+
+                _dbSet.Remove(entity);
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+
+        #region 删除“多条数据”
+        /// <summary>删除“多条数据”</summary>
+        public override async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (ids.Count < 1) return res;
+
+                var entities = _dbSet.Where(i => ids.Contains(i.Id));
+
+                var count = await entities.CountAsync();
+                if (count < 1)
+                    return MyResults<object>.ResourceNotExist;
+                else if (count < ids.Count)
+                    return MyResults<object>.SomeResourceNotExist;
+
+                // 删除“相关记录”：
+                await _db.AssetRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
+
+                await entities.ExecuteDeleteAsync();
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [删]
 
         #region [Other]
         #region 入库
@@ -995,7 +1066,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     inStore.ShallowCopy(lastRecord);
                     inStore.UpdateId();
                     inStore.State = AssetStates.InStore;
-                    inStore.ReportTime = DateTime.Now;
+                    inStore.ReportTime = DateTimeHelper.GetUtcNow();
                     await _db.AssetRecords.AddAsync(inStore);
                 }
 
@@ -1069,7 +1140,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     inTransit.ShallowCopy(lastRecord);
                     inTransit.UpdateId();
                     inTransit.State = AssetStates.Outbound;
-                    inTransit.ReportTime = DateTime.Now;
+                    inTransit.ReportTime = DateTimeHelper.GetUtcNow();
                     inTransit.TargetSite = site;
                     await _db.AssetRecords.AddAsync(inTransit);
                 }
