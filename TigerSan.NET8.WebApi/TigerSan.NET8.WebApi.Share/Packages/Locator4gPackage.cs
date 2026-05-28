@@ -80,9 +80,13 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("M")]
         public string MacAddr { get; set; } = string.Empty;
 
-        /// <summary>信号强度</summary>
+        /// <summary>信号强度（原始数据）</summary>
         [JsonProperty("r")]
-        public int SignalStrength { get; set; }
+        public int SignalRaw { get; set; }
+
+        /// <summary>信号强度</summary>
+        [JsonIgnore]
+        public int Signal { get => -SignalRaw; }
     }
     #endregion
 }

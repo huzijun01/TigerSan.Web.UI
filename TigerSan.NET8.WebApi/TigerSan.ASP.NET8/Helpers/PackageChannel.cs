@@ -258,7 +258,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             newTag.OnlineState = OnlineStates.Online;
             newTag.Station = baseStation?.Id;
             newTag.Battery = package.Data.Battery;
-            newTag.Signal = package.Data.WifiScan.FirstOrDefault()?.SignalStrength;
+            newTag.Signal = package.Data.WifiScan.FirstOrDefault()?.Signal;
 
             #region 计算“经纬度”
             var resGetLocation = await MapHelper.GetLocationByCellTowersAsync(package.Data.SCell, package.Data.NCell, null, Constants.AMapKey);
