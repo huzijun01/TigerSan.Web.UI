@@ -10,13 +10,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { dialog } from '@/0_tigersan_ui/tigerui'
+import { DialogHelper } from '@/0_tigersan_ui/tigerui'
 
 let sum = ref(0)
 
 function Add() {
     ++sum.value
-    dialog.ShowInformation(`sum = ${sum.value}`)
+    DialogHelper.ShowInformation(`sum = ${sum.value}`)
 }
 </script>
 

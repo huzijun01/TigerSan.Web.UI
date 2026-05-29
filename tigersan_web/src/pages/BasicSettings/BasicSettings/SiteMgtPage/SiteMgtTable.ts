@@ -2,7 +2,7 @@ import { companyHelper, siteTypeHelper, SiteModel } from '@/models'
 import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
-const siteMgtTable = new TableModel<SiteModel>([
+export const siteMgtTable = new TableModel<SiteModel>([
     {
         _propName: 'company',
         Text: '公司',
@@ -64,7 +64,3 @@ const siteMgtTable = new TableModel<SiteModel>([
 
 // 初始化:
 siteMgtTable.IsAllowMultiSelect.value = false
-
-export {
-    siteMgtTable,
-}

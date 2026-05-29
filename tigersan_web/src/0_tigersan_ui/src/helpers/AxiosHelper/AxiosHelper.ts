@@ -1,7 +1,7 @@
 
 import { AxiosBase } from "./AxiosBase"
 import { KeyValue } from "../ParamHelper"
-import { dialog } from "../../stores/dialog"
+import { DialogHelper } from "../../stores/dialog"
 import { FilterModel } from "../../models/FilterModel"
 import { MyActionResult } from "../../models/MyActionResult"
 import { IdNameModel, IdValueModel } from "../../models/SelectModel"
@@ -26,7 +26,7 @@ export class AxiosHelper extends AxiosBase {
                 return 0
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetCount: The data is undefined!')
+                DialogHelper.ShowWarning('GetCount: The data is undefined!')
                 return 0
             }
 
@@ -64,7 +64,7 @@ export class AxiosHelper extends AxiosBase {
                 return []
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetList: The data is undefined!')
+                DialogHelper.ShowWarning('GetList: The data is undefined!')
                 return []
             }
 
@@ -94,7 +94,7 @@ export class AxiosHelper extends AxiosBase {
                 return []
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetList: The data is undefined!')
+                DialogHelper.ShowWarning('GetList: The data is undefined!')
                 return []
             }
 
@@ -124,7 +124,7 @@ export class AxiosHelper extends AxiosBase {
                 return []
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                dialog.ShowWarning('GetList: The data is undefined!')
+                DialogHelper.ShowWarning('GetList: The data is undefined!')
                 return []
             }
 
@@ -141,7 +141,7 @@ export class AxiosHelper extends AxiosBase {
             const actionResult = await this.Post(`${action}${range}`, undefined, data)
 
             if (actionResult === undefined) {
-                dialog.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (!MyActionResult.IsSuccess(actionResult)) {

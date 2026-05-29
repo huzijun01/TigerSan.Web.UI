@@ -50,11 +50,11 @@
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { departmentMgtTable } from './DepartmentMgtTable'
-import { departmentMgtForm as form } from './DepartmentMgtForm'
+import { DepartmentMgtForm } from './DepartmentMgtForm'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-// 表格:
+const form = new DepartmentMgtForm()
 const { IsOnlySelected } = departmentMgtTable
 
 // 【过程】:

@@ -5,17 +5,18 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="selectCompany"></Select>
+                        <Select :model="form.selectCompany"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!tree.IsActive.value" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                            :disabled="!form.tree.IsActive.value" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!tree.IsActive.value" @click="form.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!form.tree.IsActive.value" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -26,7 +27,7 @@
                     <Tree :model="form.tree" />
                 </div>
                 <div class="right-panel">
-                    <CompanyInfo v-if="tree.IsActive.value" :model="tree.ActiveData.value" />
+                    <CompanyInfo v-if="form.tree.IsActive.value" :model="form.tree.ActiveData.value" />
                 </div>
             </div>
         </div>
@@ -46,7 +47,7 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configParent.ItemModel">
-                <Select :model="selectParentCompany"></Select>
+                <Select :model="form.selectParentCompany"></Select>
             </FormItem>
         </FormRow>
     </PopForm>
@@ -56,11 +57,11 @@
 import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
-import { companyMgtForm as form } from './CompanyMgtForm'
-import { tree, selectCompany, selectParentCompany } from './CompanyMgtTable'
+import { CompanyMgtForm } from './CompanyMgtForm'
 import { PageCard, PopForm, FormRow, FormItem, Tree, Select, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
+const form = new CompanyMgtForm()
 
 // 【过程】:
 // 表格:

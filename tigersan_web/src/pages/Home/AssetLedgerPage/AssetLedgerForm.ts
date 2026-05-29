@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from './AssetFilter'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
 import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper } from '@/models'
@@ -215,7 +215,7 @@ async function Edit() {
 
 /** 删 */
 function Delete() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否确定删除？',
         undefined,
@@ -304,7 +304,7 @@ const assetOutbundForm = new FormModel(configOutbundForm)
 
 /** 入库 */
 async function Inbound() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否确定入库？',
         undefined,

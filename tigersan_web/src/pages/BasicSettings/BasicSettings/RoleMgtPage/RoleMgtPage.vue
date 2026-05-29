@@ -12,7 +12,8 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsAllowEdit" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.RoleMgtPage.IsReadonly.value" class="bg-danger"
@@ -68,11 +69,11 @@ import { computed, onMounted } from 'vue'
 import { useUserInfo } from '@/stores'
 import { roleMgtTable } from './RoleMgtTable'
 import { Authorities } from '@/navs/Authorities'
-import { roleMgtForm as form } from './RoleMgtForm'
+import { RoleMgtForm } from './RoleMgtForm'
 import { Select, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Tree, Texts, BigintHelper } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-// 表格:
+const form = new RoleMgtForm()
 const { IsOnlySelected } = roleMgtTable
 const userInfo = useUserInfo()
 const IsAllowEdit = computed(() => IsOnlySelected.value

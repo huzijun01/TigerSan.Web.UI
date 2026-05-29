@@ -1,348 +1,336 @@
 import { ref } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, MapModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, MapModel } from '@/0_tigersan_ui/tigerui'
 import { siteMgtTable } from './SiteMgtTable'
 import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 
-/** 围栏路径 */
-const FencePath = ref<string | undefined>()
-/** 经度 */
-const Longitude = ref<number | undefined>()
-/** 纬度 */
-const Latitude = ref<number | undefined>()
+export class SiteMgtForm {
+    //#region 【Fields】
+    /** 地图 */
+    readonly map = new MapModel<any>()
+    /** 围栏路径 */
+    readonly FencePath = ref<string | undefined>()
+    /** 经度 */
+    readonly Longitude = ref<number | undefined>()
+    /** 纬度 */
+    readonly Latitude = ref<number | undefined>()
 
-/** 地图 */
-export const map = new MapModel<any>()
-map.IsAllowMultiPolygon.value = false
-map._onInitAsync = async () => {
-    await companyHelper.UpdateIdNames()
-    await map.InitPolygonEditorAsync({ end: SaveFence })
-}
+    /** 分页器 */
+    readonly pagination = new PaginationModel()
 
-/** 更新“围栏” */
-function UpdateFence() {
-    const site = siteForm._source
-    if (!site) {
-        console.warn('The site is undefined!')
-        return
+    // 选择框:
+    /** 筛选 */
+    readonly selectCompany = companyHelper.GetIdNameSelectModel()
+    readonly selectType = siteTypeHelper.GetIdNameSelectModel()
+    /** 表单 */
+    readonly selectCompanyForm = companyHelper.GetIdNameSelectModel()
+    readonly selectTypeForm = siteTypeHelper.GetIdNameSelectModel()
+
+    /** “公司”项目配置 */
+    readonly configCompany: FormItemConfig<SiteModel, IdNameModel> = {
+        _propName: 'company',
+        PropText: '公司',
+        IsEquired: true,
+        Target: this.selectCompanyForm.Value,
+        _getValue: source => this.selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+        _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
     }
 
-    if (site.fencePoints) {
-        const points = MapModel.GetPathByPoints(site.fencePoints)
-        map.AddPolygonByPoints(points)
-        map.ZoomByVector2s(points)
-    } else if (site.latitude > 0 && site.longitude > 0) {
-        map.ZoomByVector2([site.latitude, site.longitude])
+    /** “类型”项目配置 */
+    readonly configType: FormItemConfig<SiteModel, IdNameModel> = {
+        _propName: 'type',
+        PropText: '类型',
+        IsEquired: true,
+        Target: this.selectTypeForm.Value,
+        _getValue: source => this.selectTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
+        _setValue: (source, propName, value) => source.type = value && value.id != undefined ? value.id : 0n,
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, '不可为空')
     }
-}
 
-/** 保存“围栏” */
-function SaveFence() {
-    FencePath.value = undefined
-    Longitude.value = 0
-    Latitude.value = 0
-    const polygons = map.GetPolygons()
-    if (!polygons) return
-    const polygon = polygons[0]
-    if (!polygon) return
-    FencePath.value = MapModel.GetPathStringByPolygon(polygon)
-    const center = polygon.getBounds().getCenter()
-    Longitude.value = center.lng
-    Latitude.value = center.lat
-}
+    /** “名称”项目配置 */
+    readonly configName: FormItemConfig<SiteModel, string> = {
+        _propName: 'name',
+        PropText: '名称',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.name)
+    }
 
-// 选择框:
-/** 筛选 */
-const selectCompany = companyHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await siteHelper.GetBelongCompanyListAsync()
-const selectType = siteTypeHelper.GetIdNameSelectModel()
-selectType._getItemsAsync = async () => await siteHelper.GetBelongSiteTypeListAsync(selectCompany.Value.value?.id)
-/** 表单 */
-const selectCompanyForm = companyHelper.GetIdNameSelectModel()
-const selectTypeForm = siteTypeHelper.GetIdNameSelectModel()
-// 更新:
-selectCompanyForm._onChange = selectTypeForm.UpdateItemsAsync
+    /** “地址”项目配置 */
+    readonly configAddr: FormItemConfig<SiteModel, string> = {
+        _propName: 'addr',
+        PropText: '地址',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.addr)
+    }
 
-/** 分页器 */
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
+    /** “详细地址”项目配置 */
+    readonly configAddrDetail: FormItemConfig<SiteModel, string> = {
+        _propName: 'addrDetail',
+        PropText: '详细地址',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.addrDetail)
+    }
 
-/** “公司”项目配置 */
-const configCompany: FormItemConfig<SiteModel, IdNameModel> = {
-    _propName: 'company',
-    PropText: '公司',
-    IsEquired: true,
-    Target: selectCompanyForm.Value,
-    _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
-    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
-}
+    /** “围栏路径”项目配置 */
+    readonly configFencePath: FormItemConfig<SiteModel, string> = {
+        _propName: 'fencePath',
+        PropText: '围栏路径',
+        IsEquired: true,
+        Target: this.FencePath,
+        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.fencePath)
+    }
 
-/** “类型”项目配置 */
-const configType: FormItemConfig<SiteModel, IdNameModel> = {
-    _propName: 'type',
-    PropText: '类型',
-    IsEquired: true,
-    Target: selectTypeForm.Value,
-    _getValue: source => selectTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
-    _setValue: (source, propName, value) => source.type = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, '不可为空')
-}
+    /** “经度”项目配置 */
+    readonly configLongitude: FormItemConfig<SiteModel, number> = {
+        _propName: 'longitude',
+        PropText: '经度',
+        IsEquired: true,
+        Target: this.Longitude,
+        _isVerifyOk: source => Verify.IsGreaterThan(source.longitude)
+    }
 
-/** “名称”项目配置 */
-const configName: FormItemConfig<SiteModel, string> = {
-    _propName: 'name',
-    PropText: '名称',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.name)
-}
+    /** “纬度”项目配置 */
+    readonly configLatitude: FormItemConfig<SiteModel, number> = {
+        _propName: 'latitude',
+        PropText: '纬度',
+        IsEquired: true,
+        Target: this.Latitude,
+        _isVerifyOk: source => Verify.IsGreaterThan(source.latitude)
+    }
 
-/** “地址”项目配置 */
-const configAddr: FormItemConfig<SiteModel, string> = {
-    _propName: 'addr',
-    PropText: '地址',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.addr)
-}
+    /** “联系人”项目配置 */
+    readonly configManager: FormItemConfig<SiteModel, string> = {
+        _propName: 'manager',
+        PropText: '联系人',
+        IsEquired: false,
+        Target: ref(),
+        // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.manager)
+    }
 
-/** “详细地址”项目配置 */
-const configAddrDetail: FormItemConfig<SiteModel, string> = {
-    _propName: 'addrDetail',
-    PropText: '详细地址',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.addrDetail)
-}
+    /** “电话”项目配置 */
+    readonly configPhone: FormItemConfig<SiteModel, string> = {
+        _propName: 'phone',
+        PropText: '电话',
+        IsEquired: false,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
+    }
 
-/** “围栏路径”项目配置 */
-const configFencePath: FormItemConfig<SiteModel, string> = {
-    _propName: 'fencePath',
-    PropText: '围栏路径',
-    IsEquired: true,
-    Target: FencePath,
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.fencePath)
-}
+    /** “备注”项目配置 */
+    readonly configComment: FormItemConfig<SiteModel, string> = {
+        _propName: 'comment',
+        PropText: '备注',
+        IsEquired: false,
+        Target: ref(),
+        // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.comment)
+    }
 
-/** “经度”项目配置 */
-const configLongitude: FormItemConfig<SiteModel, number> = {
-    _propName: 'longitude',
-    PropText: '经度',
-    IsEquired: true,
-    Target: Longitude,
-    _isVerifyOk: source => Verify.IsGreaterThan(source.longitude)
-}
+    /** “增”源数据获取方法 */
+    readonly AddGetSource = () => new SiteModel()
 
-/** “纬度”项目配置 */
-const configLatitude: FormItemConfig<SiteModel, number> = {
-    _propName: 'latitude',
-    PropText: '纬度',
-    IsEquired: true,
-    Target: Latitude,
-    _isVerifyOk: source => Verify.IsGreaterThan(source.latitude)
-}
+    /** 更新“围栏” */
+    readonly UpdateFence = () => {
+        const site = this.siteForm._source
+        if (!site) {
+            console.warn('The site is undefined!')
+            return
+        }
 
-/** “联系人”项目配置 */
-const configManager: FormItemConfig<SiteModel, string> = {
-    _propName: 'manager',
-    PropText: '联系人',
-    IsEquired: false,
-    Target: ref(),
-    // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.manager)
-}
+        if (site.fencePoints) {
+            const points = MapModel.GetPathByPoints(site.fencePoints)
+            this.map.AddPolygonByPoints(points)
+            this.map.ZoomByVector2s(points)
+        } else if (site.latitude > 0 && site.longitude > 0) {
+            this.map.ZoomByVector2([site.latitude, site.longitude])
+        }
+    }
 
-/** “电话”项目配置 */
-const configPhone: FormItemConfig<SiteModel, string> = {
-    _propName: 'phone',
-    PropText: '电话',
-    IsEquired: false,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
-}
+    /** “场地”表单配置 */
+    readonly configSiteMgtForm: FormConfig<SiteModel> = {
+        CancelText: '取消',
+        SubmitText: '确定',
+        _getSource: this.AddGetSource,
+        _onInit: this.UpdateFence,
+        _beforeInitAsync: async isEdit => {
+            this.selectCompanyForm.IsEnabled.value = !isEdit
+            this.selectTypeForm.IsEnabled.value = !isEdit
 
-/** “备注”项目配置 */
-const configComment: FormItemConfig<SiteModel, string> = {
-    _propName: 'comment',
-    PropText: '备注',
-    IsEquired: false,
-    Target: ref(),
-    // _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.comment)
-}
+            if (isEdit) {
+                const rowData = siteMgtTable.SelectedRowDatas.value[0]
+                if (!rowData) {
+                    console.warn('The rowData is undefined!')
+                    return
+                }
 
-/** “增”源数据获取方法 */
-const AddGetSource = () => new SiteModel()
+                await this.selectCompanyForm.UpdateItemsAsync()
+                this.selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
+                await this.selectTypeForm.UpdateItemsAsync()
+                this.selectTypeForm.Value.value = siteTypeHelper.GetIdName(rowData.type)
+            } else {
+            }
+        },
+        _itemConfigs: [
+            this.configCompany,
+            this.configType,
+            this.configName,
+            this.configAddr,
+            this.configAddrDetail,
+            this.configFencePath,
+            this.configLongitude,
+            this.configLatitude,
+            this.configManager,
+            this.configPhone,
+            this.configComment,
+        ]
+    }
 
-/** “场地”表单配置 */
-const configSiteMgtForm: FormConfig<SiteModel> = {
-    CancelText: '取消',
-    SubmitText: '确定',
-    _getSource: AddGetSource,
-    _onInit: UpdateFence,
-    _beforeInitAsync: async isEdit => {
-        selectCompanyForm.IsEnabled.value = !isEdit
-        selectTypeForm.IsEnabled.value = !isEdit
+    /** “场地”表单模型 */
+    readonly siteForm = new FormModel(this.configSiteMgtForm)
+    //#endregion 【Fields】
 
-        if (isEdit) {
+    //#region 【Ctor】
+    constructor() {
+        this.map.IsAllowMultiPolygon.value = false
+        this.map._onInitAsync = async () => {
+            await companyHelper.UpdateIdNames()
+            await this.map.InitPolygonEditorAsync({ end: this.SaveFence })
+        }
+
+        this.siteForm.MinWidth.value = '80vw'
+        this.siteForm.MinHeight.value = '80vh'
+        this.siteForm.FillOpts.value = { right: true }
+
+        this.selectCompany._getItemsAsync = async () => await siteHelper.GetBelongCompanyListAsync()
+        this.selectType._getItemsAsync = async () => await siteHelper.GetBelongSiteTypeListAsync(this.selectCompany.Value.value?.id)
+
+        // 更新:
+        this.selectCompanyForm._onChange = this.selectTypeForm.UpdateItemsAsync
+        this.pagination.IsShowSelectedRowCount.value = true
+        this.pagination._onChange = this.Refresh
+        this.selectCompany._onChange = this.Refresh
+        this.selectType._onChange = this.Refresh
+    }
+    //#endregion 【Ctor】
+
+    //#region 【Functions】
+    /** 保存“围栏” */
+    readonly SaveFence = () => {
+        this.FencePath.value = undefined
+        this.Longitude.value = 0
+        this.Latitude.value = 0
+        const polygons = this.map.GetPolygons()
+        if (!polygons) return
+        const polygon = polygons[0]
+        if (!polygon) return
+        this.FencePath.value = MapModel.GetPathStringByPolygon(polygon)
+        const center = polygon.getBounds().getCenter()
+        this.Longitude.value = center.lng
+        this.Latitude.value = center.lat
+    }
+
+    /** 查 */
+    readonly Refresh = async () => {
+        try {
+            loading.IsShow.value = true
+
+            await companyHelper.UpdateIdNames()
+            await siteTypeHelper.UpdateIdNames()
+            await this.selectCompany.UpdateItemsAsync()
+            await this.selectType.UpdateItemsAsync()
+
+            this.pagination.Count.value = await siteHelper.GetCount({
+                company: this.selectCompany.Value.value?.id,
+                type: this.selectType.Value.value?.id
+            })
+
+            await siteHelper.GetList({
+                pageSize: this.pagination.PageSize.value,
+                pageNumber: this.pagination.SelectedNum.value,
+                company: this.selectCompany.Value.value?.id,
+                type: this.selectType.Value.value?.id,
+            }).then(arr => {
+                ArrayHelper.Set(siteMgtTable.RowDatas, arr)
+            })
+        } finally {
+            loading.IsShow.value = false
+        }
+    }
+
+    /** 增 */
+    readonly Add = () => {
+        this.siteForm.Title.value = '新增场地'
+
+        this.siteForm._getSource = this.AddGetSource
+
+        this.siteForm._onSubmitAsync = async source => {
+            const res = await siteHelper.Add(source as SiteModel)
+
+            await this.Refresh()
+            return GetSubmitResult(res, '添加成功')
+        }
+
+        this.siteForm.Show()
+    }
+
+    /** 改 */
+    readonly Edit = () => {
+        this.siteForm.Title.value = '修改场地'
+
+        this.siteForm._getSource = () => {
             const rowData = siteMgtTable.SelectedRowDatas.value[0]
+
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return
+                return new SiteModel()
             }
 
-            await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
-            await selectTypeForm.UpdateItemsAsync()
-            selectTypeForm.Value.value = siteTypeHelper.GetIdName(rowData.type)
-        } else {
-        }
-    },
-    _itemConfigs: [
-        configCompany,
-        configType,
-        configName,
-        configAddr,
-        configAddrDetail,
-        configFencePath,
-        configLongitude,
-        configLatitude,
-        configManager,
-        configPhone,
-        configComment,
-    ]
-}
-
-/** “场地”表单模型 */
-const siteForm = new FormModel(configSiteMgtForm)
-siteForm.MinWidth.value = '80vw'
-siteForm.MinHeight.value = '80vh'
-siteForm.FillOpts.value = { right: true }
-
-/** 查 */
-async function Refresh() {
-    try {
-        loading.IsShow.value = true
-
-        await companyHelper.UpdateIdNames()
-        await siteTypeHelper.UpdateIdNames()
-        await selectCompany.UpdateItemsAsync()
-        await selectType.UpdateItemsAsync()
-
-        pagination.Count.value = await siteHelper.GetCount({
-            company: selectCompany.Value.value?.id,
-            type: selectType.Value.value?.id
-        })
-
-        await siteHelper.GetList({
-            pageSize: pagination.PageSize.value,
-            pageNumber: pagination.SelectedNum.value,
-            company: selectCompany.Value.value?.id,
-            type: selectType.Value.value?.id,
-        }).then(arr => {
-            ArrayHelper.Set(siteMgtTable.RowDatas, arr)
-        })
-    } finally {
-        loading.IsShow.value = false
-    }
-}
-
-pagination._onChange = Refresh
-selectCompany._onChange = Refresh
-selectType._onChange = Refresh
-
-/** 增 */
-async function Add() {
-    siteForm.Title.value = '新增场地'
-
-    siteForm._getSource = AddGetSource
-
-    siteForm._onSubmitAsync = async source => {
-        const res = await siteHelper.Add(source)
-
-        await Refresh()
-        return GetSubmitResult(res, '添加成功')
-    }
-
-    siteForm.Show()
-}
-
-/** 改 */
-async function Edit() {
-    siteForm.Title.value = '修改场地'
-
-    siteForm._getSource = () => {
-        const rowData = siteMgtTable.SelectedRowDatas.value[0]
-
-        if (!rowData) {
-            console.warn('The rowData is undefined!')
-            return new SiteModel()
+            return ObjectHelper.ShallowCopy(rowData)
         }
 
-        return ObjectHelper.ShallowCopy(rowData)
+        this.siteForm._onSubmitAsync = async source => {
+            const res = await siteHelper.Edit(source as SiteModel)
+
+            this.map._polygonEditor?.close()
+            await this.Refresh()
+            return GetSubmitResult(res, '修改成功')
+        }
+
+        this.siteForm.Show(true)
     }
 
-    siteForm._onSubmitAsync = async source => {
-        const res = await siteHelper.Edit(source)
-
-        map._polygonEditor?.close()
-        await Refresh()
-        return GetSubmitResult(res, '修改成功')
+    /** 删 */
+    readonly Delete = () => {
+        DialogHelper.ShowDialog(
+            '确认',
+            '是否确定删除？',
+            undefined,
+            this.DeleteRowData,
+            DialogMode.YesOrNo,
+            Colors.Warning)
     }
 
-    siteForm.Show(true)
-}
+    readonly DeleteRowData = async (state: DialogState) => {
+        if (state != DialogState.Yes) return
 
-/** 删 */
-function Delete() {
-    dialog.ShowDialog(
-        '确认',
-        '是否确定删除？',
-        undefined,
-        DeleteRowData,
-        DialogMode.YesOrNo,
-        Colors.Warning)
-}
+        const model = siteMgtTable.SelectedRowDatas.value[0]
+        if (!model) {
+            console.warn('The model is undefined!')
+            return {}
+        }
 
-async function DeleteRowData(state: DialogState) {
-    if (state != DialogState.Yes) return
+        try {
+            loading.IsShow.value = true
 
-    const model = siteMgtTable.SelectedRowDatas.value[0]
-    if (!model) {
-        console.warn('The model is undefined!')
-        return {}
+            await siteHelper.Delete(model.id).then(res => {
+                this.Refresh()
+                MyActionResult.ShowResult(res, '删除成功')
+            })
+        } finally {
+            loading.IsShow.value = false
+        }
     }
-
-    try {
-        loading.IsShow.value = true
-
-        await siteHelper.Delete(model.id).then(res => {
-            Refresh()
-            MyActionResult.ShowResult(res, '删除成功')
-        })
-    } finally {
-        loading.IsShow.value = false
-    }
-}
-
-export const siteMgtForm = {
-    pagination,
-    selectCompany,
-    selectType,
-    selectCompanyForm,
-    selectTypeForm,
-    configCompany,
-    configType,
-    configName,
-    configAddr,
-    configAddrDetail,
-    configFencePath,
-    configLongitude,
-    configLatitude,
-    configManager,
-    configPhone,
-    configComment,
-    siteForm,
-    Refresh,
-    Add,
-    Edit,
-    Delete,
+    //#endregion 【Functions】
 }

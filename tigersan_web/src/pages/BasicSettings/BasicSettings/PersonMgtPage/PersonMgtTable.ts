@@ -1,13 +1,8 @@
-import { ItemType, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, departmentHelper, PersonModel, roleHelper } from '@/models'
 
-// 字段:
-/** 分页器 */
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
-
 /** 列头 */
-const personMgtTable = new TableModel<PersonModel>([
+export const personMgtTable = new TableModel<PersonModel>([
     {
         _propName: 'company',
         Text: '公司',
@@ -57,8 +52,3 @@ const personMgtTable = new TableModel<PersonModel>([
 
 // 初始化:
 personMgtTable.IsAllowMultiSelect.value = false
-
-export {
-    pagination,
-    personMgtTable,
-}

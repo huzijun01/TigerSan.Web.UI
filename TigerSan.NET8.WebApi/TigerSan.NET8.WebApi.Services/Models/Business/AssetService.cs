@@ -993,6 +993,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 // 删除“相关记录”：
                 await _db.AssetRecords.Where(i => i.Asset == id).ExecuteDeleteAsync();
+                if (entity.Tag != null)
+                {
+                    var tag = await _db.Tags.FirstOrDefaultAsync(i => i.Id == entity.Tag);
+                    if (tag == null)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return MyResults<object>.TagNotFound(entity.Tag.ToString() ?? "");
+                    }
+                    tag.Asset = null;
+                    tag.BrandId = null;
+                }
 
                 _dbSet.Remove(entity);
                 await _db.SaveChangesAsync();
@@ -1019,18 +1030,32 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 if (ids.Count < 1) return res;
 
-                var entities = _dbSet.Where(i => ids.Contains(i.Id));
+                var entities = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
 
-                var count = await entities.CountAsync();
+                var count = entities.Count;
                 if (count < 1)
                     return MyResults<object>.ResourceNotExist;
                 else if (count < ids.Count)
                     return MyResults<object>.SomeResourceNotExist;
 
                 // 删除“相关记录”：
+                foreach (var entity in entities)
+                {
+                    if (entity.Tag != null)
+                    {
+                        var tag = await _db.Tags.FirstOrDefaultAsync(i => i.Id == entity.Tag);
+                        if (tag == null)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            return MyResults<object>.TagNotFound(entity.Tag.ToString() ?? "");
+                        }
+                        tag.Asset = null;
+                        tag.BrandId = null;
+                    }
+                }
                 await _db.AssetRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
 
-                await entities.ExecuteDeleteAsync();
+                _dbSet.RemoveRange(entities);
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
             }

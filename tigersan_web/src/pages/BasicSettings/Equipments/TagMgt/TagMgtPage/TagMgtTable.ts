@@ -1,4 +1,4 @@
-import { Battery, Colors, IsEnable, ItemType, ObjectHelper, OnlineState, OnlineStates, Signal, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, IsEnable, ItemType, ObjectHelper, OnlineState, Signal, TableModel } from '@/0_tigersan_ui/tigerui'
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 列头:

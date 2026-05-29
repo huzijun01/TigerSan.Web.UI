@@ -424,6 +424,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.RfidRepeated;
                 }
 
+                // 解绑资产：
+                if (find.BrandId != null && find.BrandId != entity.BrandId)
+                {
+                    var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == find.BrandId);
+                    if (asset != null)
+                    {
+                        asset.Tag = null;
+                    }
+                }
+                // 绑定资产：
+                if (!string.IsNullOrEmpty(entity.BrandId))
+                {
+                    var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == entity.BrandId);
+                    if (asset == null)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return MyResults<object>.AssetNotExist;
+                    }
+                    asset.Tag = entity.Id;
+                }
+
                 // 修改“数据”:
                 find.ShallowCopy(entity);
 
@@ -482,6 +503,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (!string.IsNullOrEmpty(entity.Rfid) && await _dbSet.AnyAsync(i => i.Rfid == entity.Rfid && i.Id != entity.Id))
                     {
                         return MyResults<object>.RfidRepeated;
+                    }
+
+                    // 解绑资产：
+                    if (find.BrandId != null && find.BrandId != entity.BrandId)
+                    {
+                        var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == find.BrandId);
+                        if (asset != null)
+                        {
+                            asset.Tag = null;
+                        }
+                    }
+                    // 绑定资产：
+                    if (!string.IsNullOrEmpty(entity.BrandId))
+                    {
+                        var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == entity.BrandId);
+                        if (asset == null)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            return MyResults<object>.AssetNotExist;
+                        }
+                        asset.Tag = entity.Id;
                     }
 
                     // 修改“数据”:

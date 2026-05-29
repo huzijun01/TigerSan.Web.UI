@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts" setup>
-import { SelectModel, Select, PageCard, dialog } from '@/0_tigersan_ui/tigerui'
+import { SelectModel, Select, PageCard, DialogHelper } from '@/0_tigersan_ui/tigerui'
 
 const selectModel = new SelectModel()
 selectModel.Items.push(...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 selectModel._onSelect = itemModel => {
-    dialog.ShowInformation(`Value = ${itemModel.Text.value}`)
+    DialogHelper.ShowInformation(`Value = ${itemModel.Text.value}`)
 }
 </script>
 

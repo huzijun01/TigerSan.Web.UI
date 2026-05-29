@@ -2,7 +2,7 @@ import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, departmentHelper, RoleAuthorityModel } from '@/models'
 
 /** 列头 */
-const roleMgtTable = new TableModel<RoleAuthorityModel>([
+export const roleMgtTable = new TableModel<RoleAuthorityModel>([
     {
         _propName: 'company',
         Text: '公司',
@@ -27,7 +27,3 @@ const roleMgtTable = new TableModel<RoleAuthorityModel>([
 
 // 初始化:
 roleMgtTable.IsAllowMultiSelect.value = false
-
-export {
-    roleMgtTable,
-}

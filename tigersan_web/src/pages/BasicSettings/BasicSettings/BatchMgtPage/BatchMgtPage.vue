@@ -13,7 +13,8 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.BatchMgtPage.IsReadonly.value" class="bg-danger"
@@ -27,7 +28,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="batchMgtTable.SelectedRowCount.value" />
+                <Pagination :model="form.pagination" :selectedRowCount="batchMgtTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
@@ -70,12 +71,13 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
-import { batchMgtForm as form } from './BatchMgtForm'
-import { batchMgtTable, pagination } from './BatchMgtTable'
+import { BatchMgtForm } from './BatchMgtForm'
+import { batchMgtTable } from './BatchMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
+const form = new BatchMgtForm()
 const { IsOnlySelected } = batchMgtTable
 
 // 【过程】:

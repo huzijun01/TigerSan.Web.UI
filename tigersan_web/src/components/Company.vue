@@ -12,8 +12,8 @@
 
 <script lang="ts" setup>
 import type { PropType } from 'vue';
+import { CompanyModel } from '@/models'
 import { Icons, StringHelper } from '@/0_tigersan_ui/tigerui'
-import { CompanyModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtTable'
 
 //字段:
 const { model } = defineProps({

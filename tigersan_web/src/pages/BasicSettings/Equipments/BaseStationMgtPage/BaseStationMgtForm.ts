@@ -1,375 +1,353 @@
 import { ref, watch } from 'vue'
-import { Colors, dialog, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
-import { BaseStationModel, baseStationMgtTable } from './BaseStationMgtTable'
-import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper } from '@/models'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
+import { baseStationMgtTable } from './BaseStationMgtTable'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationModel } from '@/models'
 
-// 字段:
-const onlineCount = ref(0)
-const offlineCount = ref(0)
+export class BaseStationMgtForm {
+    //#region 【Fields】
+    readonly OnlineCount = ref(0)
+    readonly OfflineCount = ref(0)
 
-// 分页器:
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
+    /** 分页器 */
+    readonly pagination = new PaginationModel()
+    /** 开关 */
+    readonly switchIsEnable = new SwitchModel()
+    /** 搜索框 */
+    readonly searchMacAddr = new SearchModel()
 
-// 开关:
-const switchIsEnable = new SwitchModel()
-switchIsEnable.IsEnable.value = false
-watch(baseStationMgtTable.IsSelected, isSelected => switchIsEnable.IsEnable.value = isSelected)
-switchIsEnable._onChange = EditIsEnable
+    // 选择框:
+    /** 筛选 */
+    readonly selectState = OnlineState.GetSelectModel()
+    readonly selectIsEnable = IsEnable.GetSelectModel()
+    readonly selectCompany = companyHelper.GetIdNameSelectModel()
+    readonly selectSite = siteHelper.GetIdNameSelectModel()
+    readonly selectType = stationTypeHelper.GetIdNameSelectModel()
+    /** 表单 */
+    readonly selectCompanyForm = companyHelper.GetIdNameSelectModel()
+    readonly selectSiteForm = siteHelper.GetIdNameSelectModel()
+    readonly selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
 
-// 选择框:
-/** 筛选 */
-const selectState = OnlineState.GetSelectModel()
-const selectIsEnable = IsEnable.GetSelectModel()
-const selectCompany = companyHelper.GetIdNameSelectModel()
-selectCompany._getItemsAsync = async () => await baseStationHelper.GetBelongCompanyListAsync()
-const selectSite = siteHelper.GetIdNameSelectModel()
-selectSite._getItemsAsync = async () => selectCompany.Value.value ? await baseStationHelper.GetBelongSiteListAsync(selectCompany.Value.value?.id) : []
-const selectType = stationTypeHelper.GetIdNameSelectModel()
-selectType._getItemsAsync = async () => await baseStationHelper.GetBelongStationTypeListAsync(selectCompany.Value.value?.id, selectSite.Value.value?.id)
-/** 表单 */
-const selectCompanyForm = companyHelper.GetIdNameSelectModel()
-const selectSiteForm = siteHelper.GetIdNameSelectModel()
-selectSiteForm._getItemsAsync = async () => selectCompanyForm.Value.value ? await siteHelper.SelectIdNameByCompanyAsync(selectCompanyForm.Value.value?.id) : []
-const selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
-// 更新:
-selectCompanyForm._onChange = selectSiteForm.UpdateItemsAsync
-baseStationMgtTable._onSelectStateChange = InitSelectIsEnableState
+    /** “公司”项目配置 */
+    readonly configCompany: FormItemConfig<BaseStationModel, IdNameModel> = {
+        _propName: 'company',
+        PropText: '公司',
+        IsEquired: true,
+        Target: this.selectCompanyForm.Value,
+        _getValue: source => this.selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+        _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
+    }
 
-// 搜索框:
-const searchMacAddr = new SearchModel()
-searchMacAddr.PlaceholderCN.value = 'MAC地址'
-searchMacAddr.PlaceholderEN.value = 'MAC Addr'
-searchMacAddr._onSearch = Refresh
-searchMacAddr._onChange = Refresh
+    /** “场地”项目配置 */
+    readonly configSite: FormItemConfig<BaseStationModel, IdNameModel> = {
+        _propName: 'site',
+        PropText: '场地',
+        IsEquired: true,
+        Target: this.selectSiteForm.Value,
+        _getValue: source => this.selectSiteForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.site)),
+        _setValue: (source, propName, value) => source.site = value && value.id != undefined ? value.id : 0n,
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, '不可为空')
+    }
 
-/** “公司”项目配置 */
-const configCompany: FormItemConfig<BaseStationModel, IdNameModel> = {
-    _propName: 'company',
-    PropText: '公司',
-    IsEquired: true,
-    Target: selectCompanyForm.Value,
-    _getValue: source => selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
-    _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, '不可为空')
-}
+    /** “类型”项目配置 */
+    readonly configType: FormItemConfig<BaseStationModel, IdNameModel> = {
+        _propName: 'type',
+        PropText: '类型',
+        IsEquired: true,
+        Target: this.selectTypeForm.Value,
+        _getValue: source => this.selectTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
+        _setValue: (source, propName, value) => source.type = value && value.id != undefined ? value.id : 0n,
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, '不可为空')
+    }
 
-/** “场地”项目配置 */
-const configSite: FormItemConfig<BaseStationModel, IdNameModel> = {
-    _propName: 'site',
-    PropText: '场地',
-    IsEquired: true,
-    Target: selectSiteForm.Value,
-    _getValue: source => selectSiteForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.site)),
-    _setValue: (source, propName, value) => source.site = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, '不可为空')
-}
+    /** “MAC地址”项目配置 */
+    readonly configMacAddr: FormItemConfig<BaseStationModel, string> = {
+        _propName: 'macAddr',
+        PropText: 'MAC地址',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.macAddr)
+    }
 
-/** “类型”项目配置 */
-const configType: FormItemConfig<BaseStationModel, IdNameModel> = {
-    _propName: 'type',
-    PropText: '类型',
-    IsEquired: true,
-    Target: selectTypeForm.Value,
-    _getValue: source => selectTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
-    _setValue: (source, propName, value) => source.type = value && value.id != undefined ? value.id : 0n,
-    _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, '不可为空')
-}
+    /** “名称”项目配置 */
+    readonly configName: FormItemConfig<BaseStationModel, string> = {
+        _propName: 'name',
+        PropText: '名称',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.name)
+    }
 
-/** “MAC地址”项目配置 */
-const configMacAddr: FormItemConfig<BaseStationModel, string> = {
-    _propName: 'macAddr',
-    PropText: 'MAC地址',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.macAddr)
-}
+    /** “心跳（秒）”项目配置 */
+    readonly configHeartbeatInterval: FormItemConfig<BaseStationModel, string> = {
+        _propName: 'heartbeatInterval',
+        PropText: '心跳（秒）',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsGreaterThan(source.heartbeatInterval)
+    }
 
-/** “名称”项目配置 */
-const configName: FormItemConfig<BaseStationModel, string> = {
-    _propName: 'name',
-    PropText: '名称',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.name)
-}
+    /** “上报周期（秒）”项目配置 */
+    readonly configReportInterval: FormItemConfig<BaseStationModel, string> = {
+        _propName: 'reportInterval',
+        PropText: '上报周期（秒）',
+        IsEquired: true,
+        Target: ref(),
+        _isVerifyOk: source => Verify.IsGreaterThan(source.reportInterval)
+    }
 
-/** “心跳（秒）”项目配置 */
-const configHeartbeatInterval: FormItemConfig<BaseStationModel, string> = {
-    _propName: 'heartbeatInterval',
-    PropText: '心跳（秒）',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsGreaterThan(source.heartbeatInterval)
-}
+    /** “增”源数据获取方法 */
+    readonly AddGetSource = () => new BaseStationModel()
 
-/** “上报周期（秒）”项目配置 */
-const configReportInterval: FormItemConfig<BaseStationModel, string> = {
-    _propName: 'reportInterval',
-    PropText: '上报周期（秒）',
-    IsEquired: true,
-    Target: ref(),
-    _isVerifyOk: source => Verify.IsGreaterThan(source.reportInterval)
-}
+    /** “基站”表单配置 */
+    readonly configBaseStationForm: FormConfig<BaseStationModel> = {
+        CancelText: '取消',
+        SubmitText: '确定',
+        _getSource: this.AddGetSource,
+        _beforeInitAsync: async isEdit => {
+            if (isEdit) {
+                const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
+                if (!rowData) {
+                    console.warn('The rowData is undefined!')
+                    return
+                }
 
-/** “增”源数据获取方法 */
-const AddGetSource = () => new BaseStationModel()
+                await this.selectCompanyForm.UpdateItemsAsync()
+                this.selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
+                await this.selectSiteForm.UpdateItemsAsync()
+                this.selectSiteForm.Value.value = siteHelper.GetIdName(rowData.site)
+                await this.selectTypeForm.UpdateItemsAsync()
+                this.selectTypeForm.Value.value = stationTypeHelper.GetIdName(rowData.type)
+            }
+        },
+        _itemConfigs: [
+            this.configCompany,
+            this.configSite,
+            this.configType,
+            this.configName,
+            this.configMacAddr,
+            this.configHeartbeatInterval,
+            this.configReportInterval,
+        ]
+    }
 
-/** “基站”表单配置 */
-let configBaseStationForm: FormConfig<BaseStationModel> = {
-    CancelText: '取消',
-    SubmitText: '确定',
-    _getSource: AddGetSource,
-    _beforeInitAsync: async isEdit => {
-        if (isEdit) {
+    /** “基站”表单模型 */
+    readonly baseStationForm = new FormModel(this.configBaseStationForm)
+    //#endregion 【Fields】
+
+    //#region 【Ctor】
+    constructor() {
+        baseStationMgtTable._onSelectStateChange = this.InitSelectIsEnableState
+        watch(baseStationMgtTable.IsSelected, isSelected => this.switchIsEnable.IsEnable.value = isSelected)
+
+        this.pagination.IsShowSelectedRowCount.value = true
+        this.switchIsEnable.IsEnable.value = false
+        this.switchIsEnable._onChange = this.EditIsEnable
+        this.searchMacAddr.PlaceholderCN.value = 'MAC地址'
+        this.searchMacAddr.PlaceholderEN.value = 'MAC Addr'
+        this.selectCompany._getItemsAsync = async () => await baseStationHelper.GetBelongCompanyListAsync()
+        this.selectSite._getItemsAsync = async () => this.selectCompany.Value.value ? await baseStationHelper.GetBelongSiteListAsync(this.selectCompany.Value.value?.id) : []
+        this.selectType._getItemsAsync = async () => await baseStationHelper.GetBelongStationTypeListAsync(this.selectCompany.Value.value?.id, this.selectSite.Value.value?.id)
+        this.selectSiteForm._getItemsAsync = async () => this.selectCompanyForm.Value.value ? await siteHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id) : []
+
+        // 更新:
+        this.selectCompanyForm._onChange = this.selectSiteForm.UpdateItemsAsync
+        this.searchMacAddr._onSearch = this.Refresh
+        this.searchMacAddr._onChange = this.Refresh
+        this.pagination._onChange = this.Refresh
+        this.selectCompany._onChange = this.Refresh
+        this.selectSite._onChange = this.Refresh
+        this.selectType._onChange = this.Refresh
+        this.selectState._onChange = this.Refresh
+        this.selectIsEnable._onChange = this.Refresh
+    }
+    //#endregion 【Ctor】
+
+    //#region 【Functions】
+    readonly RefreshBase = async () => {
+        this.InitSelectIsEnableState()
+
+        await companyHelper.UpdateIdNames()
+        await this.selectCompany.UpdateItemsAsync()
+        await siteHelper.UpdateIdNames()
+        await this.selectSite.UpdateItemsAsync()
+        await stationTypeHelper.UpdateIdNames()
+        await this.selectType.UpdateItemsAsync()
+
+        this.OnlineCount.value = await baseStationHelper.GetCount({
+            company: this.selectCompany.Value.value?.id,
+            site: this.selectSite.Value.value?.id,
+            isEnable: this.selectIsEnable.Value.value,
+            state: OnlineStates.Online,
+            type: this.selectType.Value.value?.id,
+            macAddr: this.searchMacAddr.Value.value,
+        })
+        this.OfflineCount.value = await baseStationHelper.GetCount({
+            company: this.selectCompany.Value.value?.id,
+            site: this.selectSite.Value.value?.id,
+            isEnable: this.selectIsEnable.Value.value,
+            state: OnlineStates.Offline,
+            type: this.selectType.Value.value?.id,
+            macAddr: this.searchMacAddr.Value.value,
+        })
+        this.pagination.Count.value = await baseStationHelper.GetCount({
+            company: this.selectCompany.Value.value?.id,
+            site: this.selectSite.Value.value?.id,
+            isEnable: this.selectIsEnable.Value.value,
+            state: this.selectState.Value.value,
+            type: this.selectType.Value.value?.id,
+            macAddr: this.searchMacAddr.Value.value,
+        })
+    }
+
+    /** 更新“行数据” */
+    readonly UpdateRowDatas = async () => {
+        await this.RefreshBase()
+        await baseStationHelper.GetList({
+            pageSize: this.pagination.PageSize.value,
+            pageNumber: this.pagination.SelectedNum.value,
+            company: this.selectCompany.Value.value?.id,
+            site: this.selectSite.Value.value?.id,
+            isEnable: this.selectIsEnable.Value.value,
+            state: this.selectState.Value.value,
+            type: this.selectType.Value.value?.id,
+            macAddr: this.searchMacAddr.Value.value,
+        }).then(arr => {
+            baseStationMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
+        })
+    }
+
+    /** 查 */
+    readonly Refresh = async () => {
+        try {
+            loading.IsShow.value = true
+
+            await this.RefreshBase()
+
+            await baseStationHelper.GetList({
+                pageSize: this.pagination.PageSize.value,
+                pageNumber: this.pagination.SelectedNum.value,
+                company: this.selectCompany.Value.value?.id,
+                site: this.selectSite.Value.value?.id,
+                isEnable: this.selectIsEnable.Value.value,
+                state: this.selectState.Value.value,
+                type: this.selectType.Value.value?.id,
+                macAddr: this.searchMacAddr.Value.value,
+            }).then(arr => {
+                ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
+            })
+        } finally {
+            loading.IsShow.value = false
+        }
+    }
+
+    /** 增 */
+    readonly Add = () => {
+        this.baseStationForm.Title.value = '新增基站'
+
+        this.baseStationForm._getSource = this.AddGetSource
+
+        this.baseStationForm._onSubmitAsync = async source => {
+            const res = await baseStationHelper.Add(source)
+            await this.Refresh()
+            return GetSubmitResult(res, '添加成功')
+        }
+
+        this.baseStationForm.Show()
+    }
+
+    /** 改 */
+    readonly Edit = () => {
+        this.baseStationForm.Title.value = '修改基站'
+
+        this.baseStationForm._getSource = () => {
             const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
+
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return
+                return new BaseStationModel()
             }
 
-            await selectCompanyForm.UpdateItemsAsync()
-            selectCompanyForm.Value.value = companyHelper.GetIdName(rowData.company)
-            await selectSiteForm.UpdateItemsAsync()
-            selectSiteForm.Value.value = siteHelper.GetIdName(rowData.site)
-            await selectTypeForm.UpdateItemsAsync()
-            selectTypeForm.Value.value = stationTypeHelper.GetIdName(rowData.type)
+            return ObjectHelper.ShallowCopy(rowData)
         }
-    },
-    _itemConfigs: [
-        configCompany,
-        configSite,
-        configType,
-        configName,
-        configMacAddr,
-        configHeartbeatInterval,
-        configReportInterval,
-    ]
-}
 
-/** “基站”表单模型 */
-const baseStationForm = new FormModel(configBaseStationForm)
+        this.baseStationForm._onSubmitAsync = async source => {
+            const res = await baseStationHelper.Edit(source)
+            await this.Refresh()
+            return GetSubmitResult(res, '修改成功')
+        }
 
-async function RefreshBase() {
-    InitSelectIsEnableState()
-
-    await companyHelper.UpdateIdNames()
-    await selectCompany.UpdateItemsAsync()
-    await siteHelper.UpdateIdNames()
-    await selectSite.UpdateItemsAsync()
-    await stationTypeHelper.UpdateIdNames()
-    await selectType.UpdateItemsAsync()
-
-    onlineCount.value = await baseStationHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        site: selectSite.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: OnlineStates.Online,
-        type: selectType.Value.value?.id,
-        macAddr: searchMacAddr.Value.value,
-    })
-    offlineCount.value = await baseStationHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        site: selectSite.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: OnlineStates.Offline,
-        type: selectType.Value.value?.id,
-        macAddr: searchMacAddr.Value.value,
-    })
-    pagination.Count.value = await baseStationHelper.GetCount({
-        company: selectCompany.Value.value?.id,
-        site: selectSite.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: selectState.Value.value,
-        type: selectType.Value.value?.id,
-        macAddr: searchMacAddr.Value.value,
-    })
-}
-
-/** 更新“行数据” */
-async function UpdateRowDatas() {
-    await RefreshBase()
-    await baseStationHelper.GetList({
-        pageSize: pagination.PageSize.value,
-        pageNumber: pagination.SelectedNum.value,
-        company: selectCompany.Value.value?.id,
-        site: selectSite.Value.value?.id,
-        isEnable: selectIsEnable.Value.value,
-        state: selectState.Value.value,
-        type: selectType.Value.value?.id,
-        macAddr: searchMacAddr.Value.value,
-    }).then(arr => {
-        baseStationMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
-    })
-}
-
-/** 查 */
-async function Refresh() {
-    try {
-        loading.IsShow.value = true
-
-        await RefreshBase()
-
-        await baseStationHelper.GetList({
-            pageSize: pagination.PageSize.value,
-            pageNumber: pagination.SelectedNum.value,
-            company: selectCompany.Value.value?.id,
-            site: selectSite.Value.value?.id,
-            isEnable: selectIsEnable.Value.value,
-            state: selectState.Value.value,
-            type: selectType.Value.value?.id,
-            macAddr: searchMacAddr.Value.value,
-        }).then(arr => {
-            ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
-        })
-    } finally {
-        loading.IsShow.value = false
-    }
-}
-
-pagination._onChange = Refresh
-selectCompany._onChange = Refresh
-selectSite._onChange = Refresh
-selectType._onChange = Refresh
-selectState._onChange = Refresh
-selectIsEnable._onChange = Refresh
-
-/** 增 */
-function Add() {
-    baseStationForm.Title.value = '新增基站'
-
-    baseStationForm._getSource = AddGetSource
-
-    baseStationForm._onSubmitAsync = async source => {
-        const res = await baseStationHelper.Add(source)
-        await Refresh()
-        return GetSubmitResult(res, '添加成功')
+        this.baseStationForm.Show(true)
     }
 
-    baseStationForm.Show()
-}
+    /** 改 */
+    readonly EditIsEnable = (isEnable: boolean) => {
+        if (!baseStationMgtTable.IsSelected.value) return
 
-/** 改 */
-function Edit() {
-    baseStationForm.Title.value = '修改基站'
+        DialogHelper.ShowDialog(
+            '修改启用状态',
+            isEnable ? '是否启用' : '是否禁用',
+            undefined,
+            (state) => {
+                if (state != DialogState.Yes) {
+                    this.InitSelectIsEnableState()
+                    return
+                }
 
-    baseStationForm._getSource = () => {
+                const rowDatas: BaseStationModel[] = []
+                baseStationMgtTable.SelectedRowDatas.value.forEach(rowData => {
+                    const newRowData = ObjectHelper.ShallowCopy(rowData)
+                    newRowData.isEnable = isEnable
+                    rowDatas.push(newRowData)
+                })
+
+                baseStationHelper.EditRange(rowDatas).then(res => {
+                    this.Refresh().then(this.InitSelectIsEnableState)
+                    MyActionResult.ShowResult(res)
+                })
+            },
+            DialogMode.YesOrNo,
+            Colors.Warning)
+    }
+
+    readonly InitSelectIsEnableState = () => {
+        this.switchIsEnable.Value.value = baseStationMgtTable.IsSelected.value && baseStationMgtTable.SelectedRowDatas.value.every(r => r.isEnable)
+    }
+
+    /** 删 */
+    readonly Delete = () => {
+        DialogHelper.ShowDialog(
+            '确认',
+            '是否确定删除？',
+            undefined,
+            this.DeleteRowData,
+            DialogMode.YesOrNo,
+            Colors.Warning)
+    }
+
+    readonly DeleteRowData = async (state: DialogState) => {
+        if (state != DialogState.Yes) return
+
         const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
-
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new BaseStationModel()
+            return {}
         }
 
-        return ObjectHelper.ShallowCopy(rowData)
-    }
+        try {
+            loading.IsShow.value = true
 
-    baseStationForm._onSubmitAsync = async source => {
-        const res = await baseStationHelper.Edit(source)
-        await Refresh()
-        return GetSubmitResult(res, '修改成功')
-    }
-
-    baseStationForm.Show(true)
-}
-
-/** 改 */
-function EditIsEnable(isEnable: boolean) {
-    if (!baseStationMgtTable.IsSelected.value) return
-
-    dialog.ShowDialog(
-        '修改启用状态',
-        isEnable ? '是否启用' : '是否禁用',
-        undefined,
-        (state) => {
-            if (state != DialogState.Yes) {
-                InitSelectIsEnableState()
-                return
-            }
-
-            const rowDatas: BaseStationModel[] = []
-            baseStationMgtTable.SelectedRowDatas.value.forEach(rowData => {
-                const newRowData = ObjectHelper.ShallowCopy(rowData)
-                newRowData.isEnable = isEnable
-                rowDatas.push(newRowData)
+            await baseStationHelper.Delete(rowData.id).then(res => {
+                this.Refresh()
+                MyActionResult.ShowResult(res, '删除成功')
             })
-
-            baseStationHelper.EditRange(rowDatas).then(res => {
-                Refresh().then(InitSelectIsEnableState)
-                MyActionResult.ShowResult(res)
-            })
-        },
-        DialogMode.YesOrNo,
-        Colors.Warning)
-}
-
-function InitSelectIsEnableState() {
-    switchIsEnable.Value.value = baseStationMgtTable.IsSelected.value && baseStationMgtTable.SelectedRowDatas.value.every(r => r.isEnable)
-}
-
-/** 删 */
-function Delete() {
-    dialog.ShowDialog(
-        '确认',
-        '是否确定删除？',
-        undefined,
-        DeleteRowData,
-        DialogMode.YesOrNo,
-        Colors.Warning)
-}
-
-async function DeleteRowData(state: DialogState) {
-    if (state != DialogState.Yes) return
-
-    const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
-    if (!rowData) {
-        console.warn('The rowData is undefined!')
-        return {}
+        } finally {
+            loading.IsShow.value = false
+        }
     }
 
-    try {
-        loading.IsShow.value = true
-
-        await baseStationHelper.Delete(rowData.id).then(res => {
-            Refresh()
-            MyActionResult.ShowResult(res, '删除成功')
-        })
-    } finally {
-        loading.IsShow.value = false
+    readonly Repair = () => {
+        DialogHelper.ShowInformation('维修')
     }
-}
-
-function Repair() {
-    dialog.ShowInformation('维修')
-}
-
-export const baseStationMgtForm = {
-    pagination,
-    onlineCount,
-    offlineCount,
-    searchMacAddr,
-    switchIsEnable,
-    selectState,
-    selectIsEnable,
-    selectCompany,
-    selectSite,
-    selectType,
-    selectCompanyForm,
-    selectSiteForm,
-    selectTypeForm,
-    configCompany,
-    configSite,
-    configType,
-    configName,
-    configMacAddr,
-    configHeartbeatInterval,
-    configReportInterval,
-    baseStationForm,
-    Refresh,
-    UpdateRowDatas,
-    Add,
-    Edit,
-    EditIsEnable,
-    Delete,
-    Repair,
+    //#endregion 【Functions】
 }

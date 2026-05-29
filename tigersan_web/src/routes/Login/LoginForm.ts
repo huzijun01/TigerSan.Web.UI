@@ -1,4 +1,4 @@
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, DialogState, dialog, DialogMode, Colors, TokenHelper, loading } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, DialogState, DialogHelper, DialogMode, Colors, TokenHelper, loading } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { navData } from '@/navs/navModel'
 import { UserInfo, UserHelper } from '@/models'
@@ -97,7 +97,7 @@ loginForm._isShowSuccessResult = false
 
 /** 登出 */
 function Logout() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否退出登录？',
         undefined,
@@ -117,7 +117,7 @@ async function FnLogout(state: DialogState) {
         // 发送“登出请求”:
         var res = await UserHelper.LogoutAsync(userInfo.username)
         if (res.code === ActionResultCode.Error) {
-            dialog.ShowError(res.message)
+            DialogHelper.ShowError(res.message)
             return
         }
 
@@ -141,7 +141,7 @@ async function LoginByToken() {
         var res = await UserHelper.LoginByTokenAsync(token)
         if (!res.data) {
             TokenHelper.Save()
-            dialog.ShowError(res.message)
+            DialogHelper.ShowError(res.message)
             return
         }
 

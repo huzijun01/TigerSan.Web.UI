@@ -40,9 +40,9 @@
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
                 <Pagination :model="form.pagination" :selectedRowCount="tagMgtTable.SelectedRowCount.value">
-                    <KeyValue :propName="Texts.Online.value" :propValue="form.onlineCount" :color="Colors.Success">
+                    <KeyValue :propName="Texts.Online.value" :propValue="form.OnlineCount" :color="Colors.Success">
                     </KeyValue>
-                    <KeyValue :propName="Texts.Offline.value" :propValue="form.offlineCount" :color="Colors.Danger">
+                    <KeyValue :propName="Texts.Offline.value" :propValue="form.OfflineCount" :color="Colors.Danger">
                     </KeyValue>
                 </Pagination>
             </div>
@@ -88,11 +88,11 @@
 import { onMounted } from 'vue'
 import { tagMgtTable } from './TagMgtTable'
 import { Authorities } from '@/navs/Authorities'
-import { tagMgtForm as form } from './TagMgtForm'
+import { TagMgtForm } from './TagMgtForm'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-// 表格:
+const form = new TagMgtForm()
 const { IsOnlySelected } = tagMgtTable
 
 // 【过程】:

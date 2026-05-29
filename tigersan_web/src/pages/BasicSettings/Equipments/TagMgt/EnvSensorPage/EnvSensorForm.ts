@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { EnvSensorModel, envSensorTable } from './EnvSensorTable'
 import {
-    Colors, dialog, Verify, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig,
+    Colors, DialogHelper, Verify, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig,
     loading
 } from '@/0_tigersan_ui/tigerui'
 
@@ -61,7 +61,7 @@ function Add() {
 
 /** 删 */
 function Delete() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否确定删除？',
         undefined,
@@ -81,7 +81,7 @@ function DeleteRowData(state: DialogState) {
 
     envSensorTable.DeleteRowData(rowData)
 
-    dialog.ShowSuccess('删除成功')
+    DialogHelper.ShowSuccess('删除成功')
 }
 
 export default {

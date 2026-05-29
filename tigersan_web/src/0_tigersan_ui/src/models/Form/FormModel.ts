@@ -1,6 +1,6 @@
 import { ref, type Ref, computed, watch } from "vue"
 import { Colors } from "../../base"
-import { dialog } from '../../stores'
+import { DialogHelper } from '../../stores'
 import { ObjectHelper } from "../../helpers"
 import { loading } from "../Dialog/LoadingModel"
 import { FormConfig, SetFormModel } from './FormConfig'
@@ -188,14 +188,14 @@ export class FormModel<TSource extends object> {
         if (this._isShowResult) {
             switch (res.Result) {
                 case FormResult.Error:
-                    dialog.ShowError(res.Msg)
+                    DialogHelper.ShowError(res.Msg)
                     return
                 case FormResult.Warning:
-                    dialog.ShowWarning(res.Msg)
+                    DialogHelper.ShowWarning(res.Msg)
                     break
                 default:
                     if (this._isShowSuccessResult) {
-                        dialog.ShowSuccess(res.Msg)
+                        DialogHelper.ShowSuccess(res.Msg)
                     }
                     break
             }

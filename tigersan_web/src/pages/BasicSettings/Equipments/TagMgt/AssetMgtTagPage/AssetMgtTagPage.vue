@@ -59,7 +59,7 @@
 import form from './AssetMgtTagForm'
 import select from './AssetMgtTagSelect'
 import { assetMgtTagTable, pagination, onlineCount, offlineCount } from './AssetMgtTagTable'
-import { Texts, dialog, Table, Select, Search, KeyValue, PageCard, Pagination, PopForm, FormRow, FormItem, Colors } from '@/0_tigersan_ui/tigerui'
+import { Texts, DialogHelper, Table, Select, Search, KeyValue, PageCard, Pagination, PopForm, FormRow, FormItem, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
@@ -67,16 +67,16 @@ const { IsOnlySelected } = assetMgtTagTable
 
 // 【方法】:
 function BatchOperation() {
-    dialog.ShowInformation('批量操作')
+    DialogHelper.ShowInformation('批量操作')
 }
 
 
 function SetParams() {
-    dialog.ShowInformation('修改参数')
+    DialogHelper.ShowInformation('修改参数')
 }
 
 function SetCol() {
-    dialog.ShowInformation('OTA升级')
+    DialogHelper.ShowInformation('OTA升级')
 }
 </script>
 

@@ -14,7 +14,8 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.PersonMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.PersonMgtPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.PersonMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.PersonMgtPage.IsReadonly.value" class="bg-danger"
@@ -28,7 +29,7 @@
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="pagination" :selectedRowCount="personMgtTable.SelectedRowCount.value" />
+                <Pagination :model="form.pagination" :selectedRowCount="personMgtTable.SelectedRowCount.value" />
             </div>
         </div>
     </PageCard>
@@ -81,12 +82,12 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
-import { personMgtForm as form } from './PersonMgtForm'
-import { personMgtTable, pagination } from './PersonMgtTable'
+import { PersonMgtForm } from './PersonMgtForm'
+import { personMgtTable } from './PersonMgtTable'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Password, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-// 表格:
+const form = new PersonMgtForm()
 const { IsOnlySelected } = personMgtTable
 
 // 【过程】:

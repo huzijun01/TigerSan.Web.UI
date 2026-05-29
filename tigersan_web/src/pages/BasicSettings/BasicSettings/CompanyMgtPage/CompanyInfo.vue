@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts" setup>
+import { CompanyModel } from '@/models'
 import { type PropType } from 'vue'
-import { CompanyModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtTable'
 
 //字段:
 const { model } = defineProps({

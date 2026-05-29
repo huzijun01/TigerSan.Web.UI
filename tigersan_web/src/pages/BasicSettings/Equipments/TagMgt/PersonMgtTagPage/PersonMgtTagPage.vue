@@ -68,7 +68,7 @@ import form from './PersonMgtTagForm'
 import select from './PersonMgtTagSelect'
 import { Authorities } from '@/navs/Authorities'
 import { personMgtTagTable, pagination, onlineCount, offlineCount } from './PersonMgtTagTable'
-import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+import { Texts, DialogHelper, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
@@ -76,11 +76,11 @@ const { IsOnlySelected } = personMgtTagTable
 
 // 【方法】:
 function SetParams() {
-    dialog.ShowInformation('修改参数')
+    DialogHelper.ShowInformation('修改参数')
 }
 
 function Restart() {
-    dialog.ShowInformation('重启')
+    DialogHelper.ShowInformation('重启')
 }
 </script>
 

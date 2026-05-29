@@ -1,8 +1,8 @@
-import { Colors, OnlineState, ItemType, ObjectHelper, OnlineStates, TableModel, IsEnable, Battery } from '@/0_tigersan_ui/tigerui'
+import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery } from '@/0_tigersan_ui/tigerui'
 import { BaseStationModel, companyHelper, siteHelper, stationTypeHelper } from '@/models'
 
 // 列头:
-const baseStationMgtTable = new TableModel<BaseStationModel>([
+export const baseStationMgtTable = new TableModel<BaseStationModel>([
     {
         _propName: 'company',
         Text: '公司',
@@ -103,9 +103,4 @@ baseStationMgtTable._initItem = itemModel => {
     IsEnable.InitItemModel(itemModel)
     OnlineState.InitItemModel(itemModel)
     Battery.InitItemModel(itemModel)
-}
-
-export {
-    BaseStationModel,
-    baseStationMgtTable,
 }

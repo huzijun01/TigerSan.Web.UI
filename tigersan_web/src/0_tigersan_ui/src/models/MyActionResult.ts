@@ -1,4 +1,4 @@
-import { dialog } from "../stores"
+import { DialogHelper } from "../stores"
 import { FormResult, SubmitResult } from "./Form/FormModel"
 
 export enum ActionResultCode {
@@ -31,14 +31,14 @@ export class MyActionResult {
 
     static ShowResult(res: MyActionResult, success: string = '操作成功') {
         if (res.code === ActionResultCode.Error) {
-            dialog.ShowError(res.message)
+            DialogHelper.ShowError(res.message)
         } else if (res.code === ActionResultCode.InvalidToken) {
             MyActionResult._logout?.()
-            dialog.ShowError(res.message)
+            DialogHelper.ShowError(res.message)
         } else if (res.code === ActionResultCode.Warning) {
-            dialog.ShowWarning(res.message)
+            DialogHelper.ShowWarning(res.message)
         } else {
-            dialog.ShowSuccess(success)
+            DialogHelper.ShowSuccess(success)
         }
     }
 

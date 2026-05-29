@@ -18,7 +18,8 @@
                 <div class="button-panel">
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" @click="form.Add">{{ Texts.Add.value }}</button>
+                        <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" class="bg-danger"
@@ -38,9 +39,9 @@
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
                 <Pagination :model="form.pagination" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
-                    <KeyValue :propName="Texts.Online.value" :propValue="form.onlineCount" :color="Colors.Success">
+                    <KeyValue :propName="Texts.Online.value" :propValue="form.OnlineCount" :color="Colors.Success">
                     </KeyValue>
-                    <KeyValue :propName="Texts.Offline.value" :propValue="form.offlineCount" :color="Colors.Danger">
+                    <KeyValue :propName="Texts.Offline.value" :propValue="form.OfflineCount" :color="Colors.Danger">
                     </KeyValue>
                 </Pagination>
             </div>
@@ -91,11 +92,11 @@
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { baseStationMgtTable } from './BaseStationMgtTable'
-import { baseStationMgtForm as form } from './BaseStationMgtForm'
+import { BaseStationMgtForm } from './BaseStationMgtForm'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-// 表格:
+const form = new BaseStationMgtForm()
 const { IsOnlySelected } = baseStationMgtTable
 
 // 【过程】:

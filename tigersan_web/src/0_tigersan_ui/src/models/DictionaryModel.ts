@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Colors } from '../base'
-import { dialog } from '../stores'
+import { DialogHelper } from '../stores'
 import { IdNameModel } from './SelectModel'
 import { FormModel } from './Form/FormModel'
 import { loading } from './Dialog/LoadingModel'
@@ -127,7 +127,7 @@ export class DictionaryModel {
 
     /** 删 */
     readonly Delete = async () => {
-        dialog.ShowDialog(
+        DialogHelper.ShowDialog(
             '确认',
             '是否确定删除？',
             undefined,

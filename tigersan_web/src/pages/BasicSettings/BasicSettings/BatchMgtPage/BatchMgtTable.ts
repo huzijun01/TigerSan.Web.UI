@@ -1,13 +1,8 @@
-import { ItemType, ObjectHelper, PaginationModel, TableModel } from '@/0_tigersan_ui/tigerui'
+import { ItemType, ObjectHelper, TableModel } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, scenarioHelper, BatchModel } from '@/models'
 
-// 字段:
-/** 分页器 */
-const pagination = new PaginationModel()
-pagination.IsShowSelectedRowCount.value = true
-
 /** 列头 */
-const batchMgtTable = new TableModel<BatchModel>([
+export const batchMgtTable = new TableModel<BatchModel>([
     {
         _propName: 'company',
         Text: '公司',
@@ -57,8 +52,3 @@ const batchMgtTable = new TableModel<BatchModel>([
 
 // 初始化:
 batchMgtTable.IsAllowMultiSelect.value = false
-
-export {
-    pagination,
-    batchMgtTable,
-}

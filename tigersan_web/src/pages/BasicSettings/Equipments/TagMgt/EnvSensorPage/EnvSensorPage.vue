@@ -57,7 +57,7 @@
 import form from './EnvSensorForm'
 import select from './EnvSensorSelect'
 import { envSensorTable, pagination, onlineCount, offlineCount } from './EnvSensorTable'
-import { Texts, dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
+import { Texts, DialogHelper, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
@@ -65,15 +65,15 @@ const { IsOnlySelected } = envSensorTable
 
 // 【方法】:
 function PowerOff() {
-    dialog.ShowInformation('关机')
+    DialogHelper.ShowInformation('关机')
 }
 
 function OTA_Update() {
-    dialog.ShowInformation('OTA升级')
+    DialogHelper.ShowInformation('OTA升级')
 }
 
 function SetTime() {
-    dialog.ShowInformation('授时')
+    DialogHelper.ShowInformation('授时')
 }
 </script>
 

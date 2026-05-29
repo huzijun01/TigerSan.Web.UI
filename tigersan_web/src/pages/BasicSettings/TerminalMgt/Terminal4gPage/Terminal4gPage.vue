@@ -62,7 +62,7 @@
 import form from './Terminal4gForm'
 import select from './Terminal4gSelect'
 import { terminal4gTable, onlineCount, offlineCount, pagination } from './Terminal4gTable'
-import { dialog, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, Texts } from '@/0_tigersan_ui/tigerui'
+import { DialogHelper, Table, Select, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 // 表格:
@@ -70,11 +70,11 @@ const { IsOnlySelected } = terminal4gTable
 
 // 【方法】:
 function SetParams() {
-    dialog.ShowInformation('修改参数')
+    DialogHelper.ShowInformation('修改参数')
 }
 
 function Restart() {
-    dialog.ShowInformation('重启')
+    DialogHelper.ShowInformation('重启')
 }
 </script>
 

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { FormItemConfig, Verify, FormConfig, FormModel, SubmitResult, ObjectHelper, dialog, DialogMode, Colors, DialogState, loading } from '@/0_tigersan_ui/tigerui'
+import { FormItemConfig, Verify, FormConfig, FormModel, SubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, loading } from '@/0_tigersan_ui/tigerui'
 import { PersonMgtTagModel, personMgtTagTable } from './PersonMgtTagTable'
 
 /** “IMEI”项目配置 */
@@ -97,7 +97,7 @@ function Edit() {
 
 /** 删 */
 function Delete() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否确定删除？',
         undefined,
@@ -117,7 +117,7 @@ function DeleteRowData(state: DialogState) {
 
     personMgtTagTable.DeleteRowData(rowData)
 
-    dialog.ShowSuccess('删除成功')
+    DialogHelper.ShowSuccess('删除成功')
 }
 
 export default {

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Verify, dialog, Colors, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig, loading } from '@/0_tigersan_ui/tigerui'
+import { Verify, DialogHelper, Colors, DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetMgtTagModel, assetMgtTagTable } from './AssetMgtTagTable'
 
 /** “MAC地址”项目配置 */
@@ -58,7 +58,7 @@ function Add() {
 
 /** 删 */
 function Delete() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否确定删除？',
         undefined,
@@ -78,7 +78,7 @@ function DeleteRowData(state: DialogState) {
 
     assetMgtTagTable.DeleteRowData(rowData)
 
-    dialog.ShowSuccess('删除成功')
+    DialogHelper.ShowSuccess('删除成功')
 }
 
 export default {

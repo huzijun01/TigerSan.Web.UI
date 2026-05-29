@@ -1,59 +1,68 @@
+import Dialog from '../components/Dialog/Dialog.vue'
 import { shallowReactive } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, getActivePinia } from 'pinia'
 import { Colors } from '../base'
 import { StoreIDs } from './base/StoreIDs'
 import { DialogMode, DialogModel, type DialogCallback } from '../models'
+import { ComponentHelper } from '../helpers'
 
 /* 仓库 */
-const useDialogStore = defineStore(StoreIDs.dialog, () => {
+export const useDialogStore = defineStore(StoreIDs.dialog, () => {
   let dialogModels = shallowReactive<DialogModel[]>([])
-
   return { dialogModels }
 })
 
-/* 方法 */
-function ShowDialog(
-  title: string,
-  msg: string,
-  data?: any,
-  callback?: DialogCallback,
-  mode: DialogMode = DialogMode.NoButton,
-  background: string = Colors.Brand) {
-  let { dialogModels } = useDialogStore()
+export class DialogHelper {
+  private static Init() {
+    if (document.querySelector('.dialog-mask')) return
 
-  var strMsg = msg.toString().trim()
+    const body = document.querySelector('body')
+    if (!body) {
+      console.warn('The body is null!')
+      return
+    }
 
-  if (dialogModels.some(m => m.Msg.value === strMsg)) return
+    const element = ComponentHelper.GetElement(Dialog)
+    if (!element) {
+      console.warn('The element is null!')
+      return
+    }
+    body.appendChild(element)
+  }
 
-  dialogModels.push(new DialogModel(title, strMsg, data, callback, mode, background))
-}
+  static ShowDialog(
+    title: string,
+    msg: string,
+    data?: any,
+    callback?: DialogCallback,
+    mode: DialogMode = DialogMode.NoButton,
+    background: string = Colors.Brand) {
+    if (!getActivePinia()) return
 
-function ShowInformation(msg: string) {
-  ShowDialog('Information', msg)
-}
+    DialogHelper.Init()
 
-function ShowSuccess(msg: string) {
-  ShowDialog('Success', msg, undefined, undefined, DialogMode.NoButton, Colors.Success)
-}
+    let { dialogModels } = useDialogStore()
 
-function ShowWarning(msg: string) {
-  ShowDialog('Warning', msg, undefined, undefined, DialogMode.NoButton, Colors.Warning)
-}
+    var strMsg = msg.toString().trim()
 
-function ShowError(msg: string) {
-  ShowDialog('Error', msg, undefined, undefined, DialogMode.NoButton, Colors.Danger)
-}
+    if (dialogModels.some(m => m.Msg.value === strMsg)) return
 
-const dialog = {
-  ShowDialog,
-  ShowInformation,
-  ShowSuccess,
-  ShowWarning,
-  ShowError,
-}
+    dialogModels.push(new DialogModel(title, strMsg, data, callback, mode, background))
+  }
 
-export {
-  DialogModel,
-  useDialogStore,
-  dialog,
+  static ShowInformation(msg: string) {
+    DialogHelper.ShowDialog('Information', msg)
+  }
+
+  static ShowSuccess(msg: string) {
+    DialogHelper.ShowDialog('Success', msg, undefined, undefined, DialogMode.NoButton, Colors.Success)
+  }
+
+  static ShowWarning(msg: string) {
+    DialogHelper.ShowDialog('Warning', msg, undefined, undefined, DialogMode.NoButton, Colors.Warning)
+  }
+
+  static ShowError(msg: string) {
+    DialogHelper.ShowDialog('Error', msg, undefined, undefined, DialogMode.NoButton, Colors.Danger)
+  }
 }

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { Terminal4gModel, terminal4gTable } from './Terminal4gTable'
 import {
-    Colors, dialog, Verify, ObjectHelper,
+    Colors, DialogHelper, Verify, ObjectHelper,
     DialogMode, DialogState, FormModel, SubmitResult, FormConfig, FormItemConfig,
     loading
 } from '@/0_tigersan_ui/tigerui'
@@ -101,7 +101,7 @@ function Edit() {
 
 /** 删 */
 function Delete() {
-    dialog.ShowDialog(
+    DialogHelper.ShowDialog(
         '确认',
         '是否确定删除？',
         undefined,
@@ -121,7 +121,7 @@ function DeleteRowData(state: DialogState) {
 
     terminal4gTable.DeleteRowData(rowData)
 
-    dialog.ShowSuccess('删除成功')
+    DialogHelper.ShowSuccess('删除成功')
 }
 
 export default {
