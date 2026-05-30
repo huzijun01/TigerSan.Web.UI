@@ -4,16 +4,20 @@
 
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
-import { shallowRef, onMounted } from 'vue'
-import { ComponentHelper } from '../../helpers';
+import { shallowRef, onMounted, type PropType } from 'vue'
+import { ComponentHelper, type Data } from '../../helpers'
 
 // 字段:
 const refRoot = shallowRef<HTMLElement | undefined>()
 
-let { component } = defineProps({
+let { component, rootProps } = defineProps({
     component: {
         type: Object,
         default: DefaultPage
+    },
+    rootProps: {
+        type: Object as PropType<Data | null | undefined>,
+        default: undefined
     }
 })
 
@@ -25,7 +29,7 @@ onMounted(() => {
     }
 
     // 创建App:
-    const app = ComponentHelper.CreateApp(component ?? DefaultPage)
+    const app = ComponentHelper.CreateApp(component ?? DefaultPage, rootProps)
 
     // 挂载:
     app.mount(refRoot.value)

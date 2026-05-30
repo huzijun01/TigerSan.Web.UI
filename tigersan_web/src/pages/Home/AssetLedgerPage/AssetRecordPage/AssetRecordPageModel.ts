@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from '../AssetFilter'
 import { assetRecordTable, pagination } from './AssetRecordTable'
 import { assetRecordHelper, AssetRecordModel, baseStationHelper } from '@/models'
@@ -79,6 +79,11 @@ export class AssetRecordPageModel {
 
     /** 查 */
     readonly Refresh = async () => {
+        if (!this._asset) {
+            console.warn('The _asset is undefined!')
+            return
+        }
+
         try {
             loading.IsShow.value = true
 

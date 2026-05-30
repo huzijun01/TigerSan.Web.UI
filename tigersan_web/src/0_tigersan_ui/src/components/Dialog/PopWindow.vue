@@ -1,6 +1,6 @@
 <template>
     <Pop :isShow="model.IsShow.value">
-        <div class="pop-window">
+        <div class="pop-window" :style="model.Style.value">
             <div class="title-panel flex-between">
                 <span class="title">{{ model.Title.value }}</span>
                 <span class="close iconfont" @click="model.Close">{{ Icons.Close }}</span>

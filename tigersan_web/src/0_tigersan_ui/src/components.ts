@@ -39,6 +39,7 @@ import PageCard from "./components/PageView/PageCard.vue"
 import PageContent from "./components/PageView/PageContent.vue"
 import PageView from "./components/PageView/PageView.vue"
 import RouterPage from "./components/PageView/RouterPage.vue"
+import TabView from "./components/PageView/TabView.vue"
 // Pagination:
 import KeyValue from "./components/Pagination/KeyValue.vue"
 import Pagination from "./components/Pagination/Pagination.vue"
@@ -95,6 +96,7 @@ export {
     PageContent,
     PageView,
     RouterPage,
+    TabView,
     // Pagination:
     KeyValue,
     Pagination,

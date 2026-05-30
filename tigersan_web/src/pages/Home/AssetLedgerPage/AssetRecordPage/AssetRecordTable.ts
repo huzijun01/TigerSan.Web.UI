@@ -1,4 +1,4 @@
-import { Battery, Colors, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, Signal, TableModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, ItemType, ObjectHelper, OnlineState, PaginationModel, Signal, TableModel } from '@/0_tigersan_ui/tigerui'
 import { AssetRecordModel, AssetState } from '@/models'
 
 // 字段:

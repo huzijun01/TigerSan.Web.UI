@@ -7,6 +7,7 @@ export type NavButtonHandler = (buttonModel: NavButtonModel) => void
 
 export class NavButtonModel extends NavItemModel {
     //#region 【Fields】
+    /** 组件 */
     _component?: Component
     //#endregion 【Fields】
 

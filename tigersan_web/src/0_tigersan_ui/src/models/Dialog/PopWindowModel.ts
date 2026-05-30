@@ -1,4 +1,4 @@
-import { ref } from "vue"
+import { computed, ref } from "vue"
 
 export class PopWindowModel {
     //#region 【Properties】
@@ -6,6 +6,10 @@ export class PopWindowModel {
     readonly IsShow = ref(false)
     /** 标题 */
     readonly Title = ref('Title')
+    /** 最小宽度 */
+    readonly MinWidth = ref<string | undefined>()
+    /** 最小高度 */
+    readonly MinHeight = ref<string | undefined>()
     //#endregion 【Properties】
 
     //#region 【Functions】
@@ -18,5 +22,13 @@ export class PopWindowModel {
     readonly Close = () => {
         this.IsShow.value = false
     }
+
+    /** 样式 */
+    readonly Style = computed(() => {
+        return {
+            minWidth: this.MinWidth.value,
+            minHeight: this.MinHeight.value,
+        }
+    })
     //#endregion 【Functions】
 }

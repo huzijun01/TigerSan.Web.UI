@@ -5,16 +5,16 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="filter.selectCompany"></Select>
-                        <Select :model="filter.selectDepartment"></Select>
-                        <Select :model="filter.selectAssetState"></Select>
-                        <Select :model="filter.selectOnlineState"></Select>
-                        <Select :model="filter.selectErrorType"></Select>
+                        <Select :model="form.filter.selectCompany"></Select>
+                        <Select :model="form.filter.selectDepartment"></Select>
+                        <Select :model="form.filter.selectAssetState"></Select>
+                        <Select :model="form.filter.selectOnlineState"></Select>
+                        <Select :model="form.filter.selectErrorType"></Select>
                     </div>
                     <div class="row-panel">
-                        <Search :model="filter.searchAssetId" />
-                        <Search :model="filter.searchRfid" />
-                        <Select :model="filter.selectAssetType"></Select>
+                        <Search :model="form.filter.searchAssetId" />
+                        <Search :model="form.filter.searchRfid" />
+                        <Select :model="form.filter.selectAssetType"></Select>
                         <Select :model="selectColumnFilter"></Select>
                     </div>
                 </div>
@@ -104,19 +104,18 @@
 
     <!-- 弹窗 -->
     <PopWindow :model="assetDetail">
-        <AssetRecordPage :model="recordPage"></AssetRecordPage>
+        <TabView :model="tabView" />
     </PopWindow>
 </template>
 
 <script lang="ts" setup>
-import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
 import { onMounted } from 'vue'
+import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'
-import { assetLedgerForm as form, filter } from './AssetLedgerForm'
-import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, recordPage, IsAllowInbound, IsAllowOutbound } from './AssetLedgerTable'
-import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts } from '@/0_tigersan_ui/tigerui'
+import { AssetLedgerForm } from './AssetLedgerForm'
+import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, IsAllowInbound, IsAllowOutbound, tabView } from './AssetLedgerTable'
 // 【字段】:
-// 表格:
+const form = new AssetLedgerForm()
 const { IsOnlySelected, IsSelected } = assetLedgerTable
 
 // 【过程】:

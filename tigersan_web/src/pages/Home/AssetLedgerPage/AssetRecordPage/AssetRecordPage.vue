@@ -84,7 +84,8 @@ onMounted(() => {
 @import '@/assets/page.less';
 
 .table-page {
-    min-height: 55vh;
-    max-height: calc(95vh - 160px);
+    width: 80vw;
+    min-height: 70vh;
+    max-height: calc(80vh - 160px);
 }
 </style>

@@ -38,6 +38,7 @@ export * from './models/NavBar/testNavBarModel'
 
 /* PageView: */
 export * from './models/PageView/RouterPageModel'
+export * from './models/PageView/TabViewModel'
 
 /* Pagination: */
 export * from './models/Pagination/PaginationModel'

@@ -1,11 +1,31 @@
+import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
 import { computed } from 'vue'
-import { Battery, Colors, PopWindowModel, ItemType, ObjectHelper, OnlineState, OnlineStates, PaginationModel, TableModel, SelectModel, TableHeaderModel, ColumnSelectModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
 
 // 字段:
+/** 记录页 */
 export const recordPage = new AssetRecordPageModel()
+/** 标签视图 */
+export const tabView = new TabViewModel([
+    {
+        Title: '记录',
+        _component: AssetRecordPage,
+        _rootProps: { model: recordPage },
+    },
+    {
+        Title: '轨迹',
+        // _component: AssetRecordPage,
+        // _rootProps: { model: recordPage },
+    }
+])
+
+/** 弹窗 */
 export const assetDetail = new PopWindowModel()
+assetDetail.MinWidth.value = '80vw'
+assetDetail.MinHeight.value = '70vh'
+
 /** 分页器 */
 export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
