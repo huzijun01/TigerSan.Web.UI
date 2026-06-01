@@ -2,6 +2,13 @@
 
 namespace TigerSan.NET8.WebApi.Share.Dtos
 {
+    public class AssetLngLat
+    {
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
+        public DateTime? ReportTime { get; set; }
+    }
+
     public class AssetPosition : IdEntityBase
     {
         public string AssetId { get; set; } = string.Empty;

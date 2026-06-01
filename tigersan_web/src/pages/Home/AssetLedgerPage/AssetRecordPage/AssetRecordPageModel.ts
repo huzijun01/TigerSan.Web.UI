@@ -79,7 +79,7 @@ export class AssetRecordPageModel {
 
     /** 查 */
     readonly Refresh = async () => {
-        if (!this._asset) {
+        if (!this._asset || this._asset == 0n) {
             console.warn('The _asset is undefined!')
             return
         }

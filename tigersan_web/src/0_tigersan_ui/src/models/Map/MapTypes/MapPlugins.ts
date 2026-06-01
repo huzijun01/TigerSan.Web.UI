@@ -65,4 +65,6 @@ export enum MapPlugins {
     Weather = 'AMap.Weather',
     /** 热力图 */
     HeatMap = 'AMap.HeatMap',
+    /** 移动动画 */
+    MoveAnimation = 'AMap.MoveAnimation',
 }

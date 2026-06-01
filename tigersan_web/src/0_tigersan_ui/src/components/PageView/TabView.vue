@@ -5,7 +5,7 @@
                 <span>{{ p.Title.value }}</span>
             </div>
         </div>
-        <div class="content-panel">
+        <div class="content-panel" :style="model.ContentStyle.value">
             <div v-for="p in model.Pages" :key="p._id" class="flex-stretch" :class="p.HiddenClass.value">
                 <PageContent :component="p._component" :rootProps="p._rootProps" />
             </div>
@@ -33,7 +33,6 @@ const { model } = defineProps({
 
     .tab-panel {
         overflow: auto;
-        padding-bottom: 10px;
 
         .tab {
             cursor: pointer;

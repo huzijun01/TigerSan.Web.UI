@@ -11,6 +11,11 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? sort = null,
             bool? ascending = null,
             FilterDto? filter = null);
+        public Task<MyActionResult<List<AssetLngLat>>> GetPath(
+            long asset,
+            DateTime? start = null,
+            DateTime? end = null,
+            FilterDto? filter = null);
         public Task<MyActionResult<AssetRecordEntity>> GetLast(long asset);
         public Task<MyActionResult<AssetRecordEntity>> GetLastInbound(long asset);
         public Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag, bool isBeginTransaction = true);

@@ -1,4 +1,4 @@
-import { computed, ref } from "vue"
+import { computed, ref, type StyleValue } from "vue"
 
 export class PopWindowModel {
     //#region 【Properties】
@@ -24,7 +24,7 @@ export class PopWindowModel {
     }
 
     /** 样式 */
-    readonly Style = computed(() => {
+    readonly Style = computed((): StyleValue => {
         return {
             minWidth: this.MinWidth.value,
             minHeight: this.MinHeight.value,

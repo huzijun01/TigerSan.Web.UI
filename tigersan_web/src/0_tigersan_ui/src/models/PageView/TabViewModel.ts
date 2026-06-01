@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { ref, watch, computed, shallowRef, shallowReactive, type Component } from "vue"
+import { ref, watch, computed, shallowRef, shallowReactive, type Component, type StyleValue } from "vue"
 import { type Data } from "../../helpers"
 
 export type TabPageHandler = (pageModel: TabPageModel) => void
@@ -72,9 +72,21 @@ export class TabPageModel {
 /** 标签视图模型 */
 export class TabViewModel {
     //#region 【Properties】
+    /** “标签页模型”集合 */
     readonly Pages = shallowReactive<TabPageModel[]>([])
     /** 选中的“标签页模型” */
     readonly SelectedPage = shallowRef<TabPageModel | undefined>()
+    /** 内边距 */
+    readonly Padding = ref<string | undefined>()
+
+    //#region [computed]
+    /** 内容样式 */
+    readonly ContentStyle = computed((): StyleValue => {
+        return {
+            padding: this.Padding.value
+        }
+    })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Events】

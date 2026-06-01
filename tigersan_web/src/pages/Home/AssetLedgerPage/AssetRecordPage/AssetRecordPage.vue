@@ -85,6 +85,7 @@ onMounted(() => {
 
 .table-page {
     width: 80vw;
+    margin-top: 16px;
     min-height: 70vh;
     max-height: calc(80vh - 160px);
 }

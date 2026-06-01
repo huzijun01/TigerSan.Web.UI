@@ -2,6 +2,12 @@ import { IdModel, IdModelHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
 import { AssetStates } from "../base/AssetStates"
 import { axiosHelper } from "../base/AxiosHelper"
 
+export class AssetLngLat {
+    longitude: number = 0
+    latitude: number = 0
+    reportTime: Date = new Date()
+}
+
 /** "资产基类"模型 */
 export class AssetRecordModel extends IdModel {
     asset: bigint = 0n
@@ -94,6 +100,30 @@ class AssetRecordHelper extends IdModelHelper<AssetRecordModel> {
                 { propName: 'Station', value: param.station },
                 { propName: 'OnlineState', value: param.onlineState },
             ],
+        }
+    })
+
+    /** 获取“路径” */
+    readonly GetPath = async (param: {
+        asset: bigint,
+        start?: string,
+        end?: string,
+        company?: bigint,
+        department?: bigint,
+    }) => await axiosHelper.Post(`${this._action}/Path`, [
+        { key: 'asset', value: param.asset },
+        { key: 'start', value: param.start },
+        { key: 'end', value: param.end },
+    ], {
+        filter: {
+            parent: {
+                parent: {
+                    id: param.department,
+                    parent: {
+                        id: param.company,
+                    }
+                }
+            },
         }
     })
 

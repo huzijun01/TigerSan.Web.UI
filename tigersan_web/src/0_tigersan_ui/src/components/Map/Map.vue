@@ -50,7 +50,6 @@ onUnmounted(() => {
     height: 100%;
     min-width: 600px;
     min-height: 600px;
-    margin-left: 15px;
 
     &>* {
         position: absolute;

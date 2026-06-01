@@ -1,0 +1,131 @@
+import AssetInfo from "@/components/AssetInfo.vue"
+import { ref, shallowReactive, toRaw, watch } from 'vue'
+import { DatePickerModel, DateType, LnglatData, loading, MapModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
+import { assetRecordHelper, AssetLngLat, AssetInfoModel, AssetPosition } from '@/models'
+
+export class AssetPathPageModel {
+    _asset?: bigint
+    /** 地图 */
+    readonly map = new MapModel<any>()
+
+    /** 日期 */
+    readonly date = new DatePickerModel()
+    /** 总数 */
+    readonly Count = ref<number>(0)
+    /** 分页器 */
+    readonly pagination = new PaginationModel()
+    /** “位置”集合 */
+    readonly Positions = shallowReactive<AssetLngLat[]>([])
+    /** “物资信息”集合 */
+    readonly AssetInfoes = shallowReactive<AssetInfoModel[]>([])
+
+    constructor() {
+        this.date._type = DateType.datetimerange
+        this.date._onChange = this.Refresh
+        this.pagination.IsShowCount.value = false
+        this.pagination.IsShowPageSize.value = false
+        this.pagination.IsShowPageTextBox.value = false
+        this.pagination._onChange = this.UpdateAssetInfoes
+
+        watch(this.Positions, this.UpdateAssetInfoes)
+        watch(this.Count, count => this.pagination.Count.value = count)
+
+        this.map.IsShowSelect.value = false
+        this.map.IsShowButton.value = false
+        this.map._onInitAsync = async () => {
+            try {
+                loading.IsShow.value = true
+
+                if (!this._asset || this._asset == 0n) {
+                    console.warn('The _asset is undefined!')
+                    return
+                }
+
+                const polyline = await this.map.InitPolylineAsync()
+                if (!polyline) {
+                    console.warn('The polyline is undefined!')
+                    return
+                }
+
+                const res = await assetRecordHelper.GetPath({
+                    asset: this._asset,
+                    start: this.date.Start.value,
+                    end: this.date.End.value,
+                })
+                const assetLngLats = res.data as AssetLngLat[]
+                if (!assetLngLats) {
+                    console.warn('The assetLngLats is undefined!')
+                    return
+                }
+
+                this.Positions.splice(0)
+                this.Positions.push(...assetLngLats)
+
+                const lngLats = assetLngLats.map(p => new AMap.LngLat(p.longitude, p.latitude))
+                this.map.SetPath(lngLats)
+                this.map.ZoomByLngLats(lngLats)
+            } finally {
+                loading.IsShow.value = false
+            }
+        }
+    }
+
+    /** 查 */
+    readonly Refresh = async () => {
+        try {
+            loading.IsShow.value = true
+
+            await this.map.InitAsync()
+        } finally {
+            loading.IsShow.value = false
+        }
+    }
+
+    /** 更新“物资信息”集合 */
+    readonly UpdateAssetInfoes = () => {
+        // 总数:
+        this.Count.value = this.Positions.length
+
+        // 标记:
+        const positions = toRaw(this.Positions)
+        const points: LnglatData<AssetInfoModel>[] = positions.map(position => {
+            const infoModel = new AssetInfoModel(this.GetAssetPosition(position))
+            infoModel.Background.value = 'var(--theme-input-background)'
+            const ld = new LnglatData([position.longitude, position.latitude], infoModel)
+            ld.info = AssetInfo
+            ld.infoModel = infoModel
+            ld.onClick = this.OnMarkerClick
+            return ld
+        })
+        this.map.AddMarkers(points)
+
+        // 列表:
+        this.AssetInfoes.splice(0)
+        this.pagination.GetPage(positions.reverse()).forEach(position => {
+            const assetInfo = new AssetInfoModel(this.GetAssetPosition(position))
+            assetInfo._onClick = this.OnItemClick
+            this.AssetInfoes.push(assetInfo)
+        })
+    }
+
+    /** 点击“标记”时 */
+    readonly OnMarkerClick = (data?: AssetInfoModel) => {
+        console.log(data)
+    }
+
+    /** 点击“项目”时 */
+    readonly OnItemClick = (info: AssetInfoModel) => {
+        const position = toRaw(info.Position)
+        if (!position.longitude || !position.latitude) return
+        this.map.ZoomByVector2([position.longitude, position.latitude])
+    }
+
+    readonly GetAssetPosition = (position: AssetLngLat) => {
+        const ap = new AssetPosition()
+        // ap.assetId = position.assetId
+        ap.longitude = position.longitude
+        ap.latitude = position.latitude
+        ap.reportTime = position.reportTime
+        return ap
+    }
+}

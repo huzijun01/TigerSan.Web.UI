@@ -5,35 +5,35 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="filter.selectCompany"></Select>
-                        <Select :model="filter.selectDepartment"></Select>
-                        <Select :model="filter.selectAssetState"></Select>
+                        <Select :model="model.filter.selectCompany"></Select>
+                        <Select :model="model.filter.selectDepartment"></Select>
+                        <Select :model="model.filter.selectAssetState"></Select>
                     </div>
                     <div class="row-panel">
-                        <Search :model="filter.searchAssetId" />
-                        <Select :model="filter.selectAssetType"></Select>
-                        <Select :model="filter.selectOnlineState"></Select>
-                        <Select :model="filter.selectErrorType"></Select>
+                        <Search :model="model.filter.searchAssetId" />
+                        <Select :model="model.filter.selectAssetType"></Select>
+                        <Select :model="model.filter.selectOnlineState"></Select>
+                        <Select :model="model.filter.selectErrorType"></Select>
                     </div>
                 </div>
                 <div class="button-panel">
-                    <button class="bg-success" @click="Refresh">{{ Texts.Refresh.value }}</button>
+                    <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
                 </div>
             </div>
             <div class="bottom-panel">
                 <div class="table-panel flex-column">
                     <div class="count-panel">
-                        <KeyValue :propName="Texts.Count.value" :propValue="Count" />
+                        <KeyValue :propName="Texts.Count.value" :propValue="model.Count" />
                     </div>
                     <div class="list-panel">
-                        <AssetInfo v-for="a in AssetInfoes" :key="a._id" :model="a" />
+                        <AssetInfo v-for="a in model.AssetInfoes" :key="a._id" :model="a" />
                     </div>
                     <div class="pagination-panel">
-                        <Pagination :model="pagination" />
+                        <Pagination :model="model.pagination" />
                     </div>
                 </div>
                 <div class="map-panel">
-                    <Map :model="map"></Map>
+                    <Map :model="model.map"></Map>
                 </div>
             </div>
         </div>
@@ -44,12 +44,13 @@
 import AssetInfo from '@/components/AssetInfo.vue'
 import { onMounted } from 'vue'
 import { PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
-import { map, Refresh, pagination, Count, AssetInfoes, filter } from './AssetMapPageModel'
+import { AssetMapPageModel } from './AssetMapPageModel'
 // 【字段】:
+const model = new AssetMapPageModel()
 
 // 【过程】:
 onMounted(async () => {
-    await Refresh()
+    await model.Refresh()
 })
 
 // 【方法】:

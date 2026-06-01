@@ -1,4 +1,4 @@
-import { ref, type Ref, computed, watch } from "vue"
+import { ref, computed, watch, type Ref, type StyleValue } from "vue"
 import { Colors } from "../../base"
 import { DialogHelper } from '../../stores'
 import { ObjectHelper } from "../../helpers"
@@ -120,14 +120,14 @@ export class FormModel<TSource extends object> {
     /** 填充配置 */
     readonly FillOpts = ref<FillOpts | undefined>()
     /** “表单容器”样式对象 */
-    readonly FormPanelStyle = computed(() => {
+    readonly FormPanelStyle = computed((): StyleValue => {
         return {
             minWidth: this.MinWidth.value,
             minHeight: this.MinHeight.value,
         }
     })
     /** “内容容器”样式对象 */
-    readonly ContentPanelStyle = computed(() => {
+    readonly ContentPanelStyle = computed((): StyleValue => {
         const opts = this.FillOpts.value
         if (!opts) return
 

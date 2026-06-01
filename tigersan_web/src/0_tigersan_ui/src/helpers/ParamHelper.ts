@@ -1,10 +1,10 @@
 export class KeyValue {
     key: string = ''
-    value?: boolean | string | number | bigint = ''
+    value?: boolean | string | number | bigint | Date = ''
 }
 
 export class ParamHelper {
-    static IsNotEmpty(value?: boolean | string | number | bigint) {
+    static IsNotEmpty(value?: boolean | string | number | bigint | Date) {
         return value != undefined && value != null && value.toString().trim() != ''
     }
 

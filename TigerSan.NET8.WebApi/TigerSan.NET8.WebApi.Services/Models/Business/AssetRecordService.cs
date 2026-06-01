@@ -81,6 +81,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return p1.Distance(p2) > Constants.Distance_Threshold_LatLng;
         }
         #endregion
+
+        #region 是否“移动”
+        /// <summary>是否“移动”</summary>
+        private bool IsMoved(AssetLngLat oldTag, AssetLngLat newTag)
+        {
+            if (oldTag.Longitude == null
+                || oldTag.Latitude == null
+                || newTag.Longitude == null
+                || newTag.Latitude == null) return false;
+            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
+            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
+            return p1.Distance(p2) > Constants.Distance_Threshold_LatLng;
+        }
+        #endregion
         #endregion [Private]
 
         #region [查]
@@ -202,6 +216,62 @@ namespace TigerSan.NET8.WebApi.Services.Models
             catch (Exception e)
             {
                 return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“路径”
+        /// <summary>获取“路径”</summary>
+        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+            long asset,
+            DateTime? start = null,
+            DateTime? end = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var queryable = start != null && end != null
+                    ? _dbSet.AsNoTracking().Where(ar => ar.Asset == asset && ar.Longitude != null && ar.Latitude != null && ar.ReportTime >= start && ar.ReportTime <= end)
+                    : _dbSet.AsNoTracking().Where(ar => ar.Asset == asset && ar.Longitude != null && ar.Latitude != null);
+
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<AssetLngLat>>.Error(res.Message);
+                }
+
+                var resSort = queryable.Sort(nameof(AssetRecordEntity.ReportTime));
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<AssetLngLat>>.Error(resSort.Message);
+                }
+
+                var positions = await queryable
+                    .Select(i => new AssetLngLat()
+                    {
+                        Longitude = i.Longitude,
+                        Latitude = i.Latitude,
+                        ReportTime = i.ReportTime,
+                    })
+                    .ToListAsync();
+
+                var useablePositions = new List<AssetLngLat>();
+
+                AssetLngLat? pre = null;
+                foreach (var position in positions)
+                {
+                    if (pre != null && !IsMoved(pre, position)) continue;
+                    useablePositions.Add(position);
+                    pre = position;
+                }
+
+                return MyResults<List<AssetLngLat>>.Success(null, useablePositions);
+            }
+            catch (Exception e)
+            {
+                return MyResults<List<AssetLngLat>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion

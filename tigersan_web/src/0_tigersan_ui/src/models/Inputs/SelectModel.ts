@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { ref, shallowRef, watch, computed, shallowReactive, type App, type ShallowReactive } from "vue"
+import { ref, shallowRef, watch, computed, shallowReactive, type App, type ShallowReactive, type StyleValue } from "vue"
 import { Texts } from "../../texts"
 import { TextModel } from "../Text/TextModel"
 import type { StringFunc } from "../../types"
@@ -159,14 +159,14 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     })
 
     /** 根样式 */
-    readonly widthStyle = computed(() => {
+    readonly widthStyle = computed((): StyleValue => {
         return {
             width: this.IsFull.value ? '100%' : `${this.Width.value}px`
         }
     })
 
     /** 箭头样式 */
-    readonly arrowStyleObj = computed(() => {
+    readonly arrowStyleObj = computed((): StyleValue => {
         const arrowAngle = this.IsOpen.value ? -90 : 90
         return {
             transform: `rotate(${arrowAngle}deg)`
@@ -174,7 +174,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     })
 
     /** 菜单样式 */
-    readonly menuStyleObj = computed(() => {
+    readonly menuStyleObj = computed((): StyleValue => {
         const obj = {
             width: `${this.Width.value}px`,
             minHeight: `${this.MenuMinHeight.value}px`,

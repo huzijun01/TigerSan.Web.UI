@@ -24,6 +24,7 @@ declare global {
 
 /** 类名 */
 export class ClassNames {
+    static readonly Marker = 'Overlay.Marker'
     static readonly Polygon = 'Overlay.Polygon'
     static readonly Polyline = 'Overlay.Polyline'
     static readonly BezierCurve = 'Overlay.BezierCurve'

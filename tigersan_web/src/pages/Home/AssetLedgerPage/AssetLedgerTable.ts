@@ -1,12 +1,16 @@
+import AssetPathPage from './AssetPathPage/AssetPathPage.vue'
 import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
 import { computed } from 'vue'
 import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel } from '@/0_tigersan_ui/tigerui'
 import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
+import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
 
 // 字段:
 /** 记录页 */
 export const recordPage = new AssetRecordPageModel()
+/** 轨迹页 */
+export const pathPage = new AssetPathPageModel()
 /** 标签视图 */
 export const tabView = new TabViewModel([
     {
@@ -16,8 +20,8 @@ export const tabView = new TabViewModel([
     },
     {
         Title: '轨迹',
-        // _component: AssetRecordPage,
-        // _rootProps: { model: recordPage },
+        _component: AssetPathPage,
+        _rootProps: { model: pathPage },
     }
 ])
 
@@ -52,8 +56,10 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         _onItemClick: itemModel => {
             const rowData = itemModel._rowModel._rowData
             recordPage._asset = rowData.id
+            pathPage._asset = rowData.id
             assetDetail.Title.value = `资产详情 - ${rowData.assetId}`
             recordPage.Refresh()
+            pathPage.Refresh()
             assetDetail.Show()
         }
     },

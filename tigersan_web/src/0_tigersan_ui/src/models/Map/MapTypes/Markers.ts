@@ -11,44 +11,12 @@ export class DataOptions {
 
 declare global {
     namespace AMap {
-        class Marker {
-            /** 地图对象 */
-            map: Map
-            /** 位置 */
-            position: Vector2 | LngLat
-            /**  */
-            icon: Icon | string
-            /**  */
-            content: string | HTMLElement
-            /** 提示文字 */
-            title: string
-            /** 可见性 */
-            visible: boolean
-            /** Z轴层级 */
-            zIndex: boolean
-            /** 偏移 */
-            offset: Vector2 | LngLat
-            /** 锚点 */
-            anchor: string | Vector2
-            /** 旋转角度 */
-            angle: number
-            /** 是否可点击 */
-            clickable: boolean
-            /** 否可拖拽 */
-            draggable: boolean
-            /** 事件是否冒泡。默认值：false */
-            bubble: boolean
-            /** 缩放范围。默认值：[2, 20]  */
-            zooms: Vector2
-            /** 光标 */
-            cursor: string
-            /** 点击时是否置顶。默认值：false */
-            topWhenClick: boolean
-            /** 自定义数据 */
-            extData: any
-            /** 文本样式（CSS样式对象） */
-            style: object
+        /** 标记 */
+        class Marker extends EventBase {
+            // Ctor:
+            constructor(opts?: MarkerOptions)
 
+            // Function:
             /** 获取“” */
             getTitle(): string | undefined
 
@@ -90,7 +58,7 @@ declare global {
             /** 移除点标记 */
             remove(): void
             /** 移动到 */
-            moveTo(targetPosition: LngLat | Vector2, opts: MoveToOptions): void
+            moveTo(targetPosition: LngLatLike, opts: MoveToOptions): void
             /** 移动到 */
             moveAlong(path: Array<LngLat> | Array<Vector2> | Array<MoveAlongObj>, opts: MoveToOptions): void
             /** 开启动画 */
@@ -118,9 +86,9 @@ declare global {
             hide(): void
 
             /** 获取“位置” */
-            getPosition(): Vector2
+            getPosition(): LngLat
             /** 设置“位置” */
-            setPosition(position: Vector2): void
+            setPosition(position: LngLatLike): void
 
             /** 获取“锚点” */
             getAnchor(): string | Vector2 | undefined
@@ -157,6 +125,46 @@ declare global {
 
             /** 获取“范围” */
             getBounds(): boolean
+        }
+
+        /** “标记”配置 */
+        type MarkerOptions = {
+            /** 地图对象 */
+            map?: Map
+            /** 位置 */
+            position?: Vector2 | LngLat
+            /**  */
+            icon?: Icon | string
+            /**  */
+            content?: string | HTMLElement
+            /** 提示文字 */
+            title?: string
+            /** 可见性 */
+            visible?: boolean
+            /** Z轴层级 */
+            zIndex?: boolean
+            /** 偏移 */
+            offset?: Vector2 | LngLat
+            /** 锚点 */
+            anchor?: string | Vector2
+            /** 旋转角度 */
+            angle?: number
+            /** 是否可点击 */
+            clickable?: boolean
+            /** 是否“可拖拽” */
+            draggable?: boolean
+            /** 事件是否冒泡。默认值：false */
+            bubble?: boolean
+            /** 缩放范围。默认值：[2, 20]  */
+            zooms?: Vector2
+            /** 光标 */
+            cursor?: string
+            /** 点击时是否置顶。默认值：false */
+            topWhenClick?: boolean
+            /** 自定义数据 */
+            extData?: any
+            /** 文本样式（CSS样式对象） */
+            style?: object
         }
 
         class OverlayOptions {

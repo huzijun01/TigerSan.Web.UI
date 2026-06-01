@@ -44,8 +44,8 @@ export class AssetPosition extends IdModel {
     assetId = ''
     type?: bigint
     lastRecord?: bigint
-    longitude?: number
-    latitude?: number
+    longitude: number = 0
+    latitude: number = 0
     reportTime?: Date
 }
 

@@ -46,6 +46,18 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
+
+        [HttpPost]
+        [Route("Path")]
+        /// <summary>获取“路径”</summary>
+        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+            long asset,
+            DateTime? start = null,
+            DateTime? end = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            return await _service.GetPath(asset, start, end, filter);
+        }
         #endregion [查]
 
         #region [增]

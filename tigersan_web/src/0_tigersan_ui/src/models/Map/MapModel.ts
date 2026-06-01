@@ -42,6 +42,8 @@ export class MapModel<TData> {
     _cluster?: AMap.MarkerCluster
     /** 地址查询 */
     _placeSearch?: AMap.PlaceSearch
+    /** 轨迹 */
+    _polyline?: AMap.Polyline
     /** 多边形编辑器 */
     _polygonEditor?: AMap.PolygonEditor
     /** 初始化前 */
@@ -208,7 +210,7 @@ export class MapModel<TData> {
 
         const marker = ComponentHelper.GetElement(Marker, { model })
         if (!marker) {
-            console.log('The marker is undefined!')
+            console.warn('The marker is undefined!')
             return
         }
         context.marker.setOffset(new AMap.Pixel(MarkerModel.offset, MarkerModel.offset))
@@ -223,7 +225,7 @@ export class MapModel<TData> {
         })
         const marker = ComponentHelper.GetElement(ClusterMarker, { model })
         if (!marker) {
-            console.log('The marker is undefined!')
+            console.warn('The marker is undefined!')
             return
         }
         context.marker.setOffset(new AMap.Pixel(model.offset, model.offset))
@@ -338,8 +340,8 @@ export class MapModel<TData> {
         if (opts) this._opts = opts
 
         const opts1: AMap.MapOptions = {
-            center: [104.937478, 35.439575],
-            zoom: 5,
+            center: [106.0, 37.6],
+            zoom: 4.7,
             ...this._opts
         }
 
@@ -351,6 +353,7 @@ export class MapModel<TData> {
         this._cluster = undefined
         this._placeSearch = undefined
         this._polygonEditor = undefined
+        this._polyline = undefined
 
         this._onInit?.()
         await this._onInitAsync?.()
@@ -466,7 +469,7 @@ export class MapModel<TData> {
         return selectAddr
     }
 
-    /** 初始化"标记聚合" */
+    /** 初始化“标记聚合” */
     readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData>[], opts?: AMap.MarkerClusterOptions) => {
         if (!await MapModel.LoadPluginAsync([MapPlugins.MarkerCluster])) return
 
@@ -501,6 +504,59 @@ export class MapModel<TData> {
         })
     }
 
+    /** 添加“标记”集合 */
+    readonly AddMarkers = (
+        lnglatDatas: LnglatData<TData>[],
+        opts?: AMap.MarkerOptions,
+        callback?: AMap.MapCallback) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        for (const lnglatData of lnglatDatas) {
+            const markerElement = ComponentHelper.GetElement(Marker, {
+                model: new MarkerModel({
+                    data: lnglatData,
+                    info: lnglatData.info,
+                    infoModel: lnglatData.infoModel
+                })
+            })
+            if (!markerElement) {
+                console.warn('The markerElement is undefined!')
+                return
+            }
+
+            const marker = new AMap.Marker({
+                position: lnglatData.lnglat,
+                extData: lnglatData.data,
+                content: markerElement as HTMLElement,
+                offset: [MarkerModel.offset, MarkerModel.offset],
+                ...opts
+            })
+            this._map.add(marker)
+
+            MapModel.AddEvent(marker, {
+                click: args => {
+                    const target = args.target as AMap.Marker
+                    this.ZoomTo(target.getPosition())
+                    if (!lnglatData.onClick) return
+                    lnglatData.onClick(target.getExtData() as TData)
+                }
+            })
+
+            if (callback) {
+                MapModel.AddEvent(marker, callback)
+            }
+        }
+    }
+
+    /** 清空“标记” */
+    readonly ClearMarkers = () => {
+        this.ClearOverlays(ClassNames.Marker)
+    }
+
+    //#region 多边形
     /** 初始化“多边形编辑器” */
     readonly InitPolygonEditorAsync = async (callback?: AMap.PolygonEditorCallback) => {
         if (!this._map) {
@@ -513,7 +569,7 @@ export class MapModel<TData> {
         if (!this._polygonEditor) {
             this._polygonEditor = new AMap.PolygonEditor(this._map)
         }
-        
+
         this.SavePolygon()
 
         this.AddEvent({
@@ -675,6 +731,18 @@ export class MapModel<TData> {
         return this._map.getAllOverlays().filter(i => i.className === className).length
     }
 
+    /** 清空“覆盖物” */
+    readonly ClearOverlays = (className: string) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        this.GetOverlays<AMap.Overlay>(className)?.forEach(overlay => {
+            this._map?.remove(overlay)
+        })
+    }
+
     /** 获取“多边形”集合 */
     readonly GetPolygons = (): AMap.Polygon[] | undefined => {
         return this.GetOverlays<AMap.Polygon>(ClassNames.Polygon)
@@ -694,12 +762,46 @@ export class MapModel<TData> {
     static readonly PolygonsToPath = <TPath extends AMap.PolygonPath>(polygon: AMap.Polygon): TPath => {
         return polygon.getPath() as TPath
     }
+    //#endregion 多边形
+
+    //#region 轨迹
+    /** 初始化“多边形编辑器” */
+    readonly InitPolylineAsync = async (callback?: AMap.PolygonEditorCallback) => {
+        if (!this._map) {
+            console.warn('The _map is undefined!')
+            return
+        }
+
+        if (!await MapModel.LoadPluginAsync([MapPlugins.MoveAnimation])) return
+
+        if (!this._polyline) {
+            this._polyline = new AMap.Polyline({
+                map: this._map,
+                showDir: true,
+                strokeColor: "#28F",
+                strokeWeight: 6,
+            })
+        }
+
+        return this._polyline
+    }
+    //#endregion 轨迹
+
+    /** 设置“路径” */
+    readonly SetPath = (path: AMap.PolylinePath) => {
+        if (!this._polyline) {
+            console.warn('The _polyline is undefined!')
+            return
+        }
+
+        this._polyline.setPath(path)
+    }
     //#endregion [Tool]
 
     //#region [Zoom]
     /** 缩放到 */
     readonly ZoomTo = (lnglat: AMap.LngLat, zoom?: number) => {
-        this._map?.setZoomAndCenter(zoom ?? 10, lnglat)
+        this._map?.setZoomAndCenter(zoom ?? 20, lnglat)
     }
 
     /** 根据“经纬度”缩放 */

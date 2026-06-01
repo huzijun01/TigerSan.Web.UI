@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { computed, ref, shallowRef, shallowReactive } from "vue"
+import { computed, ref, shallowRef, shallowReactive, type StyleValue } from "vue"
 import type { NumberAction } from "../../types"
 import { AuthorityVerify } from "../Authority/AuthorityVerify"
 import { ArrayHelper, BigintHelper, ContentSizeBehavior, FolderBehavior, type IRoot } from "../../helpers"
@@ -87,7 +87,7 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     })
 
     /** 颜色样式 */
-    readonly ColorStyle = computed(() => {
+    readonly ColorStyle = computed((): StyleValue => {
         return {
             color: this.Color.value,
         }
