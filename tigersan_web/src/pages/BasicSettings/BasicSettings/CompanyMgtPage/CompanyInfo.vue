@@ -1,21 +1,36 @@
 <template>
     <div class="company-info">
-        <div>ID：{{ model.id }}</div>
-        <div>名称：{{ model.name }}</div>
-        <div>地址：{{ model.addr }}</div>
+        <div class="info-panel">
+            <KeyValue :propName="Texts.Name.value" :propValue="model.Name.value" />
+            <KeyValue v-if="model.IsShowAddr.value" :propName="Texts.Addr.value" :propValue="model.Addr.value" />
+        </div>
+        <div class="dashboard-panel flex-stretch">
+            <CountCard class="bg-info" :icon="Icons.Building_1" :title="Texts.Site.value"
+                :count="model.SiteCount.value" />
+            <CountCard class="bg-warning" :icon="Icons.Router" :title="Texts.BaseStation.value"
+                :count="model.BaseStationCount.value" />
+            <CountCard class="bg-brand" :icon="Icons.Label_2" :title="Texts.Tag.value" :count="model.TagCount.value" />
+            <CountCard class="bg-success" :icon="Icons.Asset" :title="Texts.Asset.value"
+                :count="model.AssetCount.value" />
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { CompanyModel } from '@/models'
-import { type PropType } from 'vue'
+import { onMounted, type PropType } from 'vue'
+import { Texts, KeyValue, Icons, CountCard } from '@/0_tigersan_ui/tigerui'
+import { CompanyInfoModel } from '@/models'
 
 //字段:
 const { model } = defineProps({
     model: {
-        type: Object as PropType<CompanyModel>,
-        default: () => new CompanyModel()
+        type: Object as PropType<CompanyInfoModel>,
+        default: () => new CompanyInfoModel()
     },
+})
+
+onMounted(async () => {
+    await model.Refresh()
 })
 </script>
 
@@ -23,5 +38,13 @@ const { model } = defineProps({
 .company-info {
     padding: 10px;
     line-height: 1.5;
+
+    &>* {
+        margin-bottom: 15px;
+    }
+
+    .dashboard-panel {
+        gap: 15px;
+    }
 }
 </style>

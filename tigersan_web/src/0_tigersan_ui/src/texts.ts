@@ -2,6 +2,8 @@ import { TextModel } from "./models/Text/TextModel"
 
 /** 文本集合 */
 class Texts {
+    static readonly Name = TextModel.Computed('Name', '名称')
+    static readonly Addr = TextModel.Computed('Addr', '地址')
     static readonly Refresh = TextModel.Computed('Refresh', '刷新')
     static readonly Add = TextModel.Computed('Add', '新增')
     static readonly Edit = TextModel.Computed('Edit', '修改')
@@ -48,6 +50,10 @@ class Texts {
     static readonly Breakdown = TextModel.Computed('Breakdown', '故障')
     static readonly Lose = TextModel.Computed('Lose', '丢失')
     static readonly ReportTime = TextModel.Computed('ReportTime: ', '上报时间：')
+    static readonly Site = TextModel.Computed('Site', '场地')
+    static readonly Asset = TextModel.Computed('Asset', '资产')
+    static readonly BaseStation = TextModel.Computed('BaseStation', '基站')
+    static readonly Tag = TextModel.Computed('Tag', '标签')
 }
 
 export {

@@ -1,11 +1,13 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading, TreeModel, ArrayHelper } from '@/0_tigersan_ui/tigerui'
-import { companyHelper, CompanyHelper, CompanyModel } from '@/models'
+import { companyHelper, CompanyHelper, CompanyModel, CompanyInfoModel } from '@/models'
 
 export class CompanyMgtForm {
     //#region 【Fields】
     /** 树 */
     readonly tree = new TreeModel<CompanyModel>()
+    /** 公司信息 */
+    readonly companyInfo = new CompanyInfoModel()
     /** “公司”选择框 */
     readonly selectCompany = companyHelper.GetIdNameSelectModel()
     /** “父公司”选择框 */
@@ -73,6 +75,8 @@ export class CompanyMgtForm {
     //#region 【Ctor】
     constructor() {
         // 树:
+        this.tree._isActiveFirst = true
+        this.tree._isAllowUnactive = false
         this.tree.IsShowCheckbox.value = false
         this.tree._onActive = node => {
             if (!node._data) {
@@ -89,6 +93,12 @@ export class CompanyMgtForm {
         this.selectCompany._onChange = () => {
             this.tree.ActiveNode.value = this.tree.NodeArray.value.find(n => BigintHelper.IsEqualAndNotUndefined(n._data?.id, this.selectCompany.Value.value?.id))
         }
+
+        watch(this.tree.ActiveData, data => {
+            this.companyInfo.Id.value = data?.id
+            this.companyInfo.Name.value = data?.name
+            this.companyInfo.Addr.value = data?.addr
+        })
     }
     //#endregion 【Ctor】
 
@@ -102,6 +112,8 @@ export class CompanyMgtForm {
                 this.tree.Clear()
                 this.tree.Init(CompanyHelper.Companies2Tree(arr))
             })
+
+            await this.companyInfo.Refresh()
         } finally {
             loading.IsShow.value = false
         }

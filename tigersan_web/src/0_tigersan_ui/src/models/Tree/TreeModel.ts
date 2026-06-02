@@ -268,6 +268,10 @@ export class TreeNodeConfig<TData> {
 /** “树”模型 */
 export class TreeModel<TData> implements IRoot {
     //#region 【Fields】
+    /** 是否“默认激活首个” */
+    _isActiveFirst = false
+    /** 是否“允许失活” */
+    _isAllowUnactive = true
     /** 获取“文件夹”高度
      * （Tree内部会自动添加回调） */
     _getFolderHeight?: NumberAction
@@ -327,6 +331,7 @@ export class TreeModel<TData> implements IRoot {
     /** 点击后（内部方法） */
     readonly OnClickInternal = (node: TreeNodeModel<TData>) => {
         if (node.IsActive.value) {
+            if (!this._isAllowUnactive) return
             this.ActiveNode.value = undefined
             this._onUnactive?.(node)
             node._onUnactive?.(node)
@@ -374,10 +379,18 @@ export class TreeModel<TData> implements IRoot {
 
                 this._onInit?.(node)
             })
+
+            if (this._isActiveFirst && !this.ActiveNode.value) this.ActiveFirst()
         } finally {
             this._onInited?.()
             this.UpdateHeight()
         }
+    }
+
+    /** 激活首个 */
+    readonly ActiveFirst = () => {
+        if (this.RootNode.Childs.length < 1) return
+        this.ActiveNode.value = this.RootNode.Childs[0]
     }
 
     /** 更新“状态” */
@@ -391,19 +404,19 @@ export class TreeModel<TData> implements IRoot {
     }
 
     /** 设置“激活节点” */
-    SetActiveNode(text: string) {
+    readonly SetActiveNode = (text: string) => {
         const node = this.NodeArray.value.find(n => n.Text.value === text)
         if (!node) return
         this.ActiveNode.value = node
     }
 
     /** 获取“文本”集合 */
-    GetTexts(): string[] {
+    readonly GetTexts = (): string[] => {
         return this.NodeArray.value.map(n => n.Text.value)
     }
 
     /** 获取“数据”集合 */
-    GetDatas(): TData[] {
+    readonly GetDatas = (): TData[] => {
         return this.NodeArray.value.map(n => (n._data as TData))
     }
 

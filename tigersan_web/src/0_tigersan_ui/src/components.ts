@@ -2,6 +2,8 @@
 import IconButton from "./components/Button/IconButton.vue"
 // Content:
 import Lottie from "./components/Content/Lottie.vue"
+// Dashboard:
+import CountCard from "./components/Dashboard/CountCard.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
 import Loading from "./components/Dialog/Loading.vue"
@@ -59,6 +61,8 @@ export {
     IconButton,
     // Content:
     Lottie,
+    // Dashboard:
+    CountCard,
     // Dialog:
     Dialog,
     Loading,

@@ -2,6 +2,7 @@
 export * from '@/models/base/AssetStates'
 // BasicSettings:
 export * from '@/models/BasicSettings/BatchModel'
+export * from '@/models/BasicSettings/CompanyInfoModel'
 export * from '@/models/BasicSettings/CompanyModel'
 export * from '@/models/BasicSettings/DepartmentModel'
 export * from '@/models/BasicSettings/PersonModel'
