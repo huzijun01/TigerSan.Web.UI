@@ -35,7 +35,7 @@ const { model } = defineProps({
 const { refContainer } = model
 
 onMounted(async () => {
-    await model.InitAsync()
+    if (model._isAutoInit) await model.InitAsync()
 })
 
 onUnmounted(() => {

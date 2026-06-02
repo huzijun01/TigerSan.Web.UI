@@ -251,8 +251,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var positions = await queryable
                     .Select(i => new AssetLngLat()
                     {
+                        Site = i.Site,
                         Longitude = i.Longitude,
                         Latitude = i.Latitude,
+                        Address = i.Address,
                         ReportTime = i.ReportTime,
                     })
                     .ToListAsync();
@@ -263,6 +265,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 foreach (var position in positions)
                 {
                     if (pre != null && !IsMoved(pre, position)) continue;
+
+                    SiteEntity? site = null;
+                    if (string.IsNullOrEmpty(position.Address) && position.Site != null)
+                    {
+                        site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
+                        if (site != null)
+                        {
+                            position.Address = site.FullAddr;
+                        }
+                    }
+
+                    if ((position.Longitude == null || position.Latitude == null) && position.Site != null)
+                    {
+                        if (site == null) site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
+                        if (site != null)
+                        {
+                            position.Longitude = site.Longitude;
+                            position.Latitude = site.Latitude;
+                        }
+                    }
+
                     useablePositions.Add(position);
                     pre = position;
                 }

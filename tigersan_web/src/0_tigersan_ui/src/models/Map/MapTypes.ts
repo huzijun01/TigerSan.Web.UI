@@ -24,7 +24,13 @@ declare global {
 
 /** 类名 */
 export class ClassNames {
-    static readonly Marker = 'Overlay.Marker'
+    static readonly Marker = 'AMap.Marker'
+    static readonly Text = 'AMap.Text'
+    static readonly Icon = 'AMap.Icon'
+    static readonly LabelMarker = 'AMap.LabelMarker'
+    static readonly ElasticMarker = 'AMap.ElasticMarker'
+    static readonly MarkerCluster = 'AMap.MarkerCluster'
+    static readonly MassMarks = 'AMap.MassMarks'
     static readonly Polygon = 'Overlay.Polygon'
     static readonly Polyline = 'Overlay.Polyline'
     static readonly BezierCurve = 'Overlay.BezierCurve'

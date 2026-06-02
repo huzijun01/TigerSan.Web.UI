@@ -6,6 +6,8 @@ export class AssetLngLat {
     longitude: number = 0
     latitude: number = 0
     reportTime: Date = new Date()
+    site?: bigint
+    address?: string
 }
 
 /** "资产基类"模型 */

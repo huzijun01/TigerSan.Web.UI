@@ -28,6 +28,8 @@ export class LnglatData<TData> {
 /** “地图”模型 */
 export class MapModel<TData> {
     //#region 【Fields】
+    /** 是否“自动初始化” */
+    _isAutoInit = true
     /** 应用秘钥 */
     static _appKey: string = ''
     /** “插件”集合 */

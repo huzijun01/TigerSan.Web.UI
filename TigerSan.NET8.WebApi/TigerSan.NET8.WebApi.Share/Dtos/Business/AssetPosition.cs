@@ -6,7 +6,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
     {
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
-        public DateTime? ReportTime { get; set; }
+        public DateTime ReportTime { get; set; }
+        public long? Site { get; set; }
+        public string? Address { get; set; }
     }
 
     public class AssetPosition : IdEntityBase

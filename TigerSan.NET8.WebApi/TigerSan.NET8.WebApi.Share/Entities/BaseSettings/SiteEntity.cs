@@ -29,5 +29,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public string? Phone { get; set; } = string.Empty;
         [SnakeColumn]
         public string? Comment { get; set; } = string.Empty;
+        [NotMapped]
+        public string FullAddr { get => $"{Addr} {AddrDetail}".Trim(); }
     }
 }

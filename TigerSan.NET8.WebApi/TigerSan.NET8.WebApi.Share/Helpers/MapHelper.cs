@@ -2,6 +2,7 @@
 using System.Text.Json;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using static System.Net.WebRequestMethods;
 
 namespace TigerSan.NET8.WebApi.Share.Helpers
 {
@@ -161,6 +162,34 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
 
             var info = root.TryGetProperty("info", out var infoProp) ? infoProp.GetString() : "未知错误";
             return MyResults<Location>.Warning(LogHelper.Instance.Warning($"高德定位失败: {info}"));
+        }
+        #endregion
+
+        #region 根据“位置”获取“地址”
+        /// <summary>根据“位置”获取“地址”</summary>
+        public static async Task<MyActionResult<string>> GetAddressByLocation(
+            double lng,
+            double lat,
+            string amapKey)
+        {
+            string location = $"{lng},{lat}";
+            string url = $"https://restapi.amap.com/v3/geocode/regeo?key={amapKey}&location={location}&extensions=base";
+
+            var response = await new HttpClient().GetAsync(url);
+            var json = await response.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            if (root.GetProperty("status").GetString() != "1")
+            {
+                return MyResults<string>.Warning(LogHelper.Instance.Warning($"查询失败：{root.GetProperty("info").GetString()}"));
+            }
+
+            var regeocode = root.GetProperty("regeocode");
+            var formattedAddress = regeocode.GetProperty("formatted_address").GetString();
+
+            return MyResults<string>.Success(null, formattedAddress);
         }
         #endregion
     }

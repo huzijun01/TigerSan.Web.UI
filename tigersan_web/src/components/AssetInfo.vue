@@ -9,7 +9,7 @@
                 <span>{{ Texts.ReportTime.value }}</span>
                 <span>{{ model.ReportTimeText.value }}</span>
             </div>
-            <div class="type-panel">
+            <div class="type-panel" v-if="model.IsShowTypeText.value">
                 <span class="type">{{ model.TypeText.value }}</span>
             </div>
         </div>

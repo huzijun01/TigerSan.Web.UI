@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import { computed, reactive, ref, type Reactive } from "vue"
-import { Icons, ObjectHelper } from '@/0_tigersan_ui/tigerui'
+import { Icons, ObjectHelper, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { AssetPosition } from "./AssetModel"
 import { assetTypeHelper } from "../Dictionaries/DictionaryModels"
 
@@ -25,6 +25,8 @@ export class AssetInfoModel {
     readonly Title = computed(() => this.Position.assetId)
     /** “类型”文本 */
     readonly TypeText = computed(() => assetTypeHelper.GetName(this.Position.type))
+    /** 是否显示“类型文本” */
+    readonly IsShowTypeText = computed(() => StringHelper.IsNotEmpty(this.TypeText.value))
     /** “上报时间”文本 */
     readonly ReportTimeText = computed(() => ObjectHelper.GetDateString(this.Position.reportTime))
     /** 样式对象 */

@@ -14,14 +14,14 @@ export const pathPage = new AssetPathPageModel()
 /** 标签视图 */
 export const tabView = new TabViewModel([
     {
-        Title: '记录',
-        _component: AssetRecordPage,
-        _rootProps: { model: recordPage },
-    },
-    {
         Title: '轨迹',
         _component: AssetPathPage,
         _rootProps: { model: pathPage },
+    },
+    {
+        Title: '记录',
+        _component: AssetRecordPage,
+        _rootProps: { model: recordPage },
     }
 ])
 
@@ -59,6 +59,8 @@ export const assetLedgerTable = new TableModel<AssetModel>([
             pathPage._asset = rowData.id
             assetDetail.Title.value = `资产详情 - ${rowData.assetId}`
             recordPage.Refresh()
+            const weekRange = ObjectHelper.GetOneWeekAgoAndTodayString()
+            pathPage.date.Date.value = [weekRange.start, weekRange.end]
             pathPage.Refresh()
             assetDetail.Show()
         }

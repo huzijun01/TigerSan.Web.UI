@@ -272,6 +272,19 @@ namespace TigerSan.NET8.WebApi.Helpers
             newTag.Latitude = location.Latitude;
             #endregion 计算“经纬度”
 
+            #region 获取“地址”
+            if (newTag.Longitude != null && newTag.Latitude != null)
+            {
+                var resGetAddress = await MapHelper.GetAddressByLocation(newTag.Longitude.Value, newTag.Latitude.Value, Constants.AMapKey);
+                var address = resGetAddress.Data;
+                if (address == null)
+                {
+                    return resGetAddress.Convert<object>();
+                }
+                newTag.Address = address;
+            }
+            #endregion 获取“地址”
+
             var resEdit = await tagService.Edit(newTag);
             if (!resEdit.IsSuccess)
             {

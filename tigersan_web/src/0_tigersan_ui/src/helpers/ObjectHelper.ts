@@ -167,6 +167,22 @@ export class ObjectHelper {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
+    /** 获取一周前和今天的日期 */
+    static GetOneWeekAgoAndToday(): { start: Date, end: Date } {
+        const now = new Date()
+        const end = new Date(now)
+        const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        return { start, end }
+    }
+
+    /** 获取一周前和今天的日期（字符串） */
+    static GetOneWeekAgoAndTodayString(): { start: string, end: string } {
+        const now = new Date()
+        const end = new Date(now)
+        const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        return { start: ObjectHelper.GetDateString(start), end: ObjectHelper.GetDateString(end) }
+    }
+
     /** 判断“字段文本”是否等于“目标值”  */
     static IsTextEqual<TValue>(obj: object, propName: string, value: TValue): boolean {
         return ObjectHelper.DefaultStringGetter(obj, propName) === value

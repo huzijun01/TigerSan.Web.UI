@@ -30,6 +30,7 @@ export class AssetPathPageModel {
         watch(this.Positions, this.UpdateAssetInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
+        this.map._isAutoInit = false
         this.map.IsShowSelect.value = false
         this.map.IsShowButton.value = false
         this.map._onInitAsync = async () => {
@@ -97,6 +98,7 @@ export class AssetPathPageModel {
             ld.onClick = this.OnMarkerClick
             return ld
         })
+        this.map.ClearMarkers()
         this.map.AddMarkers(points)
 
         // 列表:
@@ -122,7 +124,7 @@ export class AssetPathPageModel {
 
     readonly GetAssetPosition = (position: AssetLngLat) => {
         const ap = new AssetPosition()
-        // ap.assetId = position.assetId
+        if (position.address) ap.assetId = position.address
         ap.longitude = position.longitude
         ap.latitude = position.latitude
         ap.reportTime = position.reportTime

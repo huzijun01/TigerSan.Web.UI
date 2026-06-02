@@ -23,12 +23,12 @@ class DatePickerModel {
     _placeholder = '请选择时间'
     _startPlaceholder = '开始时间'
     _endPlaceholder = '结束时间'
-    _onChange?: (value?: string | string[]) => void
+    _onChange?: (value?: string | [string, string]) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
     /** 日期 */
-    readonly Date = ref<string | string[] | undefined>()
+    readonly Date = ref<string | [string, string] | undefined>()
 
     //#region [computed]
     /** 起始日期 */
