@@ -90,7 +90,7 @@
             </FormItem>
         </FormRow>
         <template v-slot:right>
-            <Map :model="form.map"></Map>
+            <Map :model="form.map" style="margin-left: 15px;"></Map>
         </template>
     </PopForm>
 </template>
