@@ -66,6 +66,8 @@ export class Icons {
     static File_New = ""
     static File_Linear = ""
     static File_Planar = ""
+    static Flag_Linear = ""
+    static Flag_Planar = ""
     static Folder_Linear = ""
     static Folder_Planar = ""
     static Feedback_Write = ""

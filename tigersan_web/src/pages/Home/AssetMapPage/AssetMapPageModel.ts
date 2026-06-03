@@ -16,7 +16,7 @@ export class AssetMapPageModel {
     /** “物资信息”集合 */
     readonly AssetInfoes = shallowReactive<AssetInfoModel[]>([])
     /** 地图 */
-    readonly map = new MapModel<AssetPosition>()
+    readonly map = new MapModel<AssetPosition, AssetInfoModel>({ animateEnable: false })
 
     constructor() {
         this.filter = new AssetFilter(this.Refresh)
@@ -62,15 +62,13 @@ export class AssetMapPageModel {
         this.Count.value = this.Positions.length
 
         // 标记:
-        const points: LnglatData<AssetPosition>[] = []
+        const points: LnglatData<AssetPosition, AssetInfoModel>[] = []
         const positions = toRaw(this.Positions)
         positions.forEach(position => {
             if (position.longitude != undefined && position.latitude != undefined) {
                 const infoModel = new AssetInfoModel(position)
                 infoModel.Background.value = 'var(--theme-input-background)'
-                const ld = new LnglatData([position.longitude, position.latitude], position)
-                ld.info = AssetInfo
-                ld.infoModel = infoModel
+                const ld = new LnglatData([position.longitude, position.latitude], position, AssetInfo, infoModel)
                 ld.onClick = this.OnMarkerClick
                 points.push(ld)
             }

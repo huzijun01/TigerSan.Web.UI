@@ -3,7 +3,7 @@ import AMapLoader from "@amap/amap-jsapi-loader"
 import Marker from '../../components/Map/Marker.vue'
 import ClusterMarker from '../../components/Map/ClusterMarker.vue'
 import { computed, ref, shallowRef, watch, type Component } from "vue"
-import { MarkerModel } from "./MarkerModel"
+import { MarkerModel, MarkerModes } from "./MarkerModel"
 import type { ActionAsync } from "../../types"
 import { MapPlugins } from "./MapTypes/MapPlugins"
 import { SelectModel } from "../Inputs/SelectModel"
@@ -12,21 +12,27 @@ import { ArrayHelper, ComponentHelper, MathHelper, Point2, ThemeHelper } from ".
 import { MapEvents, DataOptions, MapStyle, PolygonEditorEvent, ClassNames } from "./MapTypes"
 
 /** “经纬度数据”模型 */
-export class LnglatData<TData> {
+export class LnglatData<TData, TInfoModel> {
     lnglat: AMap.LngLatLike
     data?: TData
     info?: Component
-    infoModel?: any
+    infoModel?: TInfoModel
     onClick?: (data?: TData) => void
 
-    constructor(lnglat: AMap.LngLatLike, data?: TData) {
+    constructor(
+        lnglat: AMap.LngLatLike,
+        data?: TData,
+        info?: Component,
+        infoModel?: TInfoModel) {
         this.lnglat = lnglat
         this.data = data
+        this.info = info
+        this.infoModel = infoModel
     }
 }
 
 /** “地图”模型 */
-export class MapModel<TData> {
+export class MapModel<TData, TInfoModel> {
     //#region 【Fields】
     /** 是否“自动初始化” */
     _isAutoInit = true
@@ -35,7 +41,11 @@ export class MapModel<TData> {
     /** “插件”集合 */
     static _plugins?: string[]
     /** “标记数据”映射 */
-    readonly _markerDataMap = new Map<DataOptions, LnglatData<TData>>()
+    readonly _markerDataMap = new Map<DataOptions, LnglatData<TData, TInfoModel>>()
+    /** “标记”集合 */
+    readonly _markers: AMap.Marker[] = []
+    /** “标记模型”集合 */
+    readonly _markerModels: MarkerModel<LnglatData<TData, TInfoModel>, TInfoModel>[] = []
     /** 地图实例 */
     _map?: AMap.Map
     /** 配置 */
@@ -198,7 +208,7 @@ export class MapModel<TData> {
     }
 
     /** 渲染“标记” */
-    static RenderMarker(context: AMap.RenderMarkerObject, map: MapModel<any>) {
+    static RenderMarker(context: AMap.RenderMarkerObject, map: MapModel<any, any>) {
         const model = new MarkerModel()
         const cd = context.data[0]
         if (cd) {
@@ -356,6 +366,8 @@ export class MapModel<TData> {
         this._placeSearch = undefined
         this._polygonEditor = undefined
         this._polyline = undefined
+        this._markers.splice(0)
+        this._markerModels.splice(0)
 
         this._onInit?.()
         await this._onInitAsync?.()
@@ -472,7 +484,7 @@ export class MapModel<TData> {
     }
 
     /** 初始化“标记聚合” */
-    readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData>[], opts?: AMap.MarkerClusterOptions) => {
+    readonly InitClusterAsync = async (lnglatDatas: LnglatData<TData, any>[], opts?: AMap.MarkerClusterOptions) => {
         if (!await MapModel.LoadPluginAsync([MapPlugins.MarkerCluster])) return
 
         if (!this._map) {
@@ -508,7 +520,7 @@ export class MapModel<TData> {
 
     /** 添加“标记”集合 */
     readonly AddMarkers = (
-        lnglatDatas: LnglatData<TData>[],
+        lnglatDatas: LnglatData<TData, TInfoModel>[],
         opts?: AMap.MarkerOptions,
         callback?: AMap.MapCallback) => {
         if (!this._map) {
@@ -517,13 +529,12 @@ export class MapModel<TData> {
         }
 
         for (const lnglatData of lnglatDatas) {
-            const markerElement = ComponentHelper.GetElement(Marker, {
-                model: new MarkerModel({
-                    data: lnglatData,
-                    info: lnglatData.info,
-                    infoModel: lnglatData.infoModel
-                })
+            const model = new MarkerModel({
+                data: lnglatData,
+                info: lnglatData.info,
+                infoModel: lnglatData.infoModel
             })
+            const markerElement = ComponentHelper.GetElement(Marker, { model })
             if (!markerElement) {
                 console.warn('The markerElement is undefined!')
                 return
@@ -537,6 +548,8 @@ export class MapModel<TData> {
                 ...opts
             })
             this._map.add(marker)
+            this._markers.push(marker)
+            this._markerModels.push(model)
 
             MapModel.AddEvent(marker, {
                 click: args => {
@@ -556,6 +569,23 @@ export class MapModel<TData> {
     /** 清空“标记” */
     readonly ClearMarkers = () => {
         this.ClearOverlays(ClassNames.Marker)
+        this._markers.splice(0)
+        this._markerModels.splice(0)
+    }
+
+    /** 初始化“旗帜” */
+    readonly InitFlag = () => {
+        const markers = this._markerModels
+        const n = markers.length
+        if (n > 0) {
+            const end = markers[n - 1]
+            if (end) end.Mode.value = MarkerModes.End
+        }
+
+        if (n > 1) {
+            const start = markers[0]
+            if (start) start.Mode.value = MarkerModes.Start
+        }
     }
 
     //#region 多边形

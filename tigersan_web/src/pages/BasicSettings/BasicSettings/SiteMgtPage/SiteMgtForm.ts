@@ -6,7 +6,7 @@ import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
 export class SiteMgtForm {
     //#region 【Fields】
     /** 地图 */
-    readonly map = new MapModel<any>()
+    readonly map = new MapModel<any, any>({ animateEnable: false })
     /** 围栏路径 */
     readonly FencePath = ref<string | undefined>()
     /** 经度 */

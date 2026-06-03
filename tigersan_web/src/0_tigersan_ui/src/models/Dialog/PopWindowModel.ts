@@ -1,6 +1,13 @@
-import { computed, ref, type StyleValue } from "vue"
+import { computed, ref, watch, type StyleValue } from "vue"
 
 export class PopWindowModel {
+    //#region 【Fields】
+    /** 显示时 */
+    _onShow?: (model: PopWindowModel) => void
+    /** 关闭时 */
+    _onClose?: (model: PopWindowModel) => void
+    //#endregion 【Fields】
+
     //#region 【Properties】
     /** 是否“显示” */
     readonly IsShow = ref(false)
@@ -11,6 +18,18 @@ export class PopWindowModel {
     /** 最小高度 */
     readonly MinHeight = ref<string | undefined>()
     //#endregion 【Properties】
+
+    //#region 【Ctor】
+    constructor() {
+        watch(this.IsShow, isShow => {
+            if (isShow) {
+                this._onShow?.(this)
+            } else {
+                this._onClose?.(this)
+            }
+        })
+    }
+    //#endregion 【Ctor】
 
     //#region 【Functions】
     /** 显示 */

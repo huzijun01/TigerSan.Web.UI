@@ -29,6 +29,7 @@ export const tabView = new TabViewModel([
 export const assetDetail = new PopWindowModel()
 assetDetail.MinWidth.value = '80vw'
 assetDetail.MinHeight.value = '70vh'
+assetDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
 
 /** 分页器 */
 export const pagination = new PaginationModel()

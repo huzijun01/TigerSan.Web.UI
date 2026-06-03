@@ -11,7 +11,7 @@
       <IconButton :icon="Icons.Global_Linear" :text="Texts.Language.value" :click="config.ToggleLocale"></IconButton>
     </div>
     <div class="company-panel flex-center">
-      <span>© 2026 深圳大业工业设备有限公司 内部管理系统</span>
+      <span>© 2026 深圳市大业工业设备有限公司</span>
       <span class="separator">|</span>
       <a href=" " target="_blank" rel="noopener noreferrer" class="beian-link">粤ICP备2023066306号-3</a>
     </div>

@@ -6,7 +6,7 @@ import { assetRecordHelper, AssetLngLat, AssetInfoModel, AssetPosition } from '@
 export class AssetPathPageModel {
     _asset?: bigint
     /** 地图 */
-    readonly map = new MapModel<any>()
+    readonly map = new MapModel<any, AssetInfoModel>({ animateEnable: false })
 
     /** 日期 */
     readonly date = new DatePickerModel()
@@ -89,21 +89,21 @@ export class AssetPathPageModel {
 
         // 标记:
         const positions = toRaw(this.Positions)
-        const points: LnglatData<AssetInfoModel>[] = positions.map(position => {
+        const points: LnglatData<AssetInfoModel, AssetInfoModel>[] = positions.map(position => {
             const infoModel = new AssetInfoModel(this.GetAssetPosition(position))
             infoModel.Background.value = 'var(--theme-input-background)'
-            const ld = new LnglatData([position.longitude, position.latitude], infoModel)
-            ld.info = AssetInfo
-            ld.infoModel = infoModel
+            const ld = new LnglatData([position.longitude, position.latitude], infoModel, AssetInfo, infoModel)
             ld.onClick = this.OnMarkerClick
             return ld
         })
+
         this.map.ClearMarkers()
         this.map.AddMarkers(points)
+        this.map.InitFlag()
 
         // 列表:
         this.AssetInfoes.splice(0)
-        this.pagination.GetPage(positions.reverse()).forEach(position => {
+        this.pagination.GetPage(positions.slice().reverse()).forEach(position => {
             const assetInfo = new AssetInfoModel(this.GetAssetPosition(position))
             assetInfo._onClick = this.OnItemClick
             this.AssetInfoes.push(assetInfo)
@@ -112,7 +112,6 @@ export class AssetPathPageModel {
 
     /** 点击“标记”时 */
     readonly OnMarkerClick = (data?: AssetInfoModel) => {
-        console.log(data)
     }
 
     /** 点击“项目”时 */
@@ -122,6 +121,7 @@ export class AssetPathPageModel {
         this.map.ZoomByVector2([position.longitude, position.latitude])
     }
 
+    /** 获取“资产位置” */
     readonly GetAssetPosition = (position: AssetLngLat) => {
         const ap = new AssetPosition()
         if (position.address) ap.assetId = position.address
