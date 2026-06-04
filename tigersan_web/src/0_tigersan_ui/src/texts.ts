@@ -54,6 +54,7 @@ class Texts {
     static readonly Asset = TextModel.Computed('Asset', '资产')
     static readonly BaseStation = TextModel.Computed('BaseStation', '基站')
     static readonly Tag = TextModel.Computed('Tag', '标签')
+    static readonly Locator = TextModel.Computed('Locator', '定位器')
 }
 
 export {

@@ -55,7 +55,7 @@ const style = computed((): StyleValue => {
         }
 
         .icon {
-            margin-right: 5px;
+            margin-right: 8px;
         }
     }
 

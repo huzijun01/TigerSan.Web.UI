@@ -13,8 +13,8 @@ import PersonMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/PersonMgtT
 import AssetMgtTagPage from '@/pages/BasicSettings/Equipments/TagMgt/AssetMgtTagPage/AssetMgtTagPage.vue'
 import EnvSensorPage from '@/pages/BasicSettings/Equipments/TagMgt/EnvSensorPage/EnvSensorPage.vue'
 import TagMgtPage from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtPage.vue'
-// TerminalMgt:
-import Terminal4gPage from '@/pages/BasicSettings/TerminalMgt/Terminal4gPage/Terminal4gPage.vue'
+// EqpMgt:
+import Locator4gPage from '@/pages/BasicSettings/EqpMgt/Locator4gPage/Locator4gPage.vue'
 // Dictionaries:
 import AssetTypeMgtPage from '@/pages/BasicSettings/Dictionaries/AssetTypeMgtPage.vue'
 import ScenarioMgtPage from '@/pages/BasicSettings/Dictionaries/ScenarioMgtPage.vue'
@@ -135,10 +135,10 @@ export const navBasicSettings: NavFolderConfig = {
             _authority: Authorities.EqpMgtFolder,
             Buttons: [
                 {
-                    Title: "4G定位终端",
+                    Title: "4G定位器",
                     Icon: Icons.EQP,
-                    _component: Terminal4gPage,
-                    _authority: Authorities.Terminal4gPage,
+                    _component: Locator4gPage,
+                    _authority: Authorities.Locator4gPage,
                 },
             ]
         },

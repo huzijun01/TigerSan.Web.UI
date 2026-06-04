@@ -1,16 +1,20 @@
 import { IdModel, OnlineStates, IdModelHelper } from "@/0_tigersan_ui/tigerui"
+import { EqpTypes } from "../base/EqpTypes"
 import { axiosHelper } from "../base/AxiosHelper"
 
-/** "标签"模型 */
+/** “标签”模型 */
 export class TagModel extends IdModel {
     batch: bigint = 0n
     type: bigint = 0n
     station?: bigint
+    eqpType = EqpTypes.Tag
     isEnable = false
     onlineState = OnlineStates.Offline
     tagId = ''
     brandId? = ''
     rfid? = ''
+    imei? = ''
+    iccid? = ''
     battery?: number
     signal?: number
     temperature?: number
@@ -23,6 +27,7 @@ export class TagModel extends IdModel {
     companyName?: string
     site?: bigint
     siteName?: string
+    address?: string
 }
 
 class TagHelper extends IdModelHelper<TagModel> {
@@ -42,6 +47,7 @@ class TagHelper extends IdModelHelper<TagModel> {
         batch?: bigint,
         type?: bigint,
         station?: bigint,
+        eqpType?: EqpTypes,
         isEnable?: boolean,
         state?: OnlineStates,
         tagId?: string,
@@ -62,6 +68,7 @@ class TagHelper extends IdModelHelper<TagModel> {
                     filters: [
                         { propName: 'Type', value: param.type },
                         { propName: 'Station', value: param.station },
+                        { propName: 'EqpType', value: param.eqpType },
                         { propName: 'IsEnable', value: param.isEnable },
                         { propName: 'OnlineState', value: param.state },
                         { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
@@ -79,6 +86,7 @@ class TagHelper extends IdModelHelper<TagModel> {
         batch?: bigint,
         type?: bigint,
         station?: bigint,
+        eqpType?: EqpTypes,
         isEnable?: boolean,
         state?: OnlineStates,
         tagId?: string,
@@ -103,6 +111,7 @@ class TagHelper extends IdModelHelper<TagModel> {
                     filters: [
                         { propName: 'Type', value: param.type },
                         { propName: 'Station', value: param.station },
+                        { propName: 'EqpType', value: param.eqpType },
                         { propName: 'IsEnable', value: param.isEnable },
                         { propName: 'OnlineState', value: param.state },
                         { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },

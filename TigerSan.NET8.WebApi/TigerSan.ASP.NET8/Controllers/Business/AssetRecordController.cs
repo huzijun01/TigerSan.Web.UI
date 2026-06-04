@@ -93,7 +93,7 @@ namespace TigerSan.NET8.WebApi.Controllers
             package.Data.TagDatas.Add(new BluetoothTagData
             {
                 TagId = tag.TagId,
-                Voltage = entity.Battery ?? 0,
+                Battery = entity.Battery ?? 0,
                 Temperature = entity.Temperature ?? 0,
                 SignalRaw = entity.Signal ?? 0,
                 Latitude = entity.Latitude ?? 0,

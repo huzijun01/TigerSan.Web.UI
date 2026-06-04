@@ -5,7 +5,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
     public static class ObjectExtention
     {
         #region 浅复制
-        public static void ShallowCopy<TTarget, TSource>(this TTarget target, TSource source)
+        public static void ShallowCopy<TTarget, TSource>(this TTarget target, TSource source, string[]? excludeProps = null)
             where TTarget : class
             where TSource : class
         {
@@ -15,6 +15,9 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
 
             foreach (var targetProp in targetProps)
             {
+                // 检查是否在排除列表中
+                if (excludeProps != null && excludeProps.Contains(targetProp.Name)) continue;
+
                 // 仅处理可写属性
                 if (!targetProp.CanWrite) continue;
 

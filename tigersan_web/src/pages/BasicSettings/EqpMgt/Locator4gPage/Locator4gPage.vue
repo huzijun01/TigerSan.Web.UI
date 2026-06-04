@@ -88,11 +88,11 @@
 import { onMounted } from 'vue'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 import { EqpTypes } from '@/models'
-import { TagMgtForm } from './TagMgtForm'
 import { Authorities } from '@/navs/Authorities'
+import { TagMgtForm } from '../../Equipments/TagMgt/TagMgtPage/TagMgtForm'
 
 // 【字段】:
-const form = new TagMgtForm(EqpTypes.Tag)
+const form = new TagMgtForm(EqpTypes.Locator)
 const { IsOnlySelected } = form.table
 
 // 【过程】:

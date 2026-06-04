@@ -1,13 +1,21 @@
 import { ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading } from '@/0_tigersan_ui/tigerui'
-import { tagMgtTable } from './TagMgtTable'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts } from '@/0_tigersan_ui/tigerui'
+import { GetTable } from './TagMgtTable'
 import { AssetFilter } from '@/pages/Home/AssetLedgerPage/AssetFilter'
-import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper } from '@/models'
+import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTypes, EqpType } from '@/models'
 
 export class TagMgtForm {
     //#region 【Fields】
+    /** 设备类型 */
+    readonly eqpType: EqpTypes
+    /** 设备类型 */
+    readonly eqpTypeName: string
+    /** 在线总数 */
     readonly OnlineCount = ref(0)
+    /** 离线总数 */
     readonly OfflineCount = ref(0)
+    /** 表格 */
+    readonly table = GetTable()
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** 开关 */
@@ -84,7 +92,11 @@ export class TagMgtForm {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new TagModel()
+    readonly AddGetSource = () => {
+        const tag = new TagModel()
+        tag.eqpType = this.eqpType
+        return tag
+    }
 
     /** “标签”表单配置 */
     readonly configTagForm: FormConfig<TagModel> = {
@@ -93,7 +105,7 @@ export class TagMgtForm {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (isEdit) {
-                const rowData = tagMgtTable.SelectedRowDatas.value[0]
+                const rowData = this.table.SelectedRowDatas.value[0]
                 if (!rowData) {
                     console.warn('The rowData is undefined!')
                     return
@@ -120,8 +132,10 @@ export class TagMgtForm {
     //#endregion 【Fields】
 
     //#region 【Ctor】
-    constructor() {
-        watch(tagMgtTable.IsSelected, isSelected => this.switchIsEnable.IsEnable.value = isSelected)
+    constructor(eqpType: EqpTypes) {
+        this.eqpType = eqpType
+        this.eqpTypeName = EqpType.GetName(eqpType)
+        watch(this.table.IsSelected, isSelected => this.switchIsEnable.IsEnable.value = isSelected)
         this.searchRfid = new AssetFilter(this.Refresh).searchRfid
         this.pagination.IsShowSelectedRowCount.value = true
         this.switchIsEnable.IsEnable.value = false
@@ -130,7 +144,7 @@ export class TagMgtForm {
         this.searchTagId.PlaceholderEN.value = 'Tag ID'
 
         // 更新:
-        tagMgtTable._onSelectStateChange = this.InitSelectIsEnableState
+        this.table._onSelectStateChange = this.InitSelectIsEnableState
         this.searchTagId._onSearch = this.Refresh
         this.searchTagId._onChange = this.Refresh
         this.pagination._onChange = this.Refresh
@@ -157,6 +171,7 @@ export class TagMgtForm {
             batch: this.selectBatch.Value.value?.id,
             type: this.selectType.Value.value?.id,
             station: this.selectStation.Value.value?.id,
+            eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
             state: OnlineStates.Online,
             tagId: this.searchTagId.Value.value,
@@ -166,6 +181,7 @@ export class TagMgtForm {
             batch: this.selectBatch.Value.value?.id,
             type: this.selectType.Value.value?.id,
             station: this.selectStation.Value.value?.id,
+            eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
             state: OnlineStates.Offline,
             tagId: this.searchTagId.Value.value,
@@ -175,6 +191,7 @@ export class TagMgtForm {
             batch: this.selectBatch.Value.value?.id,
             type: this.selectType.Value.value?.id,
             station: this.selectStation.Value.value?.id,
+            eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
             state: this.selectState.Value.value,
             tagId: this.searchTagId.Value.value,
@@ -191,13 +208,14 @@ export class TagMgtForm {
             pageNumber: this.pagination.SelectedNum.value,
             batch: this.selectBatch.Value.value?.id,
             station: this.selectStation.Value.value?.id,
+            eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
             state: this.selectState.Value.value,
             type: this.selectType.Value.value?.id,
             tagId: this.searchTagId.Value.value,
             rfid: this.searchRfid.Value.value,
         }).then(arr => {
-            tagMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
+            this.table.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
         })
     }
 
@@ -213,13 +231,14 @@ export class TagMgtForm {
                 pageNumber: this.pagination.SelectedNum.value,
                 batch: this.selectBatch.Value.value?.id,
                 station: this.selectStation.Value.value?.id,
+                eqpType: this.eqpType,
                 isEnable: this.selectIsEnable.Value.value,
                 state: this.selectState.Value.value,
                 type: this.selectType.Value.value?.id,
                 tagId: this.searchTagId.Value.value,
                 rfid: this.searchRfid.Value.value,
             }).then(arr => {
-                ArrayHelper.Set(tagMgtTable.RowDatas, arr)
+                ArrayHelper.Set(this.table.RowDatas, arr)
             })
         } finally {
             loading.IsShow.value = false
@@ -228,7 +247,7 @@ export class TagMgtForm {
 
     /** 增 */
     readonly Add = () => {
-        this.tagForm.Title.value = '新增标签'
+        this.tagForm.Title.value = `${Texts.Add.value}${this.eqpTypeName}`
 
         this.tagForm._getSource = this.AddGetSource
 
@@ -243,10 +262,10 @@ export class TagMgtForm {
 
     /** 改 */
     readonly Edit = () => {
-        this.tagForm.Title.value = '修改标签'
+        this.tagForm.Title.value = `${Texts.Edit.value}${this.eqpTypeName}`
 
         this.tagForm._getSource = () => {
-            const rowData = tagMgtTable.SelectedRowDatas.value[0]
+            const rowData = this.table.SelectedRowDatas.value[0]
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
@@ -266,7 +285,7 @@ export class TagMgtForm {
     }
 
     readonly EditIsEnable = (isEnable: boolean) => {
-        if (!tagMgtTable.IsSelected.value) return
+        if (!this.table.IsSelected.value) return
 
         DialogHelper.ShowDialog(
             '修改启用状态',
@@ -279,7 +298,7 @@ export class TagMgtForm {
                 }
 
                 const rowDatas: TagModel[] = []
-                tagMgtTable.SelectedRowDatas.value.forEach(rowData => {
+                this.table.SelectedRowDatas.value.forEach(rowData => {
                     const newRowData = ObjectHelper.ShallowCopy(rowData)
                     newRowData.isEnable = isEnable
                     rowDatas.push(newRowData)
@@ -295,7 +314,7 @@ export class TagMgtForm {
     }
 
     readonly InitSelectIsEnableState = () => {
-        this.switchIsEnable.Value.value = tagMgtTable.IsSelected.value && tagMgtTable.SelectedRowDatas.value.every(r => r.isEnable)
+        this.switchIsEnable.Value.value = this.table.IsSelected.value && this.table.SelectedRowDatas.value.every(r => r.isEnable)
     }
 
     /** 删 */
@@ -312,7 +331,7 @@ export class TagMgtForm {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const rowData = tagMgtTable.SelectedRowDatas.value[0]
+        const rowData = this.table.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return {}

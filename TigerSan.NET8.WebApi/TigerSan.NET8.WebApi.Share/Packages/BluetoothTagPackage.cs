@@ -60,9 +60,9 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("M")]
         public string TagId { get; set; } = string.Empty;
 
-        /// <summary>电压</summary>
+        /// <summary>电量</summary>
         [JsonProperty("b")]
-        public int Voltage { get; set; }
+        public int Battery { get; set; }
 
         /// <summary>温度</summary>
         [JsonProperty("t")]

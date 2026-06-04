@@ -198,10 +198,11 @@ namespace TigerSan.NET8.WebApi.Helpers
 
                 var newTag = new TagDto();
                 newTag.ShallowCopy(tag);
+                newTag.EqpType = EqpTypes.Tag;
                 newTag.ReportTime = GetUtc(package.ReportTime);
                 newTag.OnlineState = OnlineStates.Online;
                 newTag.Station = baseStation?.Id;
-                newTag.Battery = tagData.Voltage;
+                newTag.Battery = tagData.Battery;
                 newTag.Temperature = tagData.Temperature;
                 newTag.Signal = tagData.Signal;
 
@@ -254,6 +255,9 @@ namespace TigerSan.NET8.WebApi.Helpers
 
             var newTag = new TagDto();
             newTag.ShallowCopy(tag);
+            newTag.Imei = package.Data.IMEI;
+            newTag.Iccid = package.Data.ICCID;
+            newTag.EqpType = EqpTypes.Locator;
             newTag.ReportTime = GetUtc(package.ReportTime);
             newTag.OnlineState = OnlineStates.Online;
             newTag.Station = baseStation?.Id;

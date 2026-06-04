@@ -74,13 +74,6 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         Type: ItemType.TextBox,
     },
     {
-        _propName: 'rfid',
-        Text: 'RFID',
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-    },
-    {
         _propName: 'siteName',
         Text: '场地',
         IsReadonly: true,
@@ -125,6 +118,13 @@ export const assetLedgerTable = new TableModel<AssetModel>([
     {
         _propName: 'battery',
         Text: '标签电量',
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'rfid',
+        Text: 'RFID',
         IsReadonly: true,
         IsRequired: false,
         Type: ItemType.TextBox,

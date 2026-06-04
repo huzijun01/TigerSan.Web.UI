@@ -1,5 +1,6 @@
 // base:
 export * from '@/models/base/AssetStates'
+export * from '@/models/base/EqpTypes'
 // BasicSettings:
 export * from '@/models/BasicSettings/BatchModel'
 export * from '@/models/BasicSettings/CompanyInfoModel'

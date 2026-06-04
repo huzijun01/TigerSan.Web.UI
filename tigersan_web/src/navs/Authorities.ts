@@ -20,7 +20,7 @@ export class Authorities {
     static EnvSensorPage = authorityHelper.GetAuthority()
     /** 设备管理 */
     static EqpMgtFolder = authorityHelper.GetAuthority()
-    static Terminal4gPage = authorityHelper.GetAuthority()
+    static Locator4gPage = authorityHelper.GetAuthority()
     /** 操作管理 */
     static OperationMgtFolder = authorityHelper.GetAuthority()
     static OperationRecordPage = authorityHelper.GetAuthority()

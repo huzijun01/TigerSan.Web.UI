@@ -484,8 +484,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 _editingTags.TryGetValue(newTag.Id, out var editingTag);
                 if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
-                _editingTags.Add(newTag.Id, newTag);
+                _editingTags.Add(newTag.Id, newTag); // 开始修改
 
+                #region 获取“最新记录”
                 var resLast = await GetLast(newTag.Asset.Value);
                 if (resLast.IsError)
                 {
@@ -494,8 +495,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.Error(resLast.Message);
                 }
                 var lastRecord = resLast.Data;
+                #endregion
 
-                if (lastRecord == null) // 首条记录，新增“入库记录”
+                #region 若“无记录”，新增“入库记录”
+                if (lastRecord == null)
                 {
                     lastRecord = new AssetRecordEntity()
                     {
@@ -518,15 +521,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
                     return MyResults<object>.OperationSuccess;
                 }
+                #endregion
 
                 var newRecord = new AssetRecordEntity();
                 newRecord.ShallowCopy(lastRecord);
-                newRecord.ShallowCopy(newTag);
-                newRecord.Id = lastRecord.Id;
+                newRecord.ShallowCopy(newTag, [nameof(AssetRecordEntity.Id)]);
 
-                if (oldTag.Station != newTag.Station) // “场地”改变，新增“入库记录”
+                if (oldTag.Station != newTag.Station) // 若“场地”改变，新增“入库记录”
                 {
-                    // 添加“场地”:
+                    #region 添加“场地”
                     if (newTag.Station != null)
                     {
                         var station = await _db.BaseStations.FirstOrDefaultAsync(b => b.Id == newTag.Station.Value);
@@ -541,6 +544,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             newRecord.Site = station.Site;
                         }
                     }
+                    #endregion
 
                     if (lastRecord.State != AssetStates.Outbound
                         && lastRecord.State != AssetStates.InTransit) // 无“出库记录”
@@ -550,7 +554,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         lastRecord.TargetSite = newRecord.Site;
 
                         if ((lastRecord.State == AssetStates.InStore || lastRecord.State == AssetStates.Stolid)
-                            && lastRecord.OnlineState == OnlineStates.Offline) // “在库”且“离线”
+                            && lastRecord.OnlineState == OnlineStates.Offline) // 若“在库”且“离线”
                         {
                             // 将“最新记录”改为“出库记录”：
                             resOutbound = await Edit(lastRecord, false);
@@ -584,27 +588,29 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else // 同一场地
                 {
-                    if (lastRecord.State == AssetStates.InStore) // 在库
+                    #region 若“在库”，判断是否“滞留”
+                    if (lastRecord.State == AssetStates.InStore)
                     {
-                        // 判断是否“滞留”:
                         var resLastInbound = await GetLastInbound(newTag.Asset.Value);
                         var lastInboundRecord = resLastInbound.Data;
                         if (lastInboundRecord == null)
                         {
                             if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             LogHelper.Instance.Error(resLastInbound.Message);
-                            return MyResults<object>.Error(resLastInbound.Message);
+                            return resLastInbound.Convert<object>();
                         }
 
                         newRecord.State = (DateTimeHelper.GetUtcNow() - lastInboundRecord.ReportTime).TotalHours
                             > Constants.Stolid_Threshold_Hours
                             ? AssetStates.Stolid : AssetStates.InStore;
                     }
+                    #endregion
 
                     newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
 
                     if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变
                     {
+                        #region 若“出库”且“离线”，改为“在途记录”
                         if (lastRecord.State == AssetStates.Outbound
                             && newTag.OnlineState == OnlineStates.Offline)
                         {
@@ -617,6 +623,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 ReportTime = DateTimeHelper.GetUtcNow()
                             };
                         }
+                        #endregion
 
                         // 新增记录:
                         var res = await Add(newRecord, false);
@@ -658,12 +665,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             catch (Exception ex)
             {
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                LogHelper.Instance.Error(ex.GetMessage());
-                return MyResults<object>.Error(ex.GetMessage());
+                return MyResults<object>.Error(LogHelper.Instance.Error(ex.GetMessage()));
             }
             finally
             {
-                _editingTags.Remove(newTag.Id);
+                _editingTags.Remove(newTag.Id); // 结束修改
             }
         }
         #endregion

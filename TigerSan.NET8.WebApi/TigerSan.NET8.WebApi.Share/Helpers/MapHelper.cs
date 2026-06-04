@@ -2,7 +2,6 @@
 using System.Text.Json;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using static System.Net.WebRequestMethods;
 
 namespace TigerSan.NET8.WebApi.Share.Helpers
 {
