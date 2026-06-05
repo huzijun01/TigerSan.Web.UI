@@ -2,14 +2,14 @@
     <div class="table-panel" :class="model.ClassObj.value">
         <table>
             <!-- 表头区域 -->
-            <thead :style="styleObj">
+            <thead :style="bgStyle">
                 <tr>
-                    <th v-if="model.IsShowCheckBox.value" class="checkbox">
+                    <th v-if="model.IsShowCheckBox.value" class="checkbox sticky" ref="refCheckbox" :style="bgStyle">
                         <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
                             v-model="model.IsSelectAll.value" v-on:change="model.RiseOnSelectStateChange">
                     </th>
-                    <th v-for="h in model.HeaderModels" :key="h._id" :style="h.styleObj.value">
-                        <span class="ellipsis">{{ h.Text.value }}</span>
+                    <th v-for="h in model.HeaderModels" :key="h._id" :style="h.CellStyle.value">
+                        <TableHeader :model="h" />
                     </th>
                 </tr>
             </thead>
@@ -17,10 +17,10 @@
             <!-- 表格主体 -->
             <tbody>
                 <tr v-for="r in model.RowModels" :key="r._id" :class="{ 'select': r.IsChecked.value }">
-                    <td v-if="model.IsShowCheckBox.value" class="checkbox">
+                    <td v-if="model.IsShowCheckBox.value" class="checkbox sticky" :style="bgStyle">
                         <input type="checkbox" v-model="r.IsChecked.value" v-on:change="model.RiseOnSelectStateChange">
                     </td>
-                    <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.styleObj.value">
+                    <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.CellStyle.value">
                         <TableItem type="checkbox" :model="i" />
                     </td>
                 </tr>
@@ -30,9 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-import TableItem from './TableItem.vue';
-import { TableModel, TableRowModel } from '../../models'
-import { onMounted } from 'vue';
+import TableItem from './TableItem.vue'
+import TableHeader from './TableHeader.vue'
+import { onMounted, type StyleValue } from 'vue'
+import { TableModel } from '../../models'
 
 // 字段:
 const { model } = defineProps({
@@ -42,19 +43,28 @@ const { model } = defineProps({
     }
 })
 
-let styleObj = {
+const { refCheckbox } = model
+
+let bgStyle: StyleValue = {
     background: model._headerBackground as any
 }
 
 // 过程:
 onMounted(() => {
     model.Refresh(true)
+    model._sizeBehavior.Observe()
 })
 </script>
 
 <style lang="less" scoped>
 @import '../../assets/styles/input.less';
 @import '../../assets/styles/panels.less';
+
+.sticky {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
 
 .line {
     content: '';
@@ -96,12 +106,6 @@ onMounted(() => {
             z-index: 1;
 
             tr {
-                th {
-                    span {
-                        padding: 0 16px;
-                    }
-                }
-
                 &::after {
                     .line();
                     height: 2px;

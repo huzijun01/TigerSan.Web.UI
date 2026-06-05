@@ -56,6 +56,7 @@ export const assetLedgerTable = new TableModel<AssetModel>([
     {
         _propName: 'assetId',
         Text: '资产ID',
+        IsFreeze: true,
         IsReadonly: true,
         Type: ItemType.Link,
         _onItemClick: itemModel => {
@@ -82,6 +83,7 @@ export const assetLedgerTable = new TableModel<AssetModel>([
     {
         _propName: 'tagId',
         Text: '标签ID',
+        IsFreeze: true,
         IsReadonly: true,
         IsRequired: false,
         Type: ItemType.Link,

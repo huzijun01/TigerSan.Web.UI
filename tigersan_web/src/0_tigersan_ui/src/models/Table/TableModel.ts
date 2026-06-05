@@ -1,9 +1,9 @@
 import { nanoid } from 'nanoid'
-import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive } from "vue"
+import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive, type StyleValue, shallowRef } from "vue"
 import { Colors, Theme } from '../../base'
 import { SelectModel } from '../Inputs/SelectModel'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync, TGetter, TGetterAsync } from '../../types'
-import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase } from '../../helpers'
+import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase, SizeBehavior } from '../../helpers'
 
 export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
 export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
@@ -26,6 +26,8 @@ export enum ItemType {
 /** “表格”配置 */
 export class TableModel<TSource extends object> {
     //#region 【Fields】
+    /** 尺寸行为 */
+    readonly _sizeBehavior = new SizeBehavior()
     /** 是否“自动刷新” */
     _isAutoRefresh = true
     /** “列头配置”集合 */
@@ -55,24 +57,25 @@ export class TableModel<TSource extends object> {
     //#region 【Properties】
     /** “行数据”集合 */
     readonly RowDatas: ShallowReactive<TSource[]> = shallowReactive([])
-
     /** “列头模型”集合 */
     readonly HeaderModels: ShallowReactive<TableHeaderModel<TSource>[]> = shallowReactive([])
-
     /** “行模型”集合 */
     readonly RowModels: ShallowReactive<TableRowModel<TSource>[]> = shallowReactive([])
-
     /** 是否“填充父容器” */
     readonly IsFill = ref(true)
-
     /** 是否“全选” */
     readonly IsSelectAll = ref(false)
-
     /** 是否“显示复选框” */
     readonly IsShowCheckBox = ref(true)
-
     /** 是否“允许多选” */
     readonly IsAllowMultiSelect = ref(true)
+
+    //#region [内部维护]
+    /** 复选框 */
+    readonly refCheckbox = this._sizeBehavior.refRoot
+    /** “复选框”宽度 */
+    readonly CheckboxWidth = this._sizeBehavior.ActualWidth
+    //#endregion [内部维护]
 
     //#region [computed]
     /** 类对象 */
@@ -363,7 +366,9 @@ export class TableItemModel<TSource extends object> {
 /** “列头”模型 */
 export class TableHeaderModel<TSource extends object> {
     //#region 【Fields】
-    _id = nanoid()
+    readonly _id = nanoid()
+    /** 尺寸行为 */
+    readonly _sizeBehavior = new SizeBehavior()
     /** 属性名 */
     _propName = ''
     /** 所属“表格”配置 */
@@ -391,19 +396,53 @@ export class TableHeaderModel<TSource extends object> {
     readonly Width = ref<number | undefined>()
     /** 文本对齐 */
     readonly TextAlign = ref(TextAlign.Center)
-    /** 是否显示 */
+    /** 是否“显示” */
     readonly IsShow = ref(true)
-    /** 是否只读 */
+    /** 是否“冻结” */
+    readonly IsFreeze = ref(false)
+    /** 是否“只读” */
     readonly IsReadonly = ref(true)
-    /** 是否必须 */
+    /** 是否“必须” */
     readonly IsRequired = ref(true)
 
+    //#region [内部维护]
+    /** 根元素 */
+    readonly refRoot = this._sizeBehavior.refRoot
+    /** 实际宽度 */
+    readonly ActualWidth = this._sizeBehavior.ActualWidth
+    //#endregion [内部维护]
+
     //#region [computed]
-    /** 样式对象 */
-    readonly styleObj = computed(() => {
+    /** "冻结"样式 */
+    readonly FreezeStyle = computed((): StyleValue => {
+        if (!this.IsFreeze.value) return {}
+
+        const table = this._tableModel
+        let offset = table.IsShowCheckBox.value ? table.CheckboxWidth.value : 0
+
+        const headers = table.HeaderModels
+        for (let i = 0; i < headers.length; ++i) {
+            const header = headers[i]
+            if (!header || header._propName === this._propName) break
+            if (!header.IsFreeze.value) continue
+            offset += header.ActualWidth.value ?? 0
+        }
+
+        return {
+            position: 'sticky' as const,
+            left: `${offset}px`,
+            zIndex: 2,
+            background: table._headerBackground as any
+        }
+    })
+
+    /** “单元格”样式 */
+    readonly CellStyle = computed((): StyleValue => {
+        const freeze = this.FreezeStyle.value as object
         return {
             display: this.IsShow.value ? undefined : 'none',
-            width: this.Width.value != undefined ? `${this.Width.value}px` : 'auto'
+            width: this.Width.value != undefined ? `${this.Width.value}px` : 'auto',
+            ...freeze
         }
     })
     //#endregion [computed]
@@ -441,11 +480,13 @@ export class TableHeaderConfig<TSource extends object> {
     Width?: number
     /** 文本对齐 */
     TextAlign?: TextAlign
-    /** 是否显示 */
+    /** 是否“显示” */
     IsShow?: boolean
-    /** 是否只读 */
+    /** 是否“冻结” */
+    IsFreeze?: boolean
+    /** 是否“只读” */
     IsReadonly?: boolean
-    /** 是否必须 */
+    /** 是否“必须” */
     IsRequired?: boolean
 
     //#region 【Ctor】
@@ -469,6 +510,7 @@ export function SetTableHeaderModel<TSource extends object>(model: TableHeaderMo
     if (config.Width != undefined) model.Width.value = config.Width
     if (config.TextAlign != undefined) model.TextAlign.value = config.TextAlign
     if (config.IsShow != undefined) model.IsShow.value = config.IsShow
+    if (config.IsFreeze != undefined) model.IsFreeze.value = config.IsFreeze
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
     if (config.IsRequired != undefined) model.IsRequired.value = config.IsRequired
 }

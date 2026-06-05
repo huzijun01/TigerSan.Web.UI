@@ -15,14 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, computed, type StyleValue } from 'vue'
-import { StringHelper } from '../../helpers';
+import { onMounted, computed, type StyleValue } from 'vue'
+import { SizeBehavior, StringHelper } from '../../helpers';
 import { TableHeaderModel, TableItemModel, TableModel, TableRowModel } from '../../models'
 
 // 字段:
-const refRoot = shallowRef<HTMLElement | undefined>()
-const actualWidth = ref(50)
-const actualHeight = ref(18)
+const sizeBehavior = new SizeBehavior()
+const { refRoot } = sizeBehavior
 
 const { model } = defineProps({
     model: {
@@ -33,8 +32,8 @@ const { model } = defineProps({
 
 const inputStyle = computed((): StyleValue => {
     return {
-        width: `${actualWidth.value}px`,
-        height: `${actualHeight.value}px`,
+        width: `${sizeBehavior.ActualWidth.value}px`,
+        height: `${sizeBehavior.ActualHeight.value}px`,
         textAlign: model._headerModel.TextAlign.value,
         color: model.Color.value,
         background: model.Background.value,
@@ -50,8 +49,7 @@ const formattedText = computed(() => {
 // 过程:
 onMounted(() => {
     TextXSS()
-    UpdatePagePanelWidth()
-    InitResizeObserver()
+    sizeBehavior.Observe()
 })
 
 // 方法:
@@ -67,26 +65,6 @@ function OnChange() {
 
 function TextXSS() {
     model.Text.value = StringHelper.StringXSS(model.Text.value)
-}
-
-function InitResizeObserver() {
-    if (!refRoot.value) return
-
-    new ResizeObserver(UpdatePagePanelWidth)
-        .observe(refRoot.value)
-}
-
-function UpdatePagePanelWidth() {
-    actualWidth.value = GetWidth()
-    actualHeight.value = GetHeight()
-}
-
-function GetWidth(): number {
-    return refRoot.value?.getBoundingClientRect().width ?? 0
-}
-
-function GetHeight(): number {
-    return refRoot.value?.getBoundingClientRect().height ?? 0
 }
 </script>
 

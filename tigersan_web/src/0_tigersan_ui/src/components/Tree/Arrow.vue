@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts" setup>
+import { type PropType, type StyleValue } from 'vue'
 import { Icons } from '../../base'
 
 // 字段:
@@ -17,7 +18,7 @@ const { isShow, style, opacity, click } = defineProps({
         default: true
     },
     style: {
-        type: Object,
+        type: Object as PropType<StyleValue>,
         default: {}
     },
     opacity: {
