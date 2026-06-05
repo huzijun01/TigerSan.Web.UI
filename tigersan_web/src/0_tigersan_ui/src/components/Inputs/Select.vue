@@ -3,7 +3,7 @@
         <input type="text" ref="refInput" v-model="model.Text.value" :placeholder="model.ShowPlaceholder.value"
             :disabled="!model.IsEnabled.value">
         <div class="button-panel flex-center">
-            <div class="arrow iconfont" :style="model.arrowStyleObj.value">{{ Icons.Arrow_Right }}</div>
+            <div class="arrow iconfont" :style="model.arrowStyle.value">{{ Icons.Arrow_Right }}</div>
         </div>
         <div class="mask" v-if="!model.IsAllowSearch.value"></div>
     </div>

@@ -45,6 +45,7 @@ export type UnknownSetter = (obj: object, propName: string, value: unknown) => v
 export type TStringGetter<TSource extends object> = (obj: TSource, propName: string) => string
 export type TStringGetterAsync<TSource extends object> = (obj: TSource, propName: string) => Promise<string>
 export type TGetter<TSource extends object, TTarget> = (obj: TSource, propName: string) => TTarget | undefined
+export type TGetterAsync<TSource extends object, TTarget> = (obj: TSource, propName: string) => Promise<TTarget | undefined>
 export type TSetter<TSource extends object, TTarget> = (obj: TSource, propName: string, value: TTarget) => void
 
 // change:

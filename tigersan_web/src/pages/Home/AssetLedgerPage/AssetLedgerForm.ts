@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from './AssetFilter'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
-import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper } from '@/models'
+import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper, tagTypeHelper } from '@/models'
 
 export class OutboundModel {
     company: bigint = 0n
@@ -148,11 +148,13 @@ export class AssetLedgerForm {
 
             const filter = this.filter
             await this.filter.UpdateIdNames()
+            await tagTypeHelper.UpdateIdNames()
 
             pagination.Count.value = await assetHelper.GetCount({
                 company: filter.selectCompany.Value.value?.id,
                 department: filter.selectDepartment.Value.value?.id,
                 type: filter.selectAssetType.Value.value?.id,
+                tagType: filter.selectTagType.Value.value?.id,
                 state: filter.selectAssetState.Value.value,
                 states: filter.selectAssetState.NotCheckAllCheckedValues.value,
                 onlineState: filter.selectOnlineState.Value.value,
@@ -167,6 +169,7 @@ export class AssetLedgerForm {
                 company: filter.selectCompany.Value.value?.id,
                 department: filter.selectDepartment.Value.value?.id,
                 type: filter.selectAssetType.Value.value?.id,
+                tagType: filter.selectTagType.Value.value?.id,
                 state: filter.selectAssetState.Value.value,
                 states: filter.selectAssetState.NotCheckAllCheckedValues.value,
                 onlineState: filter.selectOnlineState.Value.value,

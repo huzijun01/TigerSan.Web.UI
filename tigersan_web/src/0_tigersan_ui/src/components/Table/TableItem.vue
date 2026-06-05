@@ -4,20 +4,20 @@
             <div class="size" :class="model.EllipsisClass.value" v-html="formattedText"></div>
             <span class="placeholder">*</span>
         </div>
-        <a v-if="model.IsLink.value" class="input ellipsis" :style="inputStyleObj" @click="model.OnClick">
-            {{ model.Text.value }}
-        </a>
-        <input type="text" v-if="model.IsTextBox.value" class="input ellipsis" :style="inputStyleObj"
+        <div v-if="model.IsLink.value" class="input ellipsis" :style="inputStyle">
+            <a @click="model.OnClick">{{ model.Text.value }}</a>
+        </div>
+        <input type="text" v-if="model.IsTextBox.value" class="input ellipsis" :style="inputStyle"
             :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput" @change="OnChange" />
-        <textarea v-if="model.IsTextarea.value" class="input" :style="inputStyleObj" :readonly="model.IsReadonly.value"
+        <textarea v-if="model.IsTextarea.value" class="input" :style="inputStyle" :readonly="model.IsReadonly.value"
             v-model="model.Text.value" @input="OnInput" @change="OnChange"></textarea>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { ref, shallowRef, onMounted, computed, type StyleValue } from 'vue'
 import { StringHelper } from '../../helpers';
 import { TableHeaderModel, TableItemModel, TableModel, TableRowModel } from '../../models'
-import { ref, shallowRef, onMounted, computed } from 'vue'
 
 // 字段:
 const refRoot = shallowRef<HTMLElement | undefined>()
@@ -31,7 +31,7 @@ const { model } = defineProps({
     }
 })
 
-const inputStyleObj = computed(() => {
+const inputStyle = computed((): StyleValue => {
     return {
         width: `${actualWidth.value}px`,
         height: `${actualHeight.value}px`,

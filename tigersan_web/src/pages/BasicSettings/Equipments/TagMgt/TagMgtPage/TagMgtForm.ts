@@ -27,11 +27,11 @@ export class TagMgtForm {
     readonly selectState = OnlineState.GetSelectModel()
     readonly selectIsEnable = IsEnable.GetSelectModel()
     readonly selectBatch = batchHelper.GetIdNameSelectModel()
-    readonly selectType = tagTypeHelper.GetIdNameSelectModel()
+    readonly selectTagType = tagTypeHelper.GetIdNameSelectModel()
     readonly selectStation = baseStationHelper.GetIdNameSelectModel()
     /** 表单 */
     readonly selectBatchForm = batchHelper.GetIdNameSelectModel()
-    readonly selectTypeForm = tagTypeHelper.GetIdNameSelectModel()
+    readonly selectTagTypeForm = tagTypeHelper.GetIdNameSelectModel()
 
     // 搜索框:
     readonly searchTagId = new SearchModel()
@@ -52,8 +52,8 @@ export class TagMgtForm {
         _propName: 'type',
         PropText: '类型',
         IsEquired: true,
-        Target: this.selectTypeForm.Value,
-        _getValue: source => this.selectTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
+        Target: this.selectTagTypeForm.Value,
+        _getValue: source => this.selectTagTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
         _setValue: (source, propName, value) => source.type = value && value.id != undefined ? value.id : 0n,
         _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, '不可为空')
     }
@@ -113,8 +113,8 @@ export class TagMgtForm {
 
                 await this.selectBatchForm.UpdateItemsAsync()
                 this.selectBatchForm.Value.value = batchHelper.GetIdValue(rowData.batch)
-                await this.selectTypeForm.UpdateItemsAsync()
-                this.selectTypeForm.Value.value = baseStationHelper.GetIdName(rowData.type)
+                await this.selectTagTypeForm.UpdateItemsAsync()
+                this.selectTagTypeForm.Value.value = baseStationHelper.GetIdName(rowData.type)
             }
         },
         _itemConfigs: [
@@ -150,7 +150,7 @@ export class TagMgtForm {
         this.pagination._onChange = this.Refresh
         this.selectBatch._onChange = this.Refresh
         this.selectStation._onChange = this.Refresh
-        this.selectType._onChange = this.Refresh
+        this.selectTagType._onChange = this.Refresh
         this.selectState._onChange = this.Refresh
         this.selectIsEnable._onChange = this.Refresh
     }
@@ -163,13 +163,13 @@ export class TagMgtForm {
         await batchHelper.UpdateIdValues()
         await this.selectBatch.UpdateItemsAsync()
         await tagTypeHelper.UpdateIdNames()
-        await this.selectType.UpdateItemsAsync()
+        await this.selectTagType.UpdateItemsAsync()
         await baseStationHelper.UpdateIdNames()
         await this.selectStation.UpdateItemsAsync()
 
         this.OnlineCount.value = await tagHelper.GetCount({
             batch: this.selectBatch.Value.value?.id,
-            type: this.selectType.Value.value?.id,
+            type: this.selectTagType.Value.value?.id,
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
@@ -179,7 +179,7 @@ export class TagMgtForm {
         })
         this.OfflineCount.value = await tagHelper.GetCount({
             batch: this.selectBatch.Value.value?.id,
-            type: this.selectType.Value.value?.id,
+            type: this.selectTagType.Value.value?.id,
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
@@ -189,7 +189,7 @@ export class TagMgtForm {
         })
         this.pagination.Count.value = await tagHelper.GetCount({
             batch: this.selectBatch.Value.value?.id,
-            type: this.selectType.Value.value?.id,
+            type: this.selectTagType.Value.value?.id,
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
@@ -211,7 +211,7 @@ export class TagMgtForm {
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
             state: this.selectState.Value.value,
-            type: this.selectType.Value.value?.id,
+            type: this.selectTagType.Value.value?.id,
             tagId: this.searchTagId.Value.value,
             rfid: this.searchRfid.Value.value,
         }).then(arr => {
@@ -234,7 +234,7 @@ export class TagMgtForm {
                 eqpType: this.eqpType,
                 isEnable: this.selectIsEnable.Value.value,
                 state: this.selectState.Value.value,
-                type: this.selectType.Value.value?.id,
+                type: this.selectTagType.Value.value?.id,
                 tagId: this.searchTagId.Value.value,
                 rfid: this.searchRfid.Value.value,
             }).then(arr => {

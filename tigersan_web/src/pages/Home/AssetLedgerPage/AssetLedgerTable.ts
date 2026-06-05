@@ -1,10 +1,10 @@
 import AssetPathPage from './AssetPathPage/AssetPathPage.vue'
 import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
-import { computed } from 'vue'
-import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel } from '@/0_tigersan_ui/tigerui'
-import { AssetModel, AssetState, AssetStates, ErrorType } from '@/models'
+import { computed, ref } from 'vue'
+import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel, StringHelper, Texts } from '@/0_tigersan_ui/tigerui'
 import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
+import { AssetModel, AssetState, AssetStates, BindingState, ErrorType, tagTypeHelper } from '@/models'
 
 // 字段:
 /** 记录页 */
@@ -25,11 +25,15 @@ export const tabView = new TabViewModel([
     }
 ])
 
-/** 弹窗 */
+// 弹窗:
+/** 资产详情 */
 export const assetDetail = new PopWindowModel()
 assetDetail.MinWidth.value = '80vw'
 assetDetail.MinHeight.value = '70vh'
 assetDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
+/** 标签详情 */
+export const tagDetail = new PopWindowModel()
+export const TagId = ref<string | undefined>()
 
 /** 分页器 */
 export const pagination = new PaginationModel()
@@ -58,7 +62,7 @@ export const assetLedgerTable = new TableModel<AssetModel>([
             const rowData = itemModel._rowModel._rowData
             recordPage._asset = rowData.id
             pathPage._asset = rowData.id
-            assetDetail.Title.value = `资产详情 - ${rowData.assetId}`
+            assetDetail.Title.value = `${Texts.AssetDetail.value} - ${rowData.assetId}`
             recordPage.Refresh()
             const weekRange = ObjectHelper.GetOneWeekAgoAndTodayString()
             pathPage.date.Date.value = [weekRange.start, weekRange.end]
@@ -67,11 +71,33 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         }
     },
     {
+        _propName: 'isBound',
+        Text: '绑定状态',
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
+        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
+    },
+    {
         _propName: 'tagId',
         Text: '标签ID',
         IsReadonly: true,
         IsRequired: false,
+        Type: ItemType.Link,
+        _onItemClickAsync: async itemModel => {
+            const rowData = itemModel._rowModel._rowData
+            tagDetail.Title.value = `${Texts.TagDetail.value} - ${rowData.assetId}`
+            TagId.value = rowData.tagId
+            tagDetail.Show()
+        }
+    },
+    {
+        _propName: 'tagType',
+        Text: '标签类型',
+        IsReadonly: true,
         Type: ItemType.TextBox,
+        _getStringAsync: source => tagTypeHelper.GetNameAsync(source.tagType)
     },
     {
         _propName: 'siteName',
@@ -200,9 +226,10 @@ export const assetLedgerTable = new TableModel<AssetModel>([
 assetLedgerTable.IsAllowMultiSelect.value = true
 
 assetLedgerTable._initItem = itemModel => {
+    Battery.InitItemModel(itemModel)
     AssetState.InitItemModel(itemModel)
     OnlineState.InitItemModel(itemModel)
-    Battery.InitItemModel(itemModel)
+    BindingState.InitItemModel(itemModel)
 }
 
 /** 是否允许入库 */

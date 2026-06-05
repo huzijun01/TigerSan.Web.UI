@@ -434,6 +434,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (asset != null)
                     {
                         asset.Tag = null;
+                        asset.TagType = null;
                     }
                 }
                 // 绑定资产：
@@ -446,6 +447,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return MyResults<object>.AssetNotExist;
                     }
                     asset.Tag = entity.Id;
+                    asset.TagType = entity.Type;
                 }
 
                 // 修改“数据”:
@@ -515,6 +517,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         if (asset != null)
                         {
                             asset.Tag = null;
+                            asset.TagType = null;
                         }
                     }
                     // 绑定资产：
@@ -527,6 +530,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             return MyResults<object>.AssetNotExist;
                         }
                         asset.Tag = entity.Id;
+                        asset.TagType = entity.Type;
                     }
 
                     // 修改“数据”:

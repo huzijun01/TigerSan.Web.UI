@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { computed, reactive, ref, type Reactive } from "vue"
+import { computed, reactive, ref, type Reactive, type StyleValue } from "vue"
 import { Icons, ObjectHelper, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { AssetPosition } from "./AssetModel"
 import { assetTypeHelper } from "../Dictionaries/DictionaryModels"
@@ -30,7 +30,7 @@ export class AssetInfoModel {
     /** “上报时间”文本 */
     readonly ReportTimeText = computed(() => ObjectHelper.GetDateString(this.Position.reportTime))
     /** 样式对象 */
-    readonly StyleObj = computed(() => {
+    readonly Style = computed((): StyleValue => {
         return {
             background: this.Background.value
         }

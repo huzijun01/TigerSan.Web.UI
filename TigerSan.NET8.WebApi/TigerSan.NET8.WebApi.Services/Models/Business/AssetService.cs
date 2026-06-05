@@ -590,6 +590,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                     // 绑定“标签”:
                     dto.Tag = tag.Id;
+                    dto.TagType = tag.Type;
 
                     // 检验“标签”是否重复:
                     if (dto.Tag != null && await _dbSet.AnyAsync(i => i.Tag == dto.Tag))
@@ -658,6 +659,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         var tag = resGetFull.Data;
                         // 绑定“标签”:
                         dto.Tag = tag.Id;
+                        dto.TagType = tag.Type;
 
                         // “标签”绑定“资产”:
                         tag.Asset = dto.Id;
@@ -735,6 +737,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     dto.Tag = null;
+                    dto.TagType = null;
                     dto.BindingTime = null;
                 }
                 else
@@ -754,6 +757,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                     // 绑定“标签”:
                     dto.Tag = tag.Id;
+                    dto.TagType = tag.Type;
 
                     // “标签”绑定“资产”:
                     tag.Asset = dto.Id;
@@ -822,6 +826,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
 
                         dto.Tag = null;
+                        dto.TagType = null;
                         dto.BindingTime = null;
                     }
                     else
@@ -841,6 +846,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                         // 绑定“标签”:
                         dto.Tag = tag.Id;
+                        dto.TagType = tag.Type;
 
                         // “标签”绑定“资产”:
                         tag.Asset = dto.Id;

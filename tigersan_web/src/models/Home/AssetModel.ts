@@ -27,6 +27,7 @@ export class AssetModel extends AssetBaseModel {
     typeName = ''
     stateName = ''
     tagId? = ''
+    tagType?: bigint
     rfid? = ''
     siteName? = ''
     battery?: number
@@ -65,6 +66,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         company?: bigint,
         department?: bigint,
         type?: bigint,
+        tagType?: bigint,
         state?: number,
         states?: Array<number | undefined>,
         onlineState?: OnlineStates,
@@ -86,6 +88,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
                     },
                     filters: [
                         { propName: 'Type', value: param.type },
+                        { propName: 'TagType', value: param.tagType },
                         { propName: 'State', value: param.state, values: param.states },
                         { propName: 'OnlineState', value: param.onlineState },
                         { propName: 'ErrorType', value: param.errorType },
@@ -103,6 +106,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
         company?: bigint,
         department?: bigint,
         type?: bigint,
+        tagType?: bigint,
         state?: number,
         states?: Array<number | undefined>,
         onlineState?: OnlineStates,
@@ -128,6 +132,7 @@ class AssetHelper extends IdModelHelper<AssetModel> {
                     },
                     filters: [
                         { propName: 'Type', value: param.type },
+                        { propName: 'TagType', value: param.tagType },
                         { propName: 'State', value: param.state, values: param.states },
                         { propName: 'OnlineState', value: param.onlineState },
                         { propName: 'ErrorType', value: param.errorType },

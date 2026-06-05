@@ -4,7 +4,7 @@
             <div class="arrow iconfont">{{ Icons.Arrow_Right }}</div>
             <div class="title">{{ model.Title.value }}</div>
         </div>
-        <div class="content-panel" :style="model.ContentPanelStyleObj.value">
+        <div class="content-panel" :style="model.ContentPanelStyle.value">
             <div class="size-panel" ref="refSizePanel">
                 <slot></slot>
             </div>

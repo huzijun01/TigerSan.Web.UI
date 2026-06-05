@@ -18,6 +18,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public string? Comment { get; set; } = string.Empty;
         [SnakeColumn]
         public long? Tag { get; set; }
+        [SnakeColumn]
+        public long? TagType { get; set; }
         // 计算:
         [SnakeColumn]
         public AssetStates State { get; set; }

@@ -1,4 +1,4 @@
-import { computed, ref, shallowRef } from "vue"
+import { computed, ref, shallowRef, type StyleValue } from "vue"
 
 export class ContentSizeBehavior {
     //#region 【Fields】
@@ -23,7 +23,7 @@ export class ContentSizeBehavior {
     //#region [computed]
     /** “箭头”样式对象
      * （需绑定到“箭头”上） */
-    readonly arrowStyleObj = computed(() => {
+    readonly arrowStyle = computed((): StyleValue => {
         const arrowAngle = this.IsOpen.value ? this._arrowOpen : this._arrowClose
         return {
             transform: `rotate(${arrowAngle}deg)`
@@ -32,7 +32,7 @@ export class ContentSizeBehavior {
 
     /** “内容容器”样式对象 
      * （需绑定到“内容容器”上） */
-    readonly ContentPanelStyleObj = computed(() => {
+    readonly ContentPanelStyle = computed((): StyleValue => {
         let height = this.IsOpen.value ? this.ContentHeight.value + this.ContentPanelPadding.value * 2 : 0
 
         return {

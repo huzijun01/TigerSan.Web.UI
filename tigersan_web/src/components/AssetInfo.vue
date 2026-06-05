@@ -1,5 +1,5 @@
 <template>
-    <div class="asset-info" @click="model.OnClick" :style="model.StyleObj.value">
+    <div class="asset-info" @click="model.OnClick" :style="model.Style.value">
         <div class="icon-panel flex-center iconfont">{{ model.Icon.value }}</div>
         <div class="info-panel">
             <div class="title ellipsis">
@@ -7,6 +7,7 @@
             </div>
             <div class="time ellipsis">
                 <span>{{ Texts.ReportTime.value }}</span>
+                <span>{{ Texts.Colon.value }}</span>
                 <span>{{ model.ReportTimeText.value }}</span>
             </div>
             <div class="type-panel" v-if="model.IsShowTypeText.value">

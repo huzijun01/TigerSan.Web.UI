@@ -1,13 +1,13 @@
 <template>
     <div v-if="model.IsShow.value" class="tree-node-panel" :class="model.RootClass.value">
         <div class="back-panel flex-center" ref="refRoot">
-            <Arrow :class="{ hidden: !model.IsHaveChild.value }" :style="model.arrowStyleObj.value"
+            <Arrow :class="{ hidden: !model.IsHaveChild.value }" :style="model.arrowStyle.value"
                 :click="model.OnClickArrow" />
             <input type="checkbox" class="checkbox" v-if="model._tree.IsShowCheckbox.value"
                 v-model="model.IsChecked.value" :indeterminate="model.IsIndeterminate.value" @change="model.OnChange">
             <div class="text" :style="model.ColorStyle.value" @click="model.OnClick">{{ model.Text.value }}</div>
         </div>
-        <div class="content-panel" :style="model.ContentPanelStyleObj.value">
+        <div class="content-panel" :style="model.ContentPanelStyle.value">
             <Arrow :opacity="0" />
             <div class="node-panel" ref="refSizePanel">
                 <TreeNode v-for="c in model.Childs" :key="c._id" :model="c" />

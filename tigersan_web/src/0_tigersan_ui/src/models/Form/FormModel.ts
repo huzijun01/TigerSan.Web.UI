@@ -416,14 +416,14 @@ export class FormItemModel<TSource extends object, TTarget> {
     })
 
     /** “属性名”样式对象 */
-    readonly propNameStyleObj = computed(() => {
+    readonly propNameStyle = computed((): StyleValue => {
         return {
             verticalAlign: this._propNameVerticalAlign
         }
     })
 
     /** “验证文本”样式对象 */
-    readonly verifyStyleObj = computed(() => {
+    readonly verifyStyle = computed((): StyleValue => {
         return {
             color: this.VerifyColor.value
         }

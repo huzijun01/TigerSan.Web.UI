@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive } from "vue"
 import { Colors, Theme } from '../../base'
 import { SelectModel } from '../Inputs/SelectModel'
-import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync } from '../../types'
+import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync, TGetter, TGetterAsync } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase } from '../../helpers'
 
 export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
@@ -349,12 +349,13 @@ export class TableItemModel<TSource extends object> {
 
     /** 获取“源数据” */
     readonly GetSource = (): unknown => {
-        return ObjectHelper.DefaultTGetter(this._rowModel._rowData, this._headerModel._propName, undefined)
+        return this._headerModel._getSource(this._rowModel._rowData, this._headerModel._propName)
     }
 
     /** 点击后 */
     readonly OnClick = () => {
         this._headerModel._onItemClick?.(this)
+        this._headerModel._onItemClickAsync?.(this)
     }
     //#endregion 【Functions】
 }
@@ -367,14 +368,18 @@ export class TableHeaderModel<TSource extends object> {
     _propName = ''
     /** 所属“表格”配置 */
     _tableModel: TableModel<TSource>
-    /** 文本获取方法 */
+    /** “源数据”获取方法 */
+    _getSource: TGetter<TSource, unknown> = ObjectHelper.DefaultTGetter
+    /** “文本”获取方法 */
     _getString: TStringGetter<TSource> = ObjectHelper.DefaultStringGetter
-    /** 文本获取方法（异步）：优先执行该方法 */
+    /** “文本”获取方法（异步）：优先执行该方法 */
     _getStringAsync?: TStringGetterAsync<TSource>
-    /** 对象修改方法 */
+    /** “对象”修改方法 */
     _setObject: UnknownSetter = ObjectHelper.DefaultTSetter
     /** “项目”点击后 */
     _onItemClick?: (itemModel: TableItemModel<TSource>) => void
+    /** “项目”点击后（异步） */
+    _onItemClickAsync?: (itemModel: TableItemModel<TSource>) => Promise<void>
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -416,14 +421,18 @@ export class TableHeaderModel<TSource extends object> {
 export class TableHeaderConfig<TSource extends object> {
     /** 属性名 */
     _propName: string
-    /** 文本获取方法 */
+    /** “源数据”获取方法 */
+    _getSource?: TGetter<TSource, unknown>
+    /** “文本”获取方法 */
     _getString?: TStringGetter<TSource>
-    /** 文本获取方法（异步）：优先执行该方法 */
+    /** “文本”获取方法（异步）：优先执行该方法 */
     _getStringAsync?: TStringGetterAsync<TSource>
-    /** 对象修改方法 */
+    /** “对象”修改方法 */
     _setObject?: UnknownSetter
     /** “项目”点击后 */
     _onItemClick?: (itemModel: TableItemModel<TSource>) => void
+    /** “项目”点击后（异步） */
+    _onItemClickAsync?: (itemModel: TableItemModel<TSource>) => Promise<void>
     /** 类型 */
     Type?: ItemType
     /** 文本 */
@@ -449,10 +458,12 @@ export class TableHeaderConfig<TSource extends object> {
 /** 将“配置”设置到“模型” */
 export function SetTableHeaderModel<TSource extends object>(model: TableHeaderModel<TSource>, config: TableHeaderConfig<TSource>) {
     model._propName = config._propName
+    if (config._getSource) model._getSource = config._getSource
     if (config._getString) model._getString = config._getString
     if (config._getStringAsync) model._getStringAsync = config._getStringAsync
     if (config._setObject) model._setObject = config._setObject
     if (config._onItemClick) model._onItemClick = config._onItemClick
+    if (config._onItemClickAsync) model._onItemClickAsync = config._onItemClickAsync
     if (config.Type != undefined) model.Type.value = config.Type
     if (config.Text != undefined) model.Text.value = config.Text
     if (config.Width != undefined) model.Width.value = config.Width

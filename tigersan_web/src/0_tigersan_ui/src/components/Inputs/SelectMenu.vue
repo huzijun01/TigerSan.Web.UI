@@ -1,6 +1,6 @@
 <template>
     <div class="select-menu" ref="refMenu" v-if="model.IsOpen.value" :class="model.RootClass.value"
-        :style="model.menuStyleObj.value">
+        :style="model.menuStyle.value">
         <div class="menu-item select-all flex-left" v-if="model.IsAllowMultiSelect.value" @click="OnSelectAllClick">
             <input type="checkbox" v-model="model.IsSelectAll.value">
             <span>{{ Texts.SelectAll.value }}</span>
@@ -12,7 +12,7 @@
             </div>
         </div>
         <div v-if="model.IsNoContent.value" class="placeholder flex-center">{{ Texts.NoContent.value }}</div>
-        <Loading v-if="model.IsLoading.value" :fontSize="15" :style="model.menuStyleObj.value" />
+        <Loading v-if="model.IsLoading.value" :fontSize="15" :style="model.menuStyle.value" />
     </div>
 </template>
 

@@ -166,7 +166,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     })
 
     /** 箭头样式 */
-    readonly arrowStyleObj = computed((): StyleValue => {
+    readonly arrowStyle = computed((): StyleValue => {
         const arrowAngle = this.IsOpen.value ? -90 : 90
         return {
             transform: `rotate(${arrowAngle}deg)`
@@ -174,7 +174,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     })
 
     /** 菜单样式 */
-    readonly menuStyleObj = computed((): StyleValue => {
+    readonly menuStyle = computed((): StyleValue => {
         const obj = {
             width: `${this.Width.value}px`,
             minHeight: `${this.MenuMinHeight.value}px`,

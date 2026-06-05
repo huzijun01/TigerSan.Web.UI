@@ -1,11 +1,11 @@
 <template>
     <td class="prop-name" v-if="model.IsShowPropName.value" :class="{ 'equired': model.IsEquired.value }"
-        :style="model.propNameStyleObj.value">
+        :style="model.propNameStyle.value">
         <span class="prop-text">{{ model.PropText.value }}</span>
     </td>
     <td class="prop-value">
         <slot></slot>
-        <span class="verify-text" v-if="model.IsShowVerify.value" :style="model.verifyStyleObj.value">{{
+        <span class="verify-text" v-if="model.IsShowVerify.value" :style="model.verifyStyle.value">{{
             model.VerifyText.value }}</span>
     </td>
 </template>

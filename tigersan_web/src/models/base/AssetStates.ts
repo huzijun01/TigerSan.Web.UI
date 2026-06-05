@@ -113,3 +113,36 @@ export class ErrorType {
         return select
     }
 }
+
+export class BindingState {
+    static GetName(state?: boolean): string {
+        if (state === undefined || state === null) return ''
+
+        return state ? Texts.Bound.value : Texts.Unbound.value
+    }
+
+    /** 获取“筛选框模型” */
+    static GetSelectModel(): SelectModel<boolean> {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.IsAllowSearch.value = true
+        select.PlaceholderCN.value = '是否绑定'
+        select.PlaceholderEN.value = 'IsBound'
+        select.Items.push(...[true, false])
+        select._converter = this.GetName
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isBound') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            }
+        }
+    }
+}

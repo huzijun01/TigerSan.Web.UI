@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!(isAutoHidden && propValue === '')" class="key-value" :style="marginRightStyle">
+    <div v-if="isShow" class="key-value ellipsis" :style="marginRightStyle">
         <span>{{ propName }}</span>
         <span>{{ Texts.Colon.value }}</span>
         <span :style="ColorStyle">{{ propValue }}</span>
@@ -7,20 +7,21 @@
 </template>
 
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { computed, type PropType, type StyleValue } from 'vue'
 import { Theme } from '../../base'
 import { Texts } from '../../texts'
 import { AnyTypes } from '../../types'
+import { StringHelper } from '../../helpers';
 
 // 字段:
-let { propName, propValue, color, marginRight } = defineProps({
+let { propName, propValue, color, marginRight, isAutoHidden } = defineProps({
     propName: {
         type: String,
         default: 'name'
     },
     propValue: {
         type: AnyTypes as PropType<any>,
-        default: 'value'
+        default: ''
     },
     color: {
         type: String,
@@ -36,13 +37,16 @@ let { propName, propValue, color, marginRight } = defineProps({
     }
 })
 
-const ColorStyle = {
+const ColorStyle: StyleValue = {
     'color': color,
+    'user-select': 'text',
 }
 
-const marginRightStyle = {
+const marginRightStyle: StyleValue = {
     'marginRight': `${marginRight}px`,
 }
+
+const isShow = computed(() => { return !(isAutoHidden && !StringHelper.IsNotEmpty(propValue)) })
 </script>
 
 <style lang="less" scoped></style>

@@ -63,11 +63,12 @@ export class IdModelHelper<TModel extends IdModel> {
     /** 获取“ID值对”集合 */
     readonly GetIdValues = async (param?: {
         isDistinct?: boolean,
+        strIdValueList?: string,
         params?: KeyValue[],
         filter?: FilterModel
     }) => {
         if (param && this._strIdValueList) {
-            this._strIdValueList = this._strIdValueList
+            param.strIdValueList = this._strIdValueList
         }
         return await axiosHelper.SelectIdValue(this._action, param ?? { strIdValueList: this._strIdValueList })
     }

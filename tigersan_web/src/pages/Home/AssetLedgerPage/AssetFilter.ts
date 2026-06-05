@@ -1,5 +1,5 @@
 import { OnlineState, SearchModel } from "@/0_tigersan_ui/tigerui"
-import { companyHelper, departmentHelper, assetTypeHelper, AssetState, ErrorType } from "@/models"
+import { companyHelper, departmentHelper, assetTypeHelper, AssetState, ErrorType, tagTypeHelper } from "@/models"
 
 export class AssetFilter {
     _refresh?: any
@@ -11,6 +11,7 @@ export class AssetFilter {
     readonly selectCompany = companyHelper.GetIdNameSelectModel()
     readonly selectDepartment = departmentHelper.GetIdNameSelectModel()
     readonly selectAssetType = assetTypeHelper.GetIdNameSelectModel()
+    readonly selectTagType = tagTypeHelper.GetIdNameSelectModel()
     readonly selectAssetState = AssetState.GetSelectModel()
     readonly selectErrorType = ErrorType.GetSelectModel()
 
@@ -29,6 +30,7 @@ export class AssetFilter {
         this.selectCompany._onChange = this._refresh
         this.selectDepartment._onChange = this._refresh
         this.selectAssetType._onChange = this._refresh
+        this.selectTagType._onChange = this._refresh
         this.selectAssetState.IsSelectAll.value = true
         this.selectAssetState.IsAllowMultiSelect.value = true
         this.selectAssetState._onCheckedItemsChange = this._refresh

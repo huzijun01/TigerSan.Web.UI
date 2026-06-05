@@ -100,7 +100,7 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
 
     /** “内容容器”样式对象 
      * （需绑定到“内容容器”上） */
-    readonly ContentPanelStyleObj = computed(() => {
+    readonly ContentPanelStyle = computed((): StyleValue => {
         return {
             height: `${this.SubItemsHeight.value}px`,
             maxHeight: `${this.ContentMaxHeight.value}px`,

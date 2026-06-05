@@ -6,7 +6,7 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <Select :model="form.selectBatch"></Select>
-                        <Select :model="form.selectType"></Select>
+                        <Select :model="form.selectTagType"></Select>
                         <Select :model="form.selectStation"></Select>
                     </div>
                     <div class="row-panel">
@@ -58,7 +58,7 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configType.ItemModel">
-                <Select :model="form.selectTypeForm"></Select>
+                <Select :model="form.selectTagTypeForm"></Select>
             </FormItem>
         </FormRow>
         <FormRow>

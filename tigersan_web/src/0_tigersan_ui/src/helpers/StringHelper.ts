@@ -19,8 +19,16 @@ export class StringHelper {
             .replace(/ {2}/g, '&nbsp;&nbsp;')
     }
 
+    /** 是否“不为空” */
     static IsNotEmpty(str?: string): boolean {
-        return str != undefined && (str.trim() != '')
+        try {
+            if (!str) return false
+            const str1 = str.toString().trim()
+            return str1 != ''
+        } catch (error) {
+            console.error(error)
+            return false
+        }
     }
 
     /** 是否“模糊包含” */

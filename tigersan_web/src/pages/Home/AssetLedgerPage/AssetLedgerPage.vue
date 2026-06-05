@@ -7,14 +7,15 @@
                     <div class="row-panel">
                         <Select :model="form.filter.selectCompany"></Select>
                         <Select :model="form.filter.selectDepartment"></Select>
+                        <Search :model="form.filter.searchAssetId" />
+                        <Search :model="form.filter.searchRfid" />
+                    </div>
+                    <div class="row-panel">
+                        <Select :model="form.filter.selectAssetType"></Select>
+                        <Select :model="form.filter.selectTagType"></Select>
                         <Select :model="form.filter.selectAssetState"></Select>
                         <Select :model="form.filter.selectOnlineState"></Select>
                         <Select :model="form.filter.selectErrorType"></Select>
-                    </div>
-                    <div class="row-panel">
-                        <Search :model="form.filter.searchAssetId" />
-                        <Search :model="form.filter.searchRfid" />
-                        <Select :model="form.filter.selectAssetType"></Select>
                         <Select :model="selectColumnFilter"></Select>
                     </div>
                 </div>
@@ -29,8 +30,8 @@
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">{{
-                            Texts.Add.value }}</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">
+                            {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
@@ -106,14 +107,19 @@
     <PopWindow :model="assetDetail">
         <TabView :model="tabView" />
     </PopWindow>
+
+    <PopWindow :model="tagDetail">
+        <TagDetailPage :tagId="TagId" />
+    </PopWindow>
 </template>
 
 <script lang="ts" setup>
+import TagDetailPage from './TagDetailPage/TagDetailPage.vue'
 import { onMounted } from 'vue'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'
 import { AssetLedgerForm } from './AssetLedgerForm'
-import { assetLedgerTable, selectColumnFilter, pagination, assetDetail, IsAllowInbound, IsAllowOutbound, tabView } from './AssetLedgerTable'
+import { TagId, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, IsAllowInbound, IsAllowOutbound, tabView } from './AssetLedgerTable'
 // 【字段】:
 const form = new AssetLedgerForm()
 const { IsOnlySelected, IsSelected } = assetLedgerTable

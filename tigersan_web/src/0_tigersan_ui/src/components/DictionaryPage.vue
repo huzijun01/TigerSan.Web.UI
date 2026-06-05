@@ -9,10 +9,10 @@
                     <div class="row-panel">
                         <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
                         <button @click="model.Add">{{ Texts.Add.value }}</button>
-                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value
-                            }}</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">{{
-                            Texts.Delete.value }}</button>
+                        <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">
+                            {{ Texts.Edit.value }}</button>
+                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">
+                            {{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
