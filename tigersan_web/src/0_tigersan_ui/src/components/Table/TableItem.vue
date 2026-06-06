@@ -1,15 +1,15 @@
 <template>
-    <div class="table-item" ref="refRoot">
+    <div class="table-item" ref="refRoot" :class="model.FreezeSelectClass.value">
         <div class="size-panel">
-            <div class="size" :class="model.EllipsisClass.value" v-html="formattedText"></div>
+            <div class="size" :class="model.EllipsisClass.value" v-html="FormattedText"></div>
             <span class="placeholder">*</span>
         </div>
-        <div v-if="model.IsLink.value" class="input ellipsis" :style="inputStyle">
+        <div v-if="model.IsLink.value" class="input ellipsis" :style="InputStyle">
             <a @click="model.OnClick">{{ model.Text.value }}</a>
         </div>
-        <input type="text" v-if="model.IsTextBox.value" class="input ellipsis" :style="inputStyle"
+        <input type="text" v-if="model.IsTextBox.value" class="input ellipsis" :style="InputStyle"
             :readonly="model.IsReadonly.value" v-model="model.Text.value" @input="OnInput" @change="OnChange" />
-        <textarea v-if="model.IsTextarea.value" class="input" :style="inputStyle" :readonly="model.IsReadonly.value"
+        <textarea v-if="model.IsTextarea.value" class="input" :style="InputStyle" :readonly="model.IsReadonly.value"
             v-model="model.Text.value" @input="OnInput" @change="OnChange"></textarea>
     </div>
 </template>
@@ -30,7 +30,7 @@ const { model } = defineProps({
     }
 })
 
-const inputStyle = computed((): StyleValue => {
+const InputStyle = computed((): StyleValue => {
     return {
         width: `${sizeBehavior.ActualWidth.value}px`,
         height: `${sizeBehavior.ActualHeight.value}px`,
@@ -40,7 +40,7 @@ const inputStyle = computed((): StyleValue => {
     }
 })
 
-const formattedText = computed(() => {
+const FormattedText = computed(() => {
     return model.IsTextarea.value
         ? StringHelper.StringToHtml(model.Text.value) :
         StringHelper.StringToHtml(model.Text.value, '')
@@ -70,7 +70,7 @@ function TextXSS() {
 
 <style lang="less" scoped>
 @line-height: 1.5;
-@input-padding: 0 16px;
+@input-padding: 12px 16px;
 
 .table-item {
     position: relative;
@@ -113,6 +113,18 @@ function TextXSS() {
         white-space: pre-wrap; // 保留手动换行符
         overflow-wrap: normal; // 禁用自动换行
         line-height: @line-height;
+    }
+}
+
+&.freeze {
+    &:hover {
+        .size-panel {
+            background: var(--theme-mask-hover);
+        }
+    }
+
+    &.select {
+        background-color: var(--theme-table-row-background-selected);
     }
 }
 </style>

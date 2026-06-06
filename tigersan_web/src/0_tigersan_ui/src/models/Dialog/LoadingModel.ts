@@ -1,6 +1,6 @@
 import Loading from "../../components/Dialog/Loading.vue"
 import { ref, watch, type App } from "vue"
-import { PanelBehavior } from "../../helpers/PanelBehavior"
+import { PanelBehavior } from "../../helpers/Behaviors/PanelBehavior.ts"
 
 export class LoadingModel {
     private _loading?: App<any>

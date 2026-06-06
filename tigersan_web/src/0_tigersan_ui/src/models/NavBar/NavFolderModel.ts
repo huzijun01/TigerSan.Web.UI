@@ -2,7 +2,7 @@ import { ref, shallowReactive, type ShallowReactive } from 'vue'
 import { NavBarModel } from './NavBarModel'
 import { NavItemModel } from './NavItemModel'
 import { NavButtonModel } from './NavButtonModel'
-import { FolderBehavior } from '../../helpers/FolderBehavior'
+import { FolderBehavior } from '../../helpers/Behaviors/FolderBehavior'
 
 export type NavFolderHandler = (folderModel: NavFolderModel) => void
 

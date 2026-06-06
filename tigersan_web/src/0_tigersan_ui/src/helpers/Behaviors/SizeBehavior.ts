@@ -2,13 +2,19 @@ import { ref, shallowRef } from "vue"
 
 /** 尺寸行为 */
 export class SizeBehavior {
-    _observer?: ResizeObserver
+    //#region 【Fields】
+    /** “尺寸”监听器 */
+    private _observer?: ResizeObserver
+    //#endregion 【Fields】
+
+    //#region 【Properties】
     /** 根元素（需手动绑定到“根元素”上） */
     readonly refRoot = shallowRef<HTMLElement | undefined>()
     /** 实际宽度 */
     readonly ActualWidth = ref(0)
     /** 实际高度 */
     readonly ActualHeight = ref(0)
+    //#endregion 【Properties】
 
     //#region 【Functions】
     /** 获取“宽度” */

@@ -109,12 +109,12 @@
     </PopWindow>
 
     <PopWindow :model="tagDetail">
-        <TagDetailPage :tagId="TagId" />
+        <TagInfo :tagId="TagId" />
     </PopWindow>
 </template>
 
 <script lang="ts" setup>
-import TagDetailPage from './TagDetailPage/TagDetailPage.vue'
+import TagInfo from '@/components/TagInfo.vue'
 import { onMounted } from 'vue'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'

@@ -1,5 +1,5 @@
 <template>
-    <div class="tag-detail-page">
+    <div class="tag-info-panel">
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Tag.value" :prop-value="Tag?.tagId" />
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Asset.value" :prop-value="Tag?.brandId" />
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Batch.value" :prop-value="Batch" />
@@ -11,14 +11,15 @@
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Signal.value" :prop-value="Tag?.signal" />
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Temperature.value" :prop-value="Tag?.temperature" />
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Comment.value" :prop-value="Tag?.comment" />
-        <KeyValue :isAutoHidden="true" :prop-name="Texts.ReportTime.value" :prop-value="Tag?.reportTime" />
         <KeyValue :isAutoHidden="true" :prop-name="Texts.Address.value" :prop-value="Tag?.address" />
+        <KeyValue :isAutoHidden="true" :prop-name="Texts.ReportTime.value"
+            :prop-value="ObjectHelper.GetDateString(Tag?.reportTime)" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { DialogHelper, loading, KeyValue, Texts } from '@/0_tigersan_ui/tigerui'
+import { DialogHelper, loading, KeyValue, Texts, ObjectHelper } from '@/0_tigersan_ui/tigerui'
 import { tagHelper, TagModel, batchHelper, tagTypeHelper } from '@/models';
 
 // 【字段】:
@@ -62,7 +63,7 @@ onMounted(async () => {
 </script>
 
 <style lang="less" scoped>
-.tag-detail-page {
+.tag-info-panel {
     &>* {
         margin-bottom: 10px;
     }

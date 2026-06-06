@@ -242,6 +242,11 @@ export class TableRowModel<TSource extends object> {
 
     /** “项目模型”集合 */
     readonly ItemModels: ShallowReactive<TableItemModel<TSource>[]> = shallowReactive([])
+
+    /** “选中”类名 */
+    readonly SelectClass = computed(() => {
+        return { 'select': this.IsChecked.value }
+    })
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -285,6 +290,16 @@ export class TableItemModel<TSource extends object> {
     readonly IsTextBox = computed(() => this._headerModel.Type.value === ItemType.TextBox)
     /** 是否为“文本域” */
     readonly IsTextarea = computed(() => this._headerModel.Type.value === ItemType.Textarea)
+
+    /** 是否“选中” */
+    readonly IsChecked = computed(() => this._rowModel.IsChecked.value)
+    /** “冻结选中”类名 */
+    readonly FreezeSelectClass = computed(() => {
+        return {
+            'freeze': this._headerModel.IsFreeze.value,
+            'select': this.IsChecked.value
+        }
+    })
     //#endregion [computed]
     //#endregion 【Properties】
 

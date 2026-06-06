@@ -16,12 +16,12 @@
 
             <!-- 表格主体 -->
             <tbody>
-                <tr v-for="r in model.RowModels" :key="r._id" :class="{ 'select': r.IsChecked.value }">
+                <tr v-for="r in model.RowModels" :key="r._id" :class="r.SelectClass.value">
                     <td v-if="model.IsShowCheckBox.value" class="checkbox sticky" :style="bgStyle">
                         <input type="checkbox" v-model="r.IsChecked.value" v-on:change="model.RiseOnSelectStateChange">
                     </td>
                     <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.CellStyle.value">
-                        <TableItem type="checkbox" :model="i" />
+                        <TableItem :model="i" />
                     </td>
                 </tr>
             </tbody>
@@ -82,23 +82,6 @@ onMounted(() => {
     flex-grow: 1;
 
     table {
-
-        td,
-        th {
-            color: var(--theme-color);
-            padding: 12px 0px;
-
-            &:hover {
-                background: var(--theme-mask-hover);
-            }
-        }
-
-        th.checkbox,
-        td.checkbox {
-            width: 34px;
-            padding: 0px;
-        }
-
         thead {
             /* 位置: */
             position: sticky; // 冻结
@@ -122,14 +105,23 @@ onMounted(() => {
                 }
             }
         }
-    }
 
-    input[type="checkbox"] {
-        cursor: pointer;
-        margin: 0 16px;
+        td,
+        th {
+            padding: 0px;
+            color: var(--theme-color);
 
-        &:disabled {
-            cursor: default;
+            &:hover {
+                background: var(--theme-mask-hover);
+            }
+        }
+
+        .checkbox {
+            width: 34px;
+
+            input {
+                margin: 0 16px;
+            }
         }
     }
 }

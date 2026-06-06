@@ -26,6 +26,6 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .table-header {
-    padding: 0 16px;
+    padding: 12px 16px;
 }
 </style>

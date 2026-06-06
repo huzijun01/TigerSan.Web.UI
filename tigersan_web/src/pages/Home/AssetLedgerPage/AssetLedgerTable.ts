@@ -72,15 +72,6 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         }
     },
     {
-        _propName: 'isBound',
-        Text: '绑定状态',
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
-        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
-    },
-    {
         _propName: 'tagId',
         Text: '标签ID',
         IsFreeze: true,
@@ -93,6 +84,15 @@ export const assetLedgerTable = new TableModel<AssetModel>([
             TagId.value = rowData.tagId
             tagDetail.Show()
         }
+    },
+    {
+        _propName: 'isBound',
+        Text: '绑定状态',
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
+        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
     },
     {
         _propName: 'tagType',

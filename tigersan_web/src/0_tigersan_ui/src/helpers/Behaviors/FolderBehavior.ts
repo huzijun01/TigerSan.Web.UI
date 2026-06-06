@@ -1,5 +1,5 @@
 import { type Ref } from "vue"
-import type { NumberAction } from "../types"
+import type { NumberAction } from "../../types"
 
 export type FolderHandler<TFolder extends IFolder> = (folderModel: TFolder) => void
 export type ButtonHandler<TButton extends IButton> = (buttonModel: TButton) => void

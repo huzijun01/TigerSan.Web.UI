@@ -3,7 +3,7 @@ import type { NumberAction } from '../../types'
 import { NavFolderConfig, CreateNavFolderModel } from './NavConfig'
 import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'
 import { NavFolderModel, type NavFolderHandler } from './NavFolderModel'
-import { FolderBehavior, type IRoot } from '../../helpers/FolderBehavior'
+import { FolderBehavior, type IRoot } from '../../helpers/Behaviors/FolderBehavior'
 
 export type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
 
