@@ -2,7 +2,7 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { computed, ref } from "vue"
 import type { Language } from "element-plus/lib/locales.js"
 
-enum DateType {
+export enum DateType {
     year = 'year',
     month = 'month',
     date = 'date',
@@ -14,7 +14,7 @@ enum DateType {
     monthrange = 'monthrange',
 }
 
-class DatePickerModel {
+export class DatePickerModel {
     //#region 【Fields】
     _locale?: Language = zhCn
     _type: DateType = DateType.date
@@ -52,9 +52,4 @@ class DatePickerModel {
         }
     }
     //#endregion 【Functions】
-}
-
-export {
-    DateType,
-    DatePickerModel
 }

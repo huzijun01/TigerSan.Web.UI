@@ -1,5 +1,5 @@
 <template>
-    <div class="drawer-box flex-column" :class="model.ClassObj.value">
+    <div class="drawer-box flex-column" :class="model.OpenClass.value">
         <div class="title-panel flex-left" @click="model.OnClick">
             <div class="arrow iconfont">{{ Icons.Arrow_Right }}</div>
             <div class="title">{{ model.Title.value }}</div>

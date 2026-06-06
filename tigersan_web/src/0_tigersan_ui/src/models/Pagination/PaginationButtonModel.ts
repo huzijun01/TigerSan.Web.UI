@@ -4,7 +4,7 @@ import { PaginationModel } from "./PaginationModel"
 import { Int } from "../../base"
 import type { Action, NumberFunc } from "../../types"
 
-class PaginationButtonModel {
+export class PaginationButtonModel {
     //#region 【Fields】
     _id = nanoid()
     /** 获取“所选数字”
@@ -58,8 +58,4 @@ class PaginationButtonModel {
         this._pagination.SelectedNum.value = this.Num
     }
     //#endregion 【回调】
-}
-
-export {
-    PaginationButtonModel
 }

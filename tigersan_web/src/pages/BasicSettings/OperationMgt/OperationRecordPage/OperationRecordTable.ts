@@ -1,7 +1,7 @@
 import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "操作记录"模型 */
-class OperationRecordModel {
+export class OperationRecordModel {
     Index = 0
     OperationType = ''
     ProductType = ''
@@ -15,7 +15,7 @@ class OperationRecordModel {
 }
 
 // 列头:
-const operationRecordTable = new TableModel<OperationRecordModel>([
+export const operationRecordTable = new TableModel<OperationRecordModel>([
     {
         _propName: 'Index',
         Text: 'ID',
@@ -108,9 +108,4 @@ operationRecordTable._initHeader = headerModel => {
 }
 
 operationRecordTable._initItem = itemModel => {
-}
-
-export {
-    OperationRecordModel,
-    operationRecordTable,
 }

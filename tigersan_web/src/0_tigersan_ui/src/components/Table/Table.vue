@@ -1,5 +1,5 @@
 <template>
-    <div class="table-panel" :class="model.ClassObj.value">
+    <div class="table-panel" :class="model.FillClass.value">
         <table>
             <!-- 表头区域 -->
             <thead :style="bgStyle">
@@ -57,13 +57,10 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-@import '../../assets/styles/input.less';
-@import '../../assets/styles/panels.less';
-
 .sticky {
     position: sticky;
     left: 0;
-    z-index: 2;
+    z-index: 1;
 }
 
 .line {
@@ -73,6 +70,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 1px;
+    z-index: 2;
     background: var(--theme-table-line-background);
     transform: translateY(100%);
 }
@@ -81,12 +79,22 @@ onMounted(() => {
     overflow: auto;
     flex-grow: 1;
 
+    &.fill table {
+        width: 100%;
+    }
+
+    tr.select {
+        background-color: var(--theme-table-row-background-selected);
+    }
+
     table {
+        border-collapse: collapse;
+
         thead {
             /* 位置: */
             position: sticky; // 冻结
             top: 0;
-            z-index: 1;
+            z-index: 3;
 
             tr {
                 &::after {
@@ -124,15 +132,5 @@ onMounted(() => {
             }
         }
     }
-}
-
-.table-panel.fill {
-    table {
-        width: 100%;
-    }
-}
-
-tr.select {
-    background-color: var(--theme-table-row-background-selected);
 }
 </style>

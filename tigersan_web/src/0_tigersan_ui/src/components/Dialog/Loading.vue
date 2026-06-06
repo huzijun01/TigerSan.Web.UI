@@ -1,10 +1,13 @@
 <template>
     <div class="loading pop-mask">
-        <div class="icon iconfont" :style="styleObj">{{ Icons.Loading_Dot }}</div>
+        <div class="icon iconfont" :style="FontSizeStyle">
+            {{ Icons.Loading_Dot }}
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+import type { StyleValue } from 'vue';
 import { Icons } from '../../base'
 
 // 字段:
@@ -15,7 +18,7 @@ const { fontSize } = defineProps({
     }
 })
 
-const styleObj = {
+const FontSizeStyle: StyleValue = {
     'font-size': `${fontSize}px`
 }
 </script>

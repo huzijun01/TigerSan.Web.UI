@@ -2,7 +2,7 @@ import { computed, type Ref, type ComputedRef } from "vue"
 import { Language, config } from "../../helpers"
 
 /** 文本模型 */
-class TextModel {
+export class TextModel {
     //#region 【Fields】
     en: string
     zhCn: string
@@ -45,8 +45,4 @@ class TextModel {
         })
     }
     //#endregion 【Functions】
-}
-
-export {
-    TextModel,
 }

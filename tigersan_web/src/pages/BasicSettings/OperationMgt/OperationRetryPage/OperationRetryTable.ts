@@ -1,7 +1,7 @@
 import { ItemType, TableModel } from '@/0_tigersan_ui/tigerui'
 
 /** "操作重试"模型 */
-class OperationRetryModel {
+export class OperationRetryModel {
     Index = 0
     macAddr = ''
     EqpType = ''
@@ -11,7 +11,7 @@ class OperationRetryModel {
 }
 
 // 列头:
-const operationRetryTable = new TableModel<OperationRetryModel>([
+export const operationRetryTable = new TableModel<OperationRetryModel>([
     {
         _propName: 'Index',
         Text: 'ID',
@@ -72,9 +72,4 @@ operationRetryTable._initHeader = headerModel => {
 }
 
 operationRetryTable._initItem = itemModel => {
-}
-
-export {
-    OperationRetryModel,
-    operationRetryTable,
 }

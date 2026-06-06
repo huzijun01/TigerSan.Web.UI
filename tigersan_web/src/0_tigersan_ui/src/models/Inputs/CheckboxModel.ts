@@ -2,7 +2,7 @@ import { ref } from "vue"
 import type { StringArrayFunc } from "../../types"
 import { nanoid } from "nanoid"
 
-class CheckboxModel {
+export class CheckboxModel {
     //#region 【Fields】
     _id = nanoid()
     _onChange?: (model: CheckboxModel) => void
@@ -24,7 +24,7 @@ class CheckboxModel {
     //#endregion 【Functions】
 }
 
-class CheckboxGroupModel {
+export class CheckboxGroupModel {
     //#region 【Fields】
     _onChange?: StringArrayFunc
     //#endregion 【Fields】
@@ -40,9 +40,4 @@ class CheckboxGroupModel {
         }
     }
     //#endregion 【Functions】
-}
-
-export {
-    CheckboxModel,
-    CheckboxGroupModel,
 }

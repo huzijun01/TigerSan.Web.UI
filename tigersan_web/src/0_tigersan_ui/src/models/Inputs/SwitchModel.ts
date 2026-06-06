@@ -1,7 +1,7 @@
 import { type BooleanFunc } from "../../types"
 import { computed, ref } from "vue"
 
-class SwitchModel {
+export class SwitchModel {
     //#region 【Fields】
     _onChange?: BooleanFunc
     //#endregion 【Fields】
@@ -40,8 +40,4 @@ class SwitchModel {
         }
     }
     //#endregion 【Functions】
-}
-
-export {
-    SwitchModel
 }

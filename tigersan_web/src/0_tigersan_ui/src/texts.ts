@@ -1,7 +1,7 @@
 import { TextModel } from "./models/Text/TextModel"
 
 /** 文本集合 */
-class Texts {
+export class Texts {
     static readonly Name = TextModel.Computed('Name', '名称')
     static readonly Addr = TextModel.Computed('Addr', '地址')
     static readonly Refresh = TextModel.Computed('Refresh', '刷新')
@@ -66,8 +66,4 @@ class Texts {
     static readonly Temperature = TextModel.Computed('Temperature', '温度')
     static readonly Comment = TextModel.Computed('Comment', '备注')
     static readonly Address = TextModel.Computed('Address', '地址')
-}
-
-export {
-    Texts,
 }

@@ -1,9 +1,9 @@
-enum RectPosition {
+export enum RectPosition {
     Top,
     Bottom
 }
 
-class GetWithinWindowRectResult {
+export class GetWithinWindowRectResult {
     Position: RectPosition = RectPosition.Bottom
     Rect: DOMRect
 
@@ -12,7 +12,7 @@ class GetWithinWindowRectResult {
     }
 }
 
-class RectHelper {
+export class RectHelper {
     static IsWithin(parent: DOMRect, child: DOMRect, tolerance = 0.1): boolean {
         return (child.left - tolerance >= parent.left)
             && (child.top - tolerance >= parent.top)
@@ -61,10 +61,4 @@ class RectHelper {
         res.Position = rectMenu == rectBottomMenu ? RectPosition.Bottom : RectPosition.Top
         return res
     }
-}
-
-export {
-    RectPosition,
-    GetWithinWindowRectResult,
-    RectHelper,
 }

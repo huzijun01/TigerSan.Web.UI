@@ -4,7 +4,7 @@ import type { NumberFunc } from "../../types"
 import { SelectModel } from "../Inputs/SelectModel"
 import { PaginationButtonModel } from "./PaginationButtonModel"
 
-class PaginationModel {
+export class PaginationModel {
     //#region 【Fields】
     /** 是否“初始化” */
     private _isInit = true
@@ -423,5 +423,3 @@ class PaginationModel {
     }
     //#endregion 【回调】
 }
-
-export { PaginationModel }

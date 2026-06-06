@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { OnlineStates, PaginationModel, TableModel, OnlineState, Colors, ItemType, Battery } from '@/0_tigersan_ui/tigerui'
 
 /** “人员管理标签”模型 */
-class PersonMgtTagModel {
+export class PersonMgtTagModel {
     Index = 0
     IMEI = ''
     EqpName = ''
@@ -16,15 +16,15 @@ class PersonMgtTagModel {
 }
 
 // 字段:
-const onlineCount = ref(0)
-const offlineCount = ref(0)
+export const onlineCount = ref(0)
+export const offlineCount = ref(0)
 
 // 分页器:
-const pagination = new PaginationModel()
+export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 // 列头:
-const personMgtTagTable = new TableModel<PersonMgtTagModel>([
+export const personMgtTagTable = new TableModel<PersonMgtTagModel>([
     {
         _propName: 'Index',
         Text: 'ID',
@@ -148,13 +148,4 @@ personMgtTagTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length
-}
-
-
-export {
-    onlineCount,
-    offlineCount,
-    pagination,
-    PersonMgtTagModel,
-    personMgtTagTable,
 }

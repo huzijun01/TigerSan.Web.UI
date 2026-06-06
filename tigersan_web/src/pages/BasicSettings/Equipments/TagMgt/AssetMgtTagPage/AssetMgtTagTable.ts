@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { Colors, OnlineState, ItemType, OnlineStates, PaginationModel, TableModel, Battery } from '@/0_tigersan_ui/tigerui'
 
 /** “资产管理标签”模型 */
-class AssetMgtTagModel {
+export class AssetMgtTagModel {
     Index = 0
     macAddr = ''
     EqpType = ''
@@ -14,15 +14,15 @@ class AssetMgtTagModel {
 }
 
 // 字段:
-const onlineCount = ref(0)
-const offlineCount = ref(0)
+export const onlineCount = ref(0)
+export const offlineCount = ref(0)
 
 // 分页器:
-const pagination = new PaginationModel()
+export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 // 列头:
-const assetMgtTagTable = new TableModel<AssetMgtTagModel>([
+export const assetMgtTagTable = new TableModel<AssetMgtTagModel>([
     {
         _propName: 'Index',
         Text: 'ID',
@@ -126,12 +126,4 @@ assetMgtTagTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length
-}
-
-export {
-    onlineCount,
-    offlineCount,
-    pagination,
-    AssetMgtTagModel,
-    assetMgtTagTable,
 }

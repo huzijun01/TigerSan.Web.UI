@@ -78,47 +78,22 @@ export class TableModel<TSource extends object> {
     //#endregion [内部维护]
 
     //#region [computed]
-    /** 类对象 */
-    readonly ClassObj = computed(() => {
-        return {
-            fill: this.IsFill.value
-        }
-    })
-
-    /** 是否“已选中” */
-    readonly IsSelected = computed(() => {
-        return this.SelectedRowDatas.value.length > 0
-    })
-
-    /** 是否“已单选” */
-    readonly IsOnlySelected = computed(() => {
-        return this.SelectedRowDatas.value.length === 1
-    })
-
-    /** 是否“显示全选复选框” */
-    readonly IsShowSelectAllCheckBox = computed(() => {
-        return this.IsShowCheckBox && this.IsAllowMultiSelect.value
-    })
-
     /** 行数 */
-    readonly Count = computed(() => {
-        return this.RowDatas.length
-    })
-
+    readonly Count = computed(() => this.RowDatas.length)
     /** “被选行”个数 */
-    readonly SelectedRowCount = computed(() => {
-        return this.SelectedRowDatas.value.length
-    })
-
+    readonly SelectedRowCount = computed(() => this.SelectedRowDatas.value.length)
     /** “被选中”的“行数据”集合 */
-    readonly SelectedRowDatas = computed(() => {
-        return this.RowModels.filter(r => r.IsChecked.value).map(r => r._rowData)
-    })
-
+    readonly SelectedRowDatas = computed(() => this.RowModels.filter(r => r.IsChecked.value).map(r => r._rowData))
     /** “复选框模型”集合 */
-    readonly CheckboxModels = computed(() => {
-        return this.RowModels.map(i => new CheckboxBehaviorModel(i, i.IsChecked))
-    })
+    readonly CheckboxModels = computed(() => this.RowModels.map(i => new CheckboxBehaviorModel(i, i.IsChecked)))
+    /** “填充”类名 */
+    readonly FillClass = computed(() => { return { fill: this.IsFill.value } })
+    /** 是否“已选中” */
+    readonly IsSelected = computed(() => this.SelectedRowDatas.value.length > 0)
+    /** 是否“已单选” */
+    readonly IsOnlySelected = computed(() => this.SelectedRowDatas.value.length === 1)
+    /** 是否“显示全选复选框” */
+    readonly IsShowSelectAllCheckBox = computed(() => this.IsShowCheckBox && this.IsAllowMultiSelect.value)
     //#endregion [computed]
     //#endregion 【Properties】
 
@@ -243,10 +218,10 @@ export class TableRowModel<TSource extends object> {
     /** “项目模型”集合 */
     readonly ItemModels: ShallowReactive<TableItemModel<TSource>[]> = shallowReactive([])
 
+    //#region [computed]
     /** “选中”类名 */
-    readonly SelectClass = computed(() => {
-        return { 'select': this.IsChecked.value }
-    })
+    readonly SelectClass = computed(() => { return { 'select': this.IsChecked.value } })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -279,18 +254,12 @@ export class TableItemModel<TSource extends object> {
     readonly Background = ref(Colors.Transparent)
 
     //#region [computed]
-    /** “省略号”类对象 */
-    readonly EllipsisClass = computed(() => {
-        return { ellipsis: this._headerModel.Type.value != ItemType.Textarea }
-    })
-
     /** 是否为“链接” */
     readonly IsLink = computed(() => this._headerModel.Type.value === ItemType.Link)
     /** 是否为“文本框” */
     readonly IsTextBox = computed(() => this._headerModel.Type.value === ItemType.TextBox)
     /** 是否为“文本域” */
     readonly IsTextarea = computed(() => this._headerModel.Type.value === ItemType.Textarea)
-
     /** 是否“选中” */
     readonly IsChecked = computed(() => this._rowModel.IsChecked.value)
     /** “冻结选中”类名 */
@@ -299,6 +268,10 @@ export class TableItemModel<TSource extends object> {
             'freeze': this._headerModel.IsFreeze.value,
             'select': this.IsChecked.value
         }
+    })
+    /** “省略号”类名 */
+    readonly EllipsisClass = computed(() => {
+        return { ellipsis: this._headerModel.Type.value != ItemType.Textarea }
     })
     //#endregion [computed]
     //#endregion 【Properties】
@@ -446,7 +419,7 @@ export class TableHeaderModel<TSource extends object> {
         return {
             position: 'sticky' as const,
             left: `${offset}px`,
-            zIndex: 2,
+            zIndex: 1,
             background: table._headerBackground as any
         }
     })

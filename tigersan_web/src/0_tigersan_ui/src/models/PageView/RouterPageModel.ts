@@ -2,13 +2,13 @@ import { type Component } from "vue"
 import { DefaultPage } from "../../components"
 
 /** 页面模型 */
-class PageModel {
+export class PageModel {
     path = ''
     component: Component = DefaultPage
 }
 
 /** 路由页面模型 */
-class RouterPageModel {
+export class RouterPageModel {
     //#region 【Fields】
     /** 页面改变时
      * （由“RouterPage”传入） */
@@ -55,9 +55,4 @@ class RouterPageModel {
         }
     }
     //#endregion 【Functions】
-}
-
-export {
-    PageModel,
-    RouterPageModel
 }

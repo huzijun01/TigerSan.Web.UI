@@ -3,7 +3,7 @@ import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types
 import { type FormVerify, type FormSubmit, type FormSubmitAsync, FormModel, FormItemModel } from "./FormModel"
 
 /** 表单配置 */
-class FormConfig<TSource extends object> {
+export class FormConfig<TSource extends object> {
     //#region 【Fields】
     /** “表单项目配置”集合 */
     _itemConfigs?: FormItemConfig<TSource, any>[]
@@ -44,7 +44,7 @@ class FormConfig<TSource extends object> {
 }
 
 /** 表单项目配置 */
-class FormItemConfig<TSource extends object, TTarget> {
+export class FormItemConfig<TSource extends object, TTarget> {
     //#region 【Fields】
     /** 属性名 */
     _propName: string
@@ -85,7 +85,7 @@ class FormItemConfig<TSource extends object, TTarget> {
 }
 
 /** 设置“表单模型” */
-function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>) {
+export function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>) {
     // Fields:
     formModel._itemModels = GetItemModels(formModel, formConfig)
     formModel._onClose = formConfig._onClose
@@ -104,7 +104,7 @@ function SetFormModel<TSource extends object>(formModel: FormModel<TSource>, for
 }
 
 /** 获取“表单项目模型”集合 */
-function GetItemModels<TSource extends object, TTarget>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>): FormItemModel<TSource, TTarget>[] {
+export function GetItemModels<TSource extends object, TTarget>(formModel: FormModel<TSource>, formConfig: FormConfig<TSource>): FormItemModel<TSource, TTarget>[] {
     if (!formConfig._itemConfigs) return []
 
     let itemModels = new Array<FormItemModel<TSource, TTarget>>()
@@ -132,11 +132,4 @@ function GetItemModels<TSource extends object, TTarget>(formModel: FormModel<TSo
     })
 
     return itemModels
-}
-
-export {
-    FormConfig,
-    FormItemConfig,
-    SetFormModel,
-    GetItemModels,
 }

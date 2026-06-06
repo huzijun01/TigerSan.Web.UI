@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { TextBoxModel } from './TextBoxModel'
 import type { StringFunc } from '../../types'
 
-class SearchModel extends TextBoxModel {
+export class SearchModel extends TextBoxModel {
     //#region 【Fields】
     _onSearch?: StringFunc
     //#endregion 【Fields】
@@ -18,8 +18,4 @@ class SearchModel extends TextBoxModel {
         }
     }
     //#endregion 【Functions】
-}
-
-export {
-    SearchModel
 }

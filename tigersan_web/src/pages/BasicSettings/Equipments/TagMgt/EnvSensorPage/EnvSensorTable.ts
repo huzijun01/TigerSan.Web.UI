@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { OnlineStates, PaginationModel, TableModel, OnlineState, Colors, ItemType, Battery } from '@/0_tigersan_ui/tigerui'
 
 /** "环境传感器"模型 */
-class EnvSensorModel {
+export class EnvSensorModel {
     Index = 0
     macAddr = ''
     Version = ''
@@ -14,15 +14,15 @@ class EnvSensorModel {
 }
 
 // 字段:
-const onlineCount = ref(0)
-const offlineCount = ref(0)
+export const onlineCount = ref(0)
+export const offlineCount = ref(0)
 
 // 分页器:
-const pagination = new PaginationModel()
+export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 // 列头:
-const envSensorTable = new TableModel<EnvSensorModel>([
+export const envSensorTable = new TableModel<EnvSensorModel>([
     {
         _propName: 'Index',
         Text: 'ID',
@@ -128,12 +128,4 @@ envSensorTable._onInitRowModels = rowDatas => {
     pagination.Count.value = rowDatas.length
     onlineCount.value = rowDatas.filter(r => OnlineState.IsOnline(r)).length
     offlineCount.value = rowDatas.filter(r => !OnlineState.IsOnline(r)).length
-}
-
-export {
-    EnvSensorModel,
-    onlineCount,
-    offlineCount,
-    pagination,
-    envSensorTable,
 }

@@ -4,21 +4,21 @@ import { Colors } from '../base'
 import { Texts } from '../texts'
 import { TextModel } from './Text/TextModel'
 
-type DialogCallback = (state: DialogState, data?: any) => void
+export type DialogCallback = (state: DialogState, data?: any) => void
 
-enum DialogMode {
+export enum DialogMode {
     NoButton,
     YesOrNo,
     YesOrCancel
 }
 
-enum DialogState {
+export enum DialogState {
     Yes,
     No,
     Cancel
 }
 
-class DialogModel {
+export class DialogModel {
     readonly id: string = nanoid()
     _data?: any
     callback?: DialogCallback
@@ -52,5 +52,3 @@ class DialogModel {
         this.Color.value = background
     }
 }
-
-export { type DialogCallback, DialogMode, DialogState, DialogModel } 

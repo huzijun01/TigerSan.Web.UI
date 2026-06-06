@@ -2,7 +2,7 @@ import { computed, ref } from 'vue'
 import { Icons } from '../../base'
 import { TextBoxModel } from './TextBoxModel'
 
-class PasswordModel extends TextBoxModel {
+export class PasswordModel extends TextBoxModel {
     //#region 【Properties】
     readonly IsShowValue = ref(false)
 
@@ -21,8 +21,4 @@ class PasswordModel extends TextBoxModel {
         this.IsShowValue.value = !this.IsShowValue.value
     }
     //#endregion 【Functions】
-}
-
-export {
-    PasswordModel
 }

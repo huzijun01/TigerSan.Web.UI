@@ -3,7 +3,7 @@ import { Texts } from "../../texts"
 import { TextModel } from "../Text/TextModel"
 import type { StringFunc } from "../../types"
 
-class TextBoxModel {
+export class TextBoxModel {
     //#region 【Fields】
     _onChange?: StringFunc
     _onInput?: StringFunc
@@ -22,7 +22,8 @@ class TextBoxModel {
     /** 显示的“占位文本” */
     readonly ShowPlaceholder = TextModel.DefaultComputed(this.PlaceholderEN, this.PlaceholderCN, Texts.PleaseEnter)
 
-    readonly styleObj = computed(() => {
+    /** “宽度”样式 */
+    readonly WidthStyle = computed(() => {
         return {
             width: this.Width.value,
         }
@@ -48,8 +49,4 @@ class TextBoxModel {
         this.OnChange()
     }
     //#endregion 【Functions】
-}
-
-export {
-    TextBoxModel
 }
