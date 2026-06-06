@@ -1,5 +1,5 @@
 <template>
-    <div class="table-item" ref="refRoot" :class="model.FreezeSelectClass.value">
+    <div class="table-item" ref="refRoot" :class="model.SelectClass.value">
         <div class="size-panel">
             <div class="size" :class="model.EllipsisClass.value" v-html="FormattedText"></div>
             <span class="placeholder">*</span>
@@ -41,9 +41,10 @@ const InputStyle = computed((): StyleValue => {
 })
 
 const FormattedText = computed(() => {
-    return model.IsTextarea.value
+    const text = model.IsTextarea.value
         ? StringHelper.StringToHtml(model.Text.value) :
         StringHelper.StringToHtml(model.Text.value, '')
+    return StringHelper.IsNotEmpty(text) ? text : '0'
 })
 
 // 过程:
@@ -74,15 +75,14 @@ function TextXSS() {
 
 .table-item {
     position: relative;
+    color: var(--theme-color);
 
-    &.freeze {
-        &:hover .size-panel {
-            background: var(--theme-mask-hover);
-        }
+    &:hover .size-panel {
+        background: var(--theme-mask-hover);
+    }
 
-        &.select {
-            background: var(--theme-table-row-background-selected);
-        }
+    &.select {
+        background: var(--theme-table-row-background-selected);
     }
 
     .size-panel {

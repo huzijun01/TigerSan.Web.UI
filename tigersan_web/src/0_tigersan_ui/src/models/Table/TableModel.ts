@@ -262,13 +262,8 @@ export class TableItemModel<TSource extends object> {
     readonly IsTextarea = computed(() => this._headerModel.Type.value === ItemType.Textarea)
     /** 是否“选中” */
     readonly IsChecked = computed(() => this._rowModel.IsChecked.value)
-    /** “冻结选中”类名 */
-    readonly FreezeSelectClass = computed(() => {
-        return {
-            'freeze': this._headerModel.IsFreeze.value,
-            'select': this.IsChecked.value
-        }
-    })
+    /** “选中”类名 */
+    readonly SelectClass = computed(() => { return { 'select': this.IsChecked.value } })
     /** “省略号”类名 */
     readonly EllipsisClass = computed(() => {
         return { ellipsis: this._headerModel.Type.value != ItemType.Textarea }
@@ -398,11 +393,11 @@ export class TableHeaderModel<TSource extends object> {
     readonly refRoot = this._sizeBehavior.refRoot
     /** 实际宽度 */
     readonly ActualWidth = this._sizeBehavior.ActualWidth
+    /** 实际高度 */
+    readonly ActualHeight = this._sizeBehavior.ActualHeight
     //#endregion [内部维护]
 
     //#region [computed]
-    /** “冻结”类名 */
-    readonly FreezeClass = computed(() => { return { 'freeze': this.IsFreeze.value } })
     /** "冻结"样式 */
     readonly FreezeStyle = computed((): StyleValue => {
         if (!this.IsFreeze.value) return {}
@@ -414,7 +409,7 @@ export class TableHeaderModel<TSource extends object> {
         for (let i = 0; i < headers.length; ++i) {
             const header = headers[i]
             if (!header || header._propName === this._propName) break
-            if (!header.IsFreeze.value) continue
+            if (!header.IsFreeze.value || !header.IsShow.value) continue
             offset += header.ActualWidth.value ?? 0
         }
 

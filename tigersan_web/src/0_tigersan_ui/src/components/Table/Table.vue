@@ -18,7 +18,7 @@
 
             <!-- 表格主体 -->
             <tbody>
-                <tr v-for="r in model.RowModels" :key="r._id" :class="r.SelectClass.value">
+                <tr v-for="r in model.RowModels" :key="r._id">
                     <td v-if="model.IsShowCheckBox.value" class="checkbox sticky" :class="r.SelectClass.value"
                         :style="bgStyle">
                         <div class="select-mask flex-center">
@@ -89,10 +89,6 @@ onMounted(() => {
         width: 100%;
     }
 
-    tr.select {
-        background: var(--theme-table-row-background-selected);
-    }
-
     table {
         border-collapse: collapse;
 
@@ -123,32 +119,27 @@ onMounted(() => {
         td,
         th {
             padding: 0px;
-            color: var(--theme-color);
-
-            &:hover {
-                background: var(--theme-mask-hover);
-            }
         }
+    }
+}
 
-        .checkbox {
-            width: 34px;
+.checkbox {
+    width: 34px;
 
-            .select-mask {
-                min-height: 46px; // 最小高度
-            }
+    .select-mask {
+        min-height: 45px; // 最小高度
+    }
 
-            &:hover .select-mask {
-                background: var(--theme-mask-hover);
-            }
+    &:hover .select-mask {
+        background: var(--theme-mask-hover);
+    }
 
-            &.select .select-mask {
-                background: var(--theme-table-row-background-selected);
-            }
+    &.select .select-mask {
+        background: var(--theme-table-row-background-selected);
+    }
 
-            input {
-                margin: 0 16px;
-            }
-        }
+    input {
+        margin: 0 16px;
     }
 }
 </style>

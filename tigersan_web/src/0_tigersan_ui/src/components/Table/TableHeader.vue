@@ -1,5 +1,5 @@
 <template>
-    <div class="table-header" ref="refRoot" :class="model.FreezeClass.value">
+    <div class="table-header" ref="refRoot">
         <span class="ellipsis">{{ model.Text.value }}</span>
     </div>
 </template>
@@ -27,8 +27,9 @@ onMounted(() => {
 <style lang="less" scoped>
 .table-header {
     padding: 12px 16px;
+    color: var(--theme-color);
 
-    &.freeze:hover {
+    &:hover {
         background: var(--theme-mask-hover);
     }
 }
