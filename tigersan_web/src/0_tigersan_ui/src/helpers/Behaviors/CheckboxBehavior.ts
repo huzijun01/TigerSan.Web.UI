@@ -1,6 +1,6 @@
 import { watch, type Ref, type ComputedRef, type WatchHandle } from 'vue'
 
-/** 复选框模型 */
+/** “复选框行为”模型 */
 export class CheckboxBehaviorModel {
     //#region 【Fields】
     /** 行模型 */
@@ -29,7 +29,7 @@ export class CheckboxBehaviorModel {
     //#endregion 【Ctor】
 }
 
-/** 复选框行为 */
+/** “复选框”行为 */
 export class CheckboxBehavior {
     //#region 【Fields】
     /** 是否“联动” */

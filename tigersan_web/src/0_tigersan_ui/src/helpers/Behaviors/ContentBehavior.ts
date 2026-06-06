@@ -1,7 +1,8 @@
 import { type App, type Component } from "vue"
 import { ComponentHelper } from "../ComponentHelper"
 
-export class PanelBehavior {
+/** “内容”行为 */
+export class ContentBehavior {
     //#region 【Fields】
     private _panel?: HTMLElement
     private readonly _id: string

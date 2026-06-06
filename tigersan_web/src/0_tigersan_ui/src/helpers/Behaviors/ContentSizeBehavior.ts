@@ -1,5 +1,6 @@
 import { computed, ref, shallowRef, type StyleValue } from "vue"
 
+/** “内容尺寸”行为 */
 export class ContentSizeBehavior {
     //#region 【Fields】
     protected _arrowOpen = 90

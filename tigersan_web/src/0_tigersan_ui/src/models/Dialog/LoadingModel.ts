@@ -1,15 +1,15 @@
 import Loading from "../../components/Dialog/Loading.vue"
 import { ref, watch, type App } from "vue"
-import { PanelBehavior } from "../../helpers/Behaviors/PanelBehavior.ts"
+import { ContentBehavior } from "../../helpers/Behaviors/ContentBehavior.ts"
 
 export class LoadingModel {
     private _loading?: App<any>
-    private behavior: PanelBehavior
+    private behavior: ContentBehavior
 
     readonly IsShow = ref(false)
 
     constructor() {
-        this.behavior = new PanelBehavior(
+        this.behavior = new ContentBehavior(
             'loading-panel',
             Loading,
             () => this._loading,

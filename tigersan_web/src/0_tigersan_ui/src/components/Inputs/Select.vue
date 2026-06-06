@@ -14,7 +14,7 @@ import SelectMenu from './SelectMenu.vue'
 import { watch, onMounted, onUnmounted } from 'vue'
 import { Icons } from '../../base'
 import { SelectModel } from '../../models'
-import { PanelBehavior } from '../../helpers'
+import { ContentBehavior } from '../../helpers'
 
 // 字段:
 const { model } = defineProps({
@@ -26,7 +26,7 @@ const { model } = defineProps({
 
 const { refRoot, refInput } = model
 
-const behavior = new PanelBehavior(
+const behavior = new ContentBehavior(
     'select-menu-panel',
     SelectMenu,
     () => SelectModel._appMenu,

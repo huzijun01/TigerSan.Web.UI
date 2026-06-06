@@ -1,6 +1,6 @@
 import { ref, shallowRef } from "vue"
 
-/** 尺寸行为 */
+/** “尺寸”行为 */
 export class SizeBehavior {
     //#region 【Fields】
     /** “尺寸”监听器 */

@@ -44,6 +44,7 @@ export interface IRoot {
     _getButtonHeight?: NumberAction
 }
 
+/** “文件夹”行为 */
 export class FolderBehavior<TRoot extends IRoot, TFolder extends IFolder> {
     //#region 【Fields】
     private _oldHeight: number = -1
