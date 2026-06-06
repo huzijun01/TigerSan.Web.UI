@@ -48,7 +48,6 @@ function OnClick(payload: PointerEvent) {
 
     &:hover {
         * {
-            font-weight: bold;
             color: var(--theme-brand);
         }
     }

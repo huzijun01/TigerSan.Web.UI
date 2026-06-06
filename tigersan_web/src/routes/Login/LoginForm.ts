@@ -56,8 +56,11 @@ const configCaptcha: FormItemConfig<UserInfo, string> = {
 
 /** “增”源数据获取方法 */
 const GetSource = () => {
-    // return new UserInfo()
-    return new UserInfo('admin', 'admin123', '1234')
+    if (false) {
+        return new UserInfo()
+    } else {
+        return new UserInfo('admin', 'admin123', '1234')
+    }
 }
 
 /** 提交 */

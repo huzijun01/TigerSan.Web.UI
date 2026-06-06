@@ -75,6 +75,16 @@ function TextXSS() {
 .table-item {
     position: relative;
 
+    &.freeze {
+        &:hover .size-panel {
+            background: var(--theme-mask-hover);
+        }
+
+        &.select {
+            background: var(--theme-table-row-background-selected);
+        }
+    }
+
     .size-panel {
         display: flex;
 
@@ -110,21 +120,10 @@ function TextXSS() {
         /* 文本: */
         resize: none;
         overflow: hidden;
+        user-select: text;
         white-space: pre-wrap; // 保留手动换行符
         overflow-wrap: normal; // 禁用自动换行
         line-height: @line-height;
-    }
-}
-
-&.freeze {
-    &:hover {
-        .size-panel {
-            background: var(--theme-mask-hover);
-        }
-    }
-
-    &.select {
-        background-color: var(--theme-table-row-background-selected);
     }
 }
 </style>

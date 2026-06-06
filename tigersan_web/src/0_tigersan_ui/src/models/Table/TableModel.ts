@@ -401,6 +401,8 @@ export class TableHeaderModel<TSource extends object> {
     //#endregion [内部维护]
 
     //#region [computed]
+    /** “冻结”类名 */
+    readonly FreezeClass = computed(() => { return { 'freeze': this.IsFreeze.value } })
     /** "冻结"样式 */
     readonly FreezeStyle = computed((): StyleValue => {
         if (!this.IsFreeze.value) return {}

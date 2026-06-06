@@ -5,8 +5,10 @@
             <thead :style="bgStyle">
                 <tr>
                     <th v-if="model.IsShowCheckBox.value" class="checkbox sticky" ref="refCheckbox" :style="bgStyle">
-                        <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
-                            v-model="model.IsSelectAll.value" v-on:change="model.RiseOnSelectStateChange">
+                        <div class="select-mask flex-center">
+                            <input v-if="model.IsShowSelectAllCheckBox.value" type="checkbox"
+                                v-model="model.IsSelectAll.value" v-on:change="model.RiseOnSelectStateChange">
+                        </div>
                     </th>
                     <th v-for="h in model.HeaderModels" :key="h._id" :style="h.CellStyle.value">
                         <TableHeader :model="h" />
@@ -17,8 +19,12 @@
             <!-- 表格主体 -->
             <tbody>
                 <tr v-for="r in model.RowModels" :key="r._id" :class="r.SelectClass.value">
-                    <td v-if="model.IsShowCheckBox.value" class="checkbox sticky" :style="bgStyle">
-                        <input type="checkbox" v-model="r.IsChecked.value" v-on:change="model.RiseOnSelectStateChange">
+                    <td v-if="model.IsShowCheckBox.value" class="checkbox sticky" :class="r.SelectClass.value"
+                        :style="bgStyle">
+                        <div class="select-mask flex-center">
+                            <input type="checkbox" v-model="r.IsChecked.value"
+                                v-on:change="model.RiseOnSelectStateChange">
+                        </div>
                     </td>
                     <td v-for="i in r.ItemModels" :key="i._id" :style="i._headerModel.CellStyle.value">
                         <TableItem :model="i" />
@@ -84,7 +90,7 @@ onMounted(() => {
     }
 
     tr.select {
-        background-color: var(--theme-table-row-background-selected);
+        background: var(--theme-table-row-background-selected);
     }
 
     table {
@@ -126,6 +132,18 @@ onMounted(() => {
 
         .checkbox {
             width: 34px;
+
+            .select-mask {
+                min-height: 46px; // 最小高度
+            }
+
+            &:hover .select-mask {
+                background: var(--theme-mask-hover);
+            }
+
+            &.select .select-mask {
+                background: var(--theme-table-row-background-selected);
+            }
 
             input {
                 margin: 0 16px;
