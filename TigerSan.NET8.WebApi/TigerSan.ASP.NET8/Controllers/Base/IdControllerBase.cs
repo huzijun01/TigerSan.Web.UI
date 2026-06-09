@@ -7,13 +7,16 @@ namespace TigerSan.NET8.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public abstract class IdControllerBase<TEntity, TIIdService> : ControllerBase where TEntity : IdEntityBase where TIIdService : IIdServiceBase<TEntity>
+    public abstract class IdControllerBase<TEntity, TIIdService>
+        : ControllerBase where TEntity : IdEntityBase where TIIdService : IIdServiceBase<TEntity>
     {
         #region 【Fields】
         public TIIdService _service;
         #endregion 【Fields】
 
         #region 【Properties】
+        /// <summary>机器ID</summary>
+        public string? MachineID { get; set; }
         /// <summary>用户信息</summary>
         public UserInfo? UserInfo { get; set; }
         /// <summary>可访问公司</summary>

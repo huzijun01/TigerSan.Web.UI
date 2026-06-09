@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
+using TigerSan.CaptchaGenerator;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Helpers;
@@ -197,18 +198,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
         #endregion [改]
 
-        #region [Other]
+        #region [登录]
         #region 登录
         /// <summary>登录</summary>
         /// <param name="search">用户名/电话/邮箱</param>
         /// <param name="password">密码</param>
         /// <returns>用户信息</returns>
-        public async Task<MyActionResult<UserInfo>> Login(string search, string password)
+        public async Task<MyActionResult<UserInfo>> Login(
+            string? id,
+            string captcha,
+            string search,
+            string password)
         {
             var res = MyResults<UserInfo>.OperationSuccess;
 
             try
             {
+                var resVerifyCaptcha = VerifyCaptcha(id, captcha);
+                if (!resVerifyCaptcha.IsSuccess) return resVerifyCaptcha.Convert<UserInfo>();
+
                 var resPerson = await _personService.GetLoginFull(search, false);
                 if (resPerson.IsSuccess)
                 {
@@ -298,7 +306,42 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
-        #endregion [Other]
+        #endregion [登录]
+
+        #region [验证码]
+        #region 获取“验证码”
+        public MyActionResult<byte[]> GetCaptcha(string? id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(id)) return MyResults<byte[]>.TraceIdentifierIsNullOrEmpty;
+                var code = CaptchaHelper.GenerateCode();
+                var bytes = CaptchaHelper.GenerateImageBytes(code);
+                if (bytes == null) return MyResults<byte[]>.CaptchaGenerationFailed;
+                CaptchaCache.InitCaptcha(id, code);
+                return MyResults<byte[]>.Success(null, bytes);
+            }
+            catch (Exception e)
+            {
+                return MyResults<byte[]>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 验证“验证码”
+        public MyActionResult<object> VerifyCaptcha(string? id, string code)
+        {
+            try
+            {
+                return CaptchaCache.Verify(id, code);
+            }
+            catch (Exception e)
+            {
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+        #endregion [验证码]
         #endregion 【Functions】
     }
 }

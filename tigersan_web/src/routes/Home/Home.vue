@@ -32,7 +32,7 @@
           <IconButton :icon="Icons.Question" :text="Texts.Help.value" />
           <IconButton :icon="Icons.Refresh" :text="Texts.Progress.value" />
           <IconButton :icon="Icons.User" :text="userInfo.nickname" :click="form.Edit" />
-          <IconButton :icon="Icons.StartUp" text="" :click="loginForm.Logout" />
+          <IconButton :icon="Icons.StartUp" text="" :click="loginFormModel.Logout" />
         </div>
       </div>
 
@@ -114,11 +114,11 @@
 import form from './UserInfoForm'
 import AppConfig from '@/AppConfig'
 import passwordForm from './PasswordForm'
-import loginForm from '@/routes/Login/LoginForm'
 import { onBeforeMount, onMounted } from 'vue'
 import { UserHelper } from '@/models'
 import { useUserInfo } from '@/stores'
 import { navModel, navData } from '@/navs/navModel'
+import { loginFormModel } from '@/routes/Login/LoginFormModel'
 import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, KeyValue, MyActionResult, TokenHelper } from '@/0_tigersan_ui/tigerui'
 
 // 字段:

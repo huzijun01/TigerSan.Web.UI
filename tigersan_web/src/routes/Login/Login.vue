@@ -19,13 +19,13 @@
 </template>
 
 <script lang="ts" setup>
-import form from './LoginForm'
+import { loginFormModel as model } from './LoginFormModel.ts'
 import LoginForm from './LoginForm.vue'
 import { onBeforeMount } from 'vue';
 import { ThemeHelper, IconButton, Icons, Lottie, config, Texts } from '@/0_tigersan_ui/tigerui'
 
 onBeforeMount(() => {
-  form.LoginByToken()
+  model.LoginByToken()
 })
 </script>
 

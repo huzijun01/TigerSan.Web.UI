@@ -561,8 +561,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var now = DateTimeHelper.GetUtcNow();
 
                 var timeOuts = await _dbSet
-                    .Where(bs => bs.OnlineState == OnlineStates.Online && bs.ReportTime != null
-                    && bs.ReportTime.Value.AddSeconds(Constants.Report_Interval_Seconds) < now)
+                    .Where(i => i.OnlineState == OnlineStates.Online && i.ReportTime != null
+                    && i.ReportTime.Value.AddSeconds(Constants.Report_Interval_Seconds) < now)
                     .ToListAsync();
 
                 foreach (var timeOut in timeOuts)

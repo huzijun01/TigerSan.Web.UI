@@ -9,6 +9,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         Warning = 1,
         Error = 2,
         InvalidToken = 3,
+        InvalidCaptcha = 4,
     }
     #endregion
 
@@ -30,6 +31,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> TagRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The Tag cannot be repeated!"); }
         public static MyActionResult<TData> UserNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "User does not exist!"); }
         public static MyActionResult<TData> PasswordIncorrect { get => new MyActionResult<TData>(ActionResultCode.Error, "The password is incorrect!"); }
+        public static MyActionResult<TData> TraceIdentifierIsNullOrEmpty { get => new MyActionResult<TData>(ActionResultCode.Error, "The id is null or empty!"); }
+        public static MyActionResult<TData> CaptchaGenerationFailed { get => new MyActionResult<TData>(ActionResultCode.Error, "Captcha generation failed!"); }
+        public static MyActionResult<TData> CaptchaVerificationFailed { get => new MyActionResult<TData>(ActionResultCode.InvalidCaptcha, "Captcha verification failed!"); }
         public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
         public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
         public static MyActionResult<TData> TagNotBoundAsset { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag is not bound to a asset!"); }

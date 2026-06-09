@@ -32,6 +32,21 @@ namespace TigerSan.NET8.WebApi.Filters
         #region 执行时
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            // 获取“机器ID”:
+            context.HttpContext.Items.TryGetValue(ApiAuthorizeFilter.Machine_ID, out var ti);
+            var id = ti as string;
+            if (id == null)
+            {
+                context.Result = new JsonResult(MyResults<object>.IsNull(nameof(id)));
+                return;
+            }
+
+            // 设置“可访问公司”集合:
+            ObjectHelper.SetProperty(
+                context.Controller,
+                nameof(IdControllerBase<IdEntityBase, IdServiceBase<IdEntityBase>>.MachineID),
+                id);
+
             // 是否无需验证:
             if (context.HasAttribute<NotIdControllerAttribute>()
                 || context.HasAttribute<NoNeedAuthorizeAttribute>())

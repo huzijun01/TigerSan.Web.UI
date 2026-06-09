@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Attributes;
+using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
@@ -13,6 +13,11 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Fields】
         private readonly IUserService _service;
         #endregion 【Fields】
+
+        #region 【Properties】
+        /// <summary>机器ID</summary>
+        public string? MachineID { get; set; }
+        #endregion 【Properties】
 
         #region 【Ctor】
         public UserController(IUserService service)
@@ -34,9 +39,9 @@ namespace TigerSan.NET8.WebApi.Controllers
         [Route("Login")]
         [NoNeedAuthorize]
         /// <summary>登录</summary>
-        public async Task<MyActionResult<UserInfo>> Login(string search, string password)
+        public async Task<MyActionResult<UserInfo>> Login(string captcha, string search, string password)
         {
-            return await _service.Login(search, password);
+            return await _service.Login(MachineID, captcha, search, password);
         }
 
         [HttpGet]
@@ -54,6 +59,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<object>> Logout(string username)
         {
             return await _service.Logout(username);
+        }
+
+        [HttpGet]
+        [Route("Captcha")]
+        [NoNeedAuthorize]
+        public async Task<MyActionResult<byte[]>> GetCaptcha()
+        {
+            return _service.GetCaptcha(MachineID);
         }
         #endregion 【Functions】
     }

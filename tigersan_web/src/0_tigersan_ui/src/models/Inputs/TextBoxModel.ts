@@ -7,6 +7,7 @@ export class TextBoxModel {
     //#region 【Fields】
     _onChange?: StringFunc
     _onInput?: StringFunc
+    _onEnter?: StringFunc
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -41,6 +42,12 @@ export class TextBoxModel {
     readonly OnChange = () => {
         if (this._onChange) {
             this._onChange(this.Value.value)
+        }
+    }
+
+    readonly OnEnter = () => {
+        if (this._onEnter) {
+            this._onEnter(this.Value.value)
         }
     }
 

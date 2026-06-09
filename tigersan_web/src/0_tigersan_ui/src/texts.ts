@@ -45,7 +45,7 @@ export class Texts {
     static readonly InTransit = TextModel.Computed('InTransit', '在途')
     static readonly InTransitTimeout = TextModel.Computed('InTransitTimeout', '在途超时')
     static readonly Online = TextModel.Computed('Online', '在线')
-    static readonly Offline = TextModel.Computed('Offline', '离线')
+    static readonly Offline = TextModel.Computed('Incorrect Captcha', '离线')
     static readonly NoSignal = TextModel.Computed('NoSignal', '无信号')
     static readonly Breakdown = TextModel.Computed('Breakdown', '故障')
     static readonly Lose = TextModel.Computed('Lose', '丢失')
@@ -66,4 +66,5 @@ export class Texts {
     static readonly Temperature = TextModel.Computed('Temperature', '温度')
     static readonly Comment = TextModel.Computed('Comment', '备注')
     static readonly Address = TextModel.Computed('Address', '地址')
+    static readonly IncorrectCaptcha = TextModel.Computed('Incorrect captcha!', '验证码不正确')
 }

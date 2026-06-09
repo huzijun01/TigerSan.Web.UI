@@ -6,6 +6,7 @@ export enum ActionResultCode {
     Warning = 1,
     Error = 2,
     InvalidToken = 3,
+    InvalidCaptcha = 4,
 }
 
 export class MyActionResult {
@@ -14,7 +15,7 @@ export class MyActionResult {
 
     code: ActionResultCode
     message = ''
-    data?: object | unknown[] | number
+    data?: unknown | unknown[]
 
     constructor(
         code: ActionResultCode,
@@ -32,6 +33,8 @@ export class MyActionResult {
     static ShowResult(res: MyActionResult, success: string = '操作成功') {
         if (res.code === ActionResultCode.Error) {
             DialogHelper.ShowError(res.message)
+        } else if (res.code === ActionResultCode.InvalidCaptcha) {
+            return
         } else if (res.code === ActionResultCode.InvalidToken) {
             MyActionResult._logout?.()
             DialogHelper.ShowError(res.message)

@@ -4,43 +4,44 @@
     <div class="content-panel flex-stretch">
       <Form :marginH="0">
         <FormRow>
-          <FormItem :model="form.configUsername.ItemModel">
-            <TextBox type="text" :model="form.uname"></TextBox>
+          <FormItem :model="model.configUsername.ItemModel">
+            <TextBox type="text" :model="model.uname"></TextBox>
           </FormItem>
         </FormRow>
         <FormRow>
-          <FormItem :model="form.configPassword.ItemModel">
-            <Password :model="form.pwd"></Password>
+          <FormItem :model="model.configPassword.ItemModel">
+            <Password :model="model.pwd"></Password>
           </FormItem>
         </FormRow>
         <FormRow>
-          <FormItem :model="form.configCaptcha.ItemModel">
+          <FormItem :model="model.configCaptcha.ItemModel">
             <div class="captcha-panel">
-              <TextBox type="text" :model="form.captcha"></TextBox>
-              <img class="captcha-img" src="http://www.tigersan.cn/0_file/image/captcha.jpg" alt="">
+              <TextBox type="text" :model="model.captcha"></TextBox>
+              <img class="captcha-img" :src="model.CaptchaUrl.value" @click="model.UpdateCaptcha">
             </div>
           </FormItem>
         </FormRow>
       </Form>
     </div>
     <div class="button-panel flex-stretch">
-      <button @click="form.loginForm.OnSubmit">{{ Texts.Login.value }}</button>
+      <button @click="model.form.OnSubmit">{{ Texts.Login.value }}</button>
       <div class="code-login link flex-right">{{ Texts.VerificationCodeLogin.value }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import form from './LoginForm'
 import AppConfig from '@/AppConfig'
 import { onMounted } from 'vue'
 import { useUserInfo } from '@/stores'
+import { loginFormModel as model } from './LoginFormModel'
 import { Texts, Form, FormRow, FormItem, TextBox, Password } from '@/0_tigersan_ui/tigerui'
 
 onMounted(async () => {
   const userInfo = useUserInfo()
   userInfo.Clear()
-  await form.loginForm.Init()
+  await model.form.Init()
+  await model.UpdateCaptcha()
 })
 </script>
 

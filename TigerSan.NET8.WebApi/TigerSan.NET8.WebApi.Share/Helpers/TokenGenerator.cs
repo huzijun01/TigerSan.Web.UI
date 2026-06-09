@@ -3,13 +3,14 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using TigerSan.NET8.WebApi.Share;
 
 #region 令牌信息
 /// <summary>令牌信息</summary>
 public class TokenInfo
 {
     public string Username { get; set; } = string.Empty;
-    public TimeSpan Expiration { get; set; } = TimeSpan.FromDays(7);
+    public TimeSpan Expiration { get; set; } = Constants.Token_Validity_Period;
 }
 #endregion
 

@@ -35,7 +35,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             var tokenRecord = MemoryCacheHelper.Get<string>(tokenInfo.Username);
 
             // “Token”是否可用:
-            if (!string.Equals(tokenRecord, token))
+            if (string.IsNullOrEmpty(tokenRecord) || !string.Equals(tokenRecord, token))
                 return MyResults<TokenInfo>.LoggedInByAnotherUser;
 
             return MyResults<TokenInfo>.Success(null, tokenInfo);

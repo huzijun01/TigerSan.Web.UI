@@ -9,10 +9,17 @@ namespace TigerSan.NET8.WebApi.Filters
 {
     public class ApiAuthorizeFilter : IAuthorizationFilter
     {
+        #region 【Fields】
+        /// <summary>机器ID</summary>
+        public static readonly string Machine_ID = nameof(Machine_ID);
+        /// <summary>Token信息</summary>
         public static readonly string Token_Info = nameof(Token_Info);
+        #endregion 【Fields】
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            context.HttpContext.Items.Add(Machine_ID, context.HttpContext.TraceIdentifier.Split(':').FirstOrDefault());
+
             if (context.HasAttribute<NoNeedAuthorizeAttribute>()) return;
 
             // 是否包含“Authorization头”:

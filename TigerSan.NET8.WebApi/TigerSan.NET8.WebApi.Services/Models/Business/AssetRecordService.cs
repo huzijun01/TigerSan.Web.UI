@@ -645,17 +645,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             return res.Convert<object>();
                         }
                     }
-                    else
-                    {
-                        // 更新记录:
-                        var res = await Edit(newRecord, false);
-                        if (res.IsError)
-                        {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(res.Message);
-                            return res;
-                        }
-                    }
                 }
 
                 await _db.SaveChangesAsync();

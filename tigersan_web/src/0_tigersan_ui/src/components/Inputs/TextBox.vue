@@ -2,7 +2,7 @@
     <div class="textbox flex-right">
         <input type="text" v-model="model.Value.value" :placeholder="model.ShowPlaceholder.value"
             :readonly="model.IsReadonly.value" :style="model.WidthStyle.value" @input="model.OnInput"
-            @change="model.OnChange">
+            @change="model.OnChange" @keyup.enter="model.OnEnter">
         <div class="button-panel flex-center">
             <div class="button iconfont" @click="model.OnClear">{{ Icons.Close_Circle }}</div>
         </div>

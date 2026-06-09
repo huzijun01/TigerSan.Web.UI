@@ -505,5 +505,23 @@ export class FormItemModel<TSource extends object, TTarget> {
             return true
         }
     }
+
+    /** 设置“正常”文本 */
+    readonly SetOK = (text: string) => {
+        this.VerifyText.value = text
+        this.VerifyResult.value = FormResult.OK
+    }
+
+    /** 设置“警告”文本 */
+    readonly SetWarning = (text: string) => {
+        this.VerifyText.value = text
+        this.VerifyResult.value = FormResult.Warning
+    }
+
+    /** 设置“错误”文本 */
+    readonly SetError = (text: string) => {
+        this.VerifyText.value = text
+        this.VerifyResult.value = FormResult.Error
+    }
     //#endregion 【Functions】
 }
