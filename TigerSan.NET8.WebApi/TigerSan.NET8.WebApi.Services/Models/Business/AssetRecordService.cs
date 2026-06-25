@@ -1,0 +1,737 @@
+﻿using Microsoft.EntityFrameworkCore;
+using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share;
+using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
+using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models.Base;
+
+namespace TigerSan.NET8.WebApi.Services.Models
+{
+    public class AssetRecordService : IdServiceBase<AssetRecordEntity>, IAssetRecordService
+    {
+        #region 【Fields】
+        private IBaseStationService _baseStationService;
+        /// <summary>正在修改的标签</summary>
+        private Dictionary<long, TagDto> _editingTags = new Dictionary<long, TagDto>();
+        #endregion 【Fields】
+
+        #region 【Ctor】
+        static AssetRecordService()
+        {
+            SetDbSetConfig(nameof(AssetRecordEntity.Asset))
+                .SetParent(typeof(AssetEntity), nameof(_db.Assets), nameof(AssetEntity.Department))
+                .SetParent(typeof(DepartmentEntity), nameof(_db.Departments), nameof(DepartmentEntity.Company))
+                .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
+        }
+
+        public AssetRecordService(AppDbContext db, IBaseStationService baseStationService) : base(db, db.AssetRecords)
+        {
+            _baseStationService = baseStationService;
+        }
+        #endregion 【Ctor】
+
+        #region 【Functions】
+        #region [Private]
+        #region 初始化“场地”
+        /// <summary>初始化“场地”</summary>
+        private async Task<MyActionResult<object>> InitSiteAsync(AssetRecordEntity entity)
+        {
+            try
+            {
+                if (entity.Station == null)
+                {
+                    entity.Site = null;
+                }
+                else
+                {
+                    var resGetSite = await _baseStationService.GetSite(entity.Station.Value);
+                    var site = resGetSite.Data;
+                    if (site == null)
+                    {
+                        return MyResults<object>.Error(resGetSite.Message);
+                    }
+                    else
+                    {
+                        entity.Site = site.Id;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+
+        #region 是否“移动”
+        /// <summary>是否“移动”</summary>
+        private bool IsMoved(TagDto oldTag, TagDto newTag)
+        {
+            if (oldTag.Longitude == null
+                || oldTag.Latitude == null
+                || newTag.Longitude == null
+                || newTag.Latitude == null) return false;
+            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
+            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
+            return p1.Haversine(p2) > Constants.Distance_Threshold_Meters;
+        }
+        #endregion
+
+        #region 是否“移动”
+        /// <summary>是否“移动”</summary>
+        private bool IsMoved(AssetLngLat oldTag, AssetLngLat newTag)
+        {
+            if (oldTag.Longitude == null
+                || oldTag.Latitude == null
+                || newTag.Longitude == null
+                || newTag.Latitude == null) return false;
+            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
+            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
+            return p1.Haversine(p2) > Constants.Distance_Threshold_Meters;
+        }
+        #endregion
+        #endregion [Private]
+
+        #region [查]
+        #region 获取“最新数据”
+        /// <summary>获取“最新数据”</summary>
+        public async Task<MyActionResult<AssetRecordEntity>> GetLast(long asset)
+        {
+            try
+            {
+                var entity = await _dbSet
+                    .AsNoTracking()
+                    .Where(ar => ar.Asset == asset)
+                    .OrderByDescending(ar => ar.ReportTime)
+                    .FirstOrDefaultAsync();
+
+                return MyResults<AssetRecordEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“最新完整数据”
+        /// <summary>获取“最新完整数据”</summary>
+        public async Task<MyActionResult<AssetRecordDto>> GetFullLast(long asset)
+        {
+            try
+            {
+                var record = await _dbSet
+                    .AsNoTracking()
+                    .Where(i => i.Asset == asset)
+                    .OrderByDescending(ar => ar.ReportTime)
+                    .FirstOrDefaultAsync();
+                if (record == null) return MyResults<AssetRecordDto>.Success();
+
+                var dto = new AssetRecordDto();
+                dto.ShallowCopy(record);
+
+                if (record.Site != null)
+                {
+                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
+                    if (site != null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(site));
+                        dto.SiteName = site.Name;
+                        dto.Addr = site.Addr;
+                        dto.AddrDetail = site.AddrDetail;
+                    }
+                }
+
+                if (record.TargetSite != null)
+                {
+                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.TargetSite);
+                    if (site != null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(site));
+                        dto.TargetSiteName = site.Name;
+                        dto.TargetAddr = site.Addr;
+                        dto.TargetAddrDetail = site.AddrDetail;
+                    }
+                }
+
+                if (record.Station != null)
+                {
+                    var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
+                    if (station != null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(station));
+                        dto.StationName = station.Name;
+                    }
+                }
+
+                return MyResults<AssetRecordDto>.Success(null, dto);
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetRecordDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“完整数据”集合
+        /// <summary>获取“完整数据”集合</summary>
+        public async Task<MyActionResult<List<AssetRecordDto>>> GetFullList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var list = new List<AssetRecordDto>();
+
+                var res = await GetList(pageSize, pageNumber, sort, ascending, filter);
+                if (res.Data == null)
+                {
+                    return MyResults<List<AssetRecordDto>>.Error(res.Message);
+                }
+                var records = res.Data;
+
+                // 添加“数据”:
+                foreach (var record in records)
+                {
+                    var dto = new AssetRecordDto();
+                    dto.ShallowCopy(record);
+
+                    if (record.Site != null)
+                    {
+                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
+                        if (site == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(site));
+                            continue;
+                        }
+                        dto.SiteName = site.Name;
+                        dto.Addr = site.Addr;
+                        dto.AddrDetail = site.AddrDetail;
+                    }
+
+                    if (record.TargetSite != null)
+                    {
+                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.TargetSite);
+                        if (site == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(site));
+                            continue;
+                        }
+                        dto.TargetSiteName = site.Name;
+                        dto.TargetAddr = site.Addr;
+                        dto.TargetAddrDetail = site.AddrDetail;
+                    }
+
+                    if (record.Station != null)
+                    {
+                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
+                        if (station == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(station));
+                            continue;
+                        }
+                        dto.StationName = station.Name;
+                    }
+
+                    list.Add(dto);
+                }
+
+                return MyResults<List<AssetRecordDto>>.Success(null, list);
+            }
+            catch (Exception e)
+            {
+                return MyResults<List<AssetRecordDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+        
+        #region 获取“最新入库数据”
+        /// <summary>获取“最新入库数据”</summary>
+        public async Task<MyActionResult<AssetRecordEntity>> GetLastInbound(long asset)
+        {
+            try
+            {
+                var entity = await _dbSet
+                    .AsNoTracking()
+                    .Where(i => i.Asset == asset && i.State == AssetStates.Inbound)
+                    .OrderByDescending(ar => ar.ReportTime)
+                    .FirstOrDefaultAsync();
+
+                if (entity == null)
+                {
+                    return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.IsNull(nameof(entity)));
+                }
+
+                return MyResults<AssetRecordEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“路径”
+        /// <summary>获取“路径”</summary>
+        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+            long asset,
+            DateTime? start = null,
+            DateTime? end = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var queryable = start != null && end != null
+                    ? _dbSet.AsNoTracking().Where(i => i.Asset == asset
+                    && i.Longitude != null && i.Longitude.Value > 0
+                    && i.Latitude != null && i.Latitude.Value > 0
+                    && i.ReportTime >= start && i.ReportTime <= end)
+                    : _dbSet.AsNoTracking().Where(i => i.Asset == asset
+                    && i.Longitude != null && i.Longitude.Value > 0
+                    && i.Latitude != null && i.Latitude.Value > 0);
+
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<AssetLngLat>>.Error(res.Message);
+                }
+
+                var resSort = queryable.Sort(nameof(AssetRecordEntity.ReportTime));
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<AssetLngLat>>.Error(resSort.Message);
+                }
+
+                var positions = await queryable
+                    .Select(i => new AssetLngLat()
+                    {
+                        Site = i.Site,
+                        Longitude = i.Longitude,
+                        Latitude = i.Latitude,
+                        Address = i.Address,
+                        ReportTime = i.ReportTime,
+                    })
+                    .ToListAsync();
+
+                var useablePositions = new List<AssetLngLat>();
+
+                AssetLngLat? pre = null;
+                foreach (var position in positions)
+                {
+                    //if (pre != null && !IsMoved(pre, position)) continue;
+
+                    SiteEntity? site = null;
+                    if (string.IsNullOrEmpty(position.Address) && position.Site != null)
+                    {
+                        site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
+                        if (site != null)
+                        {
+                            position.Address = site.FullAddr;
+                        }
+                    }
+
+                    if ((position.Longitude == null || position.Latitude == null) && position.Site != null)
+                    {
+                        if (site == null) site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
+                        if (site != null)
+                        {
+                            position.Longitude = site.Longitude;
+                            position.Latitude = site.Latitude;
+                        }
+                    }
+
+                    useablePositions.Add(position);
+                    pre = position;
+                }
+
+                return MyResults<List<AssetLngLat>>.Success(null, useablePositions);
+            }
+            catch (Exception e)
+            {
+                return MyResults<List<AssetLngLat>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+        #endregion [查]
+
+        #region [增]
+        #region 添加“单条数据”
+        /// <summary>添加“单条数据”</summary>
+        public override async Task<MyActionResult<AssetRecordEntity>> Add(AssetRecordEntity entity, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 更新“ID”:
+                entity.UpdateId();
+
+                // 初始化“场地”:
+                var resInit = await InitSiteAsync(entity);
+                if (resInit.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resInit.Convert<AssetRecordEntity>();
+                }
+
+                // 添加数据:
+                _dbSet.Add(entity);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return MyResults<AssetRecordEntity>.Success(null, entity);
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<AssetRecordEntity>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 添加“多条数据”
+        /// <summary>添加“多条数据”</summary>
+        public override async Task<MyActionResult<object>> AddRange(List<AssetRecordEntity> entities, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    // 更新“ID”:
+                    entity.UpdateId();
+
+                    // 初始化“场地”:
+                    var resInit = await InitSiteAsync(entity);
+                    if (resInit.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return resInit;
+                    }
+                }
+
+                // 添加数据:
+                await _dbSet.AddRangeAsync(entities);
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [增]
+
+        #region [改]
+        #region 修改“单条数据”
+        /// <summary>修改“单条数据”</summary>
+        public override async Task<MyActionResult<object>> Edit(AssetRecordEntity entity, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                // 检验“资源”是否存在:
+                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                if (find == null)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+
+                // 修改“数据”:
+                find.ShallowCopy(entity);
+
+                // 初始化“场地”:
+                var resInit = await InitSiteAsync(entity);
+                if (resInit.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return resInit;
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+
+                return MyResults<object>.OperationSuccess;
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 修改“多条数据”
+        /// <summary>修改“多条数据”</summary>
+        public override async Task<MyActionResult<object>> EditRange(List<AssetRecordEntity> entities, bool isBeginTransaction = true)
+        {
+            var res = MyResults<object>.OperationSuccess;
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (entities.Count < 1) return res;
+
+                var ids = entities.Select(i => i.Id).ToList();
+
+                // 检验“资源”是否存在:
+                var finds = await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+                if (finds.Count < 1)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+                else if (finds.Count < ids.Count)
+                {
+                    return MyResults<object>.SomeResourceNotExist;
+                }
+
+                // 修改“数据”:
+                foreach (var find in finds)
+                {
+                    var entity = entities.FirstOrDefault(i => i.Id == find.Id);
+                    if (entity == null)
+                    {
+                        return MyResults<object>.SomeResourceNotExist;
+                    }
+                    find.ShallowCopy(entity);
+
+                    // 初始化“场地”:
+                    var resInit = await InitSiteAsync(entity);
+                    if (resInit.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        return resInit;
+                    }
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+
+            return res;
+        }
+        #endregion
+        #endregion [改]
+
+        #region [Other]
+        #region 修改“资产记录”
+        /// <summary>修改“资产记录”</summary>
+        public async Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                _editingTags.TryGetValue(newTag.Id, out var editingTag);
+                if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
+                _editingTags.Add(newTag.Id, newTag); // 开始修改
+
+                #region 更新“是否掉落”
+                if (newTag.IsFall != oldTag.IsFall)
+                {
+                    var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == newTag.Asset);
+                    if (asset == null)
+                    {
+                        return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(asset)));
+                    }
+                    asset.IsFall = newTag.IsFall;
+                }
+                #endregion
+
+                #region 获取“最新记录”
+                var resLast = await GetLast(newTag.Asset.Value);
+                if (resLast.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    LogHelper.Instance.Error(resLast.Message);
+                    return MyResults<object>.Error(resLast.Message);
+                }
+                var lastRecord = resLast.Data;
+                #endregion
+
+                #region 若“无记录”，新增“入库记录”
+                if (lastRecord == null)
+                {
+                    lastRecord = new AssetRecordEntity()
+                    {
+                        Asset = newTag.Asset.Value,
+                        Tag = newTag.Id,
+                        State = AssetStates.Inbound,
+                    };
+                    lastRecord.ShallowCopy(newTag);
+                    lastRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+
+                    var res = await Add(lastRecord, false);
+                    if (res.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        LogHelper.Instance.Error(res.Message);
+                        return res.Convert<object>();
+                    }
+
+                    await _db.SaveChangesAsync();
+                    if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+                    return MyResults<object>.OperationSuccess;
+                }
+                #endregion
+
+                var newRecord = new AssetRecordEntity();
+                newRecord.ShallowCopy(lastRecord);
+                newRecord.ShallowCopy(newTag, [nameof(AssetRecordEntity.Id)]);
+
+                if (oldTag.Station != newTag.Station) // 若“场地”改变，新增“入库记录”
+                {
+                    #region 添加“场地”
+                    if (newTag.Station != null)
+                    {
+                        var station = await _db.BaseStations.FirstOrDefaultAsync(b => b.Id == newTag.Station.Value);
+                        if (station == null)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.IsNull(nameof(transaction));
+                            return MyResults<object>.ResourceNotExist;
+                        }
+                        else
+                        {
+                            newRecord.Site = station.Site;
+                        }
+                    }
+                    #endregion
+
+                    if (lastRecord.State != AssetStates.Outbound
+                        && lastRecord.State != AssetStates.InTransit) // 无“出库记录”
+                    {
+                        MyActionResult<object> resOutbound;
+                        lastRecord.State = AssetStates.Outbound;
+                        lastRecord.TargetSite = newRecord.Site;
+
+                        if ((lastRecord.State == AssetStates.InStore || lastRecord.State == AssetStates.Stolid)
+                            && lastRecord.OnlineState == OnlineStates.Offline) // 若“在库”且“离线”
+                        {
+                            // 将“最新记录”改为“出库记录”：
+                            resOutbound = await Edit(lastRecord, false);
+                        }
+                        else
+                        {
+                            // 新增“出库记录”：
+                            lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
+                            resOutbound = (await Add(lastRecord, false)).Convert<object>();
+                        }
+
+                        if (resOutbound.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(resOutbound.Message);
+                            return resOutbound;
+                        }
+                    }
+
+                    // 新增“在途记录”或“入库记录”：
+                    newRecord.TargetSite = null;
+                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+                    newRecord.State = newTag.Station == null ? AssetStates.InTransit : AssetStates.Inbound;
+                    var res = await Add(newRecord, false);
+                    if (res.IsError)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        LogHelper.Instance.Error(res.Message);
+                        return res.Convert<object>();
+                    }
+                }
+                else // 同一场地
+                {
+                    #region 若“在库”，判断是否“滞留”
+                    if (lastRecord.State == AssetStates.InStore)
+                    {
+                        var resLastInbound = await GetLastInbound(newTag.Asset.Value);
+                        var lastInboundRecord = resLastInbound.Data;
+                        if (lastInboundRecord == null)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(resLastInbound.Message);
+                            return resLastInbound.Convert<object>();
+                        }
+
+                        newRecord.State = (DateTimeHelper.GetUtcNow() - lastInboundRecord.ReportTime).TotalHours
+                            > Constants.Stolid_Threshold_Hours
+                            ? AssetStates.Stolid : AssetStates.InStore;
+                    }
+                    #endregion
+
+                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+
+                    if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变
+                    {
+                        #region 若“出库”且“离线”，改为“在途记录”
+                        if (lastRecord.State == AssetStates.Outbound
+                            && newTag.OnlineState == OnlineStates.Offline)
+                        {
+                            newRecord.State = AssetStates.InTransit;
+                        }
+                        #endregion
+
+                        // 新增记录:
+                        var res = await Add(newRecord, false);
+                        if (res.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(res.Message);
+                            return res.Convert<object>();
+                        }
+                    }
+                    else if (IsMoved(oldTag, newTag)) // 移动
+                    {
+                        // 新增记录:
+                        var res = await Add(newRecord, false);
+                        if (res.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(res.Message);
+                            return res.Convert<object>();
+                        }
+                    }
+                }
+
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+                return MyResults<object>.OperationSuccess;
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(ex.GetMessage()));
+            }
+            finally
+            {
+                _editingTags.Remove(newTag.Id); // 结束修改
+            }
+        }
+        #endregion
+        #endregion [Other]
+        #endregion 【Functions】
+    }
+}
