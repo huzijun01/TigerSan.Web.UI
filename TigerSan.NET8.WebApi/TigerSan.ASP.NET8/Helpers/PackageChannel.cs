@@ -190,7 +190,9 @@ namespace TigerSan.NET8.WebApi.Helpers
             var tagService = TagService;
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
 
-            foreach (var tagData in package.Data.TagDatas)
+            package.Data.TagDatas0.AddRange(package.Data.TagDatas1);
+
+            foreach (var tagData in package.Data.TagDatas0)
             {
                 var resGetFullByTagId = await tagService.GetFullByTagId(tagData.TagId);
                 var tag = resGetFullByTagId.Data;

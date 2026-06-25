@@ -46,9 +46,13 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("h")]
         public int ReportType { get; set; }
 
-        /// <summary>标签数据集合</summary>
+        /// <summary>标签数据集合（内置蓝牙）</summary>
         [JsonProperty("nodes0")]
-        public List<BluetoothTagData> TagDatas { get; set; } = new List<BluetoothTagData>();
+        public List<BluetoothTagData> TagDatas0 { get; set; } = new List<BluetoothTagData>();
+
+        /// <summary>标签数据集合（外置蓝牙）</summary>
+        [JsonProperty("nodes1")]
+        public List<BluetoothTagData> TagDatas1 { get; set; } = new List<BluetoothTagData>();
     }
     #endregion
 

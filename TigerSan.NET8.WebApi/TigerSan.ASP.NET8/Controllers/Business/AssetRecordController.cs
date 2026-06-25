@@ -107,7 +107,7 @@ namespace TigerSan.NET8.WebApi.Controllers
             package.Data.Topic = station.MacAddr;
             package.Data.Longitude = entity.Longitude ?? 0;
             package.Data.Latitude = entity.Latitude ?? 0;
-            package.Data.TagDatas.Add(new BluetoothTagData
+            package.Data.TagDatas0.Add(new BluetoothTagData
             {
                 TagId = tag.TagId,
                 Battery = entity.Battery ?? 0,
