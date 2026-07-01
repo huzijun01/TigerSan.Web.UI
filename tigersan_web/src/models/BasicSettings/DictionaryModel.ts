@@ -133,12 +133,11 @@ export class DictionaryModel {
         this.form._onSubmitAsync = async source => {
             const res = await this._helper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.form.Show()
     }
-
 
     /** 改 */
     readonly Edit = async () => {

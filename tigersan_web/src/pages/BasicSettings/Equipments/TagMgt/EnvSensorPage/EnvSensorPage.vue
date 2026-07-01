@@ -6,12 +6,12 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>设备类型：</span>
-                        <Select :model="select.typeSelect"></Select>
+                        <Select :model="select.typeSelect" />
                     </div>
                     <div class="row-panel">
                         <span>在线状态:</span>
-                        <Select :model="select.selectState"></Select>
-                        <Search :model="select.searchMacAddr"></Search>
+                        <Select :model="select.selectState" />
+                        <Search :model="select.searchMacAddr" />
                     </div>
                 </div>
                 <div class="button-panel">

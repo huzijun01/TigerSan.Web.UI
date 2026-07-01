@@ -1,11 +1,11 @@
 import { computed, ref, watch } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall } from '@/0_tigersan_ui/tigerui'
-import { GetTable } from './TagMgtTable'
+import { GetTagTable } from './TagMgtTable'
 import { AssetFilter } from '@/pages/Home/AssetLedgerPage/AssetFilter'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
 import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTypes, EqpType, companyHelper, assetHelper, AssetHelper } from '@/models'
 
-export class TagMgtForm {
+export class TagMgtPageModel {
     //#region 【Fields】
     /** 设备类型 */
     readonly eqpType: EqpTypes
@@ -16,7 +16,7 @@ export class TagMgtForm {
     /** 离线总数 */
     readonly OfflineCount = ref(0)
     /** 表格 */
-    readonly table = GetTable()
+    readonly table = GetTagTable()
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** 开关 */
@@ -286,7 +286,7 @@ export class TagMgtForm {
         this.tagForm._onSubmitAsync = async source => {
             const res = await tagHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.tagForm.Show()

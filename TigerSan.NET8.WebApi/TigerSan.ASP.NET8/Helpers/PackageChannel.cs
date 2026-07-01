@@ -197,10 +197,14 @@ namespace TigerSan.NET8.WebApi.Helpers
                 var resGetFullByTagId = await tagService.GetFullByTagId(tagData.TagId);
                 var tag = resGetFullByTagId.Data;
                 if (tag == null) return MyResults<object>.IsNull(nameof(tag));
+                if (tag.EqpType != EqpTypes.Tag)
+                {
+                    LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch.Message);
+                    continue;
+                }
 
                 var newTag = new TagDto();
                 newTag.ShallowCopy(tag);
-                newTag.EqpType = EqpTypes.Tag;
                 newTag.ReportTime = GetUtc(package.ReportTime);
                 newTag.OnlineState = OnlineStates.Online;
                 newTag.IsFall = tagData.IsFall;
@@ -255,12 +259,16 @@ namespace TigerSan.NET8.WebApi.Helpers
             var resGetFullByTagId = await tagService.GetFullByTagId(package.Data.CollectorId);
             var tag = resGetFullByTagId.Data;
             if (tag == null) return MyResults<object>.IsNull(nameof(tag));
+            if (tag.EqpType != EqpTypes.Locator)
+            {
+                LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch.Message);
+                return MyResults<object>.EqpTypeNotMatch;
+            }
 
             var newTag = new TagDto();
             newTag.ShallowCopy(tag);
             newTag.Imei = package.Data.IMEI;
             newTag.Iccid = package.Data.ICCID;
-            newTag.EqpType = EqpTypes.Locator;
             newTag.ReportTime = GetUtc(package.ReportTime);
             newTag.OnlineState = OnlineStates.Online;
             newTag.IsFall = package.Data.IsFall;

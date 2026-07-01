@@ -257,7 +257,7 @@ export class BaseStationMgtForm {
         this.baseStationForm._onSubmitAsync = async source => {
             const res = await baseStationHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.baseStationForm.Show()

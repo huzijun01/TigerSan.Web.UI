@@ -1,7 +1,7 @@
 <template>
     <PageCard>
         <div class="input-page">
-            <Select :model="selectModel"></Select>
+            <Select :model="selectModel" />
         </div>
     </PageCard>
 </template>

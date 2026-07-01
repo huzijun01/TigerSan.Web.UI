@@ -218,7 +218,13 @@ export class ObjectHelper {
 
     /** 判断“是否值相等” */
     static IsValueEquals<TValue>(a: TValue, b: TValue): boolean {
-        return JSON.stringify(a) === JSON.stringify(b)
+        const replacer = (key: string, value: any): any => {
+            if (typeof value === 'bigint') {
+                return value.toString()
+            }
+            return value
+        }
+        return JSON.stringify(a, replacer) === JSON.stringify(b, replacer)
     }
 
     /** 判断“类型是否相同” */

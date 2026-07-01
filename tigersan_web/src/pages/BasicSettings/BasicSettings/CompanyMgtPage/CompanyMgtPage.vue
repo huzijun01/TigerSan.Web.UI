@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
+                        <Select :model="form.selectCompany" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -47,7 +47,7 @@
         </FormRow>
         <FormRow>
             <FormItem :model="form.configParent.ItemModel">
-                <Select :model="form.selectParentCompany"></Select>
+                <Select :model="form.selectParentCompany" />
             </FormItem>
         </FormRow>
     </PopForm>
@@ -81,7 +81,7 @@ onMounted(() => {
     grid-template-columns: auto 1fr;
 
     .left-panel {
-        width: 360px;
+        width: 300px;
         margin-right: 15px;
         overflow: auto;
     }

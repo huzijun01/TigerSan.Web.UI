@@ -5,15 +5,15 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectBatch"></Select>
-                        <Select :model="form.selectTagType"></Select>
-                        <Select :model="form.selectStation"></Select>
+                        <Select :model="form.selectBatch" />
+                        <Select :model="form.selectTagType" />
+                        <Select :model="form.selectStation" />
                     </div>
                     <div class="row-panel">
-                        <Search :model="form.searchTagId"></Search>
-                        <Search :model="form.searchRfid"></Search>
-                        <Select :model="form.selectOnlineState"></Select>
-                        <Select :model="form.selectIsEnable"></Select>
+                        <Search :model="form.searchTagId" />
+                        <Search :model="form.searchRfid" />
+                        <Select :model="form.selectOnlineState" />
+                        <Select :model="form.selectIsEnable" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -53,12 +53,12 @@
     <PopForm :model="form.tagForm">
         <FormRow>
             <FormItem :model="form.configBatch.ItemModel">
-                <Select :model="form.selectBatchForm"></Select>
+                <Select :model="form.selectBatchForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configType.ItemModel">
-                <Select :model="form.selectTagTypeForm"></Select>
+                <Select :model="form.selectTagTypeForm" />
             </FormItem>
         </FormRow>
         <FormRow>
@@ -89,10 +89,10 @@ import { onMounted } from 'vue'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 import { EqpTypes } from '@/models'
 import { Authorities } from '@/navs/Authorities'
-import { TagMgtForm } from '../../Equipments/TagMgt/TagMgtPage/TagMgtForm'
+import { TagMgtPageModel } from '../../Equipments/TagMgt/TagMgtPage/TagMgtPageModel'
 
 // 【字段】:
-const form = new TagMgtForm(EqpTypes.Locator)
+const form = new TagMgtPageModel(EqpTypes.Locator)
 const { IsOnlySelected } = form.table
 
 // 【过程】:

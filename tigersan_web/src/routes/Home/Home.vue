@@ -24,7 +24,7 @@
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <div class="info-panel flex-right">
-          <Select :model="CompanyMgtForm.companyFilter"></Select>
+          <Select :model="CompanyMgtForm.companyFilter" />
           <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.companyIdName.name" />
           <IconButton v-if="!navData.IsAtHome.value && CompanyMgtForm.tree.IsActive.value" :icon="Icons.Building_2"
             :text="Texts.Business.value" :click="navData.InitHome" />

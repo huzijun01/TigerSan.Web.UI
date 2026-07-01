@@ -2,7 +2,7 @@
     <div class="map-panel">
         <div class="map-container" ref="refContainer"></div>
         <div class="search-panel" v-if="model.IsShowSelect.value">
-            <Select :model="model.SelectAddr"></Select>
+            <Select :model="model.SelectAddr" />
         </div>
         <div class="button-panel" v-if="model.IsShowButton.value">
             <button class="bg-success" :disabled="!model.IsEditing.value" @click="model.SavePolygon">
@@ -19,10 +19,10 @@
 </template>
 
 <script lang="ts" setup>
-import Select from "../Inputs/Select.vue"
-import { onMounted, onUnmounted, type PropType } from "vue"
-import { Texts } from "../../texts"
-import { MapModel } from "../../models/Map/MapModel"
+import Select from '../Inputs/Select.vue'
+import { onMounted, onUnmounted, type PropType } from 'vue'
+import { Texts } from '../../texts'
+import { MapModel } from '../../models/Map/MapModel'
 
 //字段:
 const { model } = defineProps({

@@ -5,17 +5,17 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
-                        <Select :model="form.selectBatch"></Select>
-                        <Select :model="form.selectStation"></Select>
-                        <Select :model="form.selectOnlineState"></Select>
+                        <Select :model="form.selectCompany" />
+                        <Select :model="form.selectBatch" />
+                        <Select :model="form.selectStation" />
+                        <Select :model="form.selectOnlineState" />
                     </div>
                     <div class="row-panel">
-                        <Search :model="form.searchTagId"></Search>
-                        <Search :model="form.searchRfid"></Search>
-                        <Select :model="form.selectTagType"></Select>
-                        <Select :model="form.selectIsEnable"></Select>
-                        <Select :model="form.selectIsFall"></Select>
+                        <Search :model="form.searchTagId" />
+                        <Search :model="form.searchRfid" />
+                        <Select :model="form.selectTagType" />
+                        <Select :model="form.selectIsEnable" />
+                        <Select :model="form.selectIsFall" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -57,12 +57,12 @@
     <PopForm :model="form.tagForm">
         <FormRow>
             <FormItem :model="form.configBatch.ItemModel">
-                <Select :model="form.selectBatchForm"></Select>
+                <Select :model="form.selectBatchForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configType.ItemModel">
-                <Select :model="form.selectTagTypeForm"></Select>
+                <Select :model="form.selectTagTypeForm" />
             </FormItem>
         </FormRow>
         <FormRow>
@@ -95,11 +95,11 @@ import AssetForm from '@/pages/Home/AssetLedgerPage/AssetForm.vue'
 import { onMounted } from 'vue'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors } from '@/0_tigersan_ui/tigerui'
 import { EqpTypes } from '@/models'
-import { TagMgtForm } from './TagMgtForm'
+import { TagMgtPageModel } from './TagMgtPageModel'
 import { Authorities } from '@/navs/Authorities'
 
 // 【字段】:
-const form = new TagMgtForm(EqpTypes.Tag)
+const form = new TagMgtPageModel(EqpTypes.Tag)
 const { IsOnlySelected } = form.table
 
 // 【过程】:

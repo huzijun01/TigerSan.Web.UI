@@ -252,7 +252,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
-        
+
         #region 获取“最新入库数据”
         /// <summary>获取“最新入库数据”</summary>
         public async Task<MyActionResult<AssetRecordEntity>> GetLastInbound(long asset)
@@ -550,14 +550,18 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
                 _editingTags.Add(newTag.Id, newTag); // 开始修改
 
+                #region 获取“资产”
+                var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == newTag.Asset);
+                if (asset == null)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(asset)));
+                }
+                #endregion
+
                 #region 更新“是否掉落”
                 if (newTag.IsFall != oldTag.IsFall)
                 {
-                    var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == newTag.Asset);
-                    if (asset == null)
-                    {
-                        return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(asset)));
-                    }
                     asset.IsFall = newTag.IsFall;
                 }
                 #endregion
@@ -622,6 +626,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                     #endregion
 
+                    #region 补“出库记录”
                     if (lastRecord.State != AssetStates.Outbound
                         && lastRecord.State != AssetStates.InTransit) // 无“出库记录”
                     {
@@ -649,8 +654,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             return resOutbound;
                         }
                     }
+                    #endregion
 
-                    // 新增“在途记录”或“入库记录”：
+                    #region 新增“在途记录”或“入库记录”
                     newRecord.TargetSite = null;
                     newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
                     newRecord.State = newTag.Station == null ? AssetStates.InTransit : AssetStates.Inbound;
@@ -661,11 +667,45 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         LogHelper.Instance.Error(res.Message);
                         return res.Convert<object>();
                     }
+                    #endregion
+
+                    #region 自动新增“入库记录”，并完成“调拨”
+                    if (asset.IsAuto && newRecord.State == AssetStates.Inbound)
+                    {
+                        // 新增“入库记录”：
+                        newRecord.State = AssetStates.InStore;
+                        newRecord.ReportTime = newRecord.ReportTime.AddSeconds(1);
+                        var resInStore = await Add(newRecord, false);
+                        if (resInStore.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(resInStore.Message);
+                            return resInStore.Convert<object>();
+                        }
+
+                        // 完成“调拨”：
+                        if (asset.Transfer != null)
+                        {
+                            var transfer = await _db.Transfers.FirstOrDefaultAsync(i => i.Id == asset.Transfer);
+                            if (transfer == null)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(transfer)));
+                            }
+
+                            if (transfer.Target == newRecord.Site)
+                            {
+                                asset.Transfer = null;
+                                transfer.EndTime = DateTimeHelper.GetUtcNow();
+                            }
+                        }
+                    }
+                    #endregion
                 }
                 else // 同一场地
                 {
                     #region 若“在库”，判断是否“滞留”
-                    if (lastRecord.State == AssetStates.InStore)
+                    if (asset.Transfer != null && lastRecord.State == AssetStates.InStore)
                     {
                         var resLastInbound = await GetLastInbound(newTag.Asset.Value);
                         var lastInboundRecord = resLastInbound.Data;

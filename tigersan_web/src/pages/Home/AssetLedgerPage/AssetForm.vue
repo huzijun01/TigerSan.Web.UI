@@ -2,17 +2,22 @@
     <PopForm :model="form.assetForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="form.selectCompanyForm"></Select>
+                <Select :model="form.selectCompanyForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configDepartment.ItemModel">
-                <Select :model="form.selectDepartmentForm"></Select>
+                <Select :model="form.selectDepartmentForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configAssetType.ItemModel">
-                <Select :model="form.selectAssetTypeForm"></Select>
+                <Select :model="form.selectAssetTypeForm" />
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="form.configIsAuto.ItemModel">
+                <Select :model="form.selectIsAutoForm" />
             </FormItem>
         </FormRow>
         <FormRow>
@@ -35,6 +40,11 @@
                 <input type="text" v-model="form.configComment.Target.value">
             </FormItem>
         </FormRow>
+        <FormRow>
+            <FormItem :model="form.configVehicle.ItemModel">
+                <Select :model="form.selectVehicleForm" />
+            </FormItem>
+        </FormRow>
     </PopForm>
 </template>
 
@@ -51,8 +61,8 @@ const { form } = defineProps({
 })
 
 // 【过程】:
-onMounted(() => {
-    form.RefreshForm()
+onMounted(async () => {
+    await form.RefreshForm()
 })
 // 【方法】:
 </script>

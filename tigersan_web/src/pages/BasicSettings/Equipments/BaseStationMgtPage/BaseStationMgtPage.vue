@@ -5,14 +5,14 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectState"></Select>
-                        <Select :model="form.selectIsEnable"></Select>
-                        <Search :model="form.searchMacAddr"></Search>
+                        <Select :model="form.selectState" />
+                        <Select :model="form.selectIsEnable" />
+                        <Search :model="form.searchMacAddr" />
                     </div>
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
-                        <Select :model="form.selectSite"></Select>
-                        <Select :model="form.selectType"></Select>
+                        <Select :model="form.selectCompany" />
+                        <Select :model="form.selectSite" />
+                        <Select :model="form.selectType" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -52,17 +52,17 @@
     <PopForm :model="form.baseStationForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="form.selectCompanyForm"></Select>
+                <Select :model="form.selectCompanyForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configSite.ItemModel">
-                <Select :model="form.selectSiteForm"></Select>
+                <Select :model="form.selectSiteForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configType.ItemModel">
-                <Select :model="form.selectTypeForm"></Select>
+                <Select :model="form.selectTypeForm" />
             </FormItem>
         </FormRow>
         <FormRow>

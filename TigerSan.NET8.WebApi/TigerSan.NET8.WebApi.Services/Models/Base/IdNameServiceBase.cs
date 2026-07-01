@@ -19,7 +19,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #region 【Functions】
         #region [查]
         #region 获取“ID名称对”集合
-        /// <summary>获取“ID名称对”集合</summary>
         public async Task<MyActionResult<List<IdName>>> SelectIdName(bool? isDistinct = null, FilterDto? filter = null)
         {
             try
@@ -51,7 +50,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region [增]
         #region 添加“单条数据”
-        /// <summary>添加“单条数据”</summary>
         public override async Task<MyActionResult<TEntity>> Add(TEntity entity, bool isBeginTransaction = true)
         {
             // 检验“名称”是否重复:
@@ -65,7 +63,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 添加“多条数据”
-        /// <summary>添加“多条数据”</summary>
         public override async Task<MyActionResult<object>> AddRange(List<TEntity> entities, bool isBeginTransaction = true)
         {
             // 检验“名称”是否重复:

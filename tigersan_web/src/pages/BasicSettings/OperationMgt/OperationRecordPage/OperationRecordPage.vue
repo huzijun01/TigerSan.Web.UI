@@ -6,9 +6,9 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>操作类型:</span>
-                        <Select :model="select.operationTypeSelect"></Select>
+                        <Select :model="select.operationTypeSelect" />
                         <span>设备类型：</span>
-                        <Select :model="select.eqpTypeSelect"></Select>
+                        <Select :model="select.eqpTypeSelect" />
                     </div>
                     <div class="row-panel">
                         <DatePicker :model="select.date"></DatePicker>

@@ -152,7 +152,7 @@ export class CompanyMgtForm {
         this.companyForm._onSubmitAsync = async source => {
             const res = await companyHelper.Add(source as CompanyModel)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.companyForm.Show()

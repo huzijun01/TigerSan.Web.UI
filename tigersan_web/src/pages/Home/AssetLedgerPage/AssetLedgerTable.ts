@@ -2,13 +2,16 @@ import AssetPathPage from './AssetPathPage/AssetPathPage.vue'
 import AssetStatePage from './AssetStatePage/AssetStatePage.vue'
 import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
 import BindingRecordPage from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPage.vue'
-import { computed, ref } from 'vue'
-import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel, StringHelper, Texts, IsFall } from '@/0_tigersan_ui/tigerui'
+import { computed } from 'vue'
+import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd } from '@/0_tigersan_ui/tigerui'
+import { VehiclePageModel } from '../VehiclePage/VehiclePageModel'
 import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
 import { AssetStatePageModel } from './AssetStatePage/AssetStatePageModel'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
-import { AssetModel, AssetState, AssetStates, BindingState, ErrorType, tagTypeHelper } from '@/models'
-import { BindingRecordPageModel } from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPageModel.js'
+import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
+import { AssetModel, AssetState, AssetStates, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
+import { BindingRecordPageModel } from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPageModel'
+import { TransferPageModel } from '../TransferPage/TransferPageModel.ts'
 
 // 字段:
 /** 状态页 */
@@ -51,7 +54,13 @@ assetDetail.MinHeight.value = '70vh'
 assetDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
 /** 标签详情 */
 export const tagDetail = new PopWindowModel()
-export const TagId = ref<string | undefined>()
+export const tag = new RowDataModel(GetTagTable())
+/** 调拨详情 */
+export const transferDetail = new PopWindowModel()
+export const transfer = new RowDataModel(new TransferPageModel().table)
+/** 车辆详情 */
+export const vehicleDetail = new PopWindowModel()
+export const vehicle = new RowDataModel(new VehiclePageModel().table)
 
 /** 分页器 */
 export const pagination = new PaginationModel()
@@ -80,8 +89,17 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         Type: ItemType.Link,
         _onItemClickAsync: async itemModel => {
             const rowData = itemModel._rowModel._rowData
+            if (!rowData.tag) {
+                console.warn('The tag is undefined!')
+                return
+            }
             tagDetail.Title.value = `${Texts.TagDetail.value} - ${rowData.assetId}`
-            TagId.value = rowData.tagId
+            const res = await tagHelper.Get(rowData.tag)
+            if (!res.data) {
+                MyActionResult.ShowResult(res)
+                return
+            }
+            tag.Data.value = res.data
             tagDetail.Show()
         }
     },
@@ -112,6 +130,51 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         }
     },
     {
+        _propName: 'transferCode',
+        Text: '调拨',
+        IsFreeze: true,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.Link,
+        _onItemClickAsync: async itemModel => {
+            const rowData = itemModel._rowModel._rowData
+            if (!rowData.transfer) {
+                console.warn('The transfer is undefined!')
+                return
+            }
+            transferDetail.Title.value = `${Texts.TransferDetail.value} - ${rowData.assetId}`
+            const res = await transferHelper.Get(rowData.transfer)
+            if (!res.data) {
+                MyActionResult.ShowResult(res)
+                return
+            }
+            transfer.Data.value = res.data
+            transferDetail.Show()
+        }
+    },
+    {
+        _propName: 'plate',
+        Text: '车辆',
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.Link,
+        _onItemClickAsync: async itemModel => {
+            const rowData = itemModel._rowModel._rowData
+            if (!rowData.vehicle) {
+                console.warn('The vehicle is undefined!')
+                return
+            }
+            vehicleDetail.Title.value = `${Texts.Vehicle.value} - ${rowData.assetId}`
+            const res = await vehicleHelper.Get(rowData.vehicle)
+            if (!res.data) {
+                MyActionResult.ShowResult(res)
+                return
+            }
+            vehicle.Data.value = res.data
+            vehicleDetail.Show()
+        }
+    },
+    {
         _propName: 'isBound',
         Text: '绑定状态',
         IsReadonly: true,
@@ -119,6 +182,15 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         Type: ItemType.TextBox,
         _getSource: source => StringHelper.IsNotEmpty(source.tagId),
         _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
+    },
+    {
+        _propName: 'isEnd',
+        Text: '是否完成',
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+        _getSource: source => !source.transfer,
+        _getString: source => IsEnd.ToString(!source.transfer)
     },
     {
         _propName: 'tagType',
@@ -167,6 +239,13 @@ export const assetLedgerTable = new TableModel<AssetModel>([
         IsReadonly: true,
         Type: ItemType.TextBox,
         _getString: OnlineState.GetString,
+    },
+    {
+        _propName: 'isAuto',
+        Text: '调拨方式',
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: IsAuto.GetString,
     },
     {
         _propName: 'isFall',
@@ -268,6 +347,8 @@ export const assetLedgerTable = new TableModel<AssetModel>([
 assetLedgerTable.IsAllowMultiSelect.value = true
 
 assetLedgerTable._initItem = itemModel => {
+    IsEnd.InitItemModel(itemModel)
+    IsAuto.InitItemModel(itemModel)
     IsFall.InitItemModel(itemModel)
     Battery.InitItemModel(itemModel)
     AssetState.InitItemModel(itemModel)
@@ -275,11 +356,15 @@ assetLedgerTable._initItem = itemModel => {
     BindingState.InitItemModel(itemModel)
 }
 
-/** 是否允许入库 */
+/** 是否允许“调拨” */
+export const IsAllowTransfer = computed(() =>
+    assetLedgerTable.IsOnlySelected.value
+    && !assetLedgerTable.SelectedRowDatas.value[0]?.transfer)
+/** 是否允许“入库” */
 export const IsAllowInbound = computed(() =>
     assetLedgerTable.IsSelected.value
     && assetLedgerTable.SelectedRowDatas.value.every(r => r.state === AssetStates.Inbound))
-/** 是否允许出库 */
+/** 是否允许“出库” */
 export const IsAllowOutbound = computed(() =>
     assetLedgerTable.IsSelected.value
     && assetLedgerTable.SelectedRowDatas.value.every(r => r.state === AssetStates.InStore || r.state === AssetStates.Stolid))

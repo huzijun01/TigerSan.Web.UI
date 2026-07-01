@@ -1,20 +1,22 @@
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading, Texts, IsFall } from '@/0_tigersan_ui/tigerui'
-import { AssetFormModel } from './AssetFormModel'
 import { AssetFilter } from './AssetFilter'
+import { AssetFormModel } from './AssetFormModel'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
+import { TransferPageModel } from '../TransferPage/TransferPageModel'
 import { CompanyMgtForm } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm'
-import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper, tagTypeHelper } from '@/models'
+import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper, tagTypeHelper, TransferModel, transferHelper } from '@/models'
 
 export class OutboundModel {
     company: bigint = 0n
     site: bigint = 0n
 }
 
-export class AssetLedgerForm extends AssetFormModel {
+export class AssetLedgerPageModel extends AssetFormModel {
     //#region 【Fields】
     /** 筛选器 */
     readonly filter: AssetFilter
-
+    // 调拨:
+    readonly transferPage = new TransferPageModel()
     // 出库:
     readonly selectCompanyOutboundForm = companyHelper.GetIdNameSelectModel()
     readonly selectSiteOutboundForm = siteHelper.GetIdNameSelectModel()
@@ -24,6 +26,7 @@ export class AssetLedgerForm extends AssetFormModel {
     constructor() {
         super()
         this.filter = new AssetFilter(this.Refresh)
+        this.transferPage.IsAssetIdReadonly.value = true
         this.selectSiteOutboundForm._getItemsAsync = async () => await siteHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
         this.selectCompanyForm._getItemsAsync = undefined
         this.selectCompanyForm._getItems = () => CompanyMgtForm.companyFilter.CheckedValues.value as []
@@ -51,6 +54,7 @@ export class AssetLedgerForm extends AssetFormModel {
                 state: filter.selectAssetState.Value.value,
                 states: filter.selectAssetState.NotCheckAllCheckedValues.value,
                 onlineState: filter.selectOnlineState.Value.value,
+                isAuto: filter.selectIsAuto.Value.value,
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
                 assetId: filter.searchAssetId.Value.value,
@@ -67,6 +71,7 @@ export class AssetLedgerForm extends AssetFormModel {
                 state: filter.selectAssetState.Value.value,
                 states: filter.selectAssetState.NotCheckAllCheckedValues.value,
                 onlineState: filter.selectOnlineState.Value.value,
+                isAuto: filter.selectIsAuto.Value.value,
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
                 assetId: filter.searchAssetId.Value.value,
@@ -88,7 +93,7 @@ export class AssetLedgerForm extends AssetFormModel {
         this.assetForm._onSubmitAsync = async source => {
             const res = await assetHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.assetForm.Show()
@@ -147,6 +152,32 @@ export class AssetLedgerForm extends AssetFormModel {
         } finally {
             loading.IsShow.value = false
         }
+    }
+
+    /** 调拨 */
+    readonly Transfer = async () => {
+        const rowData = assetLedgerTable.SelectedRowDatas.value[0]
+        if (!rowData) {
+            console.warn('The rowData is undefined!')
+            return new AssetModel()
+        }
+
+        this.transferPage.form.Title.value = Texts.Transfer.value
+
+        this.transferPage.form._getSource = () => {
+            const transfer = new TransferModel()
+            transfer.assetId = rowData.assetId
+            transfer.code = ObjectHelper.GetDateId()
+            return transfer
+        }
+
+        this.transferPage.form._onSubmitAsync = async source => {
+            const res = await transferHelper.Add(source)
+            await this.Refresh()
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
+        }
+
+        this.transferPage.form.Show()
     }
 
     /** “公司”项目配置 */
@@ -217,7 +248,10 @@ export class AssetLedgerForm extends AssetFormModel {
         if (state != DialogState.Yes) return
 
         const rowDatas = assetLedgerTable.SelectedRowDatas.value
-        if (rowDatas.length < 1) return
+        if (rowDatas.length < 1) {
+            console.warn('No row was selected!')
+            return
+        }
 
         assetHelper.Inbound(rowDatas.map(r => r.id)).then(res => {
             this.Refresh()
@@ -228,7 +262,10 @@ export class AssetLedgerForm extends AssetFormModel {
     /** 出库 */
     readonly Outbound = async () => {
         const rowDatas = assetLedgerTable.SelectedRowDatas.value
-        if (rowDatas.length < 1) return
+        if (rowDatas.length < 1) {
+            console.warn('No row was selected!')
+            return
+        }
 
         this.assetOutbundForm.Title.value = '出库'
 

@@ -1,9 +1,9 @@
-import { fileURLToPath, URL } from 'node:url'
-
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+import { defineConfig } from 'vite'
+import { fileURLToPath, URL } from 'node:url'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 
 // unplugin:
 import AutoImport from 'unplugin-auto-import/vite'
@@ -12,10 +12,12 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // base: './',
   plugins: [
     vue(),
-    // vueDevTools(),
     vueSetupExtend(),
+    // vueDevTools(),
+    // viteSingleFile(),
     AutoImport({
       imports: ['vue'], // 自动导入Vue相关函数，如：ref、reactive、toRef等
       resolvers: [

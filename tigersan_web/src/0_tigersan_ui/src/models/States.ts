@@ -120,6 +120,74 @@ export class IsFall {
     }
 }
 
+export class IsAuto {
+    static ToString(value?: boolean) {
+        return value ? Texts.Auto.value : Texts.Manual.value
+    }
+
+    static GetString(obj: object, propName: string = 'isAuto'): string {
+        return IsAuto.ToString(ObjectHelper.DefaultTGetter(obj, propName, true))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.PlaceholderCN.value = '调拨方式'
+        select.PlaceholderEN.value = 'AllotMode'
+        select.Items.push(...[true, false])
+        select._converter = IsAuto.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isAuto') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Brand
+                itemModel.Background.value = Colors.Brand10
+            }
+        }
+    }
+}
+
+export class IsEnd {
+    static ToString(value?: boolean) {
+        return value ? Texts.Done.value : Texts.Undone.value
+    }
+
+    static GetString(obj: object, propName: string = 'isEnd'): string {
+        return IsEnd.ToString(ObjectHelper.DefaultTGetter(obj, propName, true))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.PlaceholderCN.value = '是否结束'
+        select.PlaceholderEN.value = 'IsEnd'
+        select.Items.push(...[true, false])
+        select._converter = IsEnd.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isEnd') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Warning
+                itemModel.Background.value = Colors.Warning10
+            }
+        }
+    }
+}
+
 export class Battery {
     /** 初始化“项目模型” */
     static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'battery') {

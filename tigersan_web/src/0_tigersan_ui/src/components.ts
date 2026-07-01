@@ -49,6 +49,7 @@ import KeyValue from "./components/Pagination/KeyValue.vue"
 import Pagination from "./components/Pagination/Pagination.vue"
 import PaginationButton from "./components/Pagination/PaginationButton.vue"
 // Table:
+import RowData from "./components/Table/RowData.vue"
 import Table from "./components/Table/Table.vue"
 import TableItem from "./components/Table/TableItem.vue"
 // Tree:
@@ -108,6 +109,7 @@ export {
     Pagination,
     PaginationButton,
     // Table:
+    RowData,
     Table,
     TableItem,
     // Tree:

@@ -5,9 +5,9 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
-                        <Select :model="form.selectType"></Select>
-                        <Search :model="form.searchCode"></Search>
+                        <Select :model="form.selectCompany" />
+                        <Select :model="form.selectType" />
+                        <Search :model="form.searchCode" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -37,12 +37,12 @@
     <PopForm :model="form.siteForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="form.selectCompanyForm"></Select>
+                <Select :model="form.selectCompanyForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configType.ItemModel">
-                <Select :model="form.selectTypeForm"></Select>
+                <Select :model="form.selectTypeForm" />
             </FormItem>
         </FormRow>
         <FormRow>
@@ -96,7 +96,7 @@
             </FormItem>
         </FormRow>
         <template v-slot:right>
-            <Map :model="form.map" style="margin-left: 15px;" />>
+            <Map :model="form.map" style="margin-left: 15px;" />
         </template>
     </PopForm>
 </template>

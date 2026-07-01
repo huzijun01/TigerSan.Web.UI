@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
+                        <Select :model="form.selectCompany" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -35,7 +35,7 @@
     <PopForm :model="form.departmentForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="form.selectCompanyForm"></Select>
+                <Select :model="form.selectCompanyForm" />
             </FormItem>
         </FormRow>
         <FormRow>

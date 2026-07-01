@@ -34,18 +34,21 @@ export const batchMgtTable = new TableModel<BatchModel>([
         _propName: 'manager',
         Text: '联系人',
         IsReadonly: true,
+        IsRequired: false,
         Type: ItemType.TextBox,
     },
     {
         _propName: 'phone',
         Text: '电话',
         IsReadonly: true,
+        IsRequired: false,
         Type: ItemType.TextBox,
     },
     {
         _propName: 'comment',
         Text: '备注',
         IsReadonly: true,
+        IsRequired: false,
         Type: ItemType.TextBox,
     },
 ])

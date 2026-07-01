@@ -1,14 +1,16 @@
 import { ref } from "vue"
-import { FormItemConfig, IdNameModel, BigintHelper, Verify, Texts, FormConfig, FormModel } from "@/0_tigersan_ui/tigerui"
+import { FormItemConfig, IdNameModel, BigintHelper, Verify, Texts, FormConfig, FormModel, IsAuto } from "@/0_tigersan_ui/tigerui"
 import { assetLedgerTable } from "./AssetLedgerTable"
-import { companyHelper, departmentHelper, assetTypeHelper, AssetModel } from "@/models"
+import { companyHelper, departmentHelper, assetTypeHelper, vehicleHelper, AssetModel } from "@/models"
 
 export class AssetFormModel {
     //#region 【Fields】
     // 选择框:
+    readonly selectIsAutoForm = IsAuto.GetSelectModel()
     readonly selectCompanyForm = companyHelper.GetIdNameSelectModel()
     readonly selectDepartmentForm = departmentHelper.GetIdNameSelectModel()
     readonly selectAssetTypeForm = assetTypeHelper.GetIdNameSelectModel()
+    readonly selectVehicleForm = vehicleHelper.GetIdPlateSelectModel()
 
     /** “公司”项目配置 */
     readonly configCompany: FormItemConfig<AssetModel, IdNameModel> = {
@@ -44,6 +46,16 @@ export class AssetFormModel {
         _getValue: source => this.selectAssetTypeForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.type)),
         _setValue: (source, propName, value) => source.type = value && value.id != undefined ? value.id : 0n,
         _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, Texts.CannotBeEmpty.value)
+    }
+
+    /** “调拨”项目配置 */
+    readonly configIsAuto: FormItemConfig<AssetModel, boolean> = {
+        _propName: 'isAuto',
+        PropTextEN: 'Allot',
+        PropTextCH: '调拨',
+        IsEquired: true,
+        Target: this.selectIsAutoForm.Value,
+        _isVerifyOk: source => Verify.IsNotUndefined(source.isAuto)
     }
 
     /** “资产ID”项目配置 */
@@ -83,6 +95,17 @@ export class AssetFormModel {
         Target: ref(),
     }
 
+    /** “名称”项目配置 */
+    readonly configVehicle: FormItemConfig<AssetModel, IdNameModel> = {
+        _propName: 'name',
+        PropTextEN: 'Vehicle',
+        PropTextCH: '车辆',
+        IsEquired: false,
+        Target: this.selectVehicleForm.Value,
+        _getValue: source => this.selectVehicleForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.vehicle)),
+        _setValue: (source, propName, value) => source.vehicle = value?.id,
+    }
+
     /** “增”源数据获取方法 */
     readonly AddGetSource = () => new AssetModel()
 
@@ -105,16 +128,20 @@ export class AssetFormModel {
                 this.selectDepartmentForm.Value.value = departmentHelper.GetIdName(rowData.department)
                 await this.selectAssetTypeForm.UpdateItemsAsync()
                 this.selectAssetTypeForm.Value.value = assetTypeHelper.GetIdName(rowData.type)
+                await this.selectVehicleForm.UpdateItemsAsync()
+                this.selectVehicleForm.Value.value = this.selectVehicleForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, rowData.vehicle))
             }
         },
         _itemConfigs: [
             this.configCompany,
             this.configDepartment,
             this.configAssetType,
+            this.configIsAuto,
             this.configAssetId,
             this.configTagId,
             this.configName,
             this.configComment,
+            this.configVehicle,
         ]
     }
 
@@ -133,11 +160,14 @@ export class AssetFormModel {
 
     //#region 【Ctor】
     constructor() {
+        this.selectIsAutoForm.Width.value = 208
         this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
         this.selectAssetTypeForm._getItemsAsync = async () => await assetTypeHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
+        this.selectVehicleForm._getItemsAsync = async () => await vehicleHelper.GetIdPlatesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectCompanyForm._onChange = () => {
             this.selectDepartmentForm.UpdateItemsAsync()
             this.selectAssetTypeForm.UpdateItemsAsync()
+            this.selectVehicleForm.UpdateItemsAsync()
         }
     }
     //#endregion 【Ctor】
@@ -148,6 +178,7 @@ export class AssetFormModel {
         await this.selectCompanyForm.UpdateItemsAsync()
         await this.selectDepartmentForm.UpdateItemsAsync()
         await this.selectAssetTypeForm.UpdateItemsAsync()
+        await this.selectVehicleForm.UpdateItemsAsync()
     }
     //#endregion 【Functions】
 }

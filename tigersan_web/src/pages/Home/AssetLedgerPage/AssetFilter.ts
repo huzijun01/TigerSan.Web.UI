@@ -1,8 +1,9 @@
-import { IsFall, OnlineState, SearchModel, WatchBehavior } from "@/0_tigersan_ui/tigerui"
+import { IsAuto, IsFall, OnlineState, SearchModel, WatchBehavior } from "@/0_tigersan_ui/tigerui"
 import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
 import { companyHelper, departmentHelper, assetTypeHelper, AssetState, ErrorType, tagTypeHelper } from "@/models"
 
 export class AssetFilter {
+    //#region 【Fields】
     _refresh?: any
     /** “可访问公司”监听器 */
     readonly watchAccessibleCompanies
@@ -11,13 +12,16 @@ export class AssetFilter {
     readonly searchRfid = new SearchModel()
     /** 筛选 */
     readonly selectOnlineState = OnlineState.GetSelectModel()
+    readonly selectIsAuto = IsAuto.GetSelectModel()
     readonly selectIsFall = IsFall.GetSelectModel()
     readonly selectDepartment = departmentHelper.GetIdNameSelectModel()
     readonly selectAssetType = assetTypeHelper.GetIdNameSelectModel()
     readonly selectTagType = tagTypeHelper.GetIdNameSelectModel()
     readonly selectAssetState = AssetState.GetSelectModel()
     readonly selectErrorType = ErrorType.GetSelectModel()
+    //#endregion 【Fields】
 
+    //#region 【Ctor】
     constructor(refresh?: Function) {
         this._refresh = refresh
         this.searchAssetId.PlaceholderCN.value = '资产ID'
@@ -38,12 +42,15 @@ export class AssetFilter {
         this.selectTagType._onChange = this._refresh
         this.selectAssetState._onCheckedItemsChange = this._refresh
         this.selectOnlineState._onChange = this._refresh
+        this.selectIsAuto._onChange = this._refresh
         this.selectIsFall._onChange = this._refresh
         this.selectErrorType._onChange = this._refresh
 
         this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtForm.AccessibleCompanies, this._refresh)
     }
+    //#endregion 【Ctor】
 
+    //#region 【Functions】
     readonly UpdateIdNames = async () => {
         await companyHelper.UpdateIdNames()
         await departmentHelper.UpdateIdNames()
@@ -59,7 +66,5 @@ export class AssetFilter {
     readonly StopWatch = () => {
         this.watchAccessibleCompanies.Stop()
     }
-}
-
-export class AssetFilterForm {
+    //#endregion 【Functions】
 }

@@ -2,6 +2,8 @@ import { Icons, NavFolderConfig } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from './Authorities'
 import AssetLedgerPage from '@/pages/Home/AssetLedgerPage/AssetLedgerPage.vue'
 import AssetMapPage from '@/pages/Home/AssetMapPage/AssetMapPage.vue'
+import TransferPage from '@/pages/Home/TransferPage/TransferPage.vue'
+import VehiclePage from '@/pages/Home/VehiclePage/VehiclePage.vue'
 
 export const navHome: NavFolderConfig = {
     Folders: [
@@ -37,8 +39,8 @@ export const navHome: NavFolderConfig = {
                     Title: "资产调拨",
                     Icon: Icons.Outbound,
                     IsSelected: false,
-                    _component: undefined,
-                    _authority: Authorities.AssetAllocationPage,
+                    _component: TransferPage,
+                    _authority: Authorities.AssetTransferPage,
                 },
                 {
                     Title: "资产预警",
@@ -80,7 +82,7 @@ export const navHome: NavFolderConfig = {
                     Title: "车辆列表",
                     Icon: Icons.Transport,
                     IsSelected: false,
-                    _component: undefined,
+                    _component: VehiclePage,
                     _authority: Authorities.VehiclesListPage,
                 },
                 {

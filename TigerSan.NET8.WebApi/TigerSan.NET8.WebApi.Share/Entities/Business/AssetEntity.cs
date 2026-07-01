@@ -26,11 +26,17 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public OnlineStates OnlineState { get; set; }
         [SnakeColumn]
+        public bool IsAuto { get; set; } = true;
+        [SnakeColumn]
         public bool? IsFall { get; set; } = false;
         [SnakeColumn]
         public ErrorTypes? ErrorType { get; set; }
         [SnakeColumn]
-        public long? LastRecord { get; set; }
+        public long? Vehicle { get; set; }
+        [SnakeColumn]
+        public long? Transfer { get; set; }
+        [SnakeColumn]
+        public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
         [SnakeColumn]
         public DateTime? BindingTime { get; set; }
         [SnakeColumn]

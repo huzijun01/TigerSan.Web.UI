@@ -52,7 +52,7 @@ export class SiteMgtForm {
         _isVerifyOk: source => Verify.IsBigintGreaterThan(source.type, 0n, Texts.CannotBeEmpty.value)
     }
 
-    /** “名称”项目配置 */
+    /** “编号”项目配置 */
     readonly configCode: FormItemConfig<SiteModel, string> = {
         _propName: 'code',
         PropTextEN: 'Code',
@@ -303,7 +303,7 @@ export class SiteMgtForm {
             const res = await siteHelper.Add(source as SiteModel)
 
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.siteForm.Show()

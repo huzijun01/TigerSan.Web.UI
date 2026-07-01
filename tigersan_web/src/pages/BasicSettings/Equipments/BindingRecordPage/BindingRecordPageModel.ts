@@ -96,14 +96,14 @@ export class BindingRecordPageModel {
 
     /** 增 */
     readonly Add = async () => {
-        this.form.Title.value = '新增部门'
+        this.form.Title.value = '新增绑定记录'
 
         this.form._getSource = this.AddGetSource
 
         this.form._onSubmitAsync = async source => {
             const res = await bindingRecordHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.form.Show()
@@ -111,7 +111,7 @@ export class BindingRecordPageModel {
 
     /** 改 */
     readonly Edit = async () => {
-        this.form.Title.value = '修改部门'
+        this.form.Title.value = '修改绑定记录'
 
         this.form._getSource = () => {
             const rowData = this.table.SelectedRowDatas.value[0]
@@ -147,8 +147,8 @@ export class BindingRecordPageModel {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const rows = this.table.SelectedRowDatas.value.map(i => i.id)
-        if (rows.length < 1) {
+        const rowDatas = this.table.SelectedRowDatas.value.map(i => i.id)
+        if (rowDatas.length < 1) {
             console.warn('No row was selected!')
             return
         }
@@ -156,7 +156,7 @@ export class BindingRecordPageModel {
         try {
             loading.IsShow.value = true
 
-            await bindingRecordHelper.DeleteRange(rows).then(res => {
+            await bindingRecordHelper.DeleteRange(rowDatas).then(res => {
                 this.Refresh()
                 MyActionResult.ShowResult(res, '删除成功')
             })

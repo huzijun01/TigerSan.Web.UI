@@ -458,7 +458,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     if (asset == null)
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        return MyResults<object>.AssetNotExist;
+                        return MyResults<object>.AssetNotFound(entity.AssetId);
                     }
                     asset.Tag = entity.Id;
                     asset.TagType = entity.Type;
@@ -556,7 +556,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         if (asset == null)
                         {
                             if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            return MyResults<object>.AssetNotExist;
+                            return MyResults<object>.AssetNotFound(entity.AssetId);
                         }
                         asset.Tag = entity.Id;
                         asset.TagType = entity.Type;

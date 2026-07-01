@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="map-panel">
-                <Map :model="model.map" />>
+                <Map :model="model.map" />
             </div>
         </div>
     </div>

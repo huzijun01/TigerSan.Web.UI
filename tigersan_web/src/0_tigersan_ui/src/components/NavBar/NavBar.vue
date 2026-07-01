@@ -48,7 +48,7 @@ const refButton = ref<typeof NavButton>()
 let { logo, title, model } = defineProps({
     logo: {
         type: String,
-        default: "/favicon.ico"
+        default: "./favicon.ico"
     },
     title: {
         type: String,

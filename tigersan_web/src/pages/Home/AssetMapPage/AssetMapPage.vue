@@ -5,15 +5,15 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="model.filter.selectDepartment"></Select>
-                        <Select :model="model.filter.selectAssetState"></Select>
-                        <Select :model="model.filter.selectOnlineState"></Select>
-                        <Select :model="model.filter.selectErrorType"></Select>
+                        <Select :model="model.filter.selectDepartment" />
+                        <Select :model="model.filter.selectAssetState" />
+                        <Select :model="model.filter.selectOnlineState" />
+                        <Select :model="model.filter.selectErrorType" />
                     </div>
                     <div class="row-panel">
                         <Search :model="model.filter.searchAssetId" />
-                        <Select :model="model.filter.selectAssetType"></Select>
-                        <Select :model="model.filter.selectIsFall"></Select>
+                        <Select :model="model.filter.selectAssetType" />
+                        <Select :model="model.filter.selectIsFall" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="map-panel">
-                    <Map :model="model.map" />>
+                    <Map :model="model.map" />
                 </div>
             </div>
         </div>

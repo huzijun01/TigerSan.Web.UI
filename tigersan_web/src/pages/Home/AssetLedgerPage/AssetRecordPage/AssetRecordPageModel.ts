@@ -119,7 +119,7 @@ export class AssetRecordPageModel {
             source.asset = this._asset ?? 0n
             const res = await assetRecordHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.assetRecordForm.Show()

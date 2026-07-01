@@ -39,7 +39,7 @@ export class Authorities {
     static AssetLedgerPage = authorityHelper.GetAuthority()
     static AssetMapPage = authorityHelper.GetAuthority()
     static AssetCheckPage = authorityHelper.GetAuthority()
-    static AssetAllocationPage = authorityHelper.GetAuthority()
+    static AssetTransferPage = authorityHelper.GetAuthority()
     static AssetAlarmPage = authorityHelper.GetAuthority()
     static AssetMaintenancePage = authorityHelper.GetAuthority()
     static AssetReportPage = authorityHelper.GetAuthority()

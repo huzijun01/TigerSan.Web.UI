@@ -3,15 +3,20 @@ import { axiosHelper } from "./AxiosHelper"
 import { IdNameHelper } from "./IdNameHelper"
 
 export class DictionaryHelper extends IdNameHelper<IdNameModel> {
+    //#region 【Fields】
     private _placeholderCN: string
     private _placeholderEN: string
+    //#endregion 【Fields】
 
+    //#region 【Ctor】
     constructor(action: string, placeholderCN: string, placeholderEN: string) {
         super(action)
         this._placeholderCN = placeholderCN
         this._placeholderEN = placeholderEN
     }
+    //#endregion 【Ctor】
 
+    //#region 【Functions】
     /** 获取“筛选框模型” */
     GetIdNameSelectModel(): SelectModel<IdNameModel> {
         return super.GetIdNameSelectModel(this._placeholderCN, this._placeholderEN)
@@ -50,4 +55,5 @@ export class DictionaryHelper extends IdNameHelper<IdNameModel> {
             }
         })
     }
+    //#endregion 【Functions】
 }

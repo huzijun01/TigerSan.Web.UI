@@ -184,7 +184,7 @@ export class RoleMgtForm {
             const res = await roleHelper.Add(source)
 
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.roleForm.Show()

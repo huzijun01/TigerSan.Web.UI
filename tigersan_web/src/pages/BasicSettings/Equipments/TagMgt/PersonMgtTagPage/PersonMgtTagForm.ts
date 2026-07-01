@@ -67,7 +67,7 @@ export class PersonMgtTagForm {
             personMgtTagTable.RowDatas.push(source)
             personMgtTagTable.Refresh()
 
-            return new SubmitResult('添加成功')
+            return new SubmitResult(Texts.AddedSuccessfully.value)
         }
 
         this.personMgtTagForm.Show()

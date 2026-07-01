@@ -51,7 +51,7 @@ function Add() {
 
     assetMgtTagForm._onSubmit = source => {
         assetMgtTagTable.RowDatas.push(source)
-        return new SubmitResult('添加成功')
+        return new SubmitResult(Texts.AddedSuccessfully.value)
     }
 
     assetMgtTagForm.Show()

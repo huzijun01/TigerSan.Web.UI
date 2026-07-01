@@ -2,7 +2,7 @@
 export class IdNameModel {
     id: bigint = 0n
     name = ''
-    company?: bigint = 0n
+    company?: bigint
     companyName?: string
 
     constructor(id?: bigint, name?: string) {

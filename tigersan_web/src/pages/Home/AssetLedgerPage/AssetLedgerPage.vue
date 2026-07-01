@@ -5,37 +5,36 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.filter.selectDepartment"></Select>
-                        <Search :model="form.filter.searchAssetId" />
-                        <Search :model="form.filter.searchRfid" />
-                        <Select :model="selectColumnFilter"></Select>
+                        <Select :model="model.filter.selectDepartment" />
+                        <Search :model="model.filter.searchAssetId" />
+                        <Search :model="model.filter.searchRfid" />
+                        <Select :model="model.filter.selectIsAuto" />
+                        <Select :model="model.filter.selectIsFall" />
                     </div>
                     <div class="row-panel">
-                        <Select :model="form.filter.selectAssetType"></Select>
-                        <Select :model="form.filter.selectTagType"></Select>
-                        <Select :model="form.filter.selectAssetState"></Select>
-                        <Select :model="form.filter.selectOnlineState"></Select>
-                        <Select :model="form.filter.selectIsFall"></Select>
-                        <Select :model="form.filter.selectErrorType"></Select>
+                        <Select :model="model.filter.selectAssetType" />
+                        <Select :model="model.filter.selectTagType" />
+                        <Select :model="model.filter.selectAssetState" />
+                        <Select :model="model.filter.selectOnlineState" />
+                        <Select :model="model.filter.selectErrorType" />
+                        <Select :model="selectColumnFilter" />
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button :disabled="!IsAllowInbound" @click="form.Inbound">
-                            {{ Texts.Inbound.value }}
-                        </button>
-                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="form.Outbound">
-                            {{ Texts.Outbound.value }}
-                        </button>
+                        <button :disabled="!IsAllowTransfer" @click="model.Transfer">{{ Texts.Transfer.value }}</button>
+                        <button :disabled="!IsAllowInbound" @click="model.Inbound">{{ Texts.Inbound.value }}</button>
+                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="model.Outbound">
+                            {{ Texts.Outbound.value }}</button>
                     </div>
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="form.Add">
+                        <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="model.Add">
                             {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!IsOnlySelected" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                            :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsSelected" @click="form.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!IsSelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -51,18 +50,21 @@
     </PageCard>
 
     <!-- 表单: -->
-    <AssetForm :form="form" />
+    <AssetForm :form="model" />
+
+    <!-- 表单（调拨）: -->
+    <TransferForm :model="model.transferPage" />
 
     <!-- 表单（出库）: -->
-    <PopForm :model="form.assetOutbundForm">
+    <PopForm :model="model.assetOutbundForm">
         <FormRow>
-            <FormItem :model="form.configOutboundCompany.ItemModel">
-                <Select :model="form.selectCompanyOutboundForm"></Select>
+            <FormItem :model="model.configOutboundCompany.ItemModel">
+                <Select :model="model.selectCompanyOutboundForm" />
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configSite.ItemModel">
-                <Select :model="form.selectSiteOutboundForm"></Select>
+            <FormItem :model="model.configSite.ItemModel">
+                <Select :model="model.selectSiteOutboundForm" />
             </FormItem>
         </FormRow>
     </PopForm>
@@ -71,32 +73,37 @@
     <PopWindow :model="assetDetail">
         <TabView :model="tabView" />
     </PopWindow>
-
     <PopWindow :model="tagDetail">
-        <TagInfo :tagId="TagId" />
+        <RowData :model="tag" />
+    </PopWindow>
+    <PopWindow :model="transferDetail">
+        <RowData :model="transfer" />
+    </PopWindow>
+    <PopWindow :model="vehicleDetail">
+        <RowData :model="vehicle" />
     </PopWindow>
 </template>
 
 <script lang="ts" setup>
-import TagInfo from '@/components/TagInfo.vue'
 import AssetForm from './AssetForm.vue'
+import TransferForm from '../TransferPage/TransferForm.vue'
 import { onMounted, onUnmounted } from 'vue'
-import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView } from '@/0_tigersan_ui/tigerui'
+import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView, RowData } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'
-import { AssetLedgerForm } from './AssetLedgerForm'
-import { TagId, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, IsAllowInbound, IsAllowOutbound, tabView } from './AssetLedgerTable'
+import { AssetLedgerPageModel } from './AssetLedgerPageModel'
+import { tag, vehicle, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, vehicleDetail, IsAllowTransfer, IsAllowInbound, IsAllowOutbound, tabView, transferDetail, transfer } from './AssetLedgerTable'
 // 【字段】:
-const form = new AssetLedgerForm()
+const model = new AssetLedgerPageModel()
 const { IsOnlySelected, IsSelected } = assetLedgerTable
 
 // 【过程】:
 onMounted(() => {
-    form.Refresh()
-    form.filter.StartWatch()
+    model.Refresh()
+    model.filter.StartWatch()
 })
 
 onUnmounted(() => {
-    form.filter.StopWatch()
+    model.filter.StopWatch()
 })
 
 // 【方法】:

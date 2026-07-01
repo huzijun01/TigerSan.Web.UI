@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel" v-if="model._isShowCompany">
-                        <Select :model="model.selectCompany"></Select>
+                        <Select :model="model.selectCompany" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -34,7 +34,7 @@
     <PopForm :model="model.form">
         <FormRow v-if="model._isShowCompany">
             <FormItem :model="model.configCompany.ItemModel">
-                <Select :model="model.selectCompanyForm"></Select>
+                <Select :model="model.selectCompanyForm" />
             </FormItem>
         </FormRow>
         <FormRow>

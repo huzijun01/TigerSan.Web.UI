@@ -1,6 +1,6 @@
 import { ArrayHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
-import { AssetStates, ErrorTypes } from "../base/AssetStates"
 import { IdModel, IdHelper, axiosHelper } from "@/helpers"
+import { AssetStates, ErrorTypes } from "../base/AssetStates"
 
 /** "资产基类"模型 */
 class AssetBaseModel extends IdModel {
@@ -9,9 +9,13 @@ class AssetBaseModel extends IdModel {
     assetId = ''
     state: AssetStates = AssetStates.NoRecord
     onlineState: OnlineStates = OnlineStates.Offline
+    isAuto: boolean = true
     isFall?: boolean
     errorType?: ErrorTypes
     tag?: bigint
+    tagType?: bigint
+    vehicle?: bigint
+    transfer?: bigint
     lastRecord?: bigint
     name? = ''
     comment?: string
@@ -28,11 +32,12 @@ export class AssetModel extends AssetBaseModel {
     typeName = ''
     stateName = ''
     tagId?: string
-    tagType?: bigint
     rfid?: string
+    plate?: string
     siteName?: string
     battery?: number
     fullAddr?: string
+    transferCode?: string
     // 计算:
     dailyMove?: number
     monthlyMove?: number
@@ -73,6 +78,7 @@ export class AssetHelper extends IdHelper<AssetModel> {
         state?: AssetStates,
         states?: Array<AssetStates | undefined>,
         onlineState?: OnlineStates,
+        isAuto?: boolean,
         isFall?: boolean,
         errorType?: ErrorTypes,
         assetId?: string,
@@ -97,6 +103,7 @@ export class AssetHelper extends IdHelper<AssetModel> {
                         { propName: 'TagType', value: param.tagType },
                         { propName: 'State', value: param.state, values: param.states },
                         { propName: 'OnlineState', value: param.onlineState },
+                        { propName: 'IsAuto', value: param.isAuto },
                         { propName: 'IsFall', value: param.isFall },
                         { propName: 'ErrorType', value: param.errorType },
                         { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
@@ -118,6 +125,7 @@ export class AssetHelper extends IdHelper<AssetModel> {
         state?: AssetStates,
         states?: Array<AssetStates | undefined>,
         onlineState?: OnlineStates,
+        isAuto?: boolean,
         isFall?: boolean,
         errorType?: ErrorTypes,
         assetId?: string,
@@ -146,6 +154,7 @@ export class AssetHelper extends IdHelper<AssetModel> {
                         { propName: 'TagType', value: param.tagType },
                         { propName: 'State', value: param.state, values: param.states },
                         { propName: 'OnlineState', value: param.onlineState },
+                        { propName: 'IsAuto', value: param.isAuto },
                         { propName: 'IsFall', value: param.isFall },
                         { propName: 'ErrorType', value: param.errorType },
                         { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },

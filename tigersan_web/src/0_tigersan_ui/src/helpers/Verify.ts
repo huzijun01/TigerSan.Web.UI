@@ -1,4 +1,5 @@
 import { FormResult, VerifyResult } from "../models/Form/FormModel"
+import { Texts } from "../texts"
 
 export class Verify {
     /** 获取“OK” */
@@ -26,11 +27,11 @@ export class Verify {
     }
 
     /** 是否“定义且非空” */
-    static IsNotUndefined(obj?: object | number | Array<any>): VerifyResult {
+    static IsNotUndefined<T>(obj?: T): VerifyResult {
         var res = new VerifyResult()
 
         if (obj === undefined || obj === null) {
-            res.VerifyText = '不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
         }
 
@@ -42,7 +43,7 @@ export class Verify {
         var res = new VerifyResult()
 
         if (!str || str.trim() === '') {
-            res.VerifyText = '不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
         }
 
@@ -54,7 +55,7 @@ export class Verify {
         var res = new VerifyResult()
 
         if (s1.trim() === '' || s2.trim() === '') {
-            res.VerifyText = '不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
         } else if (s1 != s2) {
             res.VerifyText = strNotEqual ?? '值不相同'
@@ -69,7 +70,7 @@ export class Verify {
         var res = new VerifyResult()
 
         if (isNaN(num)) {
-            res.VerifyText = '必须为数字'
+            res.VerifyText = Texts.PleaseEnterANumber.value
             res.VerifyState = FormResult.Error
         }
         else if (num <= min) {
@@ -85,7 +86,7 @@ export class Verify {
         const res = new VerifyResult()
 
         if (num === undefined || num === null) {
-            res.VerifyText = '不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
         }
         else if (num <= min) {
@@ -101,7 +102,7 @@ export class Verify {
         var res = new VerifyResult()
 
         if (isNaN(num)) {
-            res.VerifyText = '必须为数字'
+            res.VerifyText = Texts.PleaseEnterANumber.value
             res.VerifyState = FormResult.Error
         }
         else if (num >= max) {
@@ -117,7 +118,7 @@ export class Verify {
         var res = new VerifyResult()
 
         if (isNaN(num)) {
-            res.VerifyText = '必须为数字'
+            res.VerifyText = Texts.PleaseEnterANumber.value
             res.VerifyState = FormResult.Error
         }
         else if (num < min) {
@@ -137,7 +138,7 @@ export class Verify {
         var res = new VerifyResult()
 
         if (arr.length < 1) {
-            res.VerifyText = '请选择'
+            res.VerifyText = Texts.PleaseSelect.value
             res.VerifyState = FormResult.Error
         }
 
@@ -150,7 +151,7 @@ export class Verify {
 
         // 长度校验:
         if (str === undefined || str === null) {
-            res.VerifyText = '输入不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
             return res
         }
@@ -183,7 +184,7 @@ export class Verify {
 
         // 空值校验（包含空字符串检查）
         if (str === undefined || str === null || str === '') {
-            res.VerifyText = '不能为空';
+            res.VerifyText = Texts.CannotBeEmpty.value;
             res.VerifyState = FormResult.Error;
             return res;
         }
@@ -221,7 +222,7 @@ export class Verify {
 
         // 空值检查
         if (str === undefined || str === null) {
-            res.VerifyText = '输入不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
             return res
         }
@@ -272,7 +273,7 @@ export class Verify {
 
         // 空值检查
         if (str === undefined || str === null || str.trim() === '') {
-            res.VerifyText = '输入不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
             return res
         }
@@ -321,7 +322,7 @@ export class Verify {
 
         // 空值检查
         if (str === undefined || str === null || str.trim() === '') {
-            res.VerifyText = '输入不能为空'
+            res.VerifyText = Texts.CannotBeEmpty.value
             res.VerifyState = FormResult.Error
             return res
         }

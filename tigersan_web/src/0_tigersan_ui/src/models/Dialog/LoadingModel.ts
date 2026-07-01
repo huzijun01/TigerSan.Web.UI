@@ -1,6 +1,6 @@
 import Loading from "../../components/Dialog/Loading.vue"
 import { ref, watch, type App } from "vue"
-import { ContentBehavior } from "../../helpers/Behaviors/ContentBehavior.ts"
+import { ContentBehavior } from "../../helpers/Behaviors/ContentBehavior"
 
 export class LoadingModel {
     private _loading?: App<any>

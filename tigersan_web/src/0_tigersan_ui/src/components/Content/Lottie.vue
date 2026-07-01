@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { shallowRef, onMounted } from 'vue'
 import lottie from 'lottie-web'
-import mapJson from '@/assets/lottie/map.json'
+import mapJson from './map.json'
 
 // 字段:
 let { map } = defineProps({

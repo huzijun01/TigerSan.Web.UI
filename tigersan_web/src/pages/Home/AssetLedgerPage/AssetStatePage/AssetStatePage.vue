@@ -7,17 +7,22 @@
             </div>
         </div>
         <div class="right-panel">
+            <!-- 基础详情： -->
             <div class="title">{{ Texts.BasicDetail.value }}</div>
             <KeyValue :isAutoHidden="true" :propName="Texts.Company.value"
                 :propValue="model.Asset.value?.companyName" />
             <KeyValue :isAutoHidden="true" :propName="Texts.Department.value"
                 :propValue="model.Asset.value?.departmentName" />
             <KeyValue :isAutoHidden="true" :propName="Texts.Tag.value" :propValue="model.Asset.value?.tagId" />
+            <KeyValue :isAutoHidden="true" :propName="Texts.AllotMode.value"
+                :propValue="IsAuto.ToString(model.Asset.value?.isAuto)" />
             <KeyValue :isAutoHidden="true" :propName="Texts.IsFall.value"
                 :propValue="IsFall.ToString(model.Asset.value?.isFall ?? false)" />
             <KeyValue :isAutoHidden="true" :propName="Texts.AssetType.value" :propValue="model.Asset.value?.typeName" />
             <KeyValue :isAutoHidden="true" :propName="Texts.ErrorType.value"
                 :propValue="ErrorType.GetName(model.Asset.value?.errorType)" />
+            <KeyValue :isAutoHidden="true" :propName="Texts.Vehicle.value" :propValue="model.Asset.value?.plate" />
+            <!-- 标签详情： -->
             <div class="title">{{ Texts.TagDetail.value }}</div>
             <KeyValue :isAutoHidden="true" :propName="Texts.OnlineState.value"
                 :propValue="model.Tag.value?.onlineState" />
@@ -43,7 +48,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { AssetStatePageModel } from './AssetStatePageModel'
-import { Map, Texts, KeyValue, IsFall, ObjectHelper, OnlineState } from '@/0_tigersan_ui/tigerui'
+import { Map, Texts, KeyValue, IsFall, ObjectHelper, OnlineState, IsAuto } from '@/0_tigersan_ui/tigerui'
 import { ErrorType, tagTypeHelper } from '@/models';
 
 // 【字段】:

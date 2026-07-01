@@ -183,7 +183,7 @@ export class BatchMgtForm {
         this.batchForm._onSubmitAsync = async source => {
             const res = await batchHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.batchForm.Show()

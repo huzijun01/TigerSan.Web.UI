@@ -2,7 +2,7 @@ import { Battery, IsEnable, IsFall, ItemType, ObjectHelper, OnlineState, Signal,
 import { TagModel, batchHelper, tagTypeHelper, baseStationHelper } from '@/models'
 
 // 列头:
-export function GetTable() {
+export function GetTagTable() {
     const table = new TableModel<TagModel>([
         {
             _propName: 'companyName',

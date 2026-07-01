@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Icons } from '@/0_tigersan_ui/tigerui'
+import { Icons } from '../../base'
 import { computed, type StyleValue } from 'vue'
 
 //字段:

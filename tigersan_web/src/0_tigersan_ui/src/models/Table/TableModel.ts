@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive, type StyleValue } from "vue"
+import { ref, watch, computed, toRaw, shallowReactive, type ShallowReactive, type StyleValue, shallowRef } from "vue"
 import { Colors, Theme } from '../../base'
 import { SelectModel } from '../Inputs/SelectModel'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync, TGetter } from '../../types'
@@ -300,38 +300,13 @@ export class TableItemModel<TSource extends object> {
     /** 更新“文本” 
      * “TableItem”内部会自动调用 */
     readonly UpdateText = () => {
-        // 检验“属性是否存在”:
-        if (this._headerModel._propName === '') {
-            return
-        }
-        else if (this._headerModel.IsRequired.value && !(this._headerModel._propName in this._rowModel._rowData)) {
-            console.warn(`The _rowData does not contain the ${this._headerModel._propName} field!`)
-            return
-        }
-
-        // 修改“文本”:
-        if (this._headerModel._getStringAsync) {
-            this._headerModel._getStringAsync(this._rowModel._rowData, this._headerModel._propName).then(value => {
-                this.Text.value = value
-            })
-        } else {
-            this.Text.value = this._headerModel._getString(this._rowModel._rowData, this._headerModel._propName)
-        }
+        this._headerModel.GetText(this._rowModel._rowData)
+            .then(text => this.Text.value = text)
     }
 
     /** 修改“行数据” */
     readonly SetRowData = () => {
-        // 检验“属性是否存在”:
-        if (this._headerModel._propName === '') {
-            return
-        }
-        else if (this._headerModel.IsRequired.value && !(this._headerModel._propName in this._rowModel._rowData)) {
-            console.warn(`The _rowData does not contain the ${this._headerModel._propName} field!`)
-            return
-        }
-
-        // 修改“行数据”:
-        this._headerModel._setObject(this._rowModel._rowData, this._headerModel._propName, this.Text.value)
+        this._headerModel.SetRowData(this._rowModel._rowData)
     }
 
     /** 获取“源数据” */
@@ -440,6 +415,42 @@ export class TableHeaderModel<TSource extends object> {
         this._tableModel = tableModel
     }
     //#endregion 【Ctor】
+
+    //#region 【Functions】
+    /** 获取“文本” */
+    readonly GetText = async (rowData: TSource): Promise<string> => {
+        // 检验“属性是否存在”:
+        if (this._propName === '') {
+            return ''
+        }
+        else if (this.IsRequired.value && !(this._propName in rowData)) {
+            console.warn(`The rowData does not contain the ${this._propName} field!`)
+            return ''
+        }
+
+        // 修改“文本”:
+        if (this._getStringAsync) {
+            return await this._getStringAsync(rowData, this._propName)
+        } else {
+            return this._getString(rowData, this._propName)
+        }
+    }
+
+    /** 修改“行数据” */
+    readonly SetRowData = async (rowData: TSource) => {
+        // 检验“属性是否存在”:
+        if (this._propName === '') {
+            return
+        }
+        else if (this.IsRequired.value && !(this._propName in rowData)) {
+            console.warn(`The rowData does not contain the ${this._propName} field!`)
+            return
+        }
+
+        // 修改“行数据”:
+        this._setObject(rowData, this._propName, this.Text.value)
+    }
+    //#endregion 【Functions】
 }
 
 /** “列头”配置 */
@@ -563,6 +574,30 @@ export class ColumnSelectModel<TSource extends object> extends SelectModel<Table
 
             this._config.Save(this.VisibleHeaders.map(h => h._propName))
         }
+    }
+    //#endregion 【Ctor】
+}
+
+/** “行数据”模型 */
+export class RowDataModel<TSource extends object> {
+    //#region 【Fields】
+    /** “列头配置”集合 */
+    readonly table
+    //#endregion 【Fields】
+
+    //#region 【Properties】
+    /** 数据 */
+    readonly Data = shallowRef<TSource | undefined>()
+    //#endregion 【Properties】
+
+    //#region 【Ctor】
+    constructor(table: TableModel<TSource>) {
+        this.table = table
+        this.table.InitHeaderModels()
+        watch(this.Data, data => {
+            this.table.RowDatas.splice(0)
+            if (data) this.table.RowDatas.push(data)
+        })
     }
     //#endregion 【Ctor】
 }

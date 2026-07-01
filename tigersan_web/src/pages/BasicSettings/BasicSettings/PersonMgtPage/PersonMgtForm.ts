@@ -221,7 +221,7 @@ export class PersonMgtForm {
         this.personForm._onSubmitAsync = async source => {
             const res = await personHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.personForm.Show()

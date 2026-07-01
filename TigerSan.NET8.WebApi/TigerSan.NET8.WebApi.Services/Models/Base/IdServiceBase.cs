@@ -84,7 +84,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region [查]
         #region 获取“单条数据”
-        /// <summary>获取“单条数据”</summary>
         public virtual async Task<MyActionResult<TEntity>> Get(long id)
         {
             try
@@ -104,7 +103,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 获取“总数”
-        /// <summary>获取“总数”</summary>
         public virtual async Task<MyActionResult<int>> GetCount(FilterDto? filter = null)
         {
             try
@@ -128,7 +126,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 获取“数据”集合（ids）
-        /// <summary>获取“数据”集合（ids）</summary>
         public virtual async Task<MyActionResult<List<TEntity>>> GetList(List<long> ids)
         {
             try
@@ -147,7 +144,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 获取“数据”集合
-        /// <summary>获取“数据”集合</summary>
         public virtual async Task<MyActionResult<List<TEntity>>> GetList(
             int? pageSize = null,
             int? pageNumber = null,
@@ -183,7 +179,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 获取“字段”集合
-        /// <summary>获取“字段”集合</summary>
         public virtual async Task<MyActionResult<List<TField>>> Select<TField>(
             Func<TEntity, TField> selector,
             bool isDistinct = false,
@@ -216,7 +211,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 获取“ID值对”集合
-        /// <summary>获取“ID值对”集合</summary>
         public virtual async Task<MyActionResult<List<IdValue<TField>>>> SelectIdValue<TField>(
             Func<TEntity, TField> selector,
             bool? isDistinct = null,
@@ -249,7 +243,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region “单条数据”是否存在
-        /// <summary>“单条数据”是否存在</summary>
         public virtual async Task<MyActionResult<bool>> IsExists(long id)
         {
             try
@@ -265,7 +258,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region “多条数据”是否存在
-        /// <summary>“多条数据”是否存在</summary>
         public virtual async Task<MyActionResult<bool>> IsExistsRange(List<long> ids)
         {
             try
@@ -283,7 +275,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region [增]
         #region 添加“单条数据”
-        /// <summary>添加“单条数据”</summary>
         public virtual async Task<MyActionResult<TEntity>> Add(TEntity entity, bool isBeginTransaction = true)
         {
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -307,7 +298,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 添加“多条数据”
-        /// <summary>添加“多条数据”</summary>
         public virtual async Task<MyActionResult<object>> AddRange(List<TEntity> entities, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
@@ -334,7 +324,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region [改]
         #region 修改“单条数据”
-        /// <summary>修改“单条数据”</summary>
         public virtual async Task<MyActionResult<object>> Edit(TEntity entity, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
@@ -366,7 +355,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 修改“多条数据”
-        /// <summary>修改“多条数据”</summary>
         public virtual async Task<MyActionResult<object>> EditRange(List<TEntity> entities, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
@@ -416,7 +404,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
         #region [删]
         #region 删除“单条数据”
-        /// <summary>删除“单条数据”</summary>
         public virtual async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;
@@ -445,7 +432,6 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
         #endregion
 
         #region 删除“多条数据”
-        /// <summary>删除“多条数据”</summary>
         public virtual async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
         {
             var res = MyResults<object>.OperationSuccess;

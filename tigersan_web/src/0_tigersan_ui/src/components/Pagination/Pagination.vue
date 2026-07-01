@@ -6,7 +6,7 @@
         </KeyValue>
         <KeyValue :propName="Texts.Count.value" :propValue="model.Count.value" v-if="model.IsShowCount.value">
         </KeyValue>
-        <Select v-if="model.IsShowPageSize.value" :model="model.PageSizeSelectModel"></Select>
+        <Select v-if="model.IsShowPageSize.value" :model="model.PageSizeSelectModel" />
         <PaginationButton v-for="b in model.ButtonModels" :key="b._id" :model="b"></PaginationButton>
         <div class="page-to flex-center" v-if="model.IsShowPageTextBox.value">
             <span>{{ Texts.To.value }}</span>

@@ -8,10 +8,10 @@
                 <Form>
                     <FormRow>
                         <FormItem :model="form.configProductType.ItemModel">
-                            <Select :model="select.typeSelect"></Select>
+                            <Select :model="select.typeSelect" />
                         </FormItem>
                         <FormItem :model="form.configFirmwareVersion.ItemModel">
-                            <Select :model="select.firmwareSelect"></Select>
+                            <Select :model="select.firmwareSelect" />
                         </FormItem>
                     </FormRow>
                     <FormRow>

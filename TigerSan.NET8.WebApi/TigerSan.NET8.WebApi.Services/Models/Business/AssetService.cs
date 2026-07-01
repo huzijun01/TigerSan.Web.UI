@@ -430,17 +430,67 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         dto.TypeName = type.Name;
                     }
 
+                    // 添加“标签信息”:
                     if (dto.Tag != null)
                     {
                         var tag = await _db.Tags.FirstOrDefaultAsync(t => t.Id == dto.Tag.Value);
                         if (tag == null)
                         {
                             LogHelper.Instance.IsNull(nameof(tag));
+
+                            var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                            if (find != null)
+                            {
+                                find.Tag = dto.Tag = null;
+                                _db.SaveChanges();
+                            }
                         }
                         else
                         {
                             dto.TagId = tag.TagId;
                             dto.Rfid = tag.Rfid;
+                        }
+                    }
+
+                    // 添加“车辆信息”:
+                    if (dto.Vehicle != null)
+                    {
+                        var vehicle = await _db.Vehicles.FirstOrDefaultAsync(t => t.Id == dto.Vehicle.Value);
+                        if (vehicle == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(vehicle));
+
+                            var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                            if (find != null)
+                            {
+                                find.Vehicle = dto.Vehicle = null;
+                                _db.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            dto.Plate = vehicle.Plate;
+                        }
+                    }
+
+                    // 添加“调拨信息”:
+                    if (dto.Transfer != null)
+                    {
+                        var transfer = await _db.Transfers.FirstOrDefaultAsync(t => t.Id == dto.Transfer.Value);
+                        if (transfer == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(transfer));
+
+                            var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                            if (find != null)
+                            {
+                                find.Transfer = dto.Transfer = null;
+                                _db.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            dto.TransferCode = transfer.Code;
                         }
                     }
 
@@ -1020,7 +1070,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 find.State = lastRecord?.State ?? AssetStates.NoRecord;
 
                 // 是否滞留:
-                if (lastRecord != null && lastRecord.State == AssetStates.InStore)
+                if (find.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InStore)
                 {
                     var lastInbound = records.LastOrDefault(r => r.State == AssetStates.Inbound);
                     if (lastInbound == null)
@@ -1203,12 +1253,30 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return MyResults<object>.NotInbound(entity.AssetId);
                     }
 
+                    // 新增“入库记录”：
                     var inStore = new AssetRecordEntity();
                     inStore.ShallowCopy(lastRecord);
                     inStore.UpdateId();
                     inStore.State = AssetStates.InStore;
                     inStore.ReportTime = DateTimeHelper.GetUtcNow();
                     await _db.AssetRecords.AddAsync(inStore);
+
+                    // 完成“调拨”：
+                    if (entity.Transfer != null)
+                    {
+                        var transfer = await _db.Transfers.FirstOrDefaultAsync(i => i.Id == entity.Transfer);
+                        if (transfer == null)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(transfer)));
+                        }
+
+                        if (transfer.Target == inStore.Site)
+                        {
+                            entity.Transfer = null;
+                            transfer.EndTime = DateTimeHelper.GetUtcNow();
+                        }
+                    }
                 }
 
                 await _db.SaveChangesAsync();

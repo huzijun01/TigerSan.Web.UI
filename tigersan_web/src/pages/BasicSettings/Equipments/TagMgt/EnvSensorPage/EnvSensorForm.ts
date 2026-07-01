@@ -51,7 +51,7 @@ function Add() {
 
     envSensorForm._onSubmit = source => {
         envSensorTable.RowDatas.push(source)
-        return new SubmitResult('添加成功')
+        return new SubmitResult(Texts.AddedSuccessfully.value)
     }
 
     envSensorForm.Show()

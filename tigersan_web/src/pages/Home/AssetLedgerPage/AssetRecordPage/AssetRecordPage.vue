@@ -38,7 +38,7 @@
     <PopForm :model="model.assetRecordForm">
         <FormRow>
             <FormItem :model="model.configStation.ItemModel">
-                <Select :model="model.selectStationForm"></Select>
+                <Select :model="model.selectStationForm" />
             </FormItem>
         </FormRow>
         <FormRow>

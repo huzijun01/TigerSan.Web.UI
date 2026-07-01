@@ -6,14 +6,14 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <span>设备类型：</span>
-                        <Select :model="select.typeSelect"></Select>
+                        <Select :model="select.typeSelect" />
                     </div>
                     <div class="row-panel">
                         <span>在线状态:</span>
-                        <Select :model="select.selectState"></Select>
+                        <Select :model="select.selectState" />
                         <span>蓝牙固件:</span>
-                        <Select :model="select.bluetoothFirmwareSelect"></Select>
-                        <Search :model="select.searchIMEI"></Search>
+                        <Select :model="select.bluetoothFirmwareSelect" />
+                        <Search :model="select.searchIMEI" />
                     </div>
                 </div>
                 <div class="button-panel">

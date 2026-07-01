@@ -20,6 +20,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> OperationSuccess { get => new MyActionResult<TData>(ActionResultCode.Success, "Operation successful!"); }
         public static MyActionResult<TData> RecordAlreadyExists { get => new MyActionResult<TData>(ActionResultCode.Warning, "Record already exists!"); }
         public static MyActionResult<TData> SomeAuthoritiesUnavailable { get => new MyActionResult<TData>(ActionResultCode.Warning, "Some authorities are unavailable!"); }
+        public static MyActionResult<TData> EqpTypeNotMatch { get => new MyActionResult<TData>(ActionResultCode.Error, "EqpType does not match!"); }
         public static MyActionResult<TData> CannotModifyOwnRole { get => new MyActionResult<TData>(ActionResultCode.Error, "User cannot modify their own role!"); }
         public static MyActionResult<TData> ApiUnavailable { get => new MyActionResult<TData>(ActionResultCode.Error, "This API is unavailable!"); }
         public static MyActionResult<TData> ResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource do not exist!"); }
@@ -37,9 +38,10 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> CaptchaVerificationFailed { get => new MyActionResult<TData>(ActionResultCode.InvalidCaptcha, "Captcha verification failed!"); }
         public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
         public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
-        public static MyActionResult<TData> TagNotBoundAsset { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag is not bound to a asset!"); }
         public static MyActionResult<TData> AssetNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset do not exist!"); }
         public static MyActionResult<TData> TagNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag do not exist!"); }
+        public static MyActionResult<TData> TagNotBoundAsset { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag is not bound to a asset!"); }
+        public static MyActionResult<TData> IncorrectTagType { get => new MyActionResult<TData>(ActionResultCode.Error, "Incorrect tag type!"); }
         public static MyActionResult<TData> AccessibleCompaniesCannotBeNull { get => new MyActionResult<TData>(ActionResultCode.Error, "The AccessibleCompanies cannot be null!"); }
         public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Authorization header is missing!"); }
         public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Invalid or expired token!"); }
@@ -54,6 +56,12 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> IsNull(string name) { return new MyActionResult<TData>(ActionResultCode.Error, $"The {name} is null!"); }
         public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
         public static Func<string, MyActionResult<TData>> TagNotFound = tagId => new MyActionResult<TData>(ActionResultCode.Error, $"The tag not found! ({tagId})");
+        public static Func<string, MyActionResult<TData>> AssetNoSite = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset have no site! ({assetId})");
+        public static Func<string, MyActionResult<TData>> TargetSameToSite = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The target cannot be the same as the site! ({assetId})");
+        public static Func<string, MyActionResult<TData>> AssetNotFound = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset not found! ({assetId})");
+        public static Func<string, MyActionResult<TData>> CodeCannotBeEmpty = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The code cannot be empty! ({assetId})");
+        public static Func<string, MyActionResult<TData>> AssetsHaveBeenAllocated = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The assets have been allocated! ({assetId})");
+        public static Func<string, MyActionResult<TData>> CannotModify = code => new MyActionResult<TData>(ActionResultCode.Error, $"Cannot modify!({code})");
         public static Func<string, MyActionResult<TData>> BaseStationNotFound = stationId => new MyActionResult<TData>(ActionResultCode.Error, $"The base station not found! ({stationId})");
         public static Func<string, MyActionResult<TData>> NoAssetRecord = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"No asset record! ({assetId})");
         public static Func<string, MyActionResult<TData>> NotInbound = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the Inbound state! ({assetId})");

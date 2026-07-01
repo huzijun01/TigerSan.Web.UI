@@ -101,7 +101,7 @@ export class DepartmentMgtForm {
         this.departmentForm._onSubmitAsync = async source => {
             const res = await departmentHelper.Add(source)
             await this.Refresh()
-            return GetSubmitResult(res, '添加成功')
+            return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
         this.departmentForm.Show()

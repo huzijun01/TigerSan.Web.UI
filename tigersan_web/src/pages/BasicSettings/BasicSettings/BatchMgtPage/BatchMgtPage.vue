@@ -5,9 +5,9 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany"></Select>
-                        <Select :model="form.selectScenario"></Select>
-                        <Search :model="form.searchBatchId"></Search>
+                        <Select :model="form.selectCompany" />
+                        <Select :model="form.selectScenario" />
+                        <Search :model="form.searchBatchId" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -37,12 +37,12 @@
     <PopForm :model="form.batchForm">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
-                <Select :model="form.selectCompanyForm"></Select>
+                <Select :model="form.selectCompanyForm" />
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="form.configScenario.ItemModel">
-                <Select :model="form.selectScenarioForm"></Select>
+                <Select :model="form.selectScenarioForm" />
             </FormItem>
         </FormRow>
         <FormRow>
