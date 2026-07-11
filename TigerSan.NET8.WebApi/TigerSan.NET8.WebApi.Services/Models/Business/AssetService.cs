@@ -1132,8 +1132,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
-                // 删除“相关记录”：
-                await _db.AssetRecords.Where(i => i.Asset == id).ExecuteDeleteAsync();
+                // 资产记录：
+                await _db.AssetRecords.Where(i => i.Asset == entity.Tag).ExecuteDeleteAsync();
+                // 绑定记录：
+                await _db.BindingRecords.Where(i => i.Asset == entity.Tag).ExecuteDeleteAsync();
+                // 解绑：
                 if (entity.Tag != null)
                 {
                     var tag = await _db.Tags.FirstOrDefaultAsync(i => i.Id == entity.Tag);
@@ -1179,7 +1182,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 else if (count < ids.Count)
                     return MyResults<object>.SomeResourceNotExist;
 
-                // 删除“相关记录”：
+                // 资产记录：
+                await _db.AssetRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
+                // 绑定记录：
+                await _db.BindingRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
+                // 解绑：
                 foreach (var entity in entities)
                 {
                     if (entity.Tag != null)
@@ -1194,7 +1201,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         tag.AssetId = null;
                     }
                 }
-                await _db.AssetRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
 
                 _dbSet.RemoveRange(entities);
                 await _db.SaveChangesAsync();

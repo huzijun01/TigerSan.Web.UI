@@ -604,6 +604,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return res.Convert<object>();
                     }
 
+                    if (asset.IsAuto)
+                    {
+                        // 新增“在库记录”：
+                        lastRecord.State = AssetStates.InStore;
+                        lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
+                        var resInStore = await Add(lastRecord, false);
+                        if (resInStore.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(resInStore.Message);
+                            return resInStore.Convert<object>();
+                        }
+                    }
+
                     await _db.SaveChangesAsync();
                     if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
                     return MyResults<object>.OperationSuccess;
@@ -676,10 +690,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                     #endregion
 
-                    #region 自动新增“入库记录”，并完成“调拨”
+                    #region 自动新增“在库记录”，并完成“调拨”
                     if (asset.IsAuto && newRecord.State == AssetStates.Inbound)
                     {
-                        // 新增“入库记录”：
+                        // 新增“在库记录”：
                         newRecord.State = AssetStates.InStore;
                         newRecord.ReportTime = newRecord.ReportTime.AddSeconds(1);
                         var resInStore = await Add(newRecord, false);
