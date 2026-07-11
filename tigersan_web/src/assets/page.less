@@ -1,0 +1,67 @@
+@import '../0_tigersan_ui/src/assets/styles/panels.less';
+
+@Gap: 10px;
+
+.child-margin-bottom {
+    &>div:not(:last-child) {
+        margin-bottom: @Gap;
+    }
+
+}
+
+.child-margin-right {
+    &>:not(:last-child) {
+        margin-right: @Gap;
+    }
+}
+
+.table-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%; // 必须设置父容器高度
+
+    /* 顶部: */
+    .top-panel {
+        // 显示:
+        overflow: auto;
+        flex-shrink: 0;
+        // 尺寸:
+        margin-bottom: @Gap;
+
+        &>* {
+            // 显示:
+            flex-shrink: 0;
+        }
+
+    }
+
+    /* 底部: */
+    .bottom-panel {
+        // 显示:
+        flex-shrink: 0;
+        overflow: auto;
+    }
+}
+
+.filter-panel {
+    // 尺寸:
+    .child-margin-bottom();
+
+    .row-panel {
+        // 显示:
+        .flex-left();
+        .child-margin-right();
+    }
+}
+
+.button-panel {
+    // 尺寸:
+    padding-left: 20px;
+    .child-margin-bottom();
+
+    .row-panel {
+        // 显示:
+        .flex-right();
+        .child-margin-right();
+    }
+}
