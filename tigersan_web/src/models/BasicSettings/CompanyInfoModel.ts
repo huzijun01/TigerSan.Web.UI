@@ -1,5 +1,5 @@
-import { ref, computed, watch } from "vue"
-import { loading, StringHelper, Texts, PieModel, Colors } from "@/0_tigersan_ui/tigerui"
+import { ref, computed } from "vue"
+import { loading, StringHelper, Texts, PieModel, Colors, WatchBehavior } from "@/0_tigersan_ui/tigerui"
 import { siteHelper } from "./SiteModel"
 import { assetHelper } from "../Home/AssetModel"
 import { AssetStates } from "../base/AssetStates"
@@ -8,6 +8,8 @@ import { baseStationHelper } from "../Equipments/BaseStationModel"
 
 export class CompanyInfoModel {
     //#region 【Fields】
+    /** “ID”监听 */
+    readonly watchId
     /** 资产状态 */
     readonly assetStates = new PieModel()
     //#endregion 【Fields】
@@ -25,7 +27,7 @@ export class CompanyInfoModel {
 
     //#region 【Ctor】
     constructor() {
-        watch(this.Id, this.Refresh)
+        this.watchId = new WatchBehavior(this.Id, this.Refresh)
 
         this.assetStates.Height.value = 300
         this.assetStates._isAutoInit = false
@@ -34,7 +36,7 @@ export class CompanyInfoModel {
         this.assetStates.SetConfigs([
             {
                 Name: Texts.NoRecord,
-                Color: Colors.PrimaryText,
+                Color: Colors.Blue,
                 getValueAsync: async () => await assetHelper.GetCount({ company: this.Id.value, state: AssetStates.NoRecord })
             },
             {
@@ -49,7 +51,7 @@ export class CompanyInfoModel {
             },
             {
                 Name: Texts.Stolid,
-                Color: Colors.Red,
+                Color: Colors.Orange,
                 getValueAsync: async () => await assetHelper.GetCount({ company: this.Id.value, state: AssetStates.Stolid })
             },
             {
@@ -61,6 +63,11 @@ export class CompanyInfoModel {
                 Name: Texts.InTransit,
                 Color: Colors.Brand,
                 getValueAsync: async () => await assetHelper.GetCount({ company: this.Id.value, state: AssetStates.InTransit })
+            },
+            {
+                Name: Texts.Timeout,
+                Color: Colors.Red,
+                getValueAsync: async () => await assetHelper.GetCount({ company: this.Id.value, state: AssetStates.Timeout })
             },
         ])
     }

@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
-import { shallowRef, onMounted, type PropType } from 'vue'
+import { shallowRef, onMounted, onBeforeUnmount, type PropType } from 'vue'
 import { ComponentHelper, type Data } from '../../helpers'
 
 // 字段:
@@ -21,6 +21,9 @@ let { component, rootProps } = defineProps({
     }
 })
 
+// 创建App:
+const app = ComponentHelper.CreateApp(component ?? DefaultPage, rootProps)
+
 // 过程:
 onMounted(() => {
     if (!refRoot.value) {
@@ -28,11 +31,13 @@ onMounted(() => {
         return
     }
 
-    // 创建App:
-    const app = ComponentHelper.CreateApp(component ?? DefaultPage, rootProps)
-
     // 挂载:
     app.mount(refRoot.value)
+})
+
+onBeforeUnmount(() => {
+    // 卸载:
+    app.unmount()
 })
 </script>
 

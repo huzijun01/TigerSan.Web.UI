@@ -118,11 +118,9 @@ export class NavBarModel implements IRoot {
 
     /** 更新“高度” */
     readonly UpdateHeight = () => {
-        FolderBehavior.RecursivelyOperateSubItems(
-            this.RootFolder,
-            folderModel => {
-                folderModel.UpdateHeight()
-            })
+        FolderBehavior.RecursivelyOperateSubItems(this.RootFolder, folderModel => {
+            folderModel.UpdateHeight()
+        })
     }
     //#endregion 【Functions】
 }

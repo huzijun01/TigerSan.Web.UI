@@ -6,6 +6,8 @@
         public static double DistanceThresholdMeters = 500;
         /// <summary>“滞留”阈值（时）</summary>
         public static double StolidThresholdHours = 24;
+        /// <summary>“超时”阈值（时）</summary>
+        public static double TimeoutThresholdHours = 24 * 3;
         /// <summary>“标签”上报间隔（秒）</summary>
         public static double TagReportIntervalSeconds = 3600;
         /// <summary>“定位器”上报间隔（秒）</summary>

@@ -87,7 +87,7 @@
 <script lang="ts" setup>
 import AssetForm from './AssetForm.vue'
 import TransferForm from '../TransferPage/TransferForm.vue'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView, RowData } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'
 import { AssetLedgerPageModel } from './AssetLedgerPageModel'
@@ -102,7 +102,7 @@ onMounted(() => {
     model.filter.StartWatch()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model.filter.StopWatch()
 })
 

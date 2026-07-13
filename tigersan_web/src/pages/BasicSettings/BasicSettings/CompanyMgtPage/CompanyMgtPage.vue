@@ -5,7 +5,7 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="form.selectCompany" />
+                        <Select :model="CompanyMgtForm.selectCompany" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -14,9 +14,9 @@
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">
                             {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!form.Tree.IsActive.value" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                            :disabled="!tree.IsActive.value" @click="form.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!form.Tree.IsActive.value" @click="form.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!tree.IsActive.value" @click="form.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -24,10 +24,10 @@
             <!-- 内容: -->
             <div class="content-panel">
                 <div class="left-panel">
-                    <Tree :model="form.Tree" />
+                    <Tree :model="tree" />
                 </div>
                 <div class="right-panel">
-                    <CompanyInfo v-if="form.Tree.IsActive.value" :model="form.companyInfo" />
+                    <CompanyInfo v-if="tree.IsActive.value" :model="form.companyInfo" />
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@ import { PageCard, PopForm, FormRow, FormItem, Tree, Select, Texts } from '@/0_t
 
 // 【字段】:
 const form = new CompanyMgtForm()
-
+const tree = CompanyMgtForm.tree
 // 【过程】:
 // 表格:
 onMounted(() => {
@@ -73,7 +73,6 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
-
 
 .content-panel {
     height: calc(100% - 40px);

@@ -1,4 +1,4 @@
-import { watch, type WatchSource, type WatchCallback, type WatchHandle } from "vue"
+import { watch, type WatchSource, type WatchCallback, type WatchHandle, unref } from "vue"
 
 export class WatchBehavior<TSource> {
     //#region 【Fields】
@@ -23,6 +23,18 @@ export class WatchBehavior<TSource> {
     readonly Stop = () => {
         this._watch?.stop()
         this._watch = undefined
+    }
+
+    readonly Do = () => {
+        let currentValue: TSource
+
+        if (typeof this._source === 'function') {
+            currentValue = (this._source as any)()
+        } else {
+            currentValue = unref(this._source as any)
+        }
+
+        this._callback(currentValue, undefined as any, () => { })
     }
     //#endregion 【Functions】
 }

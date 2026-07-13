@@ -68,6 +68,8 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     /** 复选框行为
      * （由“Select”内部维护） */
     _checkboxBehavior: CheckboxBehavior
+    /** 是否“自动更新” */
+    _isAutoUpdate = true
     /** 是否“默认选中首个” */
     _isSelectFirst = false
     /** 是否“默认选中首个”时触发“选择事件” */

@@ -165,6 +165,7 @@ export class Texts {
     static readonly Theme = TextModel.Computed('Theme', '主题')
     static readonly TagId = TextModel.Computed('TagId', '标签ID')
     static readonly Target = TextModel.Computed('Target', '终点')
+    static readonly Timeout = TextModel.Computed('Timeout', '超时')
     static readonly Transfer = TextModel.Computed('Transfer', '调拨')
     static readonly TagType = TextModel.Computed('TagType', '标签类型')
     static readonly TotalMove = TextModel.Computed('TotalMove', '总周转')

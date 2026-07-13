@@ -15,6 +15,8 @@
         Outbound = 4,
         /// <summary>在途</summary>
         InTransit = 5,
+        /// <summary>超时</summary>
+        Timeout = 6,
     }
 
     /// <summary>异常类型</summary>

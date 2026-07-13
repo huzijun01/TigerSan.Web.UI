@@ -2,26 +2,61 @@ import { computed, ref, watch, type WatchHandle } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading, TreeModel, ArrayHelper, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, CompanyHelper, CompanyModel, CompanyInfoModel } from '@/models'
 
+/** 树 */
+const tree = new TreeModel<CompanyModel>()
+/** “公司”选择框 */
+const selectCompany = companyHelper.GetIdNameSelectModel()
+/** 全局“公司”选择框 */
+const selectCompanyGlobal = companyHelper.GetIdNameSelectModel()
+/** “可访问公司”集合 */
+const AccessibleCompanies = computed(() => selectCompanyGlobal.CheckedValues.value.map(i => i?.id ?? 0n))
+
+// 树:
+tree._isActiveFirst = true
+tree._isAllowUnactive = false
+tree.IsShowCheckbox.value = false
+tree._onActiveChange = (node, isActive) => {
+    if (isActive) {
+        if (!node._data) {
+            console.warn('The _data is undefined!')
+            return
+        }
+        selectCompany.Value.value = selectCompany.Items.find(n => BigintHelper.IsEqualAndNotUndefined(n.id, node._data?.id))
+    } else {
+        selectCompany.Value.value = undefined
+    }
+}
+
+// 选择框:
+selectCompany._isSelectFirst = true
+selectCompany.IsShowClear.value = false
+selectCompany._onChange = () => {
+    tree.ActiveNode.value = tree.NodeArray.value.find(n => BigintHelper.IsEqualAndNotUndefined(n._data?.id, selectCompany.Value.value?.id))
+}
+
+selectCompanyGlobal.IsAllowMultiSelect.value = true
+selectCompanyGlobal._getItemsAsync = undefined
+selectCompanyGlobal._getItems = () => tree.GetCheckedNodeArray().map(i => new IdNameModel(i._data?.id, i._data?.name))
+selectCompanyGlobal._onInit = select => select.SelectAll()
+
 export class CompanyMgtForm {
-    //#region 【Fields】
+    //#region [static]
     /** “激活数据”监听 */
     private static watchActiveData?: WatchHandle
     /** 树 */
-    get Tree() { return CompanyMgtForm.tree }
-    /** 树 */
-    static readonly tree = new TreeModel<CompanyModel>()
-    /** “公司”筛选器 */
-    get CompanyFilter() { return CompanyMgtForm.companyFilter }
-    /** “公司”筛选器 */
-    static readonly companyFilter = companyHelper.GetIdNameSelectModel()
+    static readonly tree = tree
+    /** “公司”选择框 */
+    static readonly selectCompany = selectCompany
+    /** 全局“公司”选择框 */
+    static readonly selectCompanyGlobal = selectCompanyGlobal
+    /** “可访问公司”集合 */
+    static readonly AccessibleCompanies = AccessibleCompanies
+    //#region [static]
+
     /** 公司信息 */
     readonly companyInfo = new CompanyInfoModel()
-    /** “公司”选择框 */
-    readonly selectCompany = companyHelper.GetIdNameSelectModel()
     /** “父公司”选择框 */
     readonly selectParentCompany = companyHelper.GetIdNameSelectModel()
-    /** “可访问公司”集合 */
-    static readonly AccessibleCompanies = computed(() => CompanyMgtForm.companyFilter.CheckedValues.value.map(i => i?.id ?? 0n))
 
     /** “公司名称”项目配置 */
     readonly configName: FormItemConfig<CompanyModel, string> = {
@@ -82,41 +117,13 @@ export class CompanyMgtForm {
 
     //#region 【Ctor】
     constructor() {
-        // 树:
-        this.Tree._isActiveFirst = true
-        this.Tree._isAllowUnactive = false
-        this.Tree.IsShowCheckbox.value = false
-        this.Tree._onActive = node => {
-            if (!node._data) {
-                console.warn('The _data is undefined!')
-                return
-            }
-            this.selectCompany.Value.value = this.selectCompany.Items.find(n => BigintHelper.IsEqualAndNotUndefined(n.id, node._data?.id))
-        }
-        this.Tree._onUnactive = () => {
-            this.selectCompany.Value.value = undefined
-        }
-        this.Tree._onInited = () => this.Tree.SetActiveNode(this.selectCompany.Text.value)
-
-        // 选择框:
-        this.selectCompany._isSelectFirst = true
-        this.selectCompany.IsShowClear.value = false
-        this.selectCompany._onChange = () => {
-            this.Tree.ActiveNode.value = this.Tree.NodeArray.value.find(n => BigintHelper.IsEqualAndNotUndefined(n._data?.id, this.selectCompany.Value.value?.id))
-        }
-
-        this.CompanyFilter.IsAllowMultiSelect.value = true
-        this.CompanyFilter._getItemsAsync = undefined
-        this.CompanyFilter._getItems = () => this.Tree.GetCheckedNodeArray().map(i => new IdNameModel(i._data?.id, i._data?.name))
-        this.CompanyFilter._onInit = select => select.SelectAll()
-
         // 监听:
         CompanyMgtForm.watchActiveData?.stop()
-        CompanyMgtForm.watchActiveData = watch(this.Tree.ActiveData, data => {
+        CompanyMgtForm.watchActiveData = watch(CompanyMgtForm.tree.ActiveData, data => {
             this.companyInfo.Id.value = data?.id
             this.companyInfo.Name.value = data?.name
             this.companyInfo.Addr.value = data?.addr
-            this.CompanyFilter.UpdateItemsAsync()
+            CompanyMgtForm.selectCompanyGlobal.UpdateItemsAsync()
         })
     }
     //#endregion 【Ctor】
@@ -128,8 +135,8 @@ export class CompanyMgtForm {
             loading.IsShow.value = true
 
             await companyHelper.GetList({}).then(arr => {
-                this.Tree.Clear()
-                this.Tree.Init(CompanyHelper.Companies2Tree(arr))
+                CompanyMgtForm.tree.Clear()
+                CompanyMgtForm.tree.Init(CompanyHelper.Companies2Tree(arr))
             })
 
             await this.companyInfo.Refresh()
@@ -155,7 +162,7 @@ export class CompanyMgtForm {
 
     /** 改 */
     readonly Edit = async () => {
-        const model = this.Tree.ActiveData.value
+        const model = CompanyMgtForm.tree.ActiveData.value
         if (!model) {
             console.warn('The model is undefined!')
             return
@@ -192,7 +199,7 @@ export class CompanyMgtForm {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const model = this.Tree.ActiveData.value
+        const model = CompanyMgtForm.tree.ActiveData.value
         if (!model) {
             console.warn('The model is undefined!')
             return
@@ -214,7 +221,7 @@ export class CompanyMgtForm {
     readonly EditGetItemsAsync = async () => {
         const arr = await companyHelper.GetIdNames()
 
-        const active = this.Tree.ActiveNode.value
+        const active = CompanyMgtForm.tree.ActiveNode.value
         if (!active) {
             console.warn('The node is undefined!')
             return arr

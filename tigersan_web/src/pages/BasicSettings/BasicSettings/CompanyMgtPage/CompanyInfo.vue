@@ -14,13 +14,15 @@
                 :count="model.AssetCount.value" />
         </div>
         <div class="chart-panel flex-stretch">
-            <Pie :model="model.assetStates" />
+            <div class="card">
+                <Pie :model="model.assetStates" />
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, type PropType } from 'vue'
+import { onMounted, onUnmounted, type PropType } from 'vue'
 import { Texts, KeyValue, Icons, CountCard, Pie } from '@/0_tigersan_ui/tigerui'
 import { CompanyInfoModel } from '@/models'
 
@@ -33,7 +35,12 @@ const { model } = defineProps({
 })
 
 onMounted(async () => {
+    model.watchId.Start()
     await model.Refresh()
+})
+
+onUnmounted(async () => {
+    model.watchId.Stop()
 })
 </script>
 
@@ -52,6 +59,13 @@ onMounted(async () => {
 
     .chart-panel {
         flex-wrap: wrap;
+        gap: 10px;
+
+        .card {
+            padding: 10px;
+            border-radius: 10px;
+            background-color: var(--theme-panel-background);
+        }
     }
 }
 </style>

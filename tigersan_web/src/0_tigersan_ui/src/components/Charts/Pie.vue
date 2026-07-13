@@ -5,7 +5,7 @@
                 {{ model.ShowTitle.value }}
             </span>
         </div>
-        <div class="pie" ref="refRoot">
+        <div class="pie">
             <svg :viewBox="`0 0 ${model.PieWidth.value} ${model.PieHeight.value}`">
                 <circle class="bg-circle" cx="50%" cy="50%" :r="model.Radius.value"
                     :style="model.styleBgCircle.value" />

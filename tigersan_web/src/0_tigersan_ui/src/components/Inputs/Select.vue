@@ -41,7 +41,7 @@ const watchIsOpen = watch(model.IsOpen, (isOpen) => {
 
 // 过程:
 onMounted(async () => {
-    await model.UpdateItemsAsync()
+    if (model._isAutoUpdate) await model.UpdateItemsAsync()
 })
 
 onUnmounted(() => {

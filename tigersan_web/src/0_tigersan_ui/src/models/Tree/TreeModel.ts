@@ -296,6 +296,8 @@ export class TreeModel<TData> implements IRoot {
     _onInit?: TreeNodeModelFunc<TData>
     /** 激活后 */
     _onActive?: TreeNodeModelFunc<TData>
+    /** “激活状态”改变后 */
+    _onActiveChange?: (node: TreeNodeModel<TData>, isActive: boolean) => void
     /** 选中后 */
     _onChecked?: TreeNodeModelFunc<TData>
     /** 失活后 */
@@ -351,10 +353,12 @@ export class TreeModel<TData> implements IRoot {
             this.ActiveNode.value = undefined
             this._onUnactive?.(node)
             node._onUnactive?.(node)
+            this._onActiveChange?.(node, false)
         } else {
             this.ActiveNode.value = node
             this._onActive?.(node)
             node._onActive?.(node)
+            this._onActiveChange?.(node, true)
         }
     }
 

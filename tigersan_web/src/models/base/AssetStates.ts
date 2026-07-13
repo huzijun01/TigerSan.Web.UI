@@ -14,6 +14,8 @@ export enum AssetStates {
     Outbound = 4,
     /** 在途 */
     InTransit = 5,
+    /** 超时 */
+    Timeout = 6,
 }
 
 export class AssetState {
@@ -31,6 +33,8 @@ export class AssetState {
                 return Texts.Outbound.value
             case AssetStates.InTransit:
                 return Texts.InTransit.value
+            case AssetStates.Timeout:
+                return Texts.Timeout.value
             default:
                 return Texts.Unknown.value
         }
@@ -41,7 +45,7 @@ export class AssetState {
         const select = new SelectModel<AssetStates>()
         select.Width.value = 120
         select.Placeholder.value = Texts.AssetState
-        select.Items.push(...[0, 1, 2, 3, 4, 5])
+        select.Items.push(...[0, 1, 2, 3, 4, 5, 6])
         select._converter = this.GetName
         return select
     }
@@ -57,12 +61,12 @@ export class AssetState {
                 itemModel.Color.value = Colors.Success
                 itemModel.Background.value = Colors.Success10
             } else if (source === AssetStates.Stolid) {
-                itemModel.Color.value = Colors.Danger
-                itemModel.Background.value = Colors.Danger10
+                itemModel.Color.value = Colors.Orange
+                itemModel.Background.value = Colors.Orange10
             } else if (source === AssetStates.Outbound) {
                 itemModel.Color.value = Colors.Info
                 itemModel.Background.value = Colors.Info10
-            } else if (source === AssetStates.NoRecord) {
+            } else if (source === AssetStates.Timeout) {
                 itemModel.Color.value = Colors.Danger
                 itemModel.Background.value = Colors.Danger10
             } else {

@@ -75,6 +75,80 @@
     --color-mask-disabled: #00000055;
     --color-foreground-disabled: rgba(255, 255, 255, 0.8);
     --color-box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.25);
+
+    /* [标准色] */
+    /* 蓝 */
+    --color-blue: #5470C6;
+    --color-blue-75: #5470C6BF;
+    --color-blue-50: #5470C67F;
+    --color-blue-25: #5470C640;
+    --color-blue-10: #5470C61A;
+    /* 绿 */
+    --color-green: #91CC75;
+    --color-green-75: #91CC75BF;
+    --color-green-50: #91CC757F;
+    --color-green-25: #91CC7540;
+    --color-green-10: #91CC751A;
+    /* 黄 */
+    --color-yellow: #FAC858;
+    --color-yellow-75: #FAC858BF;
+    --color-yellow-50: #FAC8587F;
+    --color-yellow-25: #FAC85840;
+    --color-yellow-10: #FAC8581A;
+    /* 红 */
+    --color-red: #EE6666;
+    --color-red-75: #EE6666BF;
+    --color-red-50: #EE66667F;
+    --color-red-25: #EE666640;
+    --color-red-10: #EE66661A;
+    /* 浅蓝 */
+    --color-light_blue: #73C0DE;
+    --color-light_blue-75: #73C0DEBF;
+    --color-light_blue-50: #73C0DE7F;
+    --color-light_blue-25: #73C0DE40;
+    --color-light_blue-10: #73C0DE1A;
+    /* 深绿 */
+    --color-dark_green: #3BA272;
+    --color-dark_green-75: #3BA272BF;
+    --color-dark_green-50: #3BA2727F;
+    --color-dark_green-25: #3BA27240;
+    --color-dark_green-10: #3BA2721A;
+    /* 橙 */
+    --color-orange: #FC8452;
+    --color-orange-75: #FC8452BF;
+    --color-orange-50: #FC84527F;
+    --color-orange-25: #FC845240;
+    --color-orange-10: #FC84521A;
+    /* 紫 */
+    --color-purple: #9A60B4;
+    --color-purple-75: #9A60B4BF;
+    --color-purple-50: #9A60B47F;
+    --color-purple-25: #9A60B440;
+    --color-purple-10: #9A60B41A;
+    /* 粉紫 */
+    --color-pink_purple: #EA7CCC;
+    --color-pink_purple-75: #EA7CCCBF;
+    --color-pink_purple-50: #EA7CCC7F;
+    --color-pink_purple-25: #EA7CCC40;
+    --color-pink_purple-10: #EA7CCC1A;
+    /* 深蓝灰 */
+    --color-dark_slate: #2F4554;
+    --color-dark_slate-75: #2F4554BF;
+    --color-dark_slate-50: #2F45547F;
+    --color-dark_slate-25: #2F455440;
+    --color-dark_slate-10: #2F45541A;
+    /* 青灰 */
+    --color-cyan_gray: #61A0A8;
+    --color-cyan_gray-75: #61A0A8BF;
+    --color-cyan_gray-50: #61A0A87F;
+    --color-cyan_gray-25: #61A0A840;
+    --color-cyan_gray-10: #61A0A81A;
+    /* 棕 */
+    --color-brown: #D48265;
+    --color-brown-75: #D48265BF;
+    --color-brown-50: #D482657F;
+    --color-brown-25: #D4826540;
+    --color-brown-10: #D482651A;
 }
 
 /* 【常量】 */
