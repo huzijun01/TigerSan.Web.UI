@@ -310,7 +310,7 @@ export class TagMgtPageModel {
     readonly EditIsEnable = (isEnable: boolean) => {
         if (!this.table.IsSelected.value) return
 
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             '修改启用状态',
             isEnable ? '是否启用' : '是否禁用',
             undefined,
@@ -348,7 +348,7 @@ export class TagMgtPageModel {
 
     /** 删 */
     readonly Delete = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.DeleteConfirm.value,
             undefined,
@@ -409,7 +409,7 @@ export class TagMgtPageModel {
     }
 
     readonly Repair = () => {
-        DialogHelper.ShowInformation('维修')
+        DialogHelper.Information('维修')
     }
     //#endregion 【Functions】
 }

@@ -124,7 +124,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
 
     /** 删 */
     readonly Delete = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.DeleteConfirm.value,
             undefined,
@@ -232,7 +232,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
 
     /** 入库 */
     readonly Inbound = async () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm.value,
             TextModel.GetText('Are you sure to inbound?', '是否确定入库？'),
             undefined,

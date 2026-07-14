@@ -77,11 +77,11 @@ const { IsOnlySelected } = personMgtTagTable
 
 // 【方法】:
 function SetParams() {
-    DialogHelper.ShowInformation('修改参数')
+    DialogHelper.Information('修改参数')
 }
 
 function Restart() {
-    DialogHelper.ShowInformation('重启')
+    DialogHelper.Information('重启')
 }
 </script>
 

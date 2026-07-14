@@ -65,7 +65,7 @@ export class AxiosBase {
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
-                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.Warning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (isShowResult && !MyActionResult.IsSuccess(actionResult)) {
@@ -93,7 +93,7 @@ export class AxiosBase {
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
-                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.Warning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (!MyActionResult.IsSuccess(actionResult)) {
@@ -119,7 +119,7 @@ export class AxiosBase {
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
-                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.Warning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (!MyActionResult.IsSuccess(actionResult)) {
@@ -143,7 +143,7 @@ export class AxiosBase {
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
-                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.Warning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (!MyActionResult.IsSuccess(actionResult)) {
@@ -167,7 +167,7 @@ export class AxiosBase {
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
-                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.Warning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (!MyActionResult.IsSuccess(actionResult)) {

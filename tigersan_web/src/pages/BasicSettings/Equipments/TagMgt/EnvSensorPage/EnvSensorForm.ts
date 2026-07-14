@@ -56,7 +56,7 @@ function Add() {
 
 /** 删 */
 function Delete() {
-    DialogHelper.ShowDialog(
+    DialogHelper.Show(
         Texts.Confirm,
         Texts.DeleteConfirm.value,
         undefined,
@@ -76,7 +76,7 @@ function DeleteRowData(state: DialogState) {
 
     envSensorTable.DeleteRowData(rowData)
 
-    DialogHelper.ShowSuccess(Texts.DeletedSuccessfully.value)
+    DialogHelper.Success(Texts.DeletedSuccessfully.value)
 }
 
 export default {

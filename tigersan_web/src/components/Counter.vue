@@ -16,7 +16,7 @@ let sum = ref(0)
 
 function Add() {
     ++sum.value
-    DialogHelper.ShowInformation(`sum = ${sum.value}`)
+    DialogHelper.Information(`sum = ${sum.value}`)
 }
 </script>
 

@@ -3,6 +3,7 @@ import { Texts } from "../../texts"
 import { Colors } from "../../base"
 import { DialogHelper } from '../../stores'
 import { loading } from "../Dialog/LoadingModel"
+import { ToastHelper } from '../Dialog/ToastHelper'
 import { FormConfig, SetFormModel } from './FormConfig'
 import { LanguageBehavior, ObjectHelper, StringHelper } from "../../helpers"
 import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
@@ -77,6 +78,8 @@ export class FormModel<TSource extends object> {
     //#region 【Fields】
     /** 是否“为编辑” */
     _isEdit = false
+    /** 是否使用“Toast” */
+    _isUseToast = true
     /** 是否“显示结果” */
     _isShowResult = true
     /** 是否“显示成功结果” */
@@ -212,14 +215,15 @@ export class FormModel<TSource extends object> {
         if (this._isShowResult) {
             switch (res.Result) {
                 case FormResult.Error:
-                    DialogHelper.ShowError(res.Msg)
+                    DialogHelper.Error(res.Msg)
                     return
                 case FormResult.Warning:
-                    DialogHelper.ShowWarning(res.Msg)
+                    DialogHelper.Warning(res.Msg)
                     break
                 default:
                     if (this._isShowSuccessResult) {
-                        DialogHelper.ShowSuccess(res.Msg)
+                        if (this._isUseToast) ToastHelper.Success(res.Msg)
+                        else DialogHelper.Success(res.Msg)
                     }
                     break
             }

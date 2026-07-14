@@ -166,7 +166,7 @@ export class DictionaryModel {
 
     /** 删 */
     readonly Delete = async () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.ConfirmPassword,
             Texts.DeleteConfirm.value,
             undefined,

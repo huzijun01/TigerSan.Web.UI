@@ -185,7 +185,7 @@ export class CompanyMgtForm {
 
     /** 删 */
     readonly Delete = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             TextModel.GetText(
                 'Are you sure to delete this company and its subordinate companies?',

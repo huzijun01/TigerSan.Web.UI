@@ -151,7 +151,7 @@ export class AssetRecordPageModel {
 
     /** 删 */
     readonly Delete = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.DeleteConfirm.value,
             undefined,

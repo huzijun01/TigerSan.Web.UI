@@ -1,4 +1,5 @@
 import { DialogHelper } from "../stores"
+import { ToastHelper } from './Dialog/ToastHelper'
 import { FormResult, SubmitResult } from "./Form/FormModel"
 
 export enum ActionResultCode {
@@ -10,8 +11,11 @@ export enum ActionResultCode {
 }
 
 export class MyActionResult<TData> {
+    static readonly ActionResult_Undefined = new MyActionResult<any>(ActionResultCode.Error, 'The actionResult is undefined!')
+    /** 是否使用“Toast” */
+    static _isUseToast = true
+    /** “登出”方法 */
     static _logout?: Function
-    static ActionResult_Undefined = new MyActionResult<any>(ActionResultCode.Error, 'The actionResult is undefined!')
 
     code: ActionResultCode
     message = ''
@@ -32,16 +36,17 @@ export class MyActionResult<TData> {
 
     static ShowResult(res: MyActionResult<any>, success: string = '操作成功', isShowSuccess = true) {
         if (res.code === ActionResultCode.Error) {
-            DialogHelper.ShowError(res.message)
+            DialogHelper.Error(res.message)
         } else if (res.code === ActionResultCode.InvalidCaptcha) {
             return
         } else if (res.code === ActionResultCode.InvalidToken) {
             MyActionResult._logout?.()
-            DialogHelper.ShowError(res.message)
+            DialogHelper.Error(res.message)
         } else if (res.code === ActionResultCode.Warning) {
-            DialogHelper.ShowWarning(res.message)
+            DialogHelper.Warning(res.message)
         } else if (isShowSuccess) {
-            DialogHelper.ShowSuccess(success)
+            if (this._isUseToast) ToastHelper.Success(success)
+            else DialogHelper.Success(success)
         }
     }
 

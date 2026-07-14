@@ -3,8 +3,11 @@ export * from "./models/Authority/AuthorityModel"
 export * from "./models/Authority/AuthorityVerify"
 
 /* Dialog: */
+export * from './models/Dialog/DialogModel'
 export * from './models/Dialog/LoadingModel'
 export * from './models/Dialog/PopWindowModel'
+export * from './models/Dialog/ToastHelper'
+export * from './models/Dialog/ToastModel'
 
 /* Charts: */
 export * from './models/Charts/ChartModel'
@@ -27,7 +30,7 @@ export * from './models/Inputs/SelectModel'
 export * from './models/Inputs/SwitchModel'
 export * from './models/Inputs/TextBoxModel'
 
-// Others:
+// Map:
 export * from './models/Map/ClusterMarkerModel'
 export * from './models/Map/MapModel'
 export * from './models/Map/MapTypes'
@@ -59,7 +62,6 @@ export * from './models/Text/TextModel'
 export * from './models/Tree/TreeModel'
 
 /* Others: */
-export * from './models/DialogModel'
 export * from './models/FilterModel'
 export * from './models/MyActionResult'
 export * from './models/SelectModel'

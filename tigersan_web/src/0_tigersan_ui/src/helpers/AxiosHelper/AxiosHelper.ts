@@ -26,7 +26,7 @@ export class AxiosHelper extends AxiosBase {
                 return 0
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                DialogHelper.ShowWarning('GetCount: The data is undefined!')
+                DialogHelper.Warning('GetCount: The data is undefined!')
                 return 0
             }
 
@@ -64,7 +64,7 @@ export class AxiosHelper extends AxiosBase {
                 return []
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                DialogHelper.ShowWarning('GetList: The data is undefined!')
+                DialogHelper.Warning('GetList: The data is undefined!')
                 return []
             }
 
@@ -94,7 +94,7 @@ export class AxiosHelper extends AxiosBase {
                 return []
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                DialogHelper.ShowWarning('GetList: The data is undefined!')
+                DialogHelper.Warning('GetList: The data is undefined!')
                 return []
             }
 
@@ -124,7 +124,7 @@ export class AxiosHelper extends AxiosBase {
                 return []
             }
             else if (MyActionResult.IsSuccessNoData(actionResult)) {
-                DialogHelper.ShowWarning('GetList: The data is undefined!')
+                DialogHelper.Warning('GetList: The data is undefined!')
                 return []
             }
 
@@ -141,7 +141,7 @@ export class AxiosHelper extends AxiosBase {
             const actionResult = await this.Post<TData>(`${action}${range}`, undefined, data)
 
             if (actionResult === undefined) {
-                DialogHelper.ShowWarning(MyActionResult.ActionResult_Undefined.message)
+                DialogHelper.Warning(MyActionResult.ActionResult_Undefined.message)
                 return MyActionResult.ActionResult_Undefined
             }
             else if (!MyActionResult.IsSuccess(actionResult)) {

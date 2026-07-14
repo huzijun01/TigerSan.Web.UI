@@ -24,4 +24,36 @@ export class ComponentHelper {
         }
         return container.firstElementChild
     }
+
+    /** 追加“应用实例” */
+    static AppendApp(
+        component: Component,
+        rootProps?: Data | null,
+        selectors: string = 'body'): Element | null {
+        const body = document.querySelector(selectors)
+        if (!body) {
+            console.warn('The body is null!')
+            return null
+        }
+
+        const element = ComponentHelper.GetElement(component, rootProps)
+        if (!element) {
+            console.warn('The element is null!')
+            return null
+        }
+        body.appendChild(element)
+        return element
+    }
+
+    /** 移除“元素” */
+    static RemoveElement(element: Element, selectors: string = 'body'): boolean {
+        const body = document.querySelector(selectors)
+        if (!body) {
+            console.warn('The body is null!')
+            return false
+        }
+
+        body.removeChild(element)
+        return true
+    }
 }

@@ -88,6 +88,7 @@ export class Icons {
     static Input = ""
     static IdCard = ""
     static Inbound = ""
+    static Info_Circle = ""
     static InputDataSource = ""
 
     // K:
@@ -171,6 +172,7 @@ export class Icons {
     static Save_Planar = ""
     static ScreenSaver = ""
     static SelectButton = ""
+    static Success_Circle = ""
     static Setting_Linear = ""
     static Setting_Planar = ""
 
@@ -203,4 +205,5 @@ export class Icons {
     static WeChat = ""
     static Wallet = ""
     static Window = ""
+    static Warning_Circle = ""
 }

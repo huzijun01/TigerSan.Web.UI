@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4765727",
+      "name": "Info_Circle",
+      "font_class": "Info_Circle",
+      "unicode": "e77e",
+      "unicode_decimal": 59262
+    },
+    {
+      "icon_id": "15838532",
+      "name": "Success_Circle",
+      "font_class": "Success_Circle",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "18991776",
+      "name": "Warning_Circle",
+      "font_class": "Warning_Circle",
+      "unicode": "e88f",
+      "unicode_decimal": 59535
+    },
+    {
       "icon_id": "6151211",
       "name": "Flag_Linear",
       "font_class": "Flag_Linear",

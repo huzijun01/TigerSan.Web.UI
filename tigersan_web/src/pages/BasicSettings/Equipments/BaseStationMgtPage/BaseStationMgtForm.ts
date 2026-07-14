@@ -281,7 +281,7 @@ export class BaseStationMgtForm {
     readonly EditIsEnable = (isEnable: boolean) => {
         if (!baseStationMgtTable.IsSelected.value) return
 
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             '修改启用状态',
             isEnable ? '是否启用' : '是否禁用',
             undefined,
@@ -319,7 +319,7 @@ export class BaseStationMgtForm {
 
     /** 删 */
     readonly Delete = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.DeleteConfirm.value,
             undefined,
@@ -350,7 +350,7 @@ export class BaseStationMgtForm {
     }
 
     readonly Repair = () => {
-        DialogHelper.ShowInformation('维修')
+        DialogHelper.Information('维修')
     }
     //#endregion 【Functions】
 }

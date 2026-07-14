@@ -120,7 +120,7 @@ export class LoginFormModel {
             const res = await UserHelper.GetCaptcha()
             const data = res.data
             if (!data) {
-                DialogHelper.ShowError(res.message)
+                DialogHelper.Error(res.message)
                 return
             }
             this.id = data.id
@@ -136,7 +136,7 @@ export class LoginFormModel {
 
     /** 登出 */
     readonly Logout = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.LogoutConfirm.value,
             undefined,
@@ -156,7 +156,7 @@ export class LoginFormModel {
             // 发送“登出请求”:
             var res = await UserHelper.LogoutAsync(userInfo.username)
             if (res.code != ActionResultCode.Success) {
-                DialogHelper.ShowError(res.message)
+                DialogHelper.Error(res.message)
                 return
             }
 
@@ -180,7 +180,7 @@ export class LoginFormModel {
             var res = await UserHelper.LoginByTokenAsync(token)
             if (!res.data) {
                 TokenHelper.Save()
-                DialogHelper.ShowError(res.message)
+                DialogHelper.Error(res.message)
                 return
             }
 

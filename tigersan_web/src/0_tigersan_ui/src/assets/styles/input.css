@@ -84,7 +84,7 @@
   height: 100vh;
   /* 颜色 */
   background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(0.5px);
   /* 置顶 */
   z-index: 999;
 }

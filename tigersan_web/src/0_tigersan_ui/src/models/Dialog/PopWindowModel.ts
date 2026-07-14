@@ -17,6 +17,16 @@ export class PopWindowModel {
     readonly MinWidth = ref<string | undefined>()
     /** 最小高度 */
     readonly MinHeight = ref<string | undefined>()
+
+    //#region [computed]
+    /** 样式 */
+    readonly Style = computed((): StyleValue => {
+        return {
+            minWidth: this.MinWidth.value,
+            minHeight: this.MinHeight.value,
+        }
+    })
+    //#endregion [computed]
     //#endregion 【Properties】
 
     //#region 【Ctor】
@@ -41,13 +51,5 @@ export class PopWindowModel {
     readonly Close = () => {
         this.IsShow.value = false
     }
-
-    /** 样式 */
-    readonly Style = computed((): StyleValue => {
-        return {
-            minWidth: this.MinWidth.value,
-            minHeight: this.MinHeight.value,
-        }
-    })
     //#endregion 【Functions】
 }

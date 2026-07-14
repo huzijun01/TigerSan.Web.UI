@@ -12,6 +12,8 @@ import Dialog from "./components/Dialog/Dialog.vue"
 import Loading from "./components/Dialog/Loading.vue"
 import Pop from "./components/Dialog/Pop.vue"
 import PopWindow from "./components/Dialog/PopWindow.vue"
+import Toast from "./components/Dialog/Toast.vue"
+import Toasts from "./components/Dialog/Toasts.vue"
 // Drawer:
 import DrawerBox from "./components/Drawer/DrawerBox.vue"
 // Form:
@@ -75,6 +77,8 @@ export {
     Loading,
     Pop,
     PopWindow,
+    Toast,
+    Toasts,
     // Drawer:
     DrawerBox,
     // Form:

@@ -11,7 +11,7 @@ import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
 import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
 import { AssetModel, AssetState, AssetStates, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
 import { BindingRecordPageModel } from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPageModel'
-import { TransferPageModel } from '../TransferPage/TransferPageModel.ts'
+import { TransferPageModel } from '../TransferPage/TransferPageModel'
 
 // 字段:
 /** 状态页 */

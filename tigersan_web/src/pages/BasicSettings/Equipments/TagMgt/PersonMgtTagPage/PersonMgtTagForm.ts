@@ -96,7 +96,7 @@ export class PersonMgtTagForm {
 
     /** 删 */
     readonly Delete = () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.DeleteConfirm.value,
             undefined,
@@ -116,6 +116,6 @@ export class PersonMgtTagForm {
 
         personMgtTagTable.DeleteRowData(rowData)
 
-        DialogHelper.ShowSuccess(Texts.DeletedSuccessfully.value)
+        DialogHelper.Success(Texts.DeletedSuccessfully.value)
     }
 }

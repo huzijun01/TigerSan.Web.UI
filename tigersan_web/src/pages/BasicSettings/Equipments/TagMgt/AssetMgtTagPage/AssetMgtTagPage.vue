@@ -67,16 +67,16 @@ const { IsOnlySelected } = assetMgtTagTable
 
 // 【方法】:
 function BatchOperation() {
-    DialogHelper.ShowInformation('批量操作')
+    DialogHelper.Information('批量操作')
 }
 
 
 function SetParams() {
-    DialogHelper.ShowInformation('修改参数')
+    DialogHelper.Information('修改参数')
 }
 
 function SetCol() {
-    DialogHelper.ShowInformation('OTA升级')
+    DialogHelper.Information('OTA升级')
 }
 </script>
 

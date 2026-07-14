@@ -205,7 +205,7 @@ export class BatchMgtForm {
 
     /** 删 */
     readonly Delete = async () => {
-        DialogHelper.ShowDialog(
+        DialogHelper.Show(
             Texts.Confirm,
             Texts.DeleteConfirm.value,
             undefined,

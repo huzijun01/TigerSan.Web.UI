@@ -114,6 +114,9 @@
   }
 }
 * {
+  /* 尺寸 */
+  margin: 0;
+  padding: 0;
   /* 滚动条 */
   /* Firefox宽度: */
   scrollbar-width: thin;

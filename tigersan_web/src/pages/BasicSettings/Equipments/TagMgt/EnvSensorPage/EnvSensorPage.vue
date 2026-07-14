@@ -65,15 +65,15 @@ const { IsOnlySelected } = envSensorTable
 
 // 【方法】:
 function PowerOff() {
-    DialogHelper.ShowInformation('关机')
+    DialogHelper.Information('关机')
 }
 
 function OTA_Update() {
-    DialogHelper.ShowInformation('OTA升级')
+    DialogHelper.Information('OTA升级')
 }
 
 function SetTime() {
-    DialogHelper.ShowInformation('授时')
+    DialogHelper.Information('授时')
 }
 </script>
 

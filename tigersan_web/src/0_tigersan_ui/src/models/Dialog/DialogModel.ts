@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid'
 import { computed, ref, type ComputedRef } from 'vue'
-import { Texts } from '../texts'
-import { Colors } from '../base'
-import { LanguageBehavior } from '../helpers'
+import { Texts } from '../../texts'
+import { Colors } from '../../base'
+import { LanguageBehavior } from '../../helpers'
 
 export type DialogCallback = (state: DialogState, data?: any) => any
 
