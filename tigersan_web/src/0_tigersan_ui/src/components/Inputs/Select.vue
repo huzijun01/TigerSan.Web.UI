@@ -109,7 +109,7 @@ function IsClickOutside(target: HTMLElement, panel: HTMLElement): boolean {
     position: relative;
 
     &.open input {
-        border-color: var(--color-brand);
+        border-color: var(--theme-brand);
     }
 
     &>input {

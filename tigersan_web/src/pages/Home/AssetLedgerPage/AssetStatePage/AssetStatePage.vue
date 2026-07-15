@@ -100,7 +100,7 @@ onMounted(() => {
                 padding: 3px 5px;
                 margin-right: 10px;
                 border-radius: 3px;
-                color: var(--color-brand);
+                color: var(--theme-brand);
                 background: var(--color-brand-10);
             }
 

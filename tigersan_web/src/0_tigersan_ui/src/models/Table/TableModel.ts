@@ -55,6 +55,8 @@ export class TableModel<TSource extends object> {
     _onItemTextChange?: TableItemFunc<TSource>
     /** “选中状态”改变 */
     _onSelectStateChange?: ObjectArrayFunc
+    /** “筛选状态”改变 */
+    _onSlotChange?: (header?: TableHeaderModel<TSource>, isAscending?: boolean) => void
     //#endregion 【Fields】
 
     //#region 【Properties】
@@ -78,6 +80,10 @@ export class TableModel<TSource extends object> {
     readonly refCheckbox = this._sizeBehavior.refRoot
     /** “复选框”宽度 */
     readonly CheckboxWidth = this._sizeBehavior.ActualWidth
+    /** 是否“升序” */
+    readonly IsAscending = ref(true)
+    /** 筛选列头 */
+    readonly SlotHeader = shallowRef<TableHeaderModel<TSource> | undefined>()
     //#endregion [内部维护]
 
     //#region [computed]
@@ -220,7 +226,6 @@ export class TableRowModel<TSource extends object> {
     //#region 【Properties】
     /** 是否“选中” */
     readonly IsChecked = ref(false)
-
     /** “项目模型”集合 */
     readonly ItemModels: ShallowReactive<TableItemModel<TSource>[]> = shallowReactive([])
 
@@ -370,6 +375,8 @@ export class TableHeaderModel<TSource extends object> {
     readonly IsReadonly = ref(true)
     /** 是否“必须” */
     readonly IsRequired = ref(true)
+    /** 是否“显示筛选” */
+    readonly IsShowSlot = ref(false)
 
     //#region [内部维护]
     /** 根元素 */
@@ -413,6 +420,23 @@ export class TableHeaderModel<TSource extends object> {
             ...freeze
         }
     })
+
+    /** 是否“排序” */
+    readonly IsSlot = computed(() => this._tableModel.SlotHeader.value === this)
+
+    /** “升序”样式 */
+    readonly AscClass = computed(() => {
+        return {
+            active: this.IsSlot.value && this._tableModel.IsAscending.value
+        }
+    })
+
+    /** “降序”样式 */
+    readonly DescClass = computed(() => {
+        return {
+            active: this.IsSlot.value && !this._tableModel.IsAscending.value
+        }
+    })
     //#endregion [computed]
     //#endregion 【Properties】
 
@@ -448,7 +472,7 @@ export class TableHeaderModel<TSource extends object> {
     }
 
     /** 修改“行数据” */
-    readonly SetRowData = async (rowData: TSource) => {
+    readonly SetRowData = (rowData: TSource) => {
         // 检验“属性是否存在”:
         if (this._propName === '') {
             return
@@ -460,6 +484,27 @@ export class TableHeaderModel<TSource extends object> {
 
         // 修改“行数据”:
         this._setObject(rowData, this._propName, this.Text.value)
+    }
+
+    /** 点击“排序按钮”后 */
+    readonly OnSlotClick = () => {
+        let header: TableHeaderModel<TSource> | undefined
+        let isAscending: boolean | undefined
+
+        if (this.IsSlot.value) {
+            if (this._tableModel.IsAscending.value) {
+                header = this
+                isAscending = this._tableModel.IsAscending.value = false
+            } else {
+                header = isAscending = this._tableModel.SlotHeader.value = undefined
+                this._tableModel.IsAscending.value = true
+            }
+        } else {
+            header = this._tableModel.SlotHeader.value = this
+            isAscending = this._tableModel.IsAscending.value = true
+        }
+
+        this._tableModel._onSlotChange?.(header, isAscending)
     }
     //#endregion 【Functions】
 }
@@ -496,6 +541,8 @@ export class TableHeaderConfig<TSource extends object> {
     IsReadonly?: boolean
     /** 是否“必须” */
     IsRequired?: boolean
+    /** 是否“显示筛选” */
+    IsShowSlot?: boolean
 
     //#region 【Ctor】
     constructor(propName: string) {
@@ -521,6 +568,7 @@ export function SetTableHeaderModel<TSource extends object>(model: TableHeaderMo
     if (config.IsFreeze != undefined) model.IsFreeze.value = config.IsFreeze
     if (config.IsReadonly != undefined) model.IsReadonly.value = config.IsReadonly
     if (config.IsRequired != undefined) model.IsRequired.value = config.IsRequired
+    if (config.IsShowSlot != undefined) model.IsShowSlot.value = config.IsShowSlot
 }
 
 /** “列筛选”选择器类型 */

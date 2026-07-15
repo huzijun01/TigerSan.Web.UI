@@ -42,7 +42,7 @@ onMounted(() => {
     transition: var(--Global-Transition);
 
     * {
-        color: var(--color-brand);
+        color: var(--theme-brand);
     }
 
     .mask {

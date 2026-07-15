@@ -26,6 +26,8 @@ export class ToastModel {
     _msg
     /** 间隔 */
     _gap = 15
+    /** “顶部”距离 */
+    _top = 30
     /** 高度 */
     _height = 40
     /** 时间（ms） */
@@ -42,7 +44,7 @@ export class ToastModel {
      * （由“ToastHelper”传入） */
     readonly Models: ShallowReactive<ToastModel[]>
     /** “顶部”距离 */
-    readonly Top = computed(() => this._gap + this.Models.indexOf(this) * (this._gap + this._height))
+    readonly Top = computed(() => this._top + this.Models.indexOf(this) * (this._gap + this._height))
 
     //#region [computed]
     /** “根元素”样式 */
