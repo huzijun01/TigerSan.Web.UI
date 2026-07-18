@@ -26,7 +26,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 【Functions】
         #region [查]
         #region 获取“所属公司”集合
-        /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList(List<CompanyEntity>? accessibleCompanies)
         {
             try
@@ -62,7 +61,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“所属类型”集合
-        /// <summary>获取“所属类型”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongSiteTypeList(long? company = null)
         {
             try

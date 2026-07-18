@@ -27,7 +27,7 @@ export class OnlineState {
         select.Width.value = 120
         select.Value.value = undefined
         select.Placeholder.value = Texts.OnlineState
-        select.Items.push(...[OnlineStates.Online, OnlineStates.Offline])
+        select.SetItems([OnlineStates.Online, OnlineStates.Offline])
         select._converter = OnlineState.ToString
         return select
     }
@@ -60,7 +60,7 @@ export class IsEnable {
         select.Width.value = 120
         select.Value.value = undefined
         select.Placeholder.value = Texts.IsEnable
-        select.Items.push(...[true, false])
+        select.SetItems([true, false])
         select._converter = IsEnable.ToString
         return select
     }
@@ -94,7 +94,7 @@ export class IsFall {
         select.Width.value = 120
         select.Value.value = undefined
         select.Placeholder.value = Texts.IsFall
-        select.Items.push(...[true, false])
+        select.SetItems([true, false])
         select._converter = IsFall.ToString
         return select
     }
@@ -131,7 +131,7 @@ export class IsAuto {
         select.Width.value = 120
         select.Value.value = undefined
         select.Placeholder.value = Texts.AllotMode
-        select.Items.push(...[true, false])
+        select.SetItems([true, false])
         select._converter = IsAuto.ToString
         return select
     }
@@ -164,7 +164,7 @@ export class IsEnd {
         select.Width.value = 120
         select.Value.value = undefined
         select.Placeholder.value = Texts.IsEnd
-        select.Items.push(...[true, false])
+        select.SetItems([true, false])
         select._converter = IsEnd.ToString
         return select
     }
@@ -210,6 +210,40 @@ export class Signal {
                 itemModel.Color.value = Colors.Warning
             } else {
                 itemModel.Color.value = Colors.Danger
+            }
+        }
+    }
+}
+
+export class Gender {
+    static ToString(value?: boolean) {
+        if (value === undefined || value === null) return ''
+        return value ? Texts.Male.value : Texts.Female.value
+    }
+
+    static GetString(obj: object, propName: string = 'gender'): string {
+        return Gender.ToString(ObjectHelper.DefaultTGetter(obj, propName, false))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.Placeholder.value = Texts.Gender
+        select.SetItems([true, false])
+        select._converter = Gender.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'gender') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Blue
+                itemModel.Background.value = Colors.Blue10
+            } else {
+                itemModel.Color.value = Colors.PinkPurple
+                itemModel.Background.value = Colors.PinkPurple10
             }
         }
     }

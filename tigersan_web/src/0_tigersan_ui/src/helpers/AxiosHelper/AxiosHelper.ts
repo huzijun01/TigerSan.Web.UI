@@ -150,7 +150,7 @@ export class AxiosHelper extends AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.GetError(error)
+            return MyActionResult.Error(error)
         }
     }
 

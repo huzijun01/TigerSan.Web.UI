@@ -14,6 +14,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
     {
         #region 【Fields】
         private IBaseStationService _baseStationService;
+        private readonly IInventoryRecordService _inventoryRecordService;
+
         /// <summary>正在修改的标签</summary>
         private Dictionary<long, TagDto> _editingTags = new Dictionary<long, TagDto>();
         #endregion 【Fields】
@@ -27,9 +29,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
         }
 
-        public AssetRecordService(AppDbContext db, IBaseStationService baseStationService) : base(db, db.AssetRecords)
+        public AssetRecordService(
+            AppDbContext db,
+            IBaseStationService baseStationService,
+            IInventoryRecordService inventoryRecordService) : base(db, db.AssetRecords)
         {
             _baseStationService = baseStationService;
+            _inventoryRecordService = inventoryRecordService;
         }
         #endregion 【Ctor】
 
@@ -807,6 +813,32 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
                 _editingTags.Add(newTag.Id, newTag); // 开始修改
 
+                #region 获取“基站”
+                BaseStationEntity? oldStation = null;
+                if (oldTag.Station != null)
+                {
+                    oldStation = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(b => b.Id == oldTag.Station);
+                    if (oldStation == null)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        LogHelper.Instance.IsNull(nameof(transaction));
+                        return MyResults<object>.ResourceNotExist;
+                    }
+                }
+
+                BaseStationEntity? newStation = null;
+                if (newTag.Station != null)
+                {
+                    newStation = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(b => b.Id == newTag.Station);
+                    if (newStation == null)
+                    {
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        LogHelper.Instance.IsNull(nameof(transaction));
+                        return MyResults<object>.ResourceNotExist;
+                    }
+                }
+                #endregion
+
                 #region 获取“资产”
                 var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == newTag.Asset);
                 if (asset == null)
@@ -878,22 +910,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 newRecord.ShallowCopy(lastRecord);
                 newRecord.ShallowCopy(newTag, [nameof(AssetRecordEntity.Id)]);
 
-                if (oldTag.Station != newTag.Station) // 若“场地”改变，新增“入库记录”
+                if (oldStation?.Site != newStation?.Site) // 若“场地”改变，新增“入库记录”
                 {
-                    #region 添加“场地”
-                    if (newTag.Station != null)
+                    // 添加“场地”:
+                    newRecord.Site = newStation?.Site;
+
+                    #region 修改“盘点记录”
+                    if (oldStation != null)
                     {
-                        var station = await _db.BaseStations.FirstOrDefaultAsync(b => b.Id == newTag.Station.Value);
-                        if (station == null)
-                        {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.IsNull(nameof(transaction));
-                            return MyResults<object>.ResourceNotExist;
-                        }
-                        else
-                        {
-                            newRecord.Site = station.Site;
-                        }
+                        await _inventoryRecordService.ReduceAsset(oldStation.Site);
+                    }
+
+                    if (newStation != null)
+                    {
+                        await _inventoryRecordService.AddAsset(newStation.Site);
                     }
                     #endregion
 

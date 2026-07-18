@@ -5,6 +5,7 @@ export class Texts {
     // A:
     static readonly Add = TextModel.Computed('Add', '新增')
     static readonly All = TextModel.Computed('All', '全部')
+    static readonly Age = TextModel.Computed('Age', '年龄')
     static readonly Auto = TextModel.Computed('Auto', '自动')
     static readonly Addr = TextModel.Computed('Addr', '地址')
     static readonly Asset = TextModel.Computed('Asset', '资产')
@@ -23,6 +24,7 @@ export class Texts {
     static readonly Bound = TextModel.Computed('Bound', '已绑定')
     static readonly Binding = TextModel.Computed('Binding', '绑定')
     static readonly Battery = TextModel.Computed('Battery', '电量')
+    static readonly Birthday = TextModel.Computed('Birthday', '生日')
     static readonly Breakdown = TextModel.Computed('Breakdown', '故障')
     static readonly Business = TextModel.Computed('Business', '业务平台')
     static readonly BaseStation = TextModel.Computed('BaseStation', '基站')
@@ -35,6 +37,7 @@ export class Texts {
     static readonly Code = TextModel.Computed('Code', '编号')
     static readonly Clear = TextModel.Computed('Clear', '清空')
     static readonly Count = TextModel.Computed('Count', '总数')
+    static readonly Chart = TextModel.Computed('Chart', '图表')
     static readonly Cancel = TextModel.Computed('Cancel', '取消')
     static readonly Comment = TextModel.Computed('Comment', '备注')
     static readonly Company = TextModel.Computed('Company', '公司')
@@ -49,6 +52,7 @@ export class Texts {
     static readonly Done = TextModel.Computed('Done', '完成')
     static readonly Delete = TextModel.Computed('Delete', '删除')
     static readonly Driver = TextModel.Computed('Driver', '司机')
+    static readonly Dialog = TextModel.Computed('Dialog', '对话框')
     static readonly Disable = TextModel.Computed('Disable', '禁用')
     static readonly DailyMove = TextModel.Computed('DailyMove', '日周转')
     static readonly Department = TextModel.Computed('Department', '部门')
@@ -67,13 +71,20 @@ export class Texts {
     static readonly EditedSuccessfully = TextModel.Computed('Edited Successfully', '修改成功')
     // F:
     static readonly Fall = TextModel.Computed('Fall', '脱落')
+    static readonly Form = TextModel.Computed('Form', '表单')
     static readonly Fence = TextModel.Computed('Fence', '围栏')
+    static readonly Female = TextModel.Computed('Female', '女')
+    static readonly Feedback = TextModel.Computed('Feedback', '反馈')
     static readonly FencePath = TextModel.Computed('FencePath', '围栏路径')
+    static readonly Feedforward = TextModel.Computed('Feedforward', '前馈')
     static readonly FallDetect = TextModel.Computed('FallDetect', '脱落检测')
+    // G:
+    static readonly Gender = TextModel.Computed('Gender', '性别')
     // H:
     static readonly Help = TextModel.Computed('Help', '帮助')
     // I:
     static readonly Is = TextModel.Computed('Is', '是否')
+    static readonly Input = TextModel.Computed('Input', '输入')
     static readonly IsEnd = TextModel.Computed('IsEnd', '是否完成')
     static readonly IsFall = TextModel.Computed('IsFall', '是否脱落')
     static readonly Inbound = TextModel.Computed('Inbound', '入库')
@@ -86,9 +97,12 @@ export class Texts {
     static readonly InTransitTimeout = TextModel.Computed('InTransitTimeout', '在途超时')
     static readonly IncorrectCaptcha = TextModel.Computed('Incorrect captcha!', '验证码不正确')
     static readonly InboundSuccessful = TextModel.Computed('Inbound operation successful', '入库成功')
+    // J:
+    static readonly JoiningTime = TextModel.Computed('JoiningTime', '加入时间')
     // L:
     static readonly Lose = TextModel.Computed('Lose', '丢失')
     static readonly Login = TextModel.Computed('Login', '登录')
+    static readonly Loading = TextModel.Computed('Loading', '加载')
     static readonly Language = TextModel.Computed('Language', '语言')
     static readonly Locator = TextModel.Computed('Locator', '定位器')
     static readonly Latitude = TextModel.Computed('Latitude', '纬度')
@@ -98,6 +112,7 @@ export class Texts {
     static readonly LastReportTime = TextModel.Computed('LastReportTime', '最后上报时间')
     static readonly LogoutConfirm = TextModel.Computed('Do you want to log out?', '是否退出登录？')
     // M:
+    static readonly Male = TextModel.Computed('Male', '男')
     static readonly Mail = TextModel.Computed('Mail', '邮箱')
     static readonly Manual = TextModel.Computed('Manual', '手动')
     static readonly Manager = TextModel.Computed('Manager', '联系人')
@@ -116,6 +131,7 @@ export class Texts {
     // O:
     static readonly Ok = TextModel.Computed('Ok', '确定')
     static readonly Other = TextModel.Computed('Other', '其它')
+    static readonly Output = TextModel.Computed('Output', '输出')
     static readonly Origin = TextModel.Computed('Origin', '起点')
     static readonly Online = TextModel.Computed('Online', '在线')
     static readonly Offline = TextModel.Computed('Offline', '离线')
@@ -125,6 +141,7 @@ export class Texts {
     static readonly OnlineState = TextModel.Computed('OnlineState', '在线状态')
     static readonly OutboundSuccessful = TextModel.Computed('Outbound operation successful', '出库成功')
     // P:
+    static readonly Pie = TextModel.Computed('Pie', '饼图')
     static readonly page = TextModel.Computed('page', '页')
     static readonly Phone = TextModel.Computed('Phone', '电话')
     static readonly Plate = TextModel.Computed('Plate', '车牌号')
@@ -136,6 +153,7 @@ export class Texts {
     static readonly PleaseEnterANumber = TextModel.Computed('Please enter a number', '请输入数字')
     // R:
     static readonly Role = TextModel.Computed('Role', '角色')
+    static readonly Reduce = TextModel.Computed('Reduce', '减少')
     static readonly Repair = TextModel.Computed('Repair', '维修')
     static readonly Refresh = TextModel.Computed('Refresh', '刷新')
     static readonly ReportTime = TextModel.Computed('ReportTime', '上报时间')
@@ -147,6 +165,7 @@ export class Texts {
     static readonly Stolid = TextModel.Computed('Stolid', '滞留')
     static readonly Select = TextModel.Computed('Select', '选中')
     static readonly Signal = TextModel.Computed('Signal', '信号')
+    static readonly Salary = TextModel.Computed('Salary', '薪资')
     static readonly Success = TextModel.Computed('Success', '成功')
     static readonly Station = TextModel.Computed('Station', '站点')
     static readonly Scenario = TextModel.Computed('Scenario', '场景')
@@ -163,6 +182,7 @@ export class Texts {
     static readonly Type = TextModel.Computed('Type', '类型')
     static readonly Title = TextModel.Computed('Title', '标题')
     static readonly Theme = TextModel.Computed('Theme', '主题')
+    static readonly Table = TextModel.Computed('Table', '表格')
     static readonly TagId = TextModel.Computed('TagId', '标签ID')
     static readonly Target = TextModel.Computed('Target', '终点')
     static readonly Timeout = TextModel.Computed('Timeout', '超时')

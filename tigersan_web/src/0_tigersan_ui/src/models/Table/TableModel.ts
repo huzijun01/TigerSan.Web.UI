@@ -210,6 +210,18 @@ export class TableModel<TSource extends object> {
     readonly DeleteRowData = (rowData: TSource) => {
         ArrayHelper.Delete(this.RowDatas, rowData)
     }
+
+    /** 设置“筛选列头”
+     * （建议在“_onInitHeaderModels”中调用） */
+    readonly SetSlotHeader = (propName: string, isAscending: boolean = true) => {
+        const find = this.HeaderModels.find(i => i._propName === propName)
+        if (!find) {
+            console.warn('The find is undefined!')
+            return
+        }
+        this.SlotHeader.value = find
+        this.IsAscending.value = isAscending
+    }
     //#endregion 【Functions】
 }
 

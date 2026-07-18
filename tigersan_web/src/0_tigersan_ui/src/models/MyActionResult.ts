@@ -30,7 +30,15 @@ export class MyActionResult<TData> {
         this.data = data
     }
 
-    static GetError(msg: any) {
+    static Success(msg: any) {
+        return new MyActionResult<any>(ActionResultCode.Success, msg)
+    }
+
+    static Warning(msg: any) {
+        return new MyActionResult<any>(ActionResultCode.Warning, msg)
+    }
+
+    static Error(msg: any) {
         return new MyActionResult<any>(ActionResultCode.Error, msg)
     }
 

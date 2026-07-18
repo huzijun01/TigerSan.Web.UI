@@ -74,7 +74,7 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.GetError(error)
+            return MyActionResult.Error(error)
         }
     }
 
@@ -102,7 +102,7 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.GetError(error)
+            return MyActionResult.Error(error)
         }
     }
 
@@ -128,7 +128,7 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.GetError(error)
+            return MyActionResult.Error(error)
         }
     }
 
@@ -152,7 +152,7 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.GetError(error)
+            return MyActionResult.Error(error)
         }
     }
 
@@ -176,7 +176,7 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.GetError(error)
+            return MyActionResult.Error(error)
         }
     }
 }

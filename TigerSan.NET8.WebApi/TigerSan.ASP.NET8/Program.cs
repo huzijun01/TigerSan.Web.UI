@@ -1,5 +1,6 @@
-using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Extensions;
+using TigerSan.NET8.WebApi.Helpers;
+using TigerSan.NET8.WebApi.Interfaces.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// 每日盘点：
+var inventoryRecordService = app.Services.CreateScope().ServiceProvider.GetRequiredService<IInventoryRecordService>();
+inventoryRecordService.StartInventory();
+// SSE监听：
 SseInstance.InitInstance(app.Services).Start();
 
 app.UseHttpsRedirection();

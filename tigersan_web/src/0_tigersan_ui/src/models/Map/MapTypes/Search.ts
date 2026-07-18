@@ -1,3 +1,4 @@
+export { }
 declare global {
     namespace AMap {
         /** 地址查询 */

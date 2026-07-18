@@ -19,7 +19,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region [查]
         [HttpGet]
         [Route("Full")]
-        /// <summary>根据“TagId”或“RFID”获取“单条数据”</summary>
+        /// <summary>根据“TagId”或“RFID”获取“单条完整数据”</summary>
         public async Task<MyActionResult<TagDto>> GetFull(string? tagId = null, string? rfid = null)
         {
             if (AccessibleCompanyIds == null) return MyResults<TagDto>.AccessibleCompaniesCannotBeNull;

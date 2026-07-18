@@ -1,3 +1,4 @@
+export { }
 declare global {
     namespace AMap {
         /** “多边形”路径 */

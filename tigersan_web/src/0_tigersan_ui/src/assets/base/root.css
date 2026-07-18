@@ -1,11 +1,11 @@
 /* 【颜色】 */
 :root {
     /* [主色] */
-    --color-brand: #376FDE;
-    --color-brand-75: #376FDEBF;
-    --color-brand-50: #376FDE7F;
-    --color-brand-25: #376FDE40;
-    --color-brand-10: #376FDE1A;
+    --color-brand: #3A76ED;
+    --color-brand-75: #3A76EDBF;
+    --color-brand-50: #3A76ED7F;
+    --color-brand-25: #3A76ED40;
+    --color-brand-10: #3A76ED1A;
 
     /* [辅助色] */
     --color-success: #4AB616;
@@ -13,16 +13,16 @@
     --color-success-50: #4AB6167F;
     --color-success-25: #4AB61640;
     --color-success-10: #4AB6161A;
-    --color-warning: #E19F1A;
-    --color-warning-75: #E19F1ABF;
-    --color-warning-50: #E19F1A7F;
-    --color-warning-25: #E19F1A40;
-    --color-warning-10: #E19F1A1A;
-    --color-danger: #FF4D4F;
-    --color-danger-75: #FF4D4FBF;
-    --color-danger-50: #FF4D4F7F;
-    --color-danger-25: #FF4D4F40;
-    --color-danger-10: #FF4D4F1A;
+    --color-warning: #ECA516;
+    --color-warning-75: #ECA516BF;
+    --color-warning-50: #ECA5167F;
+    --color-warning-25: #ECA51640;
+    --color-warning-10: #ECA5161A;
+    --color-danger: #F24446;
+    --color-danger-75: #F24446BF;
+    --color-danger-50: #F244467F;
+    --color-danger-25: #F2444640;
+    --color-danger-10: #F244461A;
     --color-info: #909399;
     --color-info-75: #909399BF;
     --color-info-50: #9093997F;

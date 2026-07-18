@@ -27,6 +27,7 @@ namespace TigerSan.NET8.WebApi.Share
         // Business:
         public DbSet<AssetEntity> Assets { get; set; }
         public DbSet<AssetRecordEntity> AssetRecords { get; set; }
+        public DbSet<InventoryRecordEntity> InventoryRecords { get; set; }
         public DbSet<VehicleEntity> Vehicles { get; set; }
         public DbSet<TransferEntity> Transfers { get; set; }
         // Dictionaries:

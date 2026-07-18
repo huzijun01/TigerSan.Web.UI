@@ -41,4 +41,46 @@ export class ArrayHelper {
     static IsNotEmpty<T>(arr?: T[]) {
         return arr && arr.length > 0
     }
+
+    /** 排序 */
+    static Sort<T extends object>(
+        arr: T[],
+        propName: string,
+        ascending: boolean = true,
+        isBigger?: (a: T, b: T) => boolean
+    ): T[] {
+        const source = arr
+
+        source.sort((a: T, b: T) => {
+            let result: number
+
+            if (isBigger) {
+                if (isBigger(a, b)) {
+                    result = 1
+                } else if (isBigger(b, a)) {
+                    result = -1
+                } else {
+                    result = 0
+                }
+            } else {
+                const valA = (a as any)[propName]
+                const valB = (b as any)[propName]
+
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+
+                if (valA < valB) {
+                    result = -1
+                } else if (valA > valB) {
+                    result = 1
+                } else {
+                    result = 0
+                }
+            }
+
+            return ascending ? result : -result
+        })
+
+        return source
+    }
 }

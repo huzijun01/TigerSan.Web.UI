@@ -1,0 +1,67 @@
+import { IdModel, IdHelper, axiosHelper } from "@/helpers"
+
+/** "资产基类"模型 */
+export class InventoryRecordModel extends IdModel {
+    site = 0n
+    inStore = 0
+    stolid = 0
+    add = 0
+    reduce = 0
+    time = new Date()
+    // 附加:
+    companyName = ''
+    siteName = ''
+}
+
+class InventoryRecordHelper extends IdHelper<InventoryRecordModel> {
+    constructor() {
+        super('InventoryRecord')
+    }
+
+    /** 筛选“总数” */
+    readonly GetCount = async (param: {
+        site?: bigint,
+        company?: bigint,
+    }) => await axiosHelper.GetCount(this._action, {
+        filter: {
+            parent: {
+                id: undefined,
+                parent: {
+                    id: param.company,
+                }
+            },
+            filters: [
+                { propName: 'Site', value: param.site },
+            ],
+        }
+    })
+
+    /** 筛选“数据”集合 */
+    readonly GetList = async (param: {
+        pageSize?: number,
+        pageNumber?: number,
+        sort?: string,
+        ascending?: boolean,
+        site?: bigint,
+        company?: bigint,
+    }) => await axiosHelper.GetList<InventoryRecordModel>(this._action, {
+        strList: 'FullList',
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        sort: param.sort,
+        ascending: param.ascending,
+        filter: {
+            parent: {
+                id: undefined,
+                parent: {
+                    id: param.company,
+                }
+            },
+            filters: [
+                { propName: 'Site', value: param.site },
+            ],
+        }
+    })
+}
+
+export const inventoryRecordHelper = new InventoryRecordHelper()

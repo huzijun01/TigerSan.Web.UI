@@ -37,6 +37,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> CaptchaGenerationFailed { get => new MyActionResult<TData>(ActionResultCode.Error, "Captcha generation failed!"); }
         public static MyActionResult<TData> CaptchaVerificationFailed { get => new MyActionResult<TData>(ActionResultCode.InvalidCaptcha, "Captcha verification failed!"); }
         public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
+        public static MyActionResult<TData> CompanyNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The company do not exist!"); }
         public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
         public static MyActionResult<TData> AssetNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset do not exist!"); }
         public static MyActionResult<TData> TagNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag do not exist!"); }

@@ -4,6 +4,7 @@ import AssetLedgerPage from '@/pages/Home/AssetLedgerPage/AssetLedgerPage.vue'
 import AssetMapPage from '@/pages/Home/AssetMapPage/AssetMapPage.vue'
 import TransferPage from '@/pages/Home/TransferPage/TransferPage.vue'
 import VehiclePage from '@/pages/Home/VehiclePage/VehiclePage.vue'
+import InventoryRecordPage from '@/pages/Home/InventoryRecordPage/InventoryRecordPage.vue'
 
 export const navHome: NavFolderConfig = {
     Folders: [
@@ -33,11 +34,11 @@ export const navHome: NavFolderConfig = {
                 },
                 {
                     Key: "资产盘点",
-                    Title: TextModel.Computed('Asset Check', "资产盘点"),
+                    Title: TextModel.Computed('Asset Inventory', "资产盘点"),
                     Icon: Icons.Log,
                     IsSelected: false,
-                    _component: undefined,
-                    _authority: Authorities.AssetCheckPage,
+                    _component: InventoryRecordPage,
+                    _authority: Authorities.AssetInventoryPage,
                 },
                 {
                     Key: "资产调拨",

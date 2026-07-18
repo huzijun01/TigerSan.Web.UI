@@ -27,10 +27,22 @@ export class DatePickerModel {
     //#endregion 【Fields】
 
     //#region 【Properties】
+    /** 宽度 */
+    readonly Width = ref('')
+    /** 是否显示“前缀” */
+    readonly IsShowPrefix = ref(true)
     /** 日期 */
     readonly Date = ref<string | [string, string] | undefined>()
 
     //#region [computed]
+    /** 根样式 */
+    readonly RootStyle = computed(() => {
+        return {
+            '--width': this.Width.value,
+            '--prefix-display': this.IsShowPrefix.value ? '' : 'none',
+        }
+    })
+
     /** 起始日期 */
     readonly Start = computed(() => {
         const date = this.Date.value
