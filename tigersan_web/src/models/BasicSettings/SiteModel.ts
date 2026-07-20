@@ -68,11 +68,11 @@ class SiteHelper extends IdNameHelper<SiteModel> {
     }
 
     /** 根据“公司”获取“ID名称对”集合 */
-    readonly SelectIdNameByCompanyAsync = async (company?: bigint) => {
-        if (!company) return []
+    readonly SelectIdNameByCompanyAsync = async (company?: bigint, companies?: bigint[]) => {
+        if (!company && !companies) return []
         return await this.GetIdNames({
             filter: {
-                filters: [{ propName: 'Company', value: company }]
+                filters: [{ propName: 'Company', value: company, values: companies }]
             }
         })
     }

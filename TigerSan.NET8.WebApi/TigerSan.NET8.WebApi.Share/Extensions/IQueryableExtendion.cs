@@ -412,18 +412,13 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             DbSetConfig config,
             ParentFilter parentFilter)
         {
-            // 添加单值:
-            if (parentFilter.Id != null)
+            if (parentFilter.Id != null || parentFilter.Ids != null) // 无需向上筛选
             {
-                if (parentFilter.Ids == null)
-                {
-                    parentFilter.Ids = new List<long>();
-                }
-                parentFilter.Ids.Add(parentFilter.Id.Value);
+                var ids = new List<long>();
+                if (parentFilter.Id != null) ids.Add(parentFilter.Id.Value);
+                if (parentFilter.Ids != null) ids.AddRange(parentFilter.Ids);
+                return MyResults<List<long>>.Success(null, ids);
             }
-
-            if (parentFilter.Ids != null && parentFilter.Ids.Count > 0) // 无需向上筛选
-                return MyResults<List<long>>.Success(null, parentFilter.Ids);
             else if (parentFilter.Parent == null || config.Parent == null) // 已到顶级
                 return MyResults<List<long>>.Success(null, null);
 

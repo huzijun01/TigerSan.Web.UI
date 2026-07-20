@@ -1,10 +1,11 @@
-import { PaginationModel, TableModel, ItemType, loading, ArrayHelper, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, Texts } from '@/0_tigersan_ui/tigerui'
+import { PaginationModel, TableModel, ItemType, loading, ArrayHelper, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, Texts, WatchBehavior } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, siteHelper, inventoryRecordHelper, InventoryRecordModel } from '@/models'
+import { CompanyMgtForm } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm'
 
 export class InventoryRecordPageModel {
     //#region 【Fields】
-    /** “公司”选择框 */
-    readonly selectCompany = companyHelper.GetIdNameSelectModel()
+    /** “可访问公司”监听器 */
+    readonly watchAccessibleCompanies
     /** “场地”选择框 */
     readonly selectSite = siteHelper.GetIdNameSelectModel()
 
@@ -62,6 +63,8 @@ export class InventoryRecordPageModel {
 
     //#region 【Ctor】
     constructor() {
+        this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtForm.AccessibleCompanies, this.Refresh)
+
         this.table._onInitHeaderModels = () => {
             this.table.SetSlotHeader('time', false)
         }
@@ -69,9 +72,8 @@ export class InventoryRecordPageModel {
         this.pagination.IsShowSelectedRowCount.value = true
         this.table._onSlotChange = this.Refresh
         this.pagination._onChange = this.Refresh
-        this.selectCompany._onChange = this.Refresh
         this.selectSite._onChange = this.Refresh
-        this.selectSite._getItemsAsync = async () => await siteHelper.SelectIdNameByCompanyAsync(this.selectCompany.Value.value?.id)
+        this.selectSite._getItemsAsync = async () => await siteHelper.SelectIdNameByCompanyAsync(undefined, CompanyMgtForm.AccessibleCompanies.value)
     }
     //#endregion 【Ctor】
 
@@ -82,11 +84,10 @@ export class InventoryRecordPageModel {
             loading.IsShow.value = true
 
             await companyHelper.UpdateIdNames()
-            await this.selectCompany.UpdateItemsAsync()
             await this.selectSite.UpdateItemsAsync()
 
             this.pagination.Count.value = await inventoryRecordHelper.GetCount({
-                company: this.selectCompany.Value.value?.id,
+                companies: CompanyMgtForm.AccessibleCompanies.value,
                 site: this.selectSite.Value.value?.id,
             })
             await inventoryRecordHelper.GetList({
@@ -94,7 +95,7 @@ export class InventoryRecordPageModel {
                 pageNumber: this.pagination.SelectedNum.value,
                 sort: this.table.SlotHeader.value?._propName,
                 ascending: this.table.IsAscending.value,
-                company: this.selectCompany.Value.value?.id,
+                companies: CompanyMgtForm.AccessibleCompanies.value,
                 site: this.selectSite.Value.value?.id,
             }).then(arr => {
                 ArrayHelper.Set(this.table.RowDatas, arr)

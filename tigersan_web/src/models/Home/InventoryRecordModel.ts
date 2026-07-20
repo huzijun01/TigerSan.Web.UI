@@ -1,3 +1,4 @@
+import { ArrayHelper } from "@/0_tigersan_ui/tigerui"
 import { IdModel, IdHelper, axiosHelper } from "@/helpers"
 
 /** "资产基类"模型 */
@@ -22,19 +23,24 @@ class InventoryRecordHelper extends IdHelper<InventoryRecordModel> {
     readonly GetCount = async (param: {
         site?: bigint,
         company?: bigint,
-    }) => await axiosHelper.GetCount(this._action, {
-        filter: {
-            parent: {
-                id: undefined,
+        companies?: bigint[],
+    }) => {
+        if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
+        return await axiosHelper.GetCount(this._action, {
+            filter: {
                 parent: {
-                    id: param.company,
-                }
-            },
-            filters: [
-                { propName: 'Site', value: param.site },
-            ],
-        }
-    })
+                    id: undefined,
+                    parent: {
+                        id: param.company,
+                        ids: param.companies,
+                    },
+                },
+                filters: [
+                    { propName: 'Site', value: param.site },
+                ],
+            }
+        })
+    }
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -44,24 +50,29 @@ class InventoryRecordHelper extends IdHelper<InventoryRecordModel> {
         ascending?: boolean,
         site?: bigint,
         company?: bigint,
-    }) => await axiosHelper.GetList<InventoryRecordModel>(this._action, {
-        strList: 'FullList',
-        pageSize: param.pageSize,
-        pageNumber: param.pageNumber,
-        sort: param.sort,
-        ascending: param.ascending,
-        filter: {
-            parent: {
-                id: undefined,
+        companies?: bigint[],
+    }) => {
+        if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
+        return await axiosHelper.GetList<InventoryRecordModel>(this._action, {
+            strList: 'FullList',
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            sort: param.sort,
+            ascending: param.ascending,
+            filter: {
                 parent: {
-                    id: param.company,
-                }
-            },
-            filters: [
-                { propName: 'Site', value: param.site },
-            ],
-        }
-    })
+                    id: undefined,
+                    parent: {
+                        id: param.company,
+                        ids: param.companies,
+                    },
+                },
+                filters: [
+                    { propName: 'Site', value: param.site },
+                ],
+            }
+        })
+    }
 }
 
 export const inventoryRecordHelper = new InventoryRecordHelper()

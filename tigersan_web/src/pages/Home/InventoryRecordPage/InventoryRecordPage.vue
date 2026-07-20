@@ -5,7 +5,6 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="model.selectCompany" />
                         <Select :model="model.selectSite" />
                     </div>
                 </div>
@@ -30,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { Texts, Table, PageCard, Pagination, Select } from '@/0_tigersan_ui/tigerui'
 import { InventoryRecordPageModel } from './InventoryRecordPageModel'
 
@@ -48,6 +47,11 @@ const { IsOnlySelected } = model.table
 // 【过程】:
 onMounted(() => {
     model.Refresh()
+    model.watchAccessibleCompanies.Start()
+})
+
+onUnmounted(() => {
+    model.watchAccessibleCompanies.Stop()
 })
 
 // 【方法】:
