@@ -283,7 +283,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         (dto.LastRecord == null
                         || dto.CalculationTime == null
                         || dto.LastRecord != lastRecord.Id
-                        || (DateTimeHelper.GetUtcNow() - dto.CalculationTime.Value).TotalSeconds > Constants.CalculationIntervalSeconds)
+                        || (DateTimeHelper.GetUtcNow() - dto.CalculationTime.Value).TotalSeconds > GlobalSettings.CalculationIntervalSeconds)
                         || lastRecord == null && dto.LastRecord != null)
                     {
                         dto.CalculationTime = DateTimeHelper.GetUtcNow();

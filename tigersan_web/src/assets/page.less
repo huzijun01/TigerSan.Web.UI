@@ -1,19 +1,4 @@
-@import '../0_tigersan_ui/src/assets/styles/panels.less';
-
 @Gap: 10px;
-
-.child-margin-bottom {
-    &>div:not(:last-child) {
-        margin-bottom: @Gap;
-    }
-
-}
-
-.child-margin-right {
-    &>:not(:last-child) {
-        margin-right: @Gap;
-    }
-}
 
 .table-page {
     display: flex;
@@ -63,5 +48,43 @@
         // 显示:
         .flex-right();
         .child-margin-right();
+    }
+}
+
+// 左对齐
+.flex-left {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+
+    &>* {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
+// 右对齐
+.flex-right {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+
+    &>* {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
+.child-margin-bottom {
+    &>div:not(:last-child) {
+        margin-bottom: @Gap;
+    }
+}
+
+.child-margin-right {
+    &>:not(:last-child) {
+        margin-right: @Gap;
     }
 }

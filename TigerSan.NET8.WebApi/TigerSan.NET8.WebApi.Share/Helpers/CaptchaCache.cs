@@ -18,7 +18,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         /// <summary>初始化“验证码”</summary>
         public static void InitCaptcha(string id, string code)
         {
-            MemoryCacheHelper.SetRelative(id, code, Constants.CaptchaValidityPeriod);
+            MemoryCacheHelper.SetRelative(id, code, GlobalSettings.CaptchaValidityPeriod);
         }
         #endregion
 

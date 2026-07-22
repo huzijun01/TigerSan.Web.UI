@@ -84,7 +84,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 || newTag.Latitude == null) return false;
             var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
             var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
-            return p1.Haversine(p2) > Constants.DistanceThresholdMeters;
+            return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
         }
         #endregion
 
@@ -98,7 +98,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 || newTag.Latitude == null) return false;
             var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
             var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
-            return p1.Haversine(p2) > Constants.DistanceThresholdMeters;
+            return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
         }
         #endregion
 
@@ -1018,7 +1018,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
 
                         newRecord.State = (DateTimeHelper.GetUtcNow() - lastInboundRecord.ReportTime).TotalHours
-                            > Constants.StolidThresholdHours
+                            > GlobalSettings.StolidThresholdHours
                             ? AssetStates.Stolid : AssetStates.InStore;
                     }
                     #endregion
@@ -1106,7 +1106,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         LogHelper.Instance.Warning("Inbound record not found for asset in store!");
                     }
-                    else if ((DateTimeHelper.GetUtcNow() - lastInbound.ReportTime).TotalHours > Constants.StolidThresholdHours)
+                    else if ((DateTimeHelper.GetUtcNow() - lastInbound.ReportTime).TotalHours > GlobalSettings.StolidThresholdHours)
                     {
                         var stolid = new AssetRecordEntity();
                         stolid.ShallowCopy(lastRecord);
@@ -1125,7 +1125,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         LogHelper.Instance.Warning("Outbound record not found for asset in transit!");
                     }
-                    else if ((DateTimeHelper.GetUtcNow() - lastOutbound.ReportTime).TotalHours > Constants.TimeoutThresholdHours)
+                    else if ((DateTimeHelper.GetUtcNow() - lastOutbound.ReportTime).TotalHours > GlobalSettings.TimeoutThresholdHours)
                     {
                         var timeout = new AssetRecordEntity();
                         timeout.ShallowCopy(lastRecord);

@@ -211,11 +211,11 @@ export class AssetHelper extends IdHelper<AssetModel> {
 
     /** 入库 */
     readonly Inbound = async (ids: number[] | bigint[]) =>
-        await axiosHelper.Put(`${this._action}/Inbound`, ids)
+        await axiosHelper.Put(`${this._action}/Inbound`, undefined, ids)
 
     /** 出库 */
     readonly Outbound = async (site: bigint, ids: number[] | bigint[]) =>
-        await axiosHelper.Put(`${this._action}/Outbound/${site.toString()}`, ids)
+        await axiosHelper.Put(`${this._action}/Outbound/${site.toString()}`, undefined, ids)
 }
 
 export const assetHelper = new AssetHelper()

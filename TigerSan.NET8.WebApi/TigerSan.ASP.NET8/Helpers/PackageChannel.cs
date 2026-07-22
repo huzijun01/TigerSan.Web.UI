@@ -22,7 +22,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         /// <summary>服务提供者</summary>
         private IServiceProvider _serviceProvider;
         /// <summary>“在线状态”更新定时器</summary>
-        public ActionTimer _onlineStateUpdater = new ActionTimer(Constants.OnlineStateUpdater_IntervalSeconds * 1000, true);
+        public ActionTimer _onlineStateUpdater = new ActionTimer(GlobalSettings.OnlineStateUpdater_IntervalSeconds * 1000, true);
         #endregion 【Fields】
 
         #region 【Properties】
@@ -282,7 +282,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             var wifiList = package.Data.WifiScan.Select(i => new WifiInfo(i.MacAddr, i.Signal)).ToArray();
             if (wifiList.Length > 2)
             {
-                var resGetLocationByWiFi = await MapHelper.GetLocationByWifiAsync(Constants.AMapKey, wifiList);
+                var resGetLocationByWiFi = await MapHelper.GetLocationByWifiAsync(GlobalSettings.AMapKey, wifiList);
                 location = resGetLocationByWiFi.Data;
                 if (location == null)
                 {
@@ -296,7 +296,7 @@ namespace TigerSan.NET8.WebApi.Helpers
 
             if (location == null)
             {
-                var resGetLocationByCell = await MapHelper.GetLocationByCellTowersAsync(Constants.AMapKey, package.Data.SCell, package.Data.NCell);
+                var resGetLocationByCell = await MapHelper.GetLocationByCellTowersAsync(GlobalSettings.AMapKey, package.Data.SCell, package.Data.NCell);
                 location = resGetLocationByCell.Data;
                 if (location == null)
                 {
@@ -315,7 +315,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             #region 获取“地址”
             if (newTag.Longitude != null && newTag.Latitude != null)
             {
-                var resGetAddress = await MapHelper.GetAddressByLocation(newTag.Longitude.Value, newTag.Latitude.Value, Constants.AMapKey);
+                var resGetAddress = await MapHelper.GetAddressByLocation(newTag.Longitude.Value, newTag.Latitude.Value, GlobalSettings.AMapKey);
                 var address = resGetAddress.Data;
                 if (address == null)
                 {

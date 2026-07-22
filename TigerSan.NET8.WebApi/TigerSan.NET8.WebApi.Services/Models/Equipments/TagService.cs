@@ -599,13 +599,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var tagTimeOuts = await _dbSet
                     .Where(i => i.OnlineState == OnlineStates.Online && i.ReportTime != null
                     && i.EqpType == EqpTypes.Tag
-                    && i.ReportTime.Value.AddSeconds(Constants.TagReportIntervalSeconds) < now)
+                    && i.ReportTime.Value.AddSeconds(GlobalSettings.TagReportIntervalSeconds) < now)
                     .ToListAsync();
 
                 var locatorTimeOuts = await _dbSet
                     .Where(i => i.OnlineState == OnlineStates.Online && i.ReportTime != null
                     && i.EqpType == EqpTypes.Locator
-                    && i.ReportTime.Value.AddSeconds(Constants.LocatorReportIntervalSeconds) < now)
+                    && i.ReportTime.Value.AddSeconds(GlobalSettings.LocatorReportIntervalSeconds) < now)
                     .ToListAsync();
 
                 foreach (var timeOut in tagTimeOuts)

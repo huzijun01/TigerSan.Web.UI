@@ -9,14 +9,14 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         /// <summary>初始化“Token”</summary>
         public static bool InitToken(UserInfo userInfo)
         {
-            userInfo.Token = TokenGenerator.GetToken(userInfo.Username, Constants.TokenValidityPeriod, Constants.SecretKey);
+            userInfo.Token = TokenGenerator.GetToken(userInfo.Username, GlobalSettings.TokenValidityPeriod, GlobalSettings.SecretKey);
             if (userInfo.Token == null)
             {
                 LogHelper.Instance.Error($"Failed to generate token for user {userInfo.Username}");
                 return false;
             }
 
-            MemoryCacheHelper.SetRelative(userInfo.Username, userInfo.Token, Constants.TokenValidityPeriod);
+            MemoryCacheHelper.SetRelative(userInfo.Username, userInfo.Token, GlobalSettings.TokenValidityPeriod);
 
             return true;
         }
@@ -27,7 +27,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         public static MyActionResult<TokenInfo> GetTokenInfo(string token)
         {
             // 获取“Token信息”:
-            var tokenInfo = TokenGenerator.GetTokenInfo(token, Constants.SecretKey);
+            var tokenInfo = TokenGenerator.GetTokenInfo(token, GlobalSettings.SecretKey);
             if (tokenInfo == null)
                 return MyResults<TokenInfo>.InvalidOrExpiredToken;
 

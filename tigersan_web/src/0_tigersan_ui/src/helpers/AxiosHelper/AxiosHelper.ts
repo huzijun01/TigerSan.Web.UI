@@ -7,10 +7,13 @@ import { MyActionResult } from "../../models/MyActionResult"
 import { IdNameModel, IdValueModel } from "../../models/SelectModel"
 
 export class AxiosHelper extends AxiosBase {
+    //#region 【Ctor】
     constructor(baseURL: string) {
         super(baseURL)
     }
+    //#endregion 【Ctor】
 
+    //#region 【Functions】
     // 列表:
     readonly GetCount = async (
         action: string,
@@ -135,7 +138,10 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    readonly Add = async <TData>(action: string, data: TData, isRange: boolean = false): Promise<MyActionResult<TData>> => {
+    readonly Add = async <TData>(
+        action: string,
+        data: TData,
+        isRange: boolean = false): Promise<MyActionResult<TData>> => {
         try {
             const range = isRange ? '/Range' : ''
             const actionResult = await this.Post<TData>(`${action}${range}`, undefined, data)
@@ -173,4 +179,5 @@ export class AxiosHelper extends AxiosBase {
     //         return []
     //     }
     // }
+    //#endregion 【Functions】
 }

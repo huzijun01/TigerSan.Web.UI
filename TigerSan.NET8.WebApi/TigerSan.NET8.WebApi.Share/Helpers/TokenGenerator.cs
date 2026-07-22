@@ -10,7 +10,7 @@ using TigerSan.NET8.WebApi.Share;
 public class TokenInfo
 {
     public string Username { get; set; } = string.Empty;
-    public TimeSpan Expiration { get; set; } = Constants.TokenValidityPeriod;
+    public TimeSpan Expiration { get; set; } = GlobalSettings.TokenValidityPeriod;
 }
 #endregion
 

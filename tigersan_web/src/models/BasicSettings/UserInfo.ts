@@ -43,7 +43,7 @@ export class UserHelper {
     /** 登录 */
     static readonly GetCaptcha = async () => await axiosHelper.Post<CaptchaData>(`${this._action}/Captcha`)
     /** 修改“密码” */
-    static readonly EditPassword = async (edit: PasswordEditModel) => await axiosHelper.Put(`${this._action}/Password`, edit)
+    static readonly EditPassword = async (edit: PasswordEditModel) => await axiosHelper.Put(`${this._action}/Password`, undefined, edit)
     /** 登录 */
     static readonly LoginAsync = async (id: string, captcha: string, search: string, password: string) =>
         await axiosHelper.Get<UserInfo>(`${this._action}/Login`, [{ key: 'id', value: id }, { key: 'captcha', value: captcha }, { key: 'search', value: search }, { key: 'password', value: password }])

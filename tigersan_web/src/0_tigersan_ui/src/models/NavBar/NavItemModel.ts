@@ -1,10 +1,10 @@
 import { computed, ref } from "vue"
 import { nanoid } from 'nanoid'
 import { Icons } from "../../base"
-import { NavBarModel } from './NavBarModel'
-import { AuthorityVerify } from "../Authority/AuthorityVerify"
-import { LanguageBehavior } from "../../helpers"
 import { Texts } from "../../texts"
+import { NavBarModel } from './NavBarModel'
+import { LanguageBehavior } from "../../helpers"
+import { AuthorityVerify } from "../Authority/AuthorityVerify"
 
 export class NavItemModel {
     //#region 【Fields】

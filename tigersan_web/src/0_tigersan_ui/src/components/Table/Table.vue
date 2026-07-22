@@ -1,5 +1,5 @@
 <template>
-    <div class="table-panel" :class="model.FillClass.value">
+    <div class="table-panel" :class="model.RootClass.value">
         <table>
             <!-- 表头区域 -->
             <thead :style="bgStyle">
@@ -32,12 +32,14 @@
                 </tr>
             </tbody>
         </table>
+        <Loading v-if="model.IsLoading.value" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import TableItem from './TableItem.vue'
 import TableHeader from './TableHeader.vue'
+import Loading from '../Dialog/Loading.vue'
 import { onMounted, onUnmounted, type StyleValue } from 'vue'
 import { TableModel } from '../../models'
 
@@ -88,8 +90,19 @@ onUnmounted(() => {
 }
 
 .table-panel {
+    position: relative;
     overflow: auto;
     flex-grow: 1;
+
+    &.loading {
+        overflow: hidden;
+    }
+
+    .loading {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
 
     &.fill table {
         width: 100%;

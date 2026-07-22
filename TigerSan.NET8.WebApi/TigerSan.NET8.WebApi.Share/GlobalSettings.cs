@@ -1,7 +1,13 @@
 ﻿namespace TigerSan.NET8.WebApi.Share
 {
-    public static class Constants
+    public static class GlobalSettings
     {
+        /// <summary>“文件”文件夹</summary>
+        public static string DirFiles = Path.Combine(AppContext.BaseDirectory, "Files");
+        /// <summary>“文件”最大大小（MB）</summary>
+        public static long MaxFileSize = 200;
+        /// <summary>“图片”最大大小（MB）</summary>
+        public static long MaxImageSize = 1;
         /// <summary>“距离”阈值（米）</summary>
         public static double DistanceThresholdMeters = 500;
         /// <summary>“滞留”阈值（时）</summary>

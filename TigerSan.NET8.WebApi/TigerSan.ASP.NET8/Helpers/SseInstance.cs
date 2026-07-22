@@ -28,7 +28,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         {
             _instance = this;
             _packageChannel = new PackageChannel(serviceProvider);
-            _watchDog = new WatchDog(Constants.MqttReportIntervalSeconds * 1000, Start);
+            _watchDog = new WatchDog(GlobalSettings.MqttReportIntervalSeconds * 1000, Start);
         }
         #endregion
 

@@ -64,6 +64,7 @@ namespace TigerSan.NET8.WebApi.Extensions
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IAuthorityService, AuthorityService>();
             services.AddTransient<ICompanyService, CompanyService>();
+            services.AddTransient<IFileService, FileService>();
             services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IRoleService, RoleService>();

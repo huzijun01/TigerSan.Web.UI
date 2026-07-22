@@ -100,9 +100,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [查]
         #region 获取“用户信息”
-        /// <summary>获取“用户信息”</summary>
-        /// <param name="search">用户名/电话/邮箱</param>
-        /// <returns>用户信息</returns>
         public async Task<MyActionResult<UserInfo>> GetUserInfo(string search)
         {
             var res = MyResults<UserInfo>.OperationSuccess;
@@ -149,7 +146,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [改]
         #region 修改“密码”
-        /// <summary>修改“密码”</summary>
         public async Task<MyActionResult<object>> EditPassword(PasswordEdit edit)
         {
             var res = MyResults<object>.OperationSuccess;
@@ -200,10 +196,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [登录]
         #region 登录
-        /// <summary>登录</summary>
-        /// <param name="search">用户名/电话/邮箱</param>
-        /// <param name="password">密码</param>
-        /// <returns>用户信息</returns>
         public async Task<MyActionResult<UserInfo>> Login(
             string id,
             string captcha,
@@ -296,7 +288,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 登出
-        /// <summary>登出</summary>
         public async Task<MyActionResult<object>> Logout(string username)
         {
             try

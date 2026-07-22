@@ -1,5 +1,5 @@
 import { Texts } from "../texts"
-import { Colors } from "../base"
+import { Colors, Icons } from "../base"
 import { TableItemModel } from "../models"
 import { SelectModel } from "./Inputs/SelectModel"
 import { ObjectHelper } from "../helpers/ObjectHelper"
@@ -244,6 +244,44 @@ export class Gender {
             } else {
                 itemModel.Color.value = Colors.PinkPurple
                 itemModel.Background.value = Colors.PinkPurple10
+            }
+        }
+    }
+}
+
+export class FileType {
+    static ToString(isDir?: boolean) {
+        if (isDir === undefined || isDir === null) return ''
+        return isDir ? Texts.DIR.value : Texts.File.value
+    }
+
+    static ToIcon(value?: boolean) {
+        return value ? Icons.Folder_Linear : Icons.File_Linear
+    }
+
+    static GetString(obj: object, propName: string = 'isDir'): string {
+        return FileType.ToString(ObjectHelper.DefaultTGetter(obj, propName, false))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.Placeholder.value = Texts.FileType
+        select.SetItems([true, false])
+        select._converter = FileType.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isDir') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Brand
+                itemModel.Background.value = Colors.Brand10
             }
         }
     }

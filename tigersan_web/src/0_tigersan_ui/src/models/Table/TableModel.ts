@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid'
 import { ref, watch, computed, toRaw, shallowRef, shallowReactive, type StyleValue, type ComputedRef, type ShallowReactive } from "vue"
 import { Colors, Theme } from '../../base'
+import { TextModel } from '../Text/TextModel'
 import { SelectModel } from '../Inputs/SelectModel'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync, TGetter } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase, SizeBehavior, LanguageBehavior, WatchBehavior, config } from '../../helpers'
-import { TextModel } from '../Text/TextModel'
 
 export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
 export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
@@ -68,6 +68,8 @@ export class TableModel<TSource extends object> {
     readonly RowModels: ShallowReactive<TableRowModel<TSource>[]> = shallowReactive([])
     /** 是否“填充父容器” */
     readonly IsFill = ref(true)
+    /** 是否“正在加载” */
+    readonly IsLoading = ref(false)
     /** 是否“全选” */
     readonly IsSelectAll = ref(false)
     /** 是否“显示复选框” */
@@ -95,8 +97,13 @@ export class TableModel<TSource extends object> {
     readonly SelectedRowDatas = computed(() => this.RowModels.filter(r => r.IsChecked.value).map(r => r._rowData))
     /** “复选框模型”集合 */
     readonly CheckboxModels = computed(() => this.RowModels.map(i => new CheckboxBehaviorModel(i, i.IsChecked)))
-    /** “填充”类名 */
-    readonly FillClass = computed(() => { return { fill: this.IsFill.value } })
+    /** “根元素”类名 */
+    readonly RootClass = computed(() => {
+        return {
+            fill: this.IsFill.value,
+            loading: this.IsLoading.value,
+        }
+    })
     /** 是否“已选中” */
     readonly IsSelected = computed(() => this.SelectedRowDatas.value.length > 0)
     /** 是否“已单选” */

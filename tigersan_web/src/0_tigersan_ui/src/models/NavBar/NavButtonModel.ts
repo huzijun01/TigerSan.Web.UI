@@ -1,4 +1,5 @@
 import { computed, ref, watch, type Component } from 'vue'
+import { Icons } from '../../base'
 import { NavBarModel } from './NavBarModel'
 import { NavItemModel } from './NavItemModel'
 import { NavFolderModel } from './NavFolderModel'
@@ -43,6 +44,7 @@ export class NavButtonModel extends NavItemModel {
     ) {
         super(navModel)
         this._component = component
+        this.Icon.value = Icons.File_Linear
         this.ParentFolderModel = parentFolderModel
         watch(this.IsSelected, () => { this.IsSelectedChanged?.(this) })
     }

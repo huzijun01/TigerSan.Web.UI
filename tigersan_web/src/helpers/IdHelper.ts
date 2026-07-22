@@ -46,9 +46,9 @@ export class IdHelper<TModel extends IdModel> {
 
     // 改:
     readonly Edit = async (source: TModel) =>
-        await axiosHelper.Put(this._action, source)
+        await axiosHelper.Put(this._action, undefined, source)
     readonly EditRange = async (sources: TModel[]) =>
-        await axiosHelper.Put(this._action, sources, undefined, true)
+        await axiosHelper.Put(this._action, undefined, sources, true)
 
     // 删:
     readonly Delete = async (id: number | bigint) =>

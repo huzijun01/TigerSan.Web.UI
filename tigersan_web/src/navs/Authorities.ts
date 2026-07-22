@@ -36,6 +36,7 @@ export class Authorities {
     static SystemSettingsPage = authorityHelper.GetAuthority()
     static EqpSettings = authorityHelper.GetAuthority()
     static AlarmMgtPage = authorityHelper.GetAuthority()
+    static FileMgtPage = authorityHelper.GetAuthority()
     /** 资产管理 */
     static AssetMgtFolder = authorityHelper.GetAuthority()
     static AssetLedgerPage = authorityHelper.GetAuthority()

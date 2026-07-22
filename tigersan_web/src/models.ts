@@ -13,6 +13,7 @@ export * from '@/models/BasicSettings/PersonModel'
 export * from '@/models/BasicSettings/RoleModel'
 export * from '@/models/BasicSettings/SiteModel'
 export * from '@/models/BasicSettings/UserInfo'
+export * from '@/models/BasicSettings/FileModel'
 // Dictionaries:
 export * from '@/models/Dictionaries/DictionaryModels'
 // Equipments:

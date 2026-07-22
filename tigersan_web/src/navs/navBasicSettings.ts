@@ -26,6 +26,7 @@ import OperationRecordPage from '@/pages/BasicSettings/OperationMgt/OperationRec
 import OperationRetryPage from '@/pages/BasicSettings/OperationMgt/OperationRetryPage/OperationRetryPage.vue'
 // SystemSettings:
 import SystemSettingsPage from '@/pages/BasicSettings/SystemSettings/SystemSettingsPage/SystemSettingsPage.vue'
+import FileMgtPage from '@/pages/BasicSettings/SystemSettings/FileMgtPage/FileMgtPage.vue'
 import { Authorities } from './Authorities'
 
 export const navBasicSettings: NavFolderConfig = {
@@ -251,6 +252,14 @@ export const navBasicSettings: NavFolderConfig = {
                     IsSelected: false,
                     _component: undefined,
                     _authority: Authorities.AlarmMgtPage,
+                },
+                {
+                    Key: "文件管理",
+                    Title: TextModel.Computed('File Mgt', "文件管理"),
+                    Icon: Icons.File_Linear,
+                    IsSelected: false,
+                    _component: FileMgtPage,
+                    _authority: Authorities.FileMgtPage,
                 },
             ]
         },

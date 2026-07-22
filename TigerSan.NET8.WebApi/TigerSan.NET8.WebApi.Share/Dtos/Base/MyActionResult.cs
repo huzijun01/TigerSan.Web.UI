@@ -44,6 +44,11 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> TagNotBoundAsset { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag is not bound to a asset!"); }
         public static MyActionResult<TData> IncorrectTagType { get => new MyActionResult<TData>(ActionResultCode.Error, "Incorrect tag type!"); }
         public static MyActionResult<TData> AccessibleCompaniesCannotBeNull { get => new MyActionResult<TData>(ActionResultCode.Error, "The AccessibleCompanies cannot be null!"); }
+        public static MyActionResult<TData> UnsupportedFileType { get => new MyActionResult<TData>(ActionResultCode.Error, "Unsupported file type!"); }
+        public static MyActionResult<TData> DirAlreadyExists { get => new MyActionResult<TData>(ActionResultCode.Error, $"The directory already exists!"); }
+        public static MyActionResult<TData> FileAlreadyExists { get => new MyActionResult<TData>(ActionResultCode.Error, $"The file already exists!"); }
+        public static MyActionResult<TData> NameCannotBeEmpty { get => new MyActionResult<TData>(ActionResultCode.Error, $"The name cannot be empty!"); }
+        public static MyActionResult<TData> FileIsNullOrEmpty { get => new MyActionResult<TData>(ActionResultCode.Error, $"The file is null or empty!"); }
         public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Authorization header is missing!"); }
         public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Invalid or expired token!"); }
         public static MyActionResult<TData> LoggedInByAnotherUser { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Account logged in by others!"); }
@@ -56,6 +61,10 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> InvalidToken(string msg) { return new MyActionResult<TData>(ActionResultCode.InvalidToken, msg); }
         public static MyActionResult<TData> IsNull(string name) { return new MyActionResult<TData>(ActionResultCode.Error, $"The {name} is null!"); }
         public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
+        public static Func<long, MyActionResult<TData>> FileSizeExceedsLimit = size => new MyActionResult<TData>(ActionResultCode.Error, $"File size exceeds the limit! ({size}MB)");
+        public static Func<string?, MyActionResult<TData>> DirIsNotEmpty = path => new MyActionResult<TData>(ActionResultCode.Error, $"The directory is not empty!({path})");
+        public static Func<string?, MyActionResult<TData>> InvalidPath = path => new MyActionResult<TData>(ActionResultCode.Error, $"The path is invalid!({path})");
+        public static Func<string?, MyActionResult<TData>> PathDoesNotExist = path => new MyActionResult<TData>(ActionResultCode.Error, $"The path does not exist!({path})");
         public static Func<string, MyActionResult<TData>> TagNotFound = tagId => new MyActionResult<TData>(ActionResultCode.Error, $"The tag not found! ({tagId})");
         public static Func<string, MyActionResult<TData>> AssetNoSite = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset have no site! ({assetId})");
         public static Func<string, MyActionResult<TData>> TargetSameToSite = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The target cannot be the same as the site! ({assetId})");
@@ -76,18 +85,18 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
     public class MyActionResult<TData>
     {
         #region 【Properties】
-        public bool IsSuccess { get => Code == ActionResultCode.Success; }
-        public bool IsWarning { get => Code == ActionResultCode.Warning; }
-        public bool IsError { get => Code == ActionResultCode.Error; }
-        #endregion 【Properties】
-
-        #region 【Properties】
         /// <summary>结果码</summary>
         public ActionResultCode Code { get; set; } = ActionResultCode.Success;
         /// <summary>信息</summary>
         public string Message { get; set; } = string.Empty;
         /// <summary>数据</summary>
         public TData? Data { get; set; }
+
+        #region [引用]
+        public bool IsSuccess { get => Code == ActionResultCode.Success; }
+        public bool IsWarning { get => Code == ActionResultCode.Warning; }
+        public bool IsError { get => Code == ActionResultCode.Error; }
+        #endregion [引用]
         #endregion 【Properties】
 
         #region 【Ctor】
@@ -109,7 +118,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         }
         #endregion 【Ctor】
 
-        #region 【Functions
+        #region 【Functions】
         #region 转换
         public MyActionResult<TData1> Convert<TData1>()
         {
