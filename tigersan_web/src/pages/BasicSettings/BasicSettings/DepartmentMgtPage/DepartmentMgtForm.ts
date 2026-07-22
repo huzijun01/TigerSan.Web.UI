@@ -9,6 +9,7 @@ export class DepartmentMgtForm {
     readonly selectCompany = companyHelper.GetIdNameSelectModel()
     /** “公司”选择（表单） */
     readonly selectCompanyForm = companyHelper.GetIdNameSelectModel()
+
     /** 分页器 */
     readonly pagination = new PaginationModel()
 

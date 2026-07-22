@@ -39,10 +39,9 @@ export class DictionaryModel {
         PropText: Texts.Company,
         IsEquired: true,
         Target: this.selectCompanyForm.Value,
-        _getValue: async (obj, propName) => this.selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, obj.company)),
-        _setValue: (obj, propName, value) => {
-            obj.company = value ? value.id : undefined
-        }
+        _getValue: source => this.selectCompanyForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.company)),
+        _setValue: (source, propName, value) => source.company = value && value.id != undefined ? value.id : 0n,
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.company, 0n, Texts.CannotBeEmpty.value)
     }
 
     /** 表单配置 */
