@@ -214,8 +214,8 @@ export const navBasicSettings: NavFolderConfig = {
                     _authority: Authorities.StationType,
                 },
                 {
-                    Key: "场景类型",
-                    Title: Texts.SiteType,
+                    Key: "场景",
+                    Title: Texts.Scenario,
                     Icon: Icons.Product,
                     IsSelected: false,
                     _component: ScenarioMgtPage,

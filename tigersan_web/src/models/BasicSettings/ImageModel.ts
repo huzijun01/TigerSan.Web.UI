@@ -1,11 +1,10 @@
 import { axiosHelper } from "@/helpers"
-import { Settings } from "@/settings"
 import { FileInfo } from "./FileModel"
 import { MyActionResult, UploadModel } from "@/0_tigersan_ui/tigerui"
 
 class ImageModelHelper {
     /** 基础URL */
-    static readonly _baseUrl = Settings.AppBaseUrl + '/Image/'
+    static readonly _baseUrl = '/Image/'
     /** 基础URL */
     get BaseUrl() { return ImageModelHelper._baseUrl }
 
