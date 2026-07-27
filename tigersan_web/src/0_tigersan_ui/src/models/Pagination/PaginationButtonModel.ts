@@ -15,7 +15,7 @@ export class PaginationButtonModel {
     _onCheckedInternal?: Action
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 文本 */
     readonly Text = ref('1')
     /** 悬浮文本 */
@@ -38,7 +38,7 @@ export class PaginationButtonModel {
         this.Text.value = int.toString()
     }
     //#endregion [引用]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Events】
     /** 选中后 */

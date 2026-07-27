@@ -7,7 +7,7 @@ export class ContentSizeBehavior {
     protected _arrowClose = 0
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“打开” */
     readonly IsOpen = ref(true)
     /** 内容最大高度 */
@@ -45,7 +45,7 @@ export class ContentSizeBehavior {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     //#region [private]

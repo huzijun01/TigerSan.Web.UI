@@ -174,10 +174,10 @@ export class TransferPageModel {
     ])
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “资产ID”是否只读 */
     readonly IsAssetIdReadonly = ref(false)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

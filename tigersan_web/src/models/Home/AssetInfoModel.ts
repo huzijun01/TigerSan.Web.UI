@@ -13,7 +13,7 @@ export class AssetInfoModel {
     _onClick?: (info: AssetInfoModel) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 资产位置 */
     readonly Position: Reactive<AssetPosition>
     /** 图标 */
@@ -37,7 +37,7 @@ export class AssetInfoModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(position: AssetPosition) {

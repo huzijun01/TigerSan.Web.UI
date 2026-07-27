@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import AssetInfo from '@/components/AssetInfo.vue'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
 import { AssetMapPageModel } from './AssetMapPageModel'
 // 【字段】:
@@ -54,7 +54,7 @@ onMounted(async () => {
     model.filter.StartWatch()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model.filter.StopWatch()
 })
 

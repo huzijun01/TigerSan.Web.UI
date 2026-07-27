@@ -29,6 +29,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> ResourceBeenOccupied { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource have been occupied!"); }
         public static MyActionResult<TData> NameRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The name cannot be repeated!"); }
         public static MyActionResult<TData> AssetIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The AssetId cannot be repeated!"); }
+        public static MyActionResult<TData> TagIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The TagId cannot be repeated!"); }
         public static MyActionResult<TData> RfidRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The RFID cannot be repeated!"); }
         public static MyActionResult<TData> TagRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The Tag cannot be repeated!"); }
         public static MyActionResult<TData> UserNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "User does not exist!"); }

@@ -40,7 +40,7 @@
 import TableItem from './TableItem.vue'
 import TableHeader from './TableHeader.vue'
 import Loading from '../Dialog/Loading.vue'
-import { onMounted, onUnmounted, type StyleValue } from 'vue'
+import { onMounted, onBeforeUnmount, type StyleValue } from 'vue'
 import { TableModel } from '../../models'
 
 // 字段:
@@ -64,7 +64,7 @@ onMounted(() => {
     model.watchLocale.Start()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model._sizeBehavior.Unobserver()
     model.watchLocale.Stop()
 })

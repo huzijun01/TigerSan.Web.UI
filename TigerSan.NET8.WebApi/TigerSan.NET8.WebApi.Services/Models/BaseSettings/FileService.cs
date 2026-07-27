@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
@@ -11,6 +12,28 @@ namespace TigerSan.NET8.WebApi.Services.Models
 {
     public class FileService : IFileService
     {
+        #region 【Ctor】
+        public FileService()
+        {
+            try
+            {
+                if (!Directory.Exists(GlobalSettings.DirFiles))
+                {
+                    Directory.CreateDirectory(GlobalSettings.DirFiles);
+                }
+
+                if (!Directory.Exists(GlobalSettings.DirImages))
+                {
+                    Directory.CreateDirectory(GlobalSettings.DirImages);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Instance.Error(ex.GetMessage());
+            }
+        }
+        #endregion 【Ctor】
+
         #region 【Functions】
         #region [private]
         #region 校验路径是否合法
@@ -45,11 +68,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                if (!Directory.Exists(GlobalSettings.DirFiles))
-                {
-                    Directory.CreateDirectory(GlobalSettings.DirFiles);
-                }
-
                 if (!IsValidPath(subPath)) return MyResults<MyFileInfo[]>.InvalidPath(subPath);
 
                 var path = string.IsNullOrEmpty(subPath) ? GlobalSettings.DirFiles : Path.Combine(GlobalSettings.DirFiles, subPath);
@@ -87,11 +105,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                if (!Directory.Exists(GlobalSettings.DirFiles))
-                {
-                    Directory.CreateDirectory(GlobalSettings.DirFiles);
-                }
-
                 if (!IsValidPath(subPath)) return MyResults<MyFileInfo[]>.InvalidPath(subPath);
 
                 var path = string.IsNullOrEmpty(subPath) ? GlobalSettings.DirFiles : Path.Combine(GlobalSettings.DirFiles, subPath);
@@ -127,11 +140,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                if (!Directory.Exists(GlobalSettings.DirFiles))
-                {
-                    Directory.CreateDirectory(GlobalSettings.DirFiles);
-                }
-
                 if (!IsValidPath(subPath)) return MyResults<MyFileInfo[]>.InvalidPath(subPath);
 
                 var path = string.IsNullOrEmpty(subPath) ? GlobalSettings.DirFiles : Path.Combine(GlobalSettings.DirFiles, subPath);
@@ -174,31 +182,39 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“文件下载信息”
-        public async Task<MyActionResult<FileDownloadInfo>> GetFileDownloadInfo(string name, string? subPath = null)
+        #region 获取“文件”
+        public async Task<MyActionResult<FileStreamResult>> GetFile(string name, string? subPath = null)
         {
             try
             {
-                if (!IsValidPath(subPath)) return MyResults<FileDownloadInfo>.InvalidPath(subPath);
-                if (string.IsNullOrWhiteSpace(name)) return MyResults<FileDownloadInfo>.NameCannotBeEmpty;
+                if (!IsValidPath(subPath)) return MyResults<FileStreamResult>.InvalidPath(subPath);
+                if (string.IsNullOrWhiteSpace(name)) return MyResults<FileStreamResult>.NameCannotBeEmpty;
 
                 var targetDir = string.IsNullOrEmpty(subPath) ? GlobalSettings.DirFiles : Path.Combine(GlobalSettings.DirFiles, subPath);
                 var filePath = Path.Combine(targetDir, name);
 
-                if (!File.Exists(filePath)) return MyResults<FileDownloadInfo>.PathDoesNotExist(filePath);
+                if (!File.Exists(filePath)) return MyResults<FileStreamResult>.PathDoesNotExist(filePath);
 
                 var contentType = GetFileType(name);
 
-                return MyResults<FileDownloadInfo>.Success(null, new FileDownloadInfo
+                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
+
+                return MyResults<FileStreamResult>.Success(null, new FileStreamResult(stream, contentType)
                 {
-                    FilePath = filePath,
-                    FileName = name,
-                    ContentType = contentType
+                    FileDownloadName = name
                 });
+            }
+            catch (FileNotFoundException fe)
+            {
+                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(fe.GetMessage()));
+            }
+            catch (ArgumentException ae)
+            {
+                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(ae.GetMessage()));
             }
             catch (Exception e)
             {
-                return MyResults<FileDownloadInfo>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -210,11 +226,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                if (!Directory.Exists(GlobalSettings.DirFiles))
-                {
-                    Directory.CreateDirectory(GlobalSettings.DirFiles);
-                }
-
                 if (!IsValidPath(subPath)) return MyResults<object>.InvalidPath(subPath);
 
                 var targetDir = string.IsNullOrEmpty(subPath) ? GlobalSettings.DirFiles : Path.Combine(GlobalSettings.DirFiles, subPath);
@@ -234,40 +245,37 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 上传“文件”
-        public async Task<MyActionResult<object>> UploadFile(
+        public async Task<MyActionResult<string>> UploadFile(
             IFormFile file,
+            CancellationToken cancellationToken = default,
+            string? name = null,
             string? subPath = null,
             bool isOverwrite = false,
-            long? maxSize = null,
-            CancellationToken cancellationToken = default)
+            long? maxSize = null)
         {
             var filePath = string.Empty;
+            var fileName = string.IsNullOrEmpty(name) ? file.FileName : name;
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (!Directory.Exists(GlobalSettings.DirFiles))
-                {
-                    Directory.CreateDirectory(GlobalSettings.DirFiles);
-                }
-
-                if (!IsValidPath(subPath)) return MyResults<object>.InvalidPath(subPath);
-                if (file == null || file.Length == 0) return MyResults<object>.FileIsNullOrEmpty;
+                if (!IsValidPath(subPath)) return MyResults<string>.InvalidPath(subPath);
+                if (file == null || file.Length == 0) return MyResults<string>.FileIsNullOrEmpty;
 
                 if (maxSize == null) maxSize = GlobalSettings.MaxFileSize;
                 // 1. 验证文件大小
-                if (file.Length > maxSize * 1024 * 1024) return MyResults<object>.FileSizeExceedsLimit(maxSize.Value);
+                if (file.Length > maxSize * 1024 * 1024) return MyResults<string>.FileSizeExceedsLimit(maxSize.Value);
 
                 // 2. 验证文件扩展名
-                var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-                if (string.IsNullOrEmpty(ext)) return MyResults<object>.UnsupportedFileType;
+                var ext = Path.GetExtension(fileName).ToLowerInvariant();
+                if (string.IsNullOrEmpty(ext)) return MyResults<string>.UnsupportedFileType;
 
                 // 3. 目标路径
                 var targetDir = string.IsNullOrEmpty(subPath) ? GlobalSettings.DirFiles : Path.Combine(GlobalSettings.DirFiles, subPath);
-                if (!Directory.Exists(targetDir)) return MyResults<object>.PathDoesNotExist(subPath);
+                if (!Directory.Exists(targetDir)) return MyResults<string>.PathDoesNotExist(subPath);
 
                 // 5. 保存文件
-                filePath = Path.Combine(targetDir, file.FileName);
+                filePath = Path.Combine(targetDir, fileName);
                 if (File.Exists(filePath))
                 {
                     if (isOverwrite)
@@ -276,7 +284,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                     else
                     {
-                        return MyResults<object>.FileAlreadyExists;
+                        return MyResults<string>.FileAlreadyExists;
                     }
                 }
 
@@ -286,7 +294,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     await stream.FlushAsync(cancellationToken);
                 }
 
-                return MyResults<object>.Success();
+                var param = $"?name={fileName}";
+                if (!string.IsNullOrEmpty(subPath)) param += $"&{nameof(subPath)}={subPath}";
+
+                return MyResults<string>.Success(null, param);
             }
             catch (OperationCanceledException)
             {
@@ -295,11 +306,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     File.Delete(filePath);
                 }
 
-                return MyResults<object>.Warning("Upload cancelled by user.");
+                return MyResults<string>.Warning("Upload cancelled by user.");
             }
             catch (Exception e)
             {
-                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<string>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion

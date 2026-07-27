@@ -1,19 +1,27 @@
 import { ref, watch } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { baseStationMgtTable } from './BaseStationMgtTable'
-import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationModel } from '@/models'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationModel, imageModelHelper } from '@/models'
 
-export class BaseStationMgtForm {
-    //#region 【Fields】
+export class BaseStationMgtPageModel {
+    //#region 【Props】
+    /** 图片 */
+    readonly Image = ref<string | undefined>()
+    /** “在线”总数 */
     readonly OnlineCount = ref(0)
+    /** “离线”总数 */
     readonly OfflineCount = ref(0)
+    //#endregion 【Props】
 
+    //#region 【Fields】
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** 开关 */
     readonly switchIsEnable = new SwitchModel()
     /** 搜索框 */
     readonly searchMacAddr = new SearchModel()
+    /** 上传器 */
+    readonly upload = imageModelHelper.GetUploadModel()
 
     // 选择框:
     /** 筛选 */
@@ -81,7 +89,7 @@ export class BaseStationMgtForm {
     /** “心跳（秒）”项目配置 */
     readonly configHeartbeatInterval: FormItemConfig<BaseStationModel, string> = {
         _propName: 'heartbeatInterval',
-        PropText: TextModel.Computed('HeartbeatInterval', '心跳（秒）'),
+        PropText: TextModel.Computed('HeartbeatInterval', '心跳'),
         IsEquired: true,
         Target: ref(),
         _isVerifyOk: source => Verify.IsGreaterThan(source.heartbeatInterval)
@@ -90,10 +98,18 @@ export class BaseStationMgtForm {
     /** “上报周期（秒）”项目配置 */
     readonly configReportInterval: FormItemConfig<BaseStationModel, string> = {
         _propName: 'reportInterval',
-        PropText: TextModel.Computed('ReportInterval', '上报周期（秒）'),
+        PropText: TextModel.Computed('ReportInterval', '上报周期'),
         IsEquired: true,
         Target: ref(),
         _isVerifyOk: source => Verify.IsGreaterThan(source.reportInterval)
+    }
+
+    /** “图片”项目配置 */
+    readonly configImage: FormItemConfig<BaseStationModel, string> = {
+        _propName: 'image',
+        PropText: TextModel.Computed('Image', '图片'),
+        IsEquired: false,
+        Target: this.Image,
     }
 
     /** “增”源数据获取方法 */
@@ -118,6 +134,9 @@ export class BaseStationMgtForm {
                 this.selectTypeForm.Value.value = stationTypeHelper.GetIdName(rowData.type)
             }
         },
+        _onInitAsync: async isEdit => {
+            await this.upload.Load()
+        },
         _itemConfigs: [
             this.configCompany,
             this.configSite,
@@ -126,11 +145,12 @@ export class BaseStationMgtForm {
             this.configMacAddr,
             this.configHeartbeatInterval,
             this.configReportInterval,
+            this.configImage,
         ]
     }
 
     /** “基站”表单模型 */
-    readonly baseStationForm = new FormModel(this.configBaseStationForm)
+    readonly form = new FormModel(this.configBaseStationForm)
     //#endregion 【Fields】
 
     //#region 【Ctor】
@@ -157,6 +177,31 @@ export class BaseStationMgtForm {
         this.selectType._onChange = this.Refresh
         this.selectState._onChange = this.Refresh
         this.selectIsEnable._onChange = this.Refresh
+
+        // 上传器:
+        this.upload._isAutoLoad = false
+        this.upload.IsAllowMulti.value = false
+        this.upload._getImages = async () => {
+            if (!this.Image.value) return
+            return [{ name: this.Image.value, url: imageModelHelper.BaseUrl + this.Image.value }]
+        }
+        this.upload._onUploaded = async config => {
+            this.form._source.image = this.Image.value = config.name
+            if (this.form._isEdit) {
+                await this.form.OnSubmit(false)
+            }
+        }
+        this.upload._onDeleted = async config => {
+            this.form._source.image = this.Image.value = undefined
+            if (this.form._isEdit) {
+                await this.form.OnSubmit(false)
+            }
+        }
+        this.form._onCloseAsync = async isCancel => {
+            if (isCancel && !this.form._isEdit) {
+                await this.upload.Delete()
+            }
+        }
     }
     //#endregion 【Ctor】
 
@@ -240,24 +285,24 @@ export class BaseStationMgtForm {
 
     /** 增 */
     readonly Add = () => {
-        this.baseStationForm.Title.value = TextModel.GetText('Add BaseStation', '新增基站')
+        this.form.Title.value = TextModel.GetText('Add BaseStation', '新增基站')
 
-        this.baseStationForm._getSource = this.AddGetSource
+        this.form._getSource = this.AddGetSource
 
-        this.baseStationForm._onSubmitAsync = async source => {
+        this.form._onSubmitAsync = async source => {
             const res = await baseStationHelper.Add(source)
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
-        this.baseStationForm.Show()
+        this.form.Show()
     }
 
     /** 改 */
     readonly Edit = () => {
-        this.baseStationForm.Title.value = TextModel.GetText('Edit BaseStation', '修改基站')
+        this.form.Title.value = TextModel.GetText('Edit BaseStation', '修改基站')
 
-        this.baseStationForm._getSource = () => {
+        this.form._getSource = () => {
             const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
 
             if (!rowData) {
@@ -268,13 +313,13 @@ export class BaseStationMgtForm {
             return ObjectHelper.ShallowCopy(rowData)
         }
 
-        this.baseStationForm._onSubmitAsync = async source => {
+        this.form._onSubmitAsync = async source => {
             const res = await baseStationHelper.Edit(source)
             await this.Refresh()
             return GetSubmitResult(res, Texts.EditedSuccessfully.value)
         }
 
-        this.baseStationForm.Show(true)
+        this.form.Show(true)
     }
 
     /** 改 */

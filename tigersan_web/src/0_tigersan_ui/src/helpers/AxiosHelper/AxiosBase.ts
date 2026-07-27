@@ -6,13 +6,21 @@ import { DialogHelper } from "../../stores"
 import { KeyValueModel, ParamHelper } from "../ParamHelper"
 import { MyActionResult } from "../../models/MyActionResult"
 
+/** 请求方法 */
+export enum Methods {
+    Get,
+    Post,
+    Put,
+    Delete,
+}
+
 export class AxiosBase {
     //#region 【Fields】
     _api: AxiosInstance
     //#endregion 【Fields】
 
     //#region 【Ctor】
-    constructor(baseURL: string) {
+    constructor(baseURL?: string) {
         const api = axios.create({
             baseURL: baseURL,
             // TransformResponse:axios提供的工具，用在获取后端数据之后，先进行处理，再通过promise返回给axios调用者
@@ -60,14 +68,15 @@ export class AxiosBase {
     readonly Get = async <TData>(
         action: string,
         params?: KeyValueModel[],
-        isShowResult: boolean = true): Promise<MyActionResult<TData>> => {
+        isShowResult: boolean = true,
+        config?: AxiosRequestConfig): Promise<MyActionResult<TData>> => {
         try {
             let url = action
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await this._api.get(url)
+            const response = await this._api.get(url, config)
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
@@ -80,13 +89,16 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.Error(error)
+            return MyActionResult.Error(error as string)
         }
     }
 
-    readonly GetData = async <T extends object | unknown[] | number>(action: string, params?: KeyValueModel[]): Promise<T> => {
-        return (await this.Get(action, params)).data as T
-    }
+    readonly GetData = async <T extends object | unknown[] | number>(
+        action: string,
+        params?: KeyValueModel[],
+        isShowResult: boolean = true,
+        config?: AxiosRequestConfig): Promise<T> =>
+        (await this.Get(action, params, isShowResult, config)).data as T
 
     readonly Post = async <TData>(
         action: string,
@@ -112,7 +124,7 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.Error(error)
+            return MyActionResult.Error(error as string)
         }
     }
 
@@ -120,7 +132,8 @@ export class AxiosBase {
         action: string,
         params?: KeyValueModel[],
         data?: TData,
-        isRange: boolean = false): Promise<MyActionResult<TData>> => {
+        isRange: boolean = false,
+        config?: AxiosRequestConfig): Promise<MyActionResult<TData>> => {
         try {
             const range = isRange ? '/Range' : ''
 
@@ -129,7 +142,7 @@ export class AxiosBase {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await this._api.put(url, data)
+            const response = await this._api.put(url, data, config)
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
@@ -142,21 +155,22 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.Error(error)
+            return MyActionResult.Error(error as string)
         }
     }
 
     readonly Delete = async <TData>(
         action: string,
         id?: number | bigint,
-        params?: KeyValueModel[]): Promise<MyActionResult<TData>> => {
+        params?: KeyValueModel[],
+        config?: AxiosRequestConfig): Promise<MyActionResult<TData>> => {
         try {
             let url = id === undefined ? action : `${action}/${id}`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await this._api.delete(url)
+            const response = await this._api.delete(url, config)
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
@@ -169,21 +183,22 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.Error(error)
+            return MyActionResult.Error(error as string)
         }
     }
 
     readonly DeleteRange = async <TData>(
         action: string,
         ids: number[] | bigint[],
-        params?: KeyValueModel[]): Promise<MyActionResult<TData>> => {
+        params?: KeyValueModel[],
+        config?: AxiosRequestConfig): Promise<MyActionResult<TData>> => {
         try {
             let url = `${action}/Range`
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            const response = await this._api.delete(url, { data: ids })
+            const response = await this._api.delete(url, { data: ids, ...config })
             const actionResult = response.data as MyActionResult<TData>
 
             if (actionResult === undefined) {
@@ -196,48 +211,60 @@ export class AxiosBase {
 
             return actionResult
         } catch (error) {
-            return MyActionResult.Error(error)
+            return MyActionResult.Error(error as string)
         }
     }
 
-    /** 下载“文件” */
-    readonly DownloadFile = async (action: string, params?: KeyValueModel[]): Promise<MyActionResult<undefined>> => {
-        let link: HTMLAnchorElement | null = null // 用于后续清理
+    readonly GetBlob = async (
+        action: string,
+        params?: KeyValueModel[],
+        method = Methods.Get,
+        config?: AxiosRequestConfig): Promise<Blob | undefined> => {
         try {
             let url = action
             if (params) {
                 url += ParamHelper.GetParamString(params)
             }
 
-            // 关键：设置 responseType 为 'blob'
-            const response: AxiosResponse<Blob> = await this._api.get(url, {
-                responseType: 'blob'
-            })
+            let response: AxiosResponse<Blob>
+
+            switch (method) {
+                case Methods.Post:
+                    response = await this._api.post(url, undefined, { responseType: 'blob', ...config })
+                    break
+                case Methods.Put:
+                    response = await this._api.put(url, undefined, { responseType: 'blob', ...config })
+                    break
+                case Methods.Delete:
+                    response = await this._api.delete(url, { responseType: 'blob', ...config })
+                    break
+                default:
+                    response = await this._api.get(url, { responseType: 'blob', ...config })
+                    break
+            }
 
             // 检查响应是否成功 (状态码 200-299)
             if (response.status < 200 || response.status >= 300) {
                 throw new Error(`Download failed with status: ${response.status}`)
             }
 
-            // 从响应头中获取文件名 (可选，如果后端没设置 Content-Disposition，可能需要从参数或默认值获取)
-            const contentDisposition = response.headers['content-disposition']
-            let fileName = 'downloaded_file'
-
-            if (contentDisposition) {
-                // 简单的正则提取 filename="..." 或 filename*=...
-                const fileNameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^\r\n"']*)['"]??/i)
-                if (fileNameMatch && fileNameMatch) {
-                    fileName = decodeURIComponent(fileNameMatch)
-                }
-            } else {
-                // 如果后端通过 FileDownloadName 设置了，通常会在 Content-Disposition 中
-                // 也可以尝试从 URL 参数中获取 name
-                const nameParam = params?.find(p => p.key === 'name')
-                if (nameParam) fileName = nameParam.value as string
-            }
-
             // 创建 Blob 对象
-            const blob = new Blob([response.data], { type: response.headers['content-type'] as string })
+            return new Blob([response.data], { type: response.headers['content-type'] as string })
+        } catch (error) {
+            return undefined
+        }
+    }
+
+    readonly DownloadFile = async (
+        fileName: string,
+        action: string,
+        params?: KeyValueModel[],
+        method = Methods.Get,
+        config?: AxiosRequestConfig): Promise<MyActionResult<undefined>> => {
+        let link: HTMLAnchorElement | null = null // 用于后续清理
+        try {
+            const blob = await this.GetBlob(action, params, method, config)
+            if (!blob) return MyActionResult.Error('The blob is undefined!')
 
             // 创建下载链接
             link = document.createElement('a')
@@ -250,7 +277,7 @@ export class AxiosBase {
 
             return MyActionResult.Success(Texts.DownloadSuccessfully.value)
         } catch (error) {
-            return MyActionResult.Error(error)
+            return MyActionResult.Error(error as string)
         } finally {
             if (link) {
                 // 移除 DOM 元素

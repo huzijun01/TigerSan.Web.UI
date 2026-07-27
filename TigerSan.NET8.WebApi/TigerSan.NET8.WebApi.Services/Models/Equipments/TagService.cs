@@ -201,6 +201,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     var dto = new TagDto();
                     dto.ShallowCopy(entity);
 
+                    // 检查“图片”是否存在：
+                    if (!string.IsNullOrEmpty(entity.Image))
+                    {
+                        var imagePath = Path.Combine(GlobalSettings.DirImages, entity.Image);
+                        if (!File.Exists(imagePath))
+                        {
+                            var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
+                            if (find == null)
+                            {
+                                LogHelper.Instance.IsNull(nameof(find));
+                            }
+                            else
+                            {
+                                dto.Image = find.Image = null;
+                                await _db.SaveChangesAsync();
+                            }
+                        }
+                    }
+
                     // 添加“公司”:
                     companyDict.TryGetValue(entity.Batch, out var company);
                     if (company == null)
@@ -365,7 +384,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>添加“单条数据”</summary>
         public override async Task<MyActionResult<TagEntity>> Add(TagEntity entity, bool isBeginTransaction = true)
         {
-            // 检验“标牌ID”是否重复:
+            // 检验“资产ID”是否重复:
             if (!string.IsNullOrEmpty(entity.AssetId) && await _dbSet.AnyAsync(i => i.AssetId == entity.AssetId))
             {
                 return MyResults<TagEntity>.AssetIdRepeated;
@@ -385,7 +404,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>添加“多条数据”</summary>
         public override async Task<MyActionResult<object>> AddRange(List<TagEntity> entities, bool isBeginTransaction = true)
         {
-            // 检验“标牌ID”是否重复:
+            // 检验“资产ID”是否重复:
             var brandIds = entities.Where(e => !string.IsNullOrEmpty(e.AssetId)).Select(e => e.AssetId).ToList();
             if (await _dbSet.AnyAsync(i => brandIds.Contains(i.AssetId)))
             {
@@ -409,7 +428,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“单条数据”</summary>
         public override async Task<MyActionResult<object>> Edit(TagEntity entity, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -421,7 +439,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
-                // 检验“标牌ID”是否重复:
+                // 检验“资产ID”是否重复:
                 if (!string.IsNullOrEmpty(entity.AssetId) && await _dbSet.AnyAsync(i => i.AssetId == entity.AssetId && i.Id != entity.Id))
                 {
                     return MyResults<object>.AssetIdRepeated;
@@ -434,7 +452,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 // 解绑资产：
-                if (find.AssetId != null && find.AssetId != entity.AssetId)
+                if (!string.IsNullOrEmpty(find.AssetId) && find.AssetId != entity.AssetId)
                 {
                     var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == find.AssetId);
                     if (asset != null)
@@ -443,6 +461,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         asset.TagType = null;
                         asset.BindingTime = null;
 
+                        // 添加“解绑记录”：
                         var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(entity.Id, asset.Id, false, null), false);
                         if (resAdd.IsError)
                         {
@@ -451,6 +470,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
                     }
                 }
+
                 // 绑定资产：
                 if (!string.IsNullOrEmpty(entity.AssetId))
                 {
@@ -460,15 +480,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         return MyResults<object>.AssetNotFound(entity.AssetId);
                     }
-                    asset.Tag = entity.Id;
-                    asset.TagType = entity.Type;
 
-                    var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(entity.Id, asset.Id, true, asset.BindingTime), false);
-                    if (resAdd.IsError)
+                    if (asset.Tag != entity.Id)
                     {
-                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        return MyResults<object>.Error(resAdd.Message);
+                        // 添加“绑定记录”
+                        asset.BindingTime = DateTimeHelper.GetUtcNow();
+                        var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(entity.Id, asset.Id, true, asset.BindingTime), false);
+                        if (resAdd.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            return MyResults<object>.Error(resAdd.Message);
+                        }
                     }
+
+                    asset.Tag = entity.Id;
+                    asset.TagId = entity.TagId;
+                    asset.TagType = entity.Type;
                 }
 
                 // 修改“数据”:
@@ -479,11 +506,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
 
@@ -491,12 +518,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“多条数据”</summary>
         public override async Task<MyActionResult<object>> EditRange(List<TagEntity> entities, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
             {
-                if (entities.Count < 1) return res;
+                if (entities.Count < 1) return MyResults<object>.OperationSuccess;
 
                 var ids = entities.Select(i => i.Id).ToList();
 
@@ -519,7 +545,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return MyResults<object>.SomeResourceNotExist;
                     }
 
-                    // 检验“标牌ID”是否重复:
+                    // 检验“资产ID”是否重复:
                     if (!string.IsNullOrEmpty(entity.AssetId) && await _dbSet.AnyAsync(i => i.AssetId == entity.AssetId && i.Id != entity.Id))
                     {
                         return MyResults<object>.AssetIdRepeated;
@@ -532,7 +558,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     // 解绑资产：
-                    if (find.AssetId != null && find.AssetId != entity.AssetId)
+                    if (!string.IsNullOrEmpty(find.AssetId) && find.AssetId != entity.AssetId)
                     {
                         var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == find.AssetId);
                         if (asset != null)
@@ -541,6 +567,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             asset.TagType = null;
                             asset.BindingTime = null;
 
+                            // 添加“解绑记录”：
                             var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(entity.Id, asset.Id, false, null), false);
                             if (resAdd.IsError)
                             {
@@ -549,6 +576,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             }
                         }
                     }
+
                     // 绑定资产：
                     if (!string.IsNullOrEmpty(entity.AssetId))
                     {
@@ -558,15 +586,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                             return MyResults<object>.AssetNotFound(entity.AssetId);
                         }
-                        asset.Tag = entity.Id;
-                        asset.TagType = entity.Type;
 
-                        var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(entity.Id, asset.Id, true, asset.BindingTime), false);
-                        if (resAdd.IsError)
+                        if (asset.Tag != entity.Id)
                         {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            return MyResults<object>.Error(resAdd.Message);
+                            // 添加“绑定记录”
+                            asset.BindingTime = DateTimeHelper.GetUtcNow();
+                            var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(entity.Id, asset.Id, true, asset.BindingTime), false);
+                            if (resAdd.IsError)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                return MyResults<object>.Error(resAdd.Message);
+                            }
                         }
+
+                        asset.Tag = entity.Id;
+                        asset.TagId = entity.TagId;
+                        asset.TagType = entity.Type;
                     }
 
                     // 修改“数据”:
@@ -578,14 +613,94 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
         #endregion [改]
+
+        #region [删]
+        #region 删除“单条数据”
+        public new async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+                if (entity == null)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+
+                if (!string.IsNullOrEmpty(entity.Image))
+                {
+                    var imagePath = Path.Combine(GlobalSettings.DirImages, entity.Image);
+                    if (File.Exists(imagePath))
+                    {
+                        File.Delete(imagePath);
+                    }
+                }
+
+                _dbSet.Remove(entity);
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+
+        #region 删除“多条数据”
+        public new async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (ids.Count < 1) return MyResults<object>.OperationSuccess;
+
+                var finds = _dbSet.Where(i => ids.Contains(i.Id));
+
+                var count = await finds.CountAsync();
+                if (count < 1) return MyResults<object>.ResourceNotExist;
+                else if (count < ids.Count) return MyResults<object>.SomeResourceNotExist;
+
+                var entities = await finds.ToListAsync();
+                foreach (var entity in entities)
+                {
+                    if (!string.IsNullOrEmpty(entity.Image))
+                    {
+                        var imagePath = Path.Combine(GlobalSettings.DirImages, entity.Image);
+                        if (File.Exists(imagePath))
+                        {
+                            File.Delete(imagePath);
+                        }
+                    }
+                }
+
+                await finds.ExecuteDeleteAsync();
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+        #endregion [删]
 
         #region [Others]
         #region 更新“在线状态”

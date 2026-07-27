@@ -75,7 +75,7 @@ export class MapModel<TData, TInfoModel> {
     _onInitAsync?: ActionAsync
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“正在新建” */
     private readonly _IsCreating = ref(false)
     /** 是否“正在编辑” */

@@ -26,7 +26,7 @@ export class DatePickerModel {
     _onChange?: (value?: string | [string, string]) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 宽度 */
     readonly Width = ref('')
     /** 是否显示“前缀” */
@@ -55,7 +55,7 @@ export class DatePickerModel {
         return date && Array.isArray(date) && date.length > 1 ? date[1] : undefined
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     readonly OnChange = () => {

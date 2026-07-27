@@ -14,7 +14,7 @@ export class NavItemModel {
     _authority?: AuthorityVerify
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 键（用于权限） */
     readonly Key = ref('')
     /** 图标 */
@@ -31,7 +31,7 @@ export class NavItemModel {
     readonly IsAllowShow = computed(() => this.IsShow.value && this.IsHasAuthority.value)
     /** 是否“具有权限” */
     readonly IsHasAuthority = computed(() => !this._authority || this._authority.IsEnable.value)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     constructor(navModel: NavBarModel) {
         this.NavBarModel = navModel

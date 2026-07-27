@@ -31,7 +31,7 @@
         </Form>
       </div>
       <div class="button-panel flex-stretch">
-        <button @click="model.form.OnSubmit">{{ Texts.Login.value }}</button>
+        <button @click="model.form.OnSubmit()">{{ Texts.Login.value }}</button>
         <div class="code-login link flex-right">{{ Texts.VerificationCodeLogin.value }}</div>
       </div>
     </div>

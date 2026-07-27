@@ -9,6 +9,7 @@ import Lottie from "./components/Content/Lottie.vue"
 import CountCard from "./components/Dashboard/CountCard.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
+import ImagePreview from "./components/Dialog/ImagePreview.vue"
 import Loading from "./components/Dialog/Loading.vue"
 import Pop from "./components/Dialog/Pop.vue"
 import PopWindow from "./components/Dialog/PopWindow.vue"
@@ -30,6 +31,8 @@ import Search from "./components/Inputs/Search.vue"
 import Select from "./components/Inputs/Select.vue"
 import Switch from "./components/Inputs/Switch.vue"
 import TextBox from "./components/Inputs/TextBox.vue"
+import Upload from "./components/Inputs/Upload/Upload.vue"
+import Image from "./components/Inputs/Upload/UploadImage.vue"
 // Map:
 import ClusterMarker from "./components/Map/ClusterMarker.vue"
 import Map from "./components/Map/Map.vue"
@@ -74,6 +77,7 @@ export {
     CountCard,
     // Dialog:
     Dialog,
+    ImagePreview,
     Loading,
     Pop,
     PopWindow,
@@ -87,6 +91,8 @@ export {
     FormRow,
     FormItem,
     // Inputs:
+    Image,
+    Upload,
     Checkbox,
     CheckboxGroup,
     DatePicker,

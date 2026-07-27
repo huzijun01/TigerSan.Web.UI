@@ -370,7 +370,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“单条数据”</summary>
         public override async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -403,11 +402,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
 
@@ -415,12 +414,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“多条数据”</summary>
         public override async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
             {
-                if (ids.Count < 1) return res;
+                if (ids.Count < 1) return MyResults<object>.OperationSuccess;
 
                 // 是否已被使用：
                 if (await _db.Persons.AnyAsync(p => ids.Contains(p.Role)))
@@ -429,24 +427,24 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 // 获取“多条数据”：
-                var entities = _dbSet.Where(i => ids.Contains(i.Id));
+                var finds = _dbSet.Where(i => ids.Contains(i.Id));
 
                 // 验证“资源是否存在”：
-                var count = await entities.CountAsync();
+                var count = await finds.CountAsync();
                 if (count < 1)
                 {
                     return MyResults<object>.ResourceNotExist;
                 }
                 else if (count < ids.Count)
                 {
-                    res = MyResults<object>.SomeResourceNotExist;
+                    return MyResults<object>.SomeResourceNotExist;
                 }
 
                 // 删除“角色”相关的“权限”：
                 await _db.Authorities.Where(a => ids.Contains(a.Role)).ExecuteDeleteAsync();
 
                 // 删除“多条数据”：
-                _dbSet.RemoveRange(entities);
+                _dbSet.RemoveRange(finds);
 
                 // “保存更改”并“提交事务”：
                 await _db.SaveChangesAsync();
@@ -454,11 +452,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
         #endregion [删]

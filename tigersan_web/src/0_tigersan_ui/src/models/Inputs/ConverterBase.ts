@@ -15,12 +15,12 @@ export class ConverterBase<TValue> {
     _onChange?: (value: TValue | undefined) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 值 */
     readonly Value = shallowRef<TValue | undefined>()
     /** 文本 */
     readonly Text = ref('')
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

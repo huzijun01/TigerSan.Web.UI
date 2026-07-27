@@ -3,7 +3,7 @@ import { Icons } from '../../base'
 import { TextBoxModel } from './TextBoxModel'
 
 export class PasswordModel extends TextBoxModel {
-    //#region 【Properties】
+    //#region 【Props】
     readonly IsShowValue = ref(false)
 
     //#region [computed]
@@ -14,7 +14,7 @@ export class PasswordModel extends TextBoxModel {
         return this.IsShowValue.value ? Icons.Eye : Icons.Eye_Close
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     readonly OnClickEye = () => {

@@ -91,7 +91,9 @@ export class FormModel<TSource extends object> {
      * （由“FormModel”内部维护） */
     _itemModels = new Array<FormItemModel<TSource, any>>()
     /** 关闭后 */
-    _onClose?: Function
+    _onClose?: (isCancel: boolean) => void
+    /** 关闭后（异步） */
+    _onCloseAsync?: (isCancel: boolean) => Promise<void>
     /** 获取“源数据”  */
     _getSource: TObjectAction<TSource>
     /** 提交时 */
@@ -108,8 +110,9 @@ export class FormModel<TSource extends object> {
     _onInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】
 
-    //#region 【Properties】
-    /** 是否“显示” */
+    //#region 【Props】
+    /** 是否“显示”
+     * （由“FormModel”内部维护） */
     readonly IsShow = ref(false)
     /** “标题”文本 */
     readonly Title
@@ -158,7 +161,7 @@ export class FormModel<TSource extends object> {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(config: FormConfig<TSource>) {
@@ -187,8 +190,6 @@ export class FormModel<TSource extends object> {
         watch(this.IsShow, isShow => {
             if (isShow) {
                 this.Init()
-            } else {
-                this._onClose?.()
             }
         })
     }
@@ -311,18 +312,26 @@ export class FormModel<TSource extends object> {
     }
 
     /** 关闭 */
-    readonly Close = () => {
-        this.IsShow.value = false
+    readonly Close = async (isCancel: boolean = true) => {
+        try {
+            loading.IsShow.value = true
+
+            this._onClose?.(isCancel)
+            await this._onCloseAsync?.(isCancel)
+            this.IsShow.value = false
+        } finally {
+            loading.IsShow.value = false
+        }
     }
 
     /** 提交 */
-    readonly OnSubmit = async () => {
+    readonly OnSubmit = async (isClose = true) => {
         // 验证有误:
         if (!this.IsVerifyOk()) return
 
         // 无操作:
         if (!this._onSubmit && !this._onSubmitAsync) {
-            this.Close()
+            if (isClose) await this.Close(false)
             return
         }
 
@@ -347,8 +356,7 @@ export class FormModel<TSource extends object> {
         const res = this.ShowResultRange(results)
 
         if (res.Result != FormResult.Error) {
-            // 关闭:
-            this.Close()
+            if (isClose) await this.Close(false)
         }
     }
 
@@ -397,7 +405,7 @@ export class FormItemModel<TSource extends object, TTarget> {
     _isVerifyOk?: FormVerify<TSource>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     //#region [内部维护]
     /** 目标数据
      * （值改变时，会执行“OnChange”） */
@@ -450,7 +458,7 @@ export class FormItemModel<TSource extends object, TTarget> {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(

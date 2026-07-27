@@ -16,10 +16,10 @@ export class ThemeHelper {
     static readonly config = new ConfigBase('theme', new ThemeConfig())
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否为“黑暗模式” */
     static readonly IsDark = ref(false)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     private constructor() { }

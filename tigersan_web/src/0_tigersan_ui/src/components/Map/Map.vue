@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import Select from '../Inputs/Select.vue'
-import { onMounted, onUnmounted, type PropType } from 'vue'
+import { onMounted, onBeforeUnmount, type PropType } from 'vue'
 import { Texts } from '../../texts'
 import { MapModel } from '../../models/Map/MapModel'
 
@@ -40,7 +40,7 @@ onMounted(async () => {
     model._watchIsDark.Start()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model._map?.destroy()
     model._watchIsDark.Stop()
 })

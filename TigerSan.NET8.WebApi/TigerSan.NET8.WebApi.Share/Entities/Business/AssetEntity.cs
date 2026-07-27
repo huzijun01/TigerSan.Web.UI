@@ -19,6 +19,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long? Tag { get; set; }
         [SnakeColumn]
+        public string? TagId { get; set; }
+        [SnakeColumn]
         public long? TagType { get; set; }
         // 计算:
         [SnakeColumn]

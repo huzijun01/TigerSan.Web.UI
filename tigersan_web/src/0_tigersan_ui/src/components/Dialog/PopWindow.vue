@@ -2,7 +2,7 @@
     <Pop :isShow="model.IsShow.value">
         <div class="pop-window" :style="model.Style.value">
             <div class="title-panel flex-between">
-                <span class="title">{{ model.Title.value }}</span>
+                <span class="title">{{ model.ShowTitle.value }}</span>
                 <span class="close iconfont" @click="model.Close">{{ Icons.Close }}</span>
             </div>
             <div class="content-panel">
@@ -34,8 +34,8 @@ const { model } = defineProps({
 .pop-window {
     display: flex;
     flex-direction: column;
-    max-width: 95vw;
-    max-height: 95vh;
+    max-width: 90vw;
+    max-height: 90vh;
     border-radius: 10px;
     background-color: var(--theme-card-background);
 

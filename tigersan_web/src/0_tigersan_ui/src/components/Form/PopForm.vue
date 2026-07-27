@@ -3,7 +3,7 @@
         <div class="form-panel" :style="model.FormPanelStyle.value">
             <div class="title-panel flex-between">
                 <span class="title">{{ model.ShowTitle.value }}</span>
-                <span class="close iconfont" @click="model.Close">{{ Icons.Close }}</span>
+                <span class="close iconfont" @click="model.Close()">{{ Icons.Close }}</span>
             </div>
             <div class="content-panel" :style="model.ContentPanelStyle.value">
                 <div class="center-content">
@@ -28,8 +28,8 @@
                 </div>
             </div>
             <div class="button-panel flex-right">
-                <button class="cancel" @click="model.Close">{{ model.ShowCancelText.value }}</button>
-                <button class="submit bg-success" @click="model.OnSubmit">{{ model.ShowSubmitText.value }}</button>
+                <button class="cancel" @click="model.Close()">{{ model.ShowCancelText.value }}</button>
+                <button class="submit bg-success" @click="model.OnSubmit()">{{ model.ShowSubmitText.value }}</button>
             </div>
         </div>
     </Pop>

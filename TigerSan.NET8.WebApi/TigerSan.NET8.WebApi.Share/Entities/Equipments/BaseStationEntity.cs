@@ -27,5 +27,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public DateTime CreateTime { get; set; } = DateTimeHelper.GetUtcNow();
         [SnakeColumn]
         public DateTime? ReportTime { get; set; } = null;
+        [SnakeColumn]
+        public string? Image { get; set; }
     }
 }

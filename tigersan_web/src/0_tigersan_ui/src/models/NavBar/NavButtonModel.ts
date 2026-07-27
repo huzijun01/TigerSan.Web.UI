@@ -12,7 +12,7 @@ export class NavButtonModel extends NavItemModel {
     _component?: Component
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 所属“目录”模型 */
     ParentFolderModel?: NavFolderModel
     /** 是否显示关闭按钮 */
@@ -25,7 +25,7 @@ export class NavButtonModel extends NavItemModel {
     IsOpened = computed(() => {
         return this.NavBarModel.OpenedButtonModels.some(b => b === this)
     })
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Events】
     /** 点击后 */

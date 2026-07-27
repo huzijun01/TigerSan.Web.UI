@@ -21,10 +21,10 @@ export class ConfigModel {
     readonly config = new ConfigBase('AppConfig', new AppConfig())
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 地区 */
     readonly Locale = ref(AppConfig.defaultLocale)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

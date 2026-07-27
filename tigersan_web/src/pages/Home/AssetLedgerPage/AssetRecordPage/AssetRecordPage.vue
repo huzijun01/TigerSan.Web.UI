@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { AssetRecordPageModel } from './AssetRecordPageModel'
 import { assetRecordTable, pagination } from './AssetRecordTable'
@@ -81,7 +81,7 @@ onMounted(() => {
     model._filter.StartWatch()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model._filter.StopWatch()
 })
 

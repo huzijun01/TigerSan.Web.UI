@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { Texts, Table, PageCard, Pagination, Select } from '@/0_tigersan_ui/tigerui'
 import { InventoryRecordPageModel } from './InventoryRecordPageModel'
 
@@ -50,7 +50,7 @@ onMounted(() => {
     model.watchAccessibleCompanies.Start()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model.watchAccessibleCompanies.Stop()
 })
 

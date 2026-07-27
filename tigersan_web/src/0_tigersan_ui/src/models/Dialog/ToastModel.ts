@@ -36,7 +36,7 @@ export class ToastModel {
     _deleteDelay = 500
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“显示”
      * （由“ToastModel”内部维护） */
     readonly IsShow = ref(true)
@@ -54,7 +54,7 @@ export class ToastModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(

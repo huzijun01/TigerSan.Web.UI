@@ -15,7 +15,7 @@ export class RouterPageModel {
     static _onPageChange?: (page: PageModel) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 页面 */
     readonly GetPage = () => {
         return this._page
@@ -37,7 +37,7 @@ export class RouterPageModel {
         this.GoTo('/')
     }
     private _pages: PageModel[]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(pages: PageModel[]) {

@@ -16,7 +16,7 @@ export class PaginationModel {
     _onChange?: (pageSize: number, selectedNum: number) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     //#region [private]
     /** 上一页“按钮模型” */
     private readonly PrePageButtonModel = new PaginationButtonModel(this)
@@ -84,7 +84,7 @@ export class PaginationModel {
         this.PageSizeSelectModel.Width.value = width
     }
     //#endregion [引用]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Events】
     /** 选中后 */

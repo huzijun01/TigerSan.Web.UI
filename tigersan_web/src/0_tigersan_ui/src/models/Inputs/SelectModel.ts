@@ -19,7 +19,7 @@ export class MenuItemModel<TSource> extends ConverterBase<TSource> {
     _onClick?: MenuItemModelAction<TSource>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“选中” */
     readonly IsChecked = ref(false)
 
@@ -30,7 +30,7 @@ export class MenuItemModel<TSource> extends ConverterBase<TSource> {
             && this.IsFuzzyIncludes(this._select.SearchText.value)
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(select: SelectModel<TSource>) {
@@ -90,7 +90,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     _onCheckedItemsChange?: MenuItemModelsAction<TSource>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     //#region [内部维护]
     private readonly left = ref(0)
     private readonly top = ref(0)
@@ -212,7 +212,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
         return this.ItemModels.value.map(i => new CheckboxBehaviorModel(i, i.IsChecked))
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

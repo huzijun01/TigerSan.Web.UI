@@ -59,7 +59,7 @@ export class TableModel<TSource extends object> {
     _onSlotChange?: (header?: TableHeaderModel<TSource>, isAscending?: boolean) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “行数据”集合 */
     readonly RowDatas: ShallowReactive<TSource[]> = shallowReactive([])
     /** “列头模型”集合 */
@@ -111,7 +111,7 @@ export class TableModel<TSource extends object> {
     /** 是否“显示全选复选框” */
     readonly IsShowSelectAllCheckBox = computed(() => this.IsShowCheckBox && this.IsAllowMultiSelect.value)
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(headerConfigs: TableHeaderConfig<TSource>[]) {
@@ -242,7 +242,7 @@ export class TableRowModel<TSource extends object> {
     _tableModel: TableModel<TSource>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“选中” */
     readonly IsChecked = ref(false)
     /** “项目模型”集合 */
@@ -252,7 +252,7 @@ export class TableRowModel<TSource extends object> {
     /** “选中”类名 */
     readonly SelectClass = computed(() => { return { 'select': this.IsChecked.value } })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(tableModel: TableModel<TSource>, rowData: TSource) {
@@ -273,7 +273,7 @@ export class TableItemModel<TSource extends object> {
     }
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 文本 */
     readonly Text = ref('')
     /** 是否只读 */
@@ -299,7 +299,7 @@ export class TableItemModel<TSource extends object> {
         return { ellipsis: this._headerModel.Type.value != ItemType.Textarea }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(headerModel: TableHeaderModel<TSource>, rowModel: TableRowModel<TSource>) {
@@ -375,7 +375,7 @@ export class TableHeaderModel<TSource extends object> {
     _onItemClickAsync?: (itemModel: TableItemModel<TSource>) => Promise<void>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 类型 */
     readonly Type = ref(ItemType.Textarea)
     /** 文本 */
@@ -457,7 +457,7 @@ export class TableHeaderModel<TSource extends object> {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(tableModel: TableModel<TSource>, propName: string) {
@@ -601,12 +601,12 @@ export class ColumnSelectModel<TSource extends object> extends SelectModel<Table
     private _config: ConfigBase<string[]>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “可见表头”集合 */
     private get VisibleHeaders() {
         return this._table.HeaderModels.filter(h => h.IsShow.value)
     }
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(
@@ -662,10 +662,10 @@ export class RowDataModel<TSource extends object> {
     readonly table
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 数据 */
     readonly Data = shallowRef<TSource | undefined>()
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(table: TableModel<TSource>) {

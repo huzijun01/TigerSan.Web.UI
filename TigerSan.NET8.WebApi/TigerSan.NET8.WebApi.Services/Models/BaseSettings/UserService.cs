@@ -148,8 +148,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 修改“密码”
         public async Task<MyActionResult<object>> EditPassword(PasswordEdit edit)
         {
-            var res = MyResults<object>.OperationSuccess;
-
             try
             {
                 var admin = await _db.Admins.FirstOrDefaultAsync(i => i.Id == edit.Id);
@@ -186,10 +184,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
         #endregion [改]

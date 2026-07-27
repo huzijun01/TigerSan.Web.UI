@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, shallowRef, watch } from 'vue'
+import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { Texts } from '../../texts'
 import { SelectModel } from '../../models'
 import Loading from '../Dialog/Loading.vue'
@@ -44,7 +44,7 @@ const refMenuWatch = watch(refMenu, menu => {
 })
 
 // 过程:
-onUnmounted(() => {
+onBeforeUnmount(() => {
     refMenuWatch.stop()
 })
 

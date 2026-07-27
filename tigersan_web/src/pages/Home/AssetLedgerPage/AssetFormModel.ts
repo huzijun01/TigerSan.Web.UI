@@ -138,14 +138,14 @@ export class AssetFormModel {
     readonly assetForm = new FormModel(this.configAssetLedgerForm)
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “公司”是否使能 */
     get IsCompanyEnable() { return this.selectCompanyForm.IsEnabled.value }
     set IsCompanyEnable(value) { this.selectCompanyForm.IsEnabled.value = value }
 
     /** “标签ID”是否使能 */
     readonly IsTagIdEnable = ref(true)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

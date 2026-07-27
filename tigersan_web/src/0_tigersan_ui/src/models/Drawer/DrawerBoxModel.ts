@@ -3,7 +3,7 @@ import { ContentSizeBehavior } from "../../helpers"
 
 /** 抽屉盒子模型 */
 export class DrawerBoxModel extends ContentSizeBehavior {
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“打开” */
     readonly Title = ref('Title')
 
@@ -11,7 +11,7 @@ export class DrawerBoxModel extends ContentSizeBehavior {
     /** “打开”类名 */
     readonly OpenClass = computed(() => { return { 'drawer-box-open': this.IsOpen.value } })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     /** 点击后 */

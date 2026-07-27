@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using TigerSan.NET8.WebApi.Share.Dtos;
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
@@ -21,19 +22,21 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? subPath = null,
             string searchPattern = "*",
             bool isTopOnly = true);
-        /// <summary>获取“文件下载信息”</summary>
-        public Task<MyActionResult<FileDownloadInfo>> GetFileDownloadInfo(string name, string? subPath = null);
+        /// <summary>获取“文件”</summary>
+        public Task<MyActionResult<FileStreamResult>> GetFile(string name, string? subPath = null);
 
         // 增:
         /// <summary>创建“文件夹”</summary>
         public Task<MyActionResult<object>> CreatDir(string name, string? subPath = null);
         /// <summary>上传“文件”</summary>
-        public Task<MyActionResult<object>> UploadFile(
+        /// <returns>Query参数</returns>
+        public Task<MyActionResult<string>> UploadFile(
             IFormFile file,
+            CancellationToken cancellationToken = default,
+            string? name = null,
             string? subPath = null,
             bool isOverwrite = false,
-            long? maxSize = null,
-            CancellationToken cancellationToken = default);
+            long? maxSize = null);
 
         // 改:
         public Task<MyActionResult<object>> Rename(string oldName, string newName, string? subPath = null);

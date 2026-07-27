@@ -25,6 +25,7 @@ export class TagModel extends IdModel {
     latitude?: number
     comment?: string
     reportTime?: Date
+    image?: string
     // 附加:
     company?: bigint
     companyName?: string

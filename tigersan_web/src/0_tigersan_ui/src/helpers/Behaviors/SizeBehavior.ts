@@ -7,14 +7,14 @@ export class SizeBehavior {
     private _observer?: ResizeObserver
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 根元素（需手动绑定到“根元素”上） */
     readonly refRoot = shallowRef<HTMLElement | undefined>()
     /** 实际宽度 */
     readonly ActualWidth = ref(0)
     /** 实际高度 */
     readonly ActualHeight = ref(0)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     /** 获取“宽度” */

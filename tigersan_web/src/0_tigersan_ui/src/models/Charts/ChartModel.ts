@@ -18,12 +18,12 @@ export class ChartModel {
     _onInitBase?: ChartEvent
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “根元素”样式 */
     readonly RootStyle = ref<CSSProperties | undefined>()
     /** 根元素 */
     readonly refRoot = shallowRef<HTMLElement | undefined>()
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

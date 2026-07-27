@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using TigerSan.CsvLog;
-using TigerSan.NET8.WebApi.Attributes;
+using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Extensions;
+using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
@@ -64,31 +63,10 @@ namespace TigerSan.NET8.WebApi.Controllers
             [FromQuery] string name,
             [FromQuery] string? subPath = null)
         {
-            try
-            {
-                var res = await _service.GetFileDownloadInfo(name, subPath);
-                var fileInfo = res.Data;
-                if (fileInfo == null) return BadRequest(LogHelper.Instance.Error(res.Message));
-
-                var stream = new FileStream(fileInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
-
-                return new FileStreamResult(stream, fileInfo.ContentType)
-                {
-                    FileDownloadName = fileInfo.FileName
-                };
-            }
-            catch (FileNotFoundException fe)
-            {
-                return NotFound(LogHelper.Instance.Error(fe.GetMessage()));
-            }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(LogHelper.Instance.Error(ae.GetMessage()));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, LogHelper.Instance.Error(e.GetMessage()));
-            }
+            var res = await _service.GetFile(name, subPath);
+            var file = res.Data;
+            if (file == null) return BadRequest(res.Message);
+            return file;
         }
         #endregion [查]
 
@@ -103,16 +81,18 @@ namespace TigerSan.NET8.WebApi.Controllers
         }
 
         /// <summary>上传“文件”</summary>
+        /// <returns>Query参数</returns>
         [HttpPost("Upload")]
-        [RequestSizeLimit(1073741824)]
-        public async Task<MyActionResult<object>> UploadFile(
+        [RequestSizeLimit(GlobalSettings.MaxFileSize * 1024 * 1024)]
+        public async Task<MyActionResult<string>> UploadFile(
             IFormFile file,
+            CancellationToken cancellationToken = default,
+            [FromForm] string? name = null,
             [FromForm] string? subPath = null,
             [FromForm] bool isOverwrite = false,
-            [FromForm] long? maxSize = null,
-            CancellationToken cancellationToken = default)
+            [FromForm] long? maxSize = null)
         {
-            return await _service.UploadFile(file, subPath, isOverwrite, maxSize, cancellationToken);
+            return await _service.UploadFile(file, cancellationToken, name, subPath, isOverwrite, maxSize);
         }
         #endregion [增]
 
@@ -120,7 +100,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         /// <summary>重命名</summary>
         [HttpPut("Rename")]
         public async Task<MyActionResult<object>> Rename(
-            [FromQuery] string oldName, 
+            [FromQuery] string oldName,
             [FromQuery] string newName,
             [FromQuery] string? subPath = null)
         {

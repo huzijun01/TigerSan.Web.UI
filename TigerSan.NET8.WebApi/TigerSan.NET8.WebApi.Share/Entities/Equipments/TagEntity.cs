@@ -74,5 +74,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public string? Comment { get; set; }
         [SnakeColumn]
         public DateTime? ReportTime { get; set; }
+        [SnakeColumn]
+        public string? Image { get; set; }
     }
 }

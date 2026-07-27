@@ -23,10 +23,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? sort = null,
             bool? ascending = null,
             FilterDto? filter = null);
-        public Task<MyActionResult<AssetEntity>> Add(AssetDto dto, bool isBeginTransaction = true);
-        public Task<MyActionResult<object>> AddRange(List<AssetDto> dtos, bool isBeginTransaction = true);
-        public Task<MyActionResult<object>> Edit(AssetDto dto, bool isBeginTransaction = true);
-        public Task<MyActionResult<object>> EditRange(List<AssetDto> dtos, bool isBeginTransaction = true);
         public Task<MyActionResult<object>> Inbound(List<long> ids, bool isBeginTransaction = true);
         public Task<MyActionResult<object>> Outbound(long site, List<long> ids, bool isBeginTransaction = true);
     }

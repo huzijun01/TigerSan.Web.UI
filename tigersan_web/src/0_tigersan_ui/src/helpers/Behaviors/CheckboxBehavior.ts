@@ -12,10 +12,10 @@ export class CheckboxBehaviorModel {
     _onIsCheckedChanged?: (itemModel?: object) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“选中” */
     readonly IsChecked: Ref<boolean>
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(
@@ -51,14 +51,14 @@ export class CheckboxBehavior {
     private _watchIsSelectAll: WatchHandle
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“全选” */
     readonly IsSelectAll
     /** 是否“允许多选” */
     readonly IsAllowMultiSelect
     /** “复选框模型”集合 */
     readonly CheckboxModels
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(

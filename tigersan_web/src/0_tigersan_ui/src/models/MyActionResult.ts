@@ -1,4 +1,5 @@
 import { DialogHelper } from "../stores"
+import { Texts } from "../texts"
 import { ToastHelper } from './Dialog/ToastHelper'
 import { FormResult, SubmitResult } from "./Form/FormModel"
 
@@ -30,19 +31,19 @@ export class MyActionResult<TData> {
         this.data = data
     }
 
-    static Success(msg: any) {
-        return new MyActionResult<any>(ActionResultCode.Success, msg)
+    static Success(msg: string, data?: unknown) {
+        return new MyActionResult<any>(ActionResultCode.Success, msg, data)
     }
 
-    static Warning(msg: any) {
-        return new MyActionResult<any>(ActionResultCode.Warning, msg)
+    static Warning(msg: string, data?: unknown) {
+        return new MyActionResult<any>(ActionResultCode.Warning, msg, data)
     }
 
-    static Error(msg: any) {
-        return new MyActionResult<any>(ActionResultCode.Error, msg)
+    static Error(msg: string, data?: unknown) {
+        return new MyActionResult<any>(ActionResultCode.Error, msg, data)
     }
 
-    static ShowResult(res: MyActionResult<any>, success: string = '操作成功', isShowSuccess = true) {
+    static ShowResult(res: MyActionResult<unknown>, success?: string, isShowSuccess = true) {
         if (res.code === ActionResultCode.Error) {
             DialogHelper.Error(res.message)
         } else if (res.code === ActionResultCode.InvalidCaptcha) {
@@ -53,8 +54,9 @@ export class MyActionResult<TData> {
         } else if (res.code === ActionResultCode.Warning) {
             DialogHelper.Warning(res.message)
         } else if (isShowSuccess) {
-            if (this._isUseToast) ToastHelper.Success(success)
-            else DialogHelper.Success(success)
+            const msg = success ? success : Texts.OperationSuccessful.value
+            if (this._isUseToast) ToastHelper.Success(msg)
+            else DialogHelper.Success(msg)
         }
     }
 

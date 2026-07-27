@@ -9,7 +9,6 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public string DepartmentName { get; set; } = string.Empty;
         public string TypeName { get; set; } = string.Empty;
         // 记录:
-        public string? TagId { get; set; }
         public string? Rfid { get; set; }
         public string? Plate { get; set; }
         public long? Site { get; set; }

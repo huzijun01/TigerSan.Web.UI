@@ -14,6 +14,7 @@ export * from '@/models/BasicSettings/RoleModel'
 export * from '@/models/BasicSettings/SiteModel'
 export * from '@/models/BasicSettings/UserInfo'
 export * from '@/models/BasicSettings/FileModel'
+export * from '@/models/BasicSettings/ImageModel'
 // Dictionaries:
 export * from '@/models/Dictionaries/DictionaryModels'
 // Equipments:

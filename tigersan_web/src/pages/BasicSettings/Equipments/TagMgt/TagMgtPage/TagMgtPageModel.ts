@@ -1,20 +1,30 @@
 import { computed, ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall, TextModel } from '@/0_tigersan_ui/tigerui'
 import { GetTagTable } from './TagMgtTable'
 import { AssetFilter } from '@/pages/Home/AssetLedgerPage/AssetFilter'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
-import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTypes, EqpType, companyHelper, assetHelper, AssetHelper } from '@/models'
+import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTypes, EqpType, companyHelper, assetHelper, imageModelHelper } from '@/models'
 
 export class TagMgtPageModel {
+    //#region 【Props】
+    /** 图片 */
+    readonly Image = ref<string | undefined>()
+    /** “在线”总数 */
+    readonly OnlineCount = ref(0)
+    /** “离线”总数 */
+    readonly OfflineCount = ref(0)
+
+    readonly IsAllowBinding = computed(() => {
+        const rowData = this.table.SelectedRowDatas.value[0]
+        return rowData && !StringHelper.IsNotEmpty(rowData.assetId)
+    })
+    //#endregion 【Props】
+
     //#region 【Fields】
     /** 设备类型 */
     readonly eqpType: EqpTypes
     /** 设备类型 */
     readonly eqpTypeName: string
-    /** 在线总数 */
-    readonly OnlineCount = ref(0)
-    /** 离线总数 */
-    readonly OfflineCount = ref(0)
     /** 表格 */
     readonly table = GetTagTable()
     /** 分页器 */
@@ -23,6 +33,8 @@ export class TagMgtPageModel {
     readonly switchIsEnable = new SwitchModel()
     /** 资产表单 */
     readonly assetForm = new AssetFormModel()
+    /** 上传器 */
+    readonly upload = imageModelHelper.GetUploadModel()
 
     // 选择框:
     /** 筛选 */
@@ -96,6 +108,14 @@ export class TagMgtPageModel {
         Target: ref(),
     }
 
+    /** “图片”项目配置 */
+    readonly configImage: FormItemConfig<TagModel, string> = {
+        _propName: 'image',
+        PropText: TextModel.Computed('Image', '图片'),
+        IsEquired: false,
+        Target: this.Image,
+    }
+
     /** “增”源数据获取方法 */
     readonly AddGetSource = () => {
         const tag = new TagModel()
@@ -120,6 +140,9 @@ export class TagMgtPageModel {
                 this.selectTagTypeForm.Value.value = baseStationHelper.GetIdName(rowData.type)
             }
         },
+        _onInitAsync: async isEdit => {
+            await this.upload.Load()
+        },
         _itemConfigs: [
             this.configBatch,
             this.configType,
@@ -127,19 +150,13 @@ export class TagMgtPageModel {
             this.configTagId,
             this.configRFID,
             this.configComment,
+            this.configImage,
         ]
     }
 
     /** “标签”表单模型 */
-    readonly tagForm = new FormModel(this.configTagForm)
+    readonly form = new FormModel(this.configTagForm)
     //#endregion 【Fields】
-
-    //#region 【Properties】
-    readonly IsAllowBinding = computed(() => {
-        const rowData = this.table.SelectedRowDatas.value[0]
-        return rowData && !StringHelper.IsNotEmpty(rowData.assetId)
-    })
-    //#endregion 【Properties】
 
     //#region 【Ctor】
     constructor(eqpType: EqpTypes) {
@@ -166,6 +183,31 @@ export class TagMgtPageModel {
         this.selectOnlineState._onChange = this.Refresh
         this.selectIsFall._onChange = this.Refresh
         this.selectIsEnable._onChange = this.Refresh
+
+        // 上传器:
+        this.upload._isAutoLoad = false
+        this.upload.IsAllowMulti.value = false
+        this.upload._getImages = async () => {
+            if (!this.Image.value) return
+            return [{ name: this.Image.value, url: imageModelHelper.BaseUrl + this.Image.value }]
+        }
+        this.upload._onUploaded = async config => {
+            this.form._source.image = this.Image.value = config.name
+            if (this.form._isEdit) {
+                await this.form.OnSubmit(false)
+            }
+        }
+        this.upload._onDeleted = async config => {
+            this.form._source.image = this.Image.value = undefined
+            if (this.form._isEdit) {
+                await this.form.OnSubmit(false)
+            }
+        }
+        this.form._onCloseAsync = async isCancel => {
+            if (isCancel && !this.form._isEdit) {
+                await this.upload.Delete()
+            }
+        }
     }
     //#endregion 【Ctor】
 
@@ -270,24 +312,24 @@ export class TagMgtPageModel {
 
     /** 增 */
     readonly Add = () => {
-        this.tagForm.Title.value = `${Texts.Add.value}${this.eqpTypeName}`
+        this.form.Title.value = `${Texts.Add.value}${this.eqpTypeName}`
 
-        this.tagForm._getSource = this.AddGetSource
+        this.form._getSource = this.AddGetSource
 
-        this.tagForm._onSubmitAsync = async source => {
+        this.form._onSubmitAsync = async source => {
             const res = await tagHelper.Add(source)
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
-        this.tagForm.Show()
+        this.form.Show()
     }
 
     /** 改 */
     readonly Edit = () => {
-        this.tagForm.Title.value = `${Texts.Edit.value}${this.eqpTypeName}`
+        this.form.Title.value = `${Texts.Edit.value}${this.eqpTypeName}`
 
-        this.tagForm._getSource = () => {
+        this.form._getSource = () => {
             const rowData = this.table.SelectedRowDatas.value[0]
 
             if (!rowData) {
@@ -298,13 +340,13 @@ export class TagMgtPageModel {
             return ObjectHelper.ShallowCopy(rowData)
         }
 
-        this.tagForm._onSubmitAsync = async source => {
+        this.form._onSubmitAsync = async source => {
             const res = await tagHelper.Edit(source)
             await this.Refresh()
             return GetSubmitResult(res, Texts.EditedSuccessfully.value)
         }
 
-        this.tagForm.Show(true)
+        this.form.Show(true)
     }
 
     readonly EditIsEnable = (isEnable: boolean) => {
@@ -360,16 +402,16 @@ export class TagMgtPageModel {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const rowData = this.table.SelectedRowDatas.value[0]
-        if (!rowData) {
-            console.warn('The rowData is undefined!')
+        const ids = this.table.SelectedRowDatas.value.map(i => i.id)
+        if (ids.length < 1) {
+            console.warn('No row was selected!')
             return
         }
 
         try {
             loading.IsShow.value = true
 
-            await tagHelper.Delete(rowData.id).then(res => {
+            await tagHelper.DeleteRange(ids).then(res => {
                 this.Refresh()
                 MyActionResult.ShowResult(res, Texts.DeletedSuccessfully.value)
             })

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, type PropType } from 'vue'
+import { onMounted, onBeforeUnmount, type PropType } from 'vue'
 import { Texts, KeyValue, Icons, CountCard, Pie } from '@/0_tigersan_ui/tigerui'
 import { CompanyInfoModel } from '@/models'
 
@@ -39,7 +39,7 @@ onMounted(async () => {
     await model.Refresh()
 })
 
-onUnmounted(async () => {
+onBeforeUnmount(async () => {
     model.watchId.Stop()
 })
 </script>

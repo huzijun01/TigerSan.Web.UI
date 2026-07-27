@@ -1,6 +1,6 @@
 # RESTful接口规范
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 数量 | \[controller\]/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 单条 | \[controller\]/{id} | Get |   | MyActionResult\<TEntity> |
@@ -93,7 +93,7 @@ public class IdName
 
 ## 用户
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 修改密码 | User/Password | Put | PasswordEdit edit | MyActionResult |
 | 登录 | User/Login | Get | string id, string captcha, string search, string password | MyActionResult\<UserInfo> |
@@ -138,7 +138,7 @@ public class CaptchaData
 
 ## 首页
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 场地数量 | Site/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 基站数量 | BaseStation/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
@@ -147,7 +147,7 @@ public class CaptchaData
 
 ## 标签
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 数量 | Tag/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 单条 | Tag/{id} | Get |   | MyActionResult\<TagEntity> |
@@ -202,7 +202,7 @@ public class TagDto : TagEntity
 
 ## 资产
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 数量 | Asset/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 单条 | Asset/{id} | Get |   | MyActionResult\<AssetEntity> |
@@ -282,7 +282,7 @@ public class AssetDto : AssetEntity
 
 ## 资产记录
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 数量 | AssetRecord/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 单条 | AssetRecord/{id} | Get |   | MyActionResult\<AssetRecordEntity> |
@@ -311,7 +311,7 @@ LocationModes? locationMode,
 
 ## 绑定记录
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 数量 | BindingRecord/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 单条 | BindingRecord/{id} | Get |   | MyActionResult\<BindingRecordEntity> |
@@ -346,7 +346,7 @@ public class BindingRecordDto : BindingRecordEntity
 
 ## 车辆
 
-| Name | URL | Action | Param | Return |
+| Name | Action | Method | Param | Return |
 | --- | --- | --- | --- | --- |
 | 数量 | Vehicle/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
 | 单条 | Vehicle/{id} | Get |   | MyActionResult\<VehicleEntity> |

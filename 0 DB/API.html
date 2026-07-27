@@ -1,26 +1,26 @@
 <style>
 body { padding: 15px }
-table { width: 100%; font-size: 11px; color: #000000; font-family: 'Arial'; border-color: #d0d8e3; shading: #f8fafc }
-body { font-size: 11px; color: #000000; font-family: 'Arial' }
-p { font-size: 11px; color: #000000; font-family: 'Arial' }
-h1 { font-size: 24px; color: #000000; font-family: 'Arial'; font-weight: bold }
-h2 { font-size: 20px; color: #000000; font-family: 'Arial'; font-weight: bold }
-h3 { font-size: 16px; color: #000000; font-family: 'Arial'; font-weight: bold }
-h4 { font-size: 11px; color: #000000; font-family: 'Arial' }
-h5 { font-size: 11px; color: #000000; font-family: 'Arial' }
-h6 { font-size: 11px; color: #000000; font-family: 'Arial' }
-strong { font-size: 11px; color: #000000; font-family: 'Arial' }
-em { font-size: 11px; color: #000000; font-family: 'Arial' }
-a { font-size: 11px; color: #000000; font-family: 'Arial'; text-decoration: underline }
-code { font-size: 10px; color: #000000; font-family: 'Courier New' }
-pre { font-size: 9px; color: #000000; font-family: 'Courier New' }
-blockquote { font-size: 11px; color: #333333; font-family: 'Arial'; font-style: italic }
-ul, ol { font-size: 11px; color: #000000; font-family: 'Arial' }
-li { font-size: 11px; color: #000000; font-family: 'Arial' }
-thead th { font-size: 11px; color: #000000; font-family: 'Arial'; font-weight: bold }
-tbody td { font-size: 11px; color: #000000; font-family: 'Arial' }
-hr { font-size: 11px; color: #000000; font-family: 'Arial' }
-img { font-size: 11px; color: #000000; font-family: 'Arial' }
+table { width: 100%; font-size: 11px; color: #1e3a5f; font-family: 'Arial'; border-color: #d0d8e3; shading: #f8fafc }
+body { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+p { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+h1 { font-size: 24px; color: #0d2137; font-family: 'Arial'; font-weight: bold }
+h2 { font-size: 20px; color: #1a3a5c; font-family: 'Arial'; font-weight: bold }
+h3 { font-size: 16px; color: #1a3a5c; font-family: 'Arial'; font-weight: bold }
+h4 { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+h5 { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+h6 { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+strong { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+em { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+a { font-size: 11px; color: #1565c0; font-family: 'Arial'; text-decoration: underline }
+code { font-size: 10px; color: #c7254e; font-family: 'Consolas' }
+pre { font-size: 9px; color: #1e3a5f; font-family: 'Consolas'; background-color: #f0f4f8 }
+blockquote { font-size: 11px; color: #78909c; font-family: 'Arial'; font-style: italic }
+ul, ol { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+li { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+thead th { font-size: 11px; color: #1e3a5f; font-family: 'Arial'; background-color: #e3edf7; font-weight: bold }
+tbody td { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+hr { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
+img { font-size: 11px; color: #1e3a5f; font-family: 'Arial' }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -77,8 +77,8 @@ img { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -219,8 +219,8 @@ public class ParentFilter
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -300,8 +300,8 @@ public class CaptchaData
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -342,8 +342,8 @@ public class CaptchaData
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -469,8 +469,8 @@ public class TagDto : TagEntity
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -645,8 +645,8 @@ public class AssetDto : AssetEntity
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -764,8 +764,8 @@ LocationModes? locationMode,
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>
@@ -871,8 +871,8 @@ public class BindingRecordDto : BindingRecordEntity
 <thead>
 <tr>
   <th>Name</th>
-  <th>URL</th>
   <th>Action</th>
+  <th>Method</th>
   <th>Param</th>
   <th>Return</th>
 </tr>

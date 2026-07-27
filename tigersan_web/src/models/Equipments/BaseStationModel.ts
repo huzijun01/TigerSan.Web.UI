@@ -16,6 +16,7 @@ export class BaseStationModel extends IdNameModel {
     monthOffline: bigint = 0n
     createTime: Date = new Date()
     reportTime?: Date
+    image?: string
 }
 
 class BaseStationHelper extends IdNameHelper<BaseStationModel> {

@@ -30,7 +30,7 @@ export class PieItemModel {
     readonly _color
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “名称”文本 */
     readonly Name
     /** 值 */
@@ -127,7 +127,7 @@ export class PieItemModel {
             transform: `rotate(${this.PerRatioSum.value * 360 - 90}deg)`,
         }
     })
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(
@@ -194,7 +194,7 @@ export class PieModel {
     ]
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “标题”文本 */
     readonly Title
     /** “标题”显示文本 */
@@ -283,7 +283,7 @@ export class PieModel {
         return arr
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(configs?: PieItemConfig[]) {

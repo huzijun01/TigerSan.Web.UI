@@ -25,7 +25,7 @@ export class NavBarModel implements IRoot {
     _onSelectedButtonModelChanged: TryNavButtonHandler | undefined
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 宽度 */
     readonly Width = ref(220)
     /** 是否打开 */
@@ -55,7 +55,7 @@ export class NavBarModel implements IRoot {
     /** 用于IsSelected计算属性 
      * （请勿直接修改） */
     readonly _SelectedButtonModel = shallowRef<NavButtonModel | undefined>()
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Events】
     /** 点击“导航栏开关”按钮 */

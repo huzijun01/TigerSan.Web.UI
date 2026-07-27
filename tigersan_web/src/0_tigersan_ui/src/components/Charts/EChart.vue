@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { ChartModel } from '../../models'
 
 const { model } = defineProps({
@@ -21,7 +21,7 @@ onMounted(() => {
     model.watchIsDark.Start()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     model.watchLocale.Stop()
     model.watchIsDark.Stop()
 })

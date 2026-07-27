@@ -141,8 +141,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 删除“相关部门”
         private async Task<MyActionResult<object>> RemoveDepartment(long id)
         {
-            var res = MyResults<object>.OperationSuccess;
-
             try
             {
                 // 获取“相关部门”：
@@ -153,10 +151,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
 
@@ -164,7 +162,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“单条数据”</summary>
         public override async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
@@ -210,11 +207,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
 
@@ -222,25 +219,24 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>删除“多条数据”</summary>
         public override async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
         {
-            var res = MyResults<object>.OperationSuccess;
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
 
             try
             {
-                if (ids.Count < 1) return res;
+                if (ids.Count < 1) return MyResults<object>.OperationSuccess;
 
                 // 获取“多条数据”：
-                var entities = _dbSet.Where(i => ids.Contains(i.Id));
+                var finds = _dbSet.Where(i => ids.Contains(i.Id));
 
                 // 验证“资源是否存在”：
-                var count = await entities.CountAsync();
+                var count = await finds.CountAsync();
                 if (count < 1)
                 {
                     return MyResults<object>.ResourceNotExist;
                 }
                 else if (count < ids.Count)
                 {
-                    res = MyResults<object>.SomeResourceNotExist;
+                    return MyResults<object>.SomeResourceNotExist;
                 }
 
                 // 删除“后代数据”：
@@ -256,18 +252,18 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 // 删除“多条数据”：
-                _dbSet.RemoveRange(entities);
+                _dbSet.RemoveRange(finds);
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
             }
             catch (Exception e)
             {
-                res = MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
 
-            return res;
+            return MyResults<object>.OperationSuccess;
         }
         #endregion
         #endregion [删]

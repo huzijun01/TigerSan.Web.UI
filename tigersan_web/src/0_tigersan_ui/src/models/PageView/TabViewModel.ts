@@ -27,7 +27,7 @@ export class TabPageModel {
     _rootProps?: Data | null
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 标题 */
     readonly Title = ref('title')
 
@@ -45,7 +45,7 @@ export class TabPageModel {
         return { 'display-none': !this.IsSelected.value }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(
@@ -71,7 +71,7 @@ export class TabPageModel {
 
 /** 标签视图模型 */
 export class TabViewModel {
-    //#region 【Properties】
+    //#region 【Props】
     /** “标签页模型”集合 */
     readonly Pages = shallowReactive<TabPageModel[]>([])
     /** 选中的“标签页模型” */
@@ -87,7 +87,7 @@ export class TabViewModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Events】
     /** 点击后 */

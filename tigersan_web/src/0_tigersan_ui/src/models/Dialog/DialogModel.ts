@@ -28,7 +28,7 @@ export class DialogModel {
     callback?: DialogCallback
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** “标题”文本 */
     readonly Title
     /** “No”文本 */
@@ -52,7 +52,7 @@ export class DialogModel {
     readonly IsShowButtonPanel = computed(() => this.Mode.value != DialogMode.NoButton)
     readonly IsShowNoButton = computed(() => this.Mode.value === DialogMode.YesOrNo)
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(

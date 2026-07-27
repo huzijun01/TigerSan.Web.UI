@@ -13,6 +13,7 @@ class AssetBaseModel extends IdModel {
     isFall?: boolean
     errorType?: ErrorTypes
     tag?: bigint
+    tagId?: string
     tagType?: bigint
     vehicle?: bigint
     transfer?: bigint
@@ -31,7 +32,6 @@ export class AssetModel extends AssetBaseModel {
     departmentName = ''
     typeName = ''
     stateName = ''
-    tagId?: string
     rfid?: string
     plate?: string
     siteName?: string

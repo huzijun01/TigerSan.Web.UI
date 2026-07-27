@@ -7,9 +7,9 @@ export class SearchModel extends TextBoxModel {
     _onSearch?: StringFunc
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly IsShowValue = ref(false)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     readonly OnSearch = () => {

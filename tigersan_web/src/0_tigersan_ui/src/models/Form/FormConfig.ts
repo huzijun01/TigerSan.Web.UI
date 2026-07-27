@@ -10,7 +10,7 @@ export class FormConfig<TSource extends object> {
     /** “源数据获取”方法  */
     _getSource: TObjectAction<TSource>
     /** 关闭后 */
-    _onClose?: Function
+    _onClose?: (isCancel: boolean) => void
     /** 提交时 */
     _onSubmit?: FormSubmit<TSource>
     /** 提交时（异步） */
@@ -25,7 +25,7 @@ export class FormConfig<TSource extends object> {
     _onInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“显示” */
     IsShow?: boolean
     /** 标题 */
@@ -34,7 +34,7 @@ export class FormConfig<TSource extends object> {
     CancelText?: string | ComputedRef<string>
     /** “提交”文本 */
     SubmitText?: string | ComputedRef<string>
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(getSource: TObjectAction<TSource>) {
@@ -60,7 +60,7 @@ export class FormItemConfig<TSource extends object, TTarget> {
     _isVerifyOk?: FormVerify<TSource>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     //#region [需手动绑定]
     /** 目标数据
      * （需手动绑定到“表单元素”上） */
@@ -74,7 +74,7 @@ export class FormItemConfig<TSource extends object, TTarget> {
     PropText?: string | ComputedRef<string>
     /** 是否“必填” */
     IsEquired?: boolean
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(propName: string, target?: Ref<TTarget>) {

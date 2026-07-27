@@ -2,12 +2,16 @@
 {
     public static class GlobalSettings
     {
+        /// <summary>最大“文件”大小（MB）</summary>
+        public const long MaxFileSize = 200;
+        /// <summary>最大“图片”大小（MB）</summary>
+        public const long MaxImageSize = 1;
         /// <summary>“文件”文件夹</summary>
-        public static string DirFiles = Path.Combine(AppContext.BaseDirectory, "Files");
-        /// <summary>“文件”最大大小（MB）</summary>
-        public static long MaxFileSize = 200;
-        /// <summary>“图片”最大大小（MB）</summary>
-        public static long MaxImageSize = 1;
+        public static readonly string DirFiles = Path.Combine(AppContext.BaseDirectory, "Files");
+        /// <summary>“图片”文件夹名称</summary>
+        public static readonly string DirImagesName = "Images";
+        /// <summary>“图片”文件夹</summary>
+        public static readonly string DirImages = Path.Combine(DirFiles, DirImagesName);
         /// <summary>“距离”阈值（米）</summary>
         public static double DistanceThresholdMeters = 500;
         /// <summary>“滞留”阈值（时）</summary>

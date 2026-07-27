@@ -1,15 +1,9 @@
-import { computed, ref, shallowRef } from 'vue'
-import { TableModel, ItemType, loading, ArrayHelper, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, Texts, FileType, MyActionResult, StringHelper, PathHelper, FileHelper } from '@/0_tigersan_ui/tigerui'
-import { companyHelper, fileModelHelper, FileInfo } from '@/models'
+import { computed, ref } from 'vue'
+import { TableModel, ItemType, loading, ArrayHelper, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, Texts, FileType, MyActionResult, StringHelper, PathHelper, UploadBase } from '@/0_tigersan_ui/tigerui'
+import { fileModelHelper, FileInfo } from '@/models'
 
-export class FileMgtPageModel {
+export class FileMgtPageModel extends UploadBase {
     //#region 【Fields】
-    /** 文件选择器 */
-    readonly fileInput = FileHelper.GetInput(files => {
-        const file = files[0]
-        if (file) this.UploadAsync(file)
-    })
-
     /** 表格模型 */
     readonly table = new TableModel<FileInfo>([
         {
@@ -60,21 +54,13 @@ export class FileMgtPageModel {
     ])
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 总数 */
     readonly Count = ref(0)
-    /** 百分比 */
-    readonly Percent = ref(0)
     /** 子路径 */
     readonly SubPath = ref('')
-    /** 终止控制器 */
-    readonly Controller = shallowRef<AbortController | undefined>()
 
     //#region [computed]
-    /** 是否“正在处理” */
-    readonly IsProcessing = computed(() => this.Controller.value != undefined)
-    /** “百分比”文本 */
-    readonly PercentText = computed(() => this.IsProcessing.value ? this.Percent.value + '%' : '')
     /** 是否“允许重命名” */
     readonly IsAllowRename = computed(() => !this.IsProcessing.value && this.table.IsOnlySelected.value)
     /** 是否“允许删除” */
@@ -82,10 +68,15 @@ export class FileMgtPageModel {
     /** 是否“允许返回” */
     readonly IsAllowGoBack = computed(() => !this.IsProcessing.value && StringHelper.IsNotEmpty(this.SubPath.value))
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {
+        super(files => {
+            const file = files[0]
+            if (file) this.UploadAsync(file)
+        })
+
         this.table.IsAllowMultiSelect.value = true
         this.table._onSlotChange = this.Refresh
         this.table._initItem = item => {
@@ -100,8 +91,6 @@ export class FileMgtPageModel {
         loading.IsShow.value = true
 
         try {
-            await companyHelper.UpdateIdNames()
-
             this.Count.value = 0
             const res = await fileModelHelper.GetPathList({ subPath: this.SubPath.value })
             const arr = res.data
@@ -131,11 +120,6 @@ export class FileMgtPageModel {
         const res = await fileModelHelper.CreateDir(name, this.SubPath.value)
         this.Refresh()
         MyActionResult.ShowResult(res, Texts.AddedSuccessfully.value)
-    }
-
-    /** 上传 */
-    readonly Upload = () => {
-        this.fileInput.click()
     }
 
     /** 上传（异步） */

@@ -6,6 +6,7 @@ export class Icons {
     static Asset = ""
     static Album = ""
     static Add_PIC = ""
+    static Add_Thin = ""
     static Animation = ""
     static Add_Small = ""
     static Arrow_Down = ""

@@ -147,6 +147,7 @@ export class Texts {
     static readonly Operation = TextModel.Computed('Operation', '操作')
     static readonly OldPassword = TextModel.Computed('OldPassword', '旧密码')
     static readonly OnlineState = TextModel.Computed('OnlineState', '在线状态')
+    static readonly OperationSuccessful = TextModel.Computed('Operation successful', '操作成功')
     static readonly OutboundSuccessful = TextModel.Computed('Outbound operation successful', '出库成功')
     // P:
     static readonly Pie = TextModel.Computed('Pie', '饼图')
@@ -154,6 +155,7 @@ export class Texts {
     static readonly Phone = TextModel.Computed('Phone', '电话')
     static readonly Plate = TextModel.Computed('Plate', '车牌号')
     static readonly Parent = TextModel.Computed('Parent', '父级')
+    static readonly Preview = TextModel.Computed('Preview', '预览')
     static readonly Percent = TextModel.Computed('Percent', '百分比')
     static readonly Password = TextModel.Computed('Password', '密码')
     static readonly Progress = TextModel.Computed('Progress', '进度')
@@ -178,6 +180,7 @@ export class Texts {
     static readonly Select = TextModel.Computed('Select', '选中')
     static readonly Signal = TextModel.Computed('Signal', '信号')
     static readonly Salary = TextModel.Computed('Salary', '薪资')
+    static readonly Seconds = TextModel.Computed('Seconds', '秒')
     static readonly Success = TextModel.Computed('Success', '成功')
     static readonly Station = TextModel.Computed('Station', '站点')
     static readonly Scenario = TextModel.Computed('Scenario', '场景')

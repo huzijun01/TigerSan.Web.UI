@@ -10,12 +10,12 @@ export class TimerHelper {
     _timeout: number
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“开始” */
     get IsStarted() { return this._id != undefined }
     /** 是否“停止” */
     get IsStoped() { return this._id === undefined }
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(

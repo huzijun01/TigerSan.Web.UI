@@ -8,7 +8,7 @@ export class TextModel {
     zhCn: string
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     //#region [computed]
     /** “实际值”计算属性 */
     readonly Value = computed(() => {
@@ -22,7 +22,7 @@ export class TextModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(en: string, zhCn: string) {

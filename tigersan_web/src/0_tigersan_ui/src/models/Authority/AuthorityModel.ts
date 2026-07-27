@@ -32,12 +32,12 @@ export class AuthorityHelper {
     readonly _tree = new TreeModel<AuthorityNodeData>()
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“只读” */
     readonly IsReadonly = ref(false)
     /** “权限”数组 */
     readonly Authorities = shallowReactive<PathIsReadonly[]>([])
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

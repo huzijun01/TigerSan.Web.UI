@@ -10,7 +10,7 @@ export class TextBoxModel {
     _onEnter?: StringFunc
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly Value = ref('')
     readonly Width = ref('208px')
     readonly IsReadonly = ref(false)
@@ -28,7 +28,7 @@ export class TextBoxModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

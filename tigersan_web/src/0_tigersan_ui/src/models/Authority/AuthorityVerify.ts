@@ -18,7 +18,7 @@ export class AuthorityVerify {
     readonly Path = ref('')
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“可用” */
     readonly IsEnable = computed((): boolean => {
         return this.Authorities.some(n => n.path === this.Path.value)
@@ -33,7 +33,7 @@ export class AuthorityVerify {
         }
         return find ? find.isReadonly : true
     })
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(authorities: ShallowReactive<PathIsReadonly[]>, path: string = '') {

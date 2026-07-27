@@ -1,4 +1,6 @@
 import { computed, ref, watch, type StyleValue } from "vue"
+import { Texts } from "../../texts"
+import { LanguageBehavior } from "../../helpers"
 
 export class PopWindowModel {
     //#region 【Fields】
@@ -8,11 +10,13 @@ export class PopWindowModel {
     _onClose?: (model: PopWindowModel) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“显示” */
     readonly IsShow = ref(false)
     /** 标题 */
-    readonly Title = ref('Title')
+    readonly Title
+    /** “标题”显示文本 */
+    readonly ShowTitle
     /** 最小宽度 */
     readonly MinWidth = ref<string | undefined>()
     /** 最小高度 */
@@ -27,10 +31,14 @@ export class PopWindowModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {
+        const lbTitle = new LanguageBehavior(Texts.Title)
+        this.Title = lbTitle.Text
+        this.ShowTitle = lbTitle.ShowText
+
         watch(this.IsShow, isShow => {
             if (isShow) {
                 this._onShow?.(this)

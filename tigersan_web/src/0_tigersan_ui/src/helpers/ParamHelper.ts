@@ -24,6 +24,6 @@ export class ParamHelper {
             }
         })
 
-        return `?${queryParts.join('&')}`;
+        return queryParts.length < 1 ? '' : `?${queryParts.join('&')}`
     }
 }

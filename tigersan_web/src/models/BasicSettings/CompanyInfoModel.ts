@@ -14,7 +14,7 @@ export class CompanyInfoModel {
     readonly assetStates = new PieModel()
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly Id = ref<bigint | undefined>()
     readonly Name = ref<string | undefined>()
     readonly Addr = ref<string | undefined>()
@@ -23,7 +23,7 @@ export class CompanyInfoModel {
     readonly AssetCount = ref(0)
     readonly TagCount = ref(0)
     readonly IsShowAddr = computed(() => { return StringHelper.IsNotEmpty(this.Addr.value) })
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

@@ -36,7 +36,7 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
     _onChecked?: TreeNodeModelFunc<TData>
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 子项高度 */
     readonly SubItemsHeight = ref(0)
     /** 是否“允许显示” */
@@ -115,7 +115,7 @@ export class TreeNodeModel<TData> extends ContentSizeBehavior {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(
@@ -306,7 +306,7 @@ export class TreeModel<TData> implements IRoot {
     _onInited?: Function
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 是否“显示复选框” */
     readonly IsShowCheckbox = ref(true)
     /** 激活节点 */
@@ -324,7 +324,7 @@ export class TreeModel<TData> implements IRoot {
     /** “激活节点”的数据 */
     readonly ActiveData = computed(() => this.ActiveNode.value?._data)
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(

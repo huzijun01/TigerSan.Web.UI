@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import SelectMenu from './SelectMenu.vue'
-import { watch, onMounted, onUnmounted } from 'vue'
+import { watch, onMounted, onBeforeUnmount } from 'vue'
 import { Icons } from '../../base'
 import { SelectModel } from '../../models'
 import { ContentBehavior } from '../../helpers'
@@ -44,7 +44,7 @@ onMounted(async () => {
     if (model._isAutoUpdate) await model.UpdateItemsAsync()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     watchIsOpen.stop()
     SetEventListener(false)
     model.IsOpen.value = false

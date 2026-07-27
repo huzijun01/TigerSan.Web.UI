@@ -94,9 +94,9 @@ export class LoginFormModel {
     readonly form = new FormModel(this.configLoginForm)
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly CaptchaUrl = ref<string | undefined>()
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {

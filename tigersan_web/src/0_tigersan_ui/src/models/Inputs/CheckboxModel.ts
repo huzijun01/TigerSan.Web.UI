@@ -8,12 +8,12 @@ export class CheckboxModel {
     _onChange?: (model: CheckboxModel) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly IsChecked = ref(false)
     readonly Value = ref<string>()
     readonly Text = ref('')
     readonly IsReadonly = ref(false)
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     readonly OnChange = () => {
@@ -29,9 +29,9 @@ export class CheckboxGroupModel {
     _onChange?: StringArrayFunc
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly Values = ref<Array<string>>([])
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     readonly OnChange = () => {

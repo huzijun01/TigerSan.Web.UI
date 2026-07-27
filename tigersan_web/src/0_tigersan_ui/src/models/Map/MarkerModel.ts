@@ -21,7 +21,7 @@ export class MarkerModel<TData, TInfoModel> {
     onClick?: (data: any) => void
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 模式 */
     readonly Mode = ref(MarkerModes.Normal)
 
@@ -38,7 +38,7 @@ export class MarkerModel<TData, TInfoModel> {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(opts?: MarkerModelOptions<TData, TInfoModel>) {

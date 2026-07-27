@@ -6,7 +6,7 @@ export class SwitchModel {
     _onChange?: BooleanFunc
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     readonly Value = ref(false)
     readonly IsEnable = ref(true)
     readonly OnText = ref('ON')
@@ -24,7 +24,7 @@ export class SwitchModel {
         }
     })
     //#endregion [computed]
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Functions】
     readonly OnClick = () => {

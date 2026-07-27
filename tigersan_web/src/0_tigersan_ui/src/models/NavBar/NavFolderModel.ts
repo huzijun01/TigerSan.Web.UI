@@ -12,7 +12,7 @@ export class NavFolderModel extends NavItemModel {
     private readonly _behavior = new FolderBehavior(this.NavBarModel, this)
     //#endregion 【Fields】
 
-    //#region 【Properties】
+    //#region 【Props】
     /** 所属“目录”模型 */
     ParentFolderModel?: NavFolderModel
     /** 是否打开 */
@@ -23,7 +23,7 @@ export class NavFolderModel extends NavItemModel {
     readonly ButtonModels: ShallowReactive<NavButtonModel[]> = shallowReactive([])
     /** “目录”集合 */
     readonly FolderModels: ShallowReactive<NavFolderModel[]> = shallowReactive([])
-    //#endregion 【Properties】
+    //#endregion 【Props】
 
     //#region 【Events】
     /** 点击后 */
