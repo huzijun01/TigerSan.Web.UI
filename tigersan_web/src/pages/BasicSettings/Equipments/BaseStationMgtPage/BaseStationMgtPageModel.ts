@@ -1,12 +1,10 @@
 import { ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
 import { baseStationMgtTable } from './BaseStationMgtTable'
 import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationModel, imageModelHelper } from '@/models'
 
 export class BaseStationMgtPageModel {
     //#region 【Props】
-    /** 图片 */
-    readonly Image = ref<string | undefined>()
     /** “在线”总数 */
     readonly OnlineCount = ref(0)
     /** “离线”总数 */
@@ -109,7 +107,7 @@ export class BaseStationMgtPageModel {
         _propName: 'image',
         PropText: TextModel.Computed('Image', '图片'),
         IsEquired: false,
-        Target: this.Image,
+        Target: ref<string | undefined>(),
     }
 
     /** “增”源数据获取方法 */
@@ -182,25 +180,9 @@ export class BaseStationMgtPageModel {
         this.upload._isAutoLoad = false
         this.upload.IsAllowMulti.value = false
         this.upload._getImages = async () => {
-            if (!this.Image.value) return
-            return [{ name: this.Image.value, url: imageModelHelper.BaseUrl + this.Image.value }]
-        }
-        this.upload._onUploaded = async config => {
-            this.form._source.image = this.Image.value = config.name
-            if (this.form._isEdit) {
-                await this.form.OnSubmit(false)
-            }
-        }
-        this.upload._onDeleted = async config => {
-            this.form._source.image = this.Image.value = undefined
-            if (this.form._isEdit) {
-                await this.form.OnSubmit(false)
-            }
-        }
-        this.form._onCloseAsync = async isCancel => {
-            if (isCancel && !this.form._isEdit) {
-                await this.upload.Delete()
-            }
+            const image = this.form._source.image
+            if (!image) return
+            return [{ name: image, url: imageModelHelper.BaseUrl + image }]
         }
     }
     //#endregion 【Ctor】
@@ -290,6 +272,12 @@ export class BaseStationMgtPageModel {
         this.form._getSource = this.AddGetSource
 
         this.form._onSubmitAsync = async source => {
+            const resUpload = await this.upload.Submit()
+            if (resUpload.code === ActionResultCode.Error) return GetSubmitResult(resUpload)
+
+            const imgs = this.upload.UsedImages.value
+            source.image = imgs ? imgs[0]?._config.name : undefined
+
             const res = await baseStationHelper.Add(source)
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
@@ -314,6 +302,12 @@ export class BaseStationMgtPageModel {
         }
 
         this.form._onSubmitAsync = async source => {
+            const resUpload = await this.upload.Submit()
+            if (resUpload.code === ActionResultCode.Error) return GetSubmitResult(resUpload)
+
+            const imgs = this.upload.UsedImages.value
+            source.image = imgs ? imgs[0]?._config.name : undefined
+
             const res = await baseStationHelper.Edit(source)
             await this.Refresh()
             return GetSubmitResult(res, Texts.EditedSuccessfully.value)

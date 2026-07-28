@@ -5,50 +5,49 @@ import { Texts } from '../../../texts'
 import { UploadBase, FileTypes } from '../../UploadBase'
 import { ImagePreviewModel } from '../../Dialog/ImagePreviewModel'
 import { ActionResultCode, MyActionResult } from '../../MyActionResult'
-import { Methods, ArrayHelper, AxiosBase, KeyValueModel, WatchBehavior } from '../../../helpers'
+import { Methods, ArrayHelper, AxiosBase, KeyValueModel } from '../../../helpers'
 
-export type ImageConfig = { name: string, url: string, params?: KeyValueModel[] }
-export type FnUpload = (file: File) => Promise<MyActionResult<ImageConfig>>
-export type FnUploaded = (config: ImageConfig) => Promise<void>
-export type FnDelete = (config: ImageConfig) => Promise<MyActionResult<any>>
-export type FnDeleted = (config: ImageConfig) => Promise<void>
+/** “图片”URL */
+export type ImageUrl = { name: string, url: string, params?: KeyValueModel[] }
+/** “图片”文件 */
+export type ImageFile = { name: string, file: File }
+/** “图片”配置 */
+export type ImageConfig = { name: string, url?: string, params?: KeyValueModel[], file?: File }
+/** “上传”方法 */
+export type FnUpload = (file: File) => Promise<MyActionResult<ImageUrl>>
+/** “删除”方法 */
+export type FnDelete = (config: ImageUrl) => Promise<MyActionResult<any>>
+/** “获取图片集合”方法 */
 export type FnGetImages = () => Promise<ImageConfig[] | undefined>
+/** “上传后”回调 */
+export type UploadedHandler = (config: ImageUrl) => Promise<void>
+/** “删除后”回调 */
+export type DeletedHandler = (config: ImageConfig) => Promise<void>
 
 /** “图片”模型 */
 export class UploadImageModel {
     //#region 【Fields】
-    /** 所属“上传器” */
-    private readonly _upload: UploadModel
     /** ID */
     readonly _id = nanoid()
-    /** “URL”监听器 */
-    readonly _watchUrl
-    /** Query参数 */
-    _params
+    /** 所属“上传器” */
+    readonly _upload: UploadModel
+    /** 配置 */
+    _config: ImageConfig
     //#endregion 【Fields】
 
     //#region 【Props】
-    /** 名称 */
-    readonly Name = ref<string>('')
-    /** URL
-     * （会触发“加载”） */
-    readonly Url = ref<string>('')
     /** Blob URL
      * （由“ImageModel”内部维护） */
     readonly BlobUrl = ref<string | undefined>()
+    /** 是否“删除”
+     * （由“ImageModel”内部维护） */
+    readonly IsDelete = ref(false)
     //#endregion 【Props】
 
     //#region 【Ctor】
     constructor(upload: UploadModel, config: ImageConfig) {
         this._upload = upload
-        this.Name.value = config.name
-        this.Url.value = config.url
-        this._params = config.params
-
-        this._watchUrl = new WatchBehavior(this.Url, (value, oldValue) => {
-            if (value === oldValue || !value) return
-            this.Load()
-        })
+        this._config = config
     }
     //#endregion 【Ctor】
 
@@ -60,64 +59,104 @@ export class UploadImageModel {
 
     /** 加载 */
     readonly Load = async () => {
-        this._watchUrl.Start()
-
         if (this.BlobUrl.value) {
             URL.revokeObjectURL(this.BlobUrl.value)
             this.BlobUrl.value = undefined
         }
 
-        if (!this.Url.value || this.Url.value === '') return
-
-        try {
-            const blob = await this._upload._axiosBase.GetBlob(this.Url.value, this._params, this._upload._method)
-            if (!blob) return
-            this.BlobUrl.value = URL.createObjectURL(blob)
-        } catch (error) {
-            console.error(error)
+        if (this._config.url) {
+            try {
+                const blob = await this._upload._axiosBase.GetBlob(this._config.url, this._config.params, this._upload._method)
+                if (!blob) return
+                this.BlobUrl.value = URL.createObjectURL(blob)
+            } catch (error) {
+                console.error(error)
+            }
+        } else if (this._config.file) {
+            this.BlobUrl.value = URL.createObjectURL(this._config.file)
+        } else {
+            console.warn('The "url" and "file" cannot both be undefined!')
+            ArrayHelper.Delete(this._upload.Images, this)
         }
     }
 
     /** 销毁 */
     readonly Dispose = () => {
-        this._watchUrl.Stop()
-
         if (this.BlobUrl.value) {
             URL.revokeObjectURL(this.BlobUrl.value)
             this.BlobUrl.value = undefined
         }
 
-        this.Url.value = ''
-        this._params = undefined
+        this._config.url = undefined
+        this._config.params = undefined
+        this._config.file = undefined
     }
 
     /** 打开 */
     readonly Open = () => {
         this._upload._preview.IsShow.value = true
-        this._upload._preview.Title.value = this.Name.value
+        this._upload._preview.Title.value = this._config.name
         this._upload._preview.Url.value = this.BlobUrl.value
     }
 
-    /** 删除 */
-    readonly Delete = async () => {
-        if (this._upload.IsInoperable.value) return
+    /** 标记删除 */
+    readonly MarkDelete = () => {
+        if (this._config.file || !this.BlobUrl.value) {
+            ArrayHelper.Delete(this._upload.Images, this)
+        } else {
+            this.IsDelete.value = true
+        }
+    }
+
+    /** 上传 */
+    readonly UploadAsync = async (): Promise<MyActionResult<any>> => {
+        if (!this._config.file) return MyActionResult.Success('No need to upload!')
+        if (this._upload.IsInoperable.value) return MyActionResult.Error('Is inoperable!')
+
         this._upload.IsLoading.value = true
 
         try {
-            if (this.Url.value) {
+            this._upload.Controller.value = new AbortController()
+            const res = await this._upload._upload(this._config.file)
+            if (!res.data) {
+                MyActionResult.ShowResult(res, res.message, false)
+                return res
+            }
+
+            this._config = res.data // 覆盖“配置”
+            this.Load() // 重新加载
+            this._upload._onUploaded?.(res.data)
+            MyActionResult.ShowResult(res, undefined, false)
+            return MyActionResult.Success(Texts.UploadedSuccessfully.value)
+        } finally {
+            this._upload.Percent.value = 0
+            this._upload.Controller.value = undefined
+            this._upload.IsLoading.value = false
+        }
+    }
+
+    /** 删除 */
+    readonly DeleteAsync = async (): Promise<MyActionResult<any>> => {
+        if (this._upload.IsInoperable.value) return MyActionResult.Error('Is inoperable!')
+        this._upload.IsLoading.value = true
+
+        try {
+            if (this._config.url && !this._config.file) {
                 const res = await this._upload._delete({
-                    name: this.Name.value,
-                    url: this.Url.value,
-                    params: this._params
+                    name: this._config.name,
+                    url: this._config.url,
+                    params: this._config.params
                 })
                 if (res.code === ActionResultCode.Error) {
-                    return MyActionResult.ShowResult(res)
+                    MyActionResult.ShowResult(res)
+                    return res
                 } else {
                     MyActionResult.ShowResult(res, undefined, false)
                 }
             }
-            await this._upload._onDeleted?.({ name: this.Name.value, url: this.Url.value, params: this._params })
+            await this._upload._onDeleted?.(this._config)
             ArrayHelper.Delete(this._upload.Images, this)
+            return MyActionResult.Success(Texts.DeletedSuccessfully.value)
         } finally {
             this._upload.IsLoading.value = false
         }
@@ -144,9 +183,9 @@ export class UploadModel extends UploadBase {
     /** “获取图片集合”方法 */
     _getImages: FnGetImages
     /** “上传”后 */
-    _onUploaded?: FnUploaded
+    _onUploaded?: UploadedHandler
     /** “删除”后 */
-    _onDeleted?: FnDeleted
+    _onDeleted?: DeletedHandler
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -163,10 +202,13 @@ export class UploadModel extends UploadBase {
     readonly IsLoading = ref(false)
 
     //#region [computed]
+    /** 使用的“图片”集合 */
+    readonly UsedImages = computed(() => this.Images.filter(i => !i.IsDelete.value))
     /** 是否“不可操作” */
     readonly IsInoperable = computed(() => this.IsProcessing.value || this.IsLoading.value)
     /** 是否“允许添加” */
-    readonly IsAllowAdd = computed(() => this.IsAllowMulti.value || this.Images.length < 1)
+    readonly IsAllowAdd = computed(() => this.IsAllowMulti.value || this.UsedImages.value.length < 1)
+    /** 根样式 */
     readonly RootStyle = computed((): StyleValue => {
         return {
             '--size': this.Size.value + 'px',
@@ -185,7 +227,7 @@ export class UploadModel extends UploadBase {
     }) {
         super(files => {
             const file = files[0]
-            if (file) this.UploadAsync(file)
+            if (file) this.Add({ name: file.name, file: file })
         })
         this.Type = FileTypes.Image
         this._axiosBase = opts.axiosBase ?? new AxiosBase()
@@ -208,9 +250,11 @@ export class UploadModel extends UploadBase {
     /** 加载 */
     readonly Load = async () => {
         this.Images.splice(0)
+
         if (!this._getImages) return
         const arr = await this._getImages()
         if (!arr) return
+
         arr.forEach(i => this.Add(i))
     }
 
@@ -218,41 +262,34 @@ export class UploadModel extends UploadBase {
     readonly Add = (config: ImageConfig) => {
         if (!this.IsAllowAdd.value) return
 
-        this.Images.push(new UploadImageModel(this, config))
-    }
-
-    /** 上传（异步） */
-    readonly UploadAsync = async (file: File) => {
-        if (this.IsInoperable.value) return
-        if (!this.IsAllowAdd.value) return
-
-        if (!this._upload) {
-            console.warn('The _upload is undefined!')
+        if (!config.url && !config.file) {
+            console.warn('Please input url or file!')
             return
         }
 
-        this.IsLoading.value = true
+        this.Images.push(new UploadImageModel(this, config))
+    }
 
-        try {
-            this.Controller.value = new AbortController()
-            const res = await this._upload(file)
-            if (!res.data) {
-                MyActionResult.ShowResult(res, res.message, false)
-                return
-            }
-            this.Add(res.data)
-            this._onUploaded?.(res.data)
-            MyActionResult.ShowResult(res, undefined, false)
-        } finally {
-            this.Percent.value = 0
-            this.Controller.value = undefined
-            this.IsLoading.value = false
+    /** 提交 */
+    readonly Submit = async (): Promise<MyActionResult<any>> => {
+        const deleteImages = this.Images.filter(i => i.IsDelete.value && !i._config.file)
+        for (let i = 0; i < deleteImages.length; i++) {
+            const res = await (deleteImages[i] as UploadImageModel).DeleteAsync()
+            if (res.code === ActionResultCode.Error) return res
         }
+
+        const uploadImages = this.Images.filter(i => !i.IsDelete.value && i._config.file)
+        for (let i = 0; i < uploadImages.length; i++) {
+            const res = await (uploadImages[i] as UploadImageModel).UploadAsync()
+            if (res.code === ActionResultCode.Error) return res
+        }
+
+        return MyActionResult.Success(Texts.SubmittedSuccessfully.value)
     }
 
     /** 删除 */
     readonly Delete = async () => {
-        const fnDeletes = this.Images.map(i => i.Delete)
+        const fnDeletes = this.Images.map(i => i.DeleteAsync)
         for (let i = 0; i < fnDeletes.length; i++) {
             const fnDelete = fnDeletes[i]
             await fnDelete?.()

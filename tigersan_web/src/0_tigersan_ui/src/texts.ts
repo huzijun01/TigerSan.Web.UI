@@ -190,6 +190,7 @@ export class Texts {
     static readonly ShipmentTime = TextModel.Computed('ShipmentTime', '出货')
     static readonly StationType = TextModel.Computed('StationType', '基站类型')
     static readonly SystemSettings = TextModel.Computed('SystemSettings', '系统设置')
+    static readonly SubmittedSuccessfully = TextModel.Computed('Submitted Successfully', '提交成功')
     // T:
     static readonly To = TextModel.Computed('To', '到')
     static readonly Tag = TextModel.Computed('Tag', '标签')

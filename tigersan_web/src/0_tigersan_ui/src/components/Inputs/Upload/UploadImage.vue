@@ -1,10 +1,10 @@
 <template>
-    <div class="item img-panel input-border">
-        <img :src="model.BlobUrl.value" :alt="model.Name.value">
+    <div class="item img-panel input-border" v-show="!model.IsDelete.value">
+        <img :src="model.BlobUrl.value" :alt="model._config.name">
         <div class="mask flex-center">
             <div class="button-panel flex-center">
                 <i class="iconfont" @click="model.Open">{{ Icons.Search }}</i>
-                <i class="iconfont" @click="model.Delete">{{ Icons.Delete_Linear }}</i>
+                <i class="iconfont" @click="model.MarkDelete">{{ Icons.Delete_Linear }}</i>
             </div>
         </div>
     </div>
