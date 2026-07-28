@@ -288,12 +288,14 @@ export class UploadModel extends UploadBase {
     }
 
     /** 删除 */
-    readonly Delete = async () => {
+    readonly Delete = async (): Promise<MyActionResult<any>> => {
         const fnDeletes = this.Images.map(i => i.DeleteAsync)
         for (let i = 0; i < fnDeletes.length; i++) {
-            const fnDelete = fnDeletes[i]
-            await fnDelete?.()
+            const res = await (fnDeletes[i] as () => Promise<MyActionResult<any>>)()
+            if (res.code === ActionResultCode.Error) return res
         }
+
+        return MyActionResult.Success(Texts.DeletedSuccessfully.value)
     }
     //#endregion 【Functions】
 }

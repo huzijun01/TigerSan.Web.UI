@@ -91,9 +91,9 @@ export class FormModel<TSource extends object> {
      * （由“FormModel”内部维护） */
     _itemModels = new Array<FormItemModel<TSource, any>>()
     /** 关闭后 */
-    _onClose?: (isCancel: boolean) => void
+    _onClose?: (isCancel: boolean, isEdit: boolean) => any
     /** 关闭后（异步） */
-    _onCloseAsync?: (isCancel: boolean) => Promise<void>
+    _onCloseAsync?: (isCancel: boolean, isEdit: boolean) => Promise<any>
     /** 获取“源数据”  */
     _getSource: TObjectAction<TSource>
     /** 提交时 */
@@ -101,13 +101,13 @@ export class FormModel<TSource extends object> {
     /** 提交时（异步） */
     _onSubmitAsync?: FormSubmitAsync<TSource>
     /** 初始化前 */
-    _beforeInit?: (isEdit: boolean) => void
+    _beforeInit?: (isEdit: boolean) => any
     /** 初始化前（异步）：优先执行该方法 */
-    _beforeInitAsync?: (isEdit: boolean) => Promise<void>
+    _beforeInitAsync?: (isEdit: boolean) => Promise<any>
     /** 初始化后 */
-    _onInit?: (isEdit: boolean) => void
+    _onInit?: (isEdit: boolean) => any
     /** 初始化后（异步）：优先执行该方法 */
-    _onInitAsync?: (isEdit: boolean) => Promise<void>
+    _onInitAsync?: (isEdit: boolean) => Promise<any>
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -198,7 +198,7 @@ export class FormModel<TSource extends object> {
     //#region 【Functions】
     //#region [private]
     /** 遍历“项目模型”集合 */
-    private ForEachItemModels<TTarget>(fn: (itemModel: FormItemModel<TSource, TTarget>) => void) {
+    private ForEachItemModels<TTarget>(fn: (itemModel: FormItemModel<TSource, TTarget>) => any) {
         for (let index = 0; index < this._itemModels.length; index++) {
             const itemModel = this._itemModels[index]
 
@@ -316,8 +316,8 @@ export class FormModel<TSource extends object> {
         try {
             loading.IsShow.value = true
 
-            this._onClose?.(isCancel)
-            await this._onCloseAsync?.(isCancel)
+            this._onClose?.(isCancel, this._isEdit)
+            await this._onCloseAsync?.(isCancel, this._isEdit)
             this.IsShow.value = false
         } finally {
             loading.IsShow.value = false

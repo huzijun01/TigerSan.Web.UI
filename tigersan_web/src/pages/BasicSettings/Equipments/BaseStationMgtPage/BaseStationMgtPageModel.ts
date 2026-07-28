@@ -279,6 +279,14 @@ export class BaseStationMgtPageModel {
             source.image = imgs ? imgs[0]?._config.name : undefined
 
             const res = await baseStationHelper.Add(source)
+            if (res.code === ActionResultCode.Error
+                && this.form._getSource().image != source.image) {
+                const resDelete = await this.upload.Delete()
+                if (resDelete.code === ActionResultCode.Error) {
+                    MyActionResult.ShowResult(res, undefined, false)
+                }
+            }
+
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
@@ -309,6 +317,14 @@ export class BaseStationMgtPageModel {
             source.image = imgs ? imgs[0]?._config.name : undefined
 
             const res = await baseStationHelper.Edit(source)
+            if (res.code === ActionResultCode.Error
+                && this.form._getSource().image != source.image) {
+                const resDelete = await this.upload.Delete()
+                if (resDelete.code === ActionResultCode.Error) {
+                    MyActionResult.ShowResult(res, undefined, false)
+                }
+            }
+
             await this.Refresh()
             return GetSubmitResult(res, Texts.EditedSuccessfully.value)
         }
