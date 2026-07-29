@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, loading, PaginationModel, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdName, MyActionResult, loading, PaginationModel, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { personMgtTable } from './PersonMgtTable'
-import { companyHelper, personHelper, departmentHelper, roleHelper, PersonModel } from '@/models'
+import { companyHelper, personHelper, departmentHelper, roleHelper, PersonEntity } from '@/models'
 
 export class PersonMgtForm {
     //#region 【Fields】
@@ -22,7 +22,7 @@ export class PersonMgtForm {
     readonly pagination = new PaginationModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<PersonModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<PersonEntity, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: false,
@@ -33,7 +33,7 @@ export class PersonMgtForm {
     }
 
     /** “部门”项目配置 */
-    readonly configDepartment: FormItemConfig<PersonModel, IdNameModel> = {
+    readonly configDepartment: FormItemConfig<PersonEntity, IdName> = {
         _propName: 'department',
         PropText: Texts.Department,
         IsEquired: false,
@@ -44,7 +44,7 @@ export class PersonMgtForm {
     }
 
     /** “角色”项目配置 */
-    readonly configRole: FormItemConfig<PersonModel, IdNameModel> = {
+    readonly configRole: FormItemConfig<PersonEntity, IdName> = {
         _propName: 'role',
         PropText: Texts.Role,
         IsEquired: true,
@@ -55,7 +55,7 @@ export class PersonMgtForm {
     }
 
     /** “用户名”项目配置 */
-    readonly configUsername: FormItemConfig<PersonModel, string> = {
+    readonly configUsername: FormItemConfig<PersonEntity, string> = {
         _propName: 'username',
         PropText: Texts.Username,
         IsEquired: true,
@@ -64,7 +64,7 @@ export class PersonMgtForm {
     }
 
     /** “昵称”项目配置 */
-    readonly configTagId: FormItemConfig<PersonModel, string> = {
+    readonly configTagId: FormItemConfig<PersonEntity, string> = {
         _propName: 'nickname',
         PropText: Texts.Nickname,
         IsEquired: true,
@@ -73,7 +73,7 @@ export class PersonMgtForm {
     }
 
     /** “密码”项目配置 */
-    readonly configPassword: FormItemConfig<PersonModel, string> = {
+    readonly configPassword: FormItemConfig<PersonEntity, string> = {
         _propName: 'password',
         PropText: Texts.Password,
         IsEquired: true,
@@ -85,7 +85,7 @@ export class PersonMgtForm {
     }
 
     /** “电话”项目配置 */
-    readonly configPhone: FormItemConfig<PersonModel, string> = {
+    readonly configPhone: FormItemConfig<PersonEntity, string> = {
         _propName: 'phone',
         PropText: Texts.Phone,
         IsEquired: false,
@@ -94,7 +94,7 @@ export class PersonMgtForm {
     }
 
     /** “邮箱”项目配置 */
-    readonly configMail: FormItemConfig<PersonModel, string> = {
+    readonly configMail: FormItemConfig<PersonEntity, string> = {
         _propName: 'mail',
         PropText: Texts.Mail,
         IsEquired: false,
@@ -103,10 +103,10 @@ export class PersonMgtForm {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new PersonModel()
+    readonly AddGetSource = () => new PersonEntity()
 
     /** “人员”表单配置 */
-    readonly configPersonMgtForm: FormConfig<PersonModel> = {
+    readonly configPersonMgtForm: FormConfig<PersonEntity> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             this.password.IsShowValue.value = false
@@ -223,7 +223,7 @@ export class PersonMgtForm {
             const rowData = personMgtTable.SelectedRowDatas.value[0]
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new PersonModel()
+                return new PersonEntity()
             }
 
             const data = ObjectHelper.ShallowCopy(rowData)

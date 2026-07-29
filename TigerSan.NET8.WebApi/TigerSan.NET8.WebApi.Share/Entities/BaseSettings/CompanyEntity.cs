@@ -4,7 +4,7 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("company")]
-    public class CompanyEntity : IdNameEntityBase
+    public class CompanyEntity : IdName
     {
         [SnakeColumn]
         public string Addr { get; set; } = string.Empty;

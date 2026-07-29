@@ -1,19 +1,19 @@
-import { ArrayHelper, IdNameModel, SelectModel, Texts } from "@/0_tigersan_ui/tigerui"
+import { ArrayHelper, IdName, SelectModel, Texts } from "@/0_tigersan_ui/tigerui"
 import { IdNameHelper, axiosHelper } from "@/helpers"
 
-/** "组织机构"模型 */
-export class DepartmentModel extends IdNameModel {
+/** "组织机构"实体 */
+export class DepartmentEntity extends IdName {
     company: bigint = 0n
 }
 
-class DepartmentHelper extends IdNameHelper<DepartmentModel> {
+class DepartmentHelper extends IdNameHelper<DepartmentEntity> {
     constructor() {
         super('Department')
     }
 
     // 查:
     /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+    GetIdNameSelectModel(): SelectModel<IdName> {
         return super.GetIdNameSelectModel(Texts.Department)
     }
 
@@ -31,7 +31,7 @@ class DepartmentHelper extends IdNameHelper<DepartmentModel> {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,
-    }) => await axiosHelper.GetList<DepartmentModel>(this._action, {
+    }) => await axiosHelper.GetList<DepartmentEntity>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {
@@ -50,7 +50,7 @@ class DepartmentHelper extends IdNameHelper<DepartmentModel> {
     }
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongCompanyList`)
 }
 
 export const departmentHelper = new DepartmentHelper()

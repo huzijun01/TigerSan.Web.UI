@@ -1,15 +1,15 @@
 import { computed, ref, shallowRef } from 'vue'
 import { loading, MapModel, MyActionResult, StringHelper } from '@/0_tigersan_ui/tigerui'
-import { TagModel, AssetInfoModel, AssetModel, assetHelper, tagHelper, LocationMode } from '@/models'
+import { TagDto, AssetInfoModel, AssetDto, assetHelper, tagHelper, LocationMode } from '@/models'
 
 export class AssetStatePageModel {
     /** 地图 */
     readonly map = new MapModel<any, AssetInfoModel>({ animateEnable: false })
 
     /** 资产 */
-    readonly Asset = ref<AssetModel | undefined>()
+    readonly Asset = ref<AssetDto | undefined>()
     /** 位置 */
-    readonly Tag = shallowRef<TagModel>()
+    readonly Tag = shallowRef<TagDto>()
     /** 定位方式 */
     readonly LocationMode = computed(() => LocationMode.GetName(this.Tag.value?.locationMode))
     /** 是否显示“定位方式” */

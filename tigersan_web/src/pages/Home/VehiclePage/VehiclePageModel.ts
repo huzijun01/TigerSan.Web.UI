@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-import { PaginationModel, FormItemConfig, IdNameModel, Verify, FormConfig, FormModel, TableModel, ItemType, loading, ArrayHelper, GetSubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, BigintHelper, Texts, SearchModel } from '@/0_tigersan_ui/tigerui'
-import { companyHelper, vehicleHelper, VehicleModel } from '@/models'
+import { PaginationModel, FormItemConfig, IdName, Verify, FormConfig, FormModel, TableModel, ItemType, loading, ArrayHelper, GetSubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, BigintHelper, Texts, SearchModel } from '@/0_tigersan_ui/tigerui'
+import { companyHelper, vehicleHelper, VehicleEntity } from '@/models'
 
 export class VehiclePageModel {
     //#region 【Fields】
@@ -15,10 +15,10 @@ export class VehiclePageModel {
     readonly pagination = new PaginationModel()
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new VehicleModel()
+    readonly AddGetSource = () => new VehicleEntity()
 
     /** “车牌号”项目配置 */
-    readonly configPlate: FormItemConfig<VehicleModel, string> = {
+    readonly configPlate: FormItemConfig<VehicleEntity, string> = {
         _propName: 'plate',
         PropText: Texts.Plate,
         IsEquired: true,
@@ -29,7 +29,7 @@ export class VehiclePageModel {
     }
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<VehicleModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<VehicleEntity, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -40,7 +40,7 @@ export class VehiclePageModel {
     }
 
     /** “物流公司”项目配置 */
-    readonly configLogistics: FormItemConfig<VehicleModel, string> = {
+    readonly configLogistics: FormItemConfig<VehicleEntity, string> = {
         _propName: 'logistics',
         PropText: Texts.Logistics,
         IsEquired: false,
@@ -48,7 +48,7 @@ export class VehiclePageModel {
     }
 
     /** “司机”项目配置 */
-    readonly configDriver: FormItemConfig<VehicleModel, string> = {
+    readonly configDriver: FormItemConfig<VehicleEntity, string> = {
         _propName: 'driver',
         PropText: Texts.Driver,
         IsEquired: false,
@@ -56,7 +56,7 @@ export class VehiclePageModel {
     }
 
     /** “电话”项目配置 */
-    readonly configPhone: FormItemConfig<VehicleModel, string> = {
+    readonly configPhone: FormItemConfig<VehicleEntity, string> = {
         _propName: 'phone',
         PropText: Texts.Phone,
         IsEquired: false,
@@ -65,7 +65,7 @@ export class VehiclePageModel {
     }
 
     /** 表单配置 */
-    readonly configForm: FormConfig<VehicleModel> = {
+    readonly configForm: FormConfig<VehicleEntity> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             await companyHelper.UpdateIdNames()
@@ -81,10 +81,10 @@ export class VehiclePageModel {
     }
 
     /** 表单模型 */
-    readonly form: FormModel<VehicleModel> = new FormModel(this.configForm)
+    readonly form: FormModel<VehicleEntity> = new FormModel(this.configForm)
 
     /** 表格模型 */
-    readonly table = new TableModel<VehicleModel>([
+    readonly table = new TableModel<VehicleEntity>([
         {
             _propName: 'plate',
             Text: Texts.Plate,
@@ -185,7 +185,7 @@ export class VehiclePageModel {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new VehicleModel()
+                return new VehicleEntity()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

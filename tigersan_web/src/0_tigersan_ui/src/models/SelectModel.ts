@@ -1,9 +1,7 @@
-/** ID名称对 */
-export class IdNameModel {
+/** “ID-名称”对 */
+export class IdName {
     id: bigint = 0n
     name = ''
-    company?: bigint
-    companyName?: string
 
     constructor(id?: bigint, name?: string) {
         if (id) this.id = id
@@ -11,8 +9,14 @@ export class IdNameModel {
     }
 }
 
-/** ID值对 */
-export class IdValueModel {
+/** “ID-名称-公司”对 */
+export class IdNameCompany extends IdName {
+    company?: bigint
+    companyName?: string
+}
+
+/** “ID-值”对 */
+export class IdValue {
     id: bigint = 0n
     value = ''
 

@@ -1,8 +1,8 @@
 import { ItemType, ObjectHelper, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
-import { companyHelper, scenarioHelper, BatchModel } from '@/models'
+import { companyHelper, scenarioHelper, BatchEntity } from '@/models'
 
 /** 列头 */
-export const batchMgtTable = new TableModel<BatchModel>([
+export const batchMgtTable = new TableModel<BatchEntity>([
     {
         _propName: 'company',
         Text: Texts.Company,

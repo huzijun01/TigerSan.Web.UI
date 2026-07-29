@@ -1,8 +1,8 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdName, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from '../AssetFilter'
 import { assetRecordTable, pagination } from './AssetRecordTable'
-import { assetRecordHelper, AssetRecordModel, baseStationHelper, LocationMode } from '@/models'
+import { assetRecordHelper, AssetRecordDto, baseStationHelper, LocationMode } from '@/models'
 
 export class AssetRecordPageModel {
     _asset?: bigint
@@ -18,7 +18,7 @@ export class AssetRecordPageModel {
     // 更新:
 
     /** “基站”项目配置 */
-    readonly configStation: FormItemConfig<AssetRecordModel, IdNameModel> = {
+    readonly configStation: FormItemConfig<AssetRecordDto, IdName> = {
         _propName: 'station',
         PropText: Texts.BaseStation,
         IsEquired: true,
@@ -29,7 +29,7 @@ export class AssetRecordPageModel {
     }
 
     /** “经度”项目配置 */
-    readonly configLongitude: FormItemConfig<AssetRecordModel, string> = {
+    readonly configLongitude: FormItemConfig<AssetRecordDto, string> = {
         _propName: 'longitude',
         PropText: Texts.Longitude,
         IsEquired: false,
@@ -37,7 +37,7 @@ export class AssetRecordPageModel {
     }
 
     /** “纬度”项目配置 */
-    readonly configLatitude: FormItemConfig<AssetRecordModel, string> = {
+    readonly configLatitude: FormItemConfig<AssetRecordDto, string> = {
         _propName: 'latitude',
         PropText: Texts.Latitude,
         IsEquired: false,
@@ -45,10 +45,10 @@ export class AssetRecordPageModel {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new AssetRecordModel()
+    readonly AddGetSource = () => new AssetRecordDto()
 
     /** “资产记录”表单配置 */
-    readonly configAssetRecordForm: FormConfig<AssetRecordModel> = {
+    readonly configAssetRecordForm: FormConfig<AssetRecordDto> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (isEdit) {
@@ -133,7 +133,7 @@ export class AssetRecordPageModel {
             const rowData = assetRecordTable.SelectedRowDatas.value[0]
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new AssetRecordModel()
+                return new AssetRecordDto()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

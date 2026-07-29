@@ -1,4 +1,5 @@
-﻿using TigerSan.NET8.WebApi.Share.Extensions;
+﻿using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Share.Dtos
 {

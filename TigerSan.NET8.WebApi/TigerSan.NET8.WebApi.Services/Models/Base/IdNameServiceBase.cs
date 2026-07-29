@@ -8,7 +8,7 @@ using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Services.Models.Base
 {
-    public class IdNameServiceBase<TEntity> : IdNameRepeatableServiceBase<TEntity>, IIdNameServiceBase<TEntity> where TEntity : IdNameEntityBase
+    public class IdNameServiceBase<TEntity> : IdNameRepeatableServiceBase<TEntity>, IIdNameServiceBase<TEntity> where TEntity : IdName
     {
         #region 【Ctor】
         public IdNameServiceBase(AppDbContext db, DbSet<TEntity> dbSet) : base(db, dbSet)

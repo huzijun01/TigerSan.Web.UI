@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdNameModel, MyActionResult, loading, PaginationModel, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, PasswordModel, SearchModel, GetSubmitResult, IdName, MyActionResult, loading, PaginationModel, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { batchMgtTable } from './BatchMgtTable'
-import { companyHelper, scenarioHelper, BatchModel, batchHelper } from '@/models'
+import { companyHelper, scenarioHelper, BatchEntity, batchHelper } from '@/models'
 
 export class BatchMgtForm {
     //#region 【Fields】
@@ -26,7 +26,7 @@ export class BatchMgtForm {
     readonly password = new PasswordModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<BatchModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<BatchEntity, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -37,7 +37,7 @@ export class BatchMgtForm {
     }
 
     /** “场景”项目配置 */
-    readonly configScenario: FormItemConfig<BatchModel, IdNameModel> = {
+    readonly configScenario: FormItemConfig<BatchEntity, IdName> = {
         _propName: 'scenario',
         PropText: Texts.Scenario,
         IsEquired: true,
@@ -48,7 +48,7 @@ export class BatchMgtForm {
     }
 
     /** “批次”项目配置 */
-    readonly configBatchId: FormItemConfig<BatchModel, string> = {
+    readonly configBatchId: FormItemConfig<BatchEntity, string> = {
         _propName: 'batchId',
         PropText: Texts.Batch,
         IsEquired: true,
@@ -57,7 +57,7 @@ export class BatchMgtForm {
     }
 
     /** “联系人”项目配置 */
-    readonly configManager: FormItemConfig<BatchModel, string> = {
+    readonly configManager: FormItemConfig<BatchEntity, string> = {
         _propName: 'manager',
         PropText: Texts.Manager,
         IsEquired: false,
@@ -65,7 +65,7 @@ export class BatchMgtForm {
     }
 
     /** “电话”项目配置 */
-    readonly configPhone: FormItemConfig<BatchModel, string> = {
+    readonly configPhone: FormItemConfig<BatchEntity, string> = {
         _propName: 'phone',
         PropText: Texts.PleaseEnter,
         IsEquired: false,
@@ -74,7 +74,7 @@ export class BatchMgtForm {
     }
 
     /** “备注”项目配置 */
-    readonly configComment: FormItemConfig<BatchModel, string> = {
+    readonly configComment: FormItemConfig<BatchEntity, string> = {
         _propName: 'comment',
         PropText: Texts.Comment,
         IsEquired: false,
@@ -82,10 +82,10 @@ export class BatchMgtForm {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new BatchModel()
+    readonly AddGetSource = () => new BatchEntity()
 
     /** “批次”表单配置 */
-    readonly configBatchMgtForm: FormConfig<BatchModel> = {
+    readonly configBatchMgtForm: FormConfig<BatchEntity> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             this.isPasswordChanged = false
@@ -188,7 +188,7 @@ export class BatchMgtForm {
             const rowData = batchMgtTable.SelectedRowDatas.value[0]
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new BatchModel()
+                return new BatchEntity()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

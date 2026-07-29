@@ -68,11 +68,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<List<BaseStationDto>>.Error(resGetList.Message);
                 }
 
+                // 获取“类型”字典:
+                var typeDict = (await _db.StationTypes.ToListAsync()).ToDictionary(i => i.Id, i => i.Name);
+
+                // 获取“公司”字典:
+                var companyDict = (await _db.Companies.ToListAsync()).ToDictionary(i => i.Id, i => i.Name);
+
                 foreach (var entity in entities)
                 {
                     var dto = new BaseStationDto();
                     dto.ShallowCopy(entity);
-                    list.Add(dto);
+
+                    // 添加“类型名”：
+                    var typeName = typeDict.GetValueOrDefault(entity.Type);
+                    if (typeName == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(typeName));
+                    }
+                    else
+                    {
+                        dto.TypeName = typeName;
+                    }
 
                     // 检查“图片”是否存在：
                     if (!string.IsNullOrEmpty(entity.Image))
@@ -102,9 +118,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     else
                     {
                         dto.Company = siteEntity.Company;
+                        dto.SiteName = siteEntity.Name;
                         dto.Addr = siteEntity.Addr;
                         dto.AddrDetail = siteEntity.AddrDetail;
+
+                        // 添加“公司名”:
+                        var companyName = companyDict.GetValueOrDefault(siteEntity.Company);
+                        if (companyName == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(companyName));
+                        }
+                        else
+                        {
+                            dto.CompanyName = companyName;
+                        }
                     }
+
+                    list.Add(dto);
                 }
 
                 return MyResults<List<BaseStationDto>>.Success(null, list);

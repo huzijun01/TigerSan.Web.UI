@@ -1,14 +1,14 @@
-import { watch, unref, type WatchSource, type WatchCallback, type WatchHandle } from "vue"
+import { watch, unref, type WatchSource, type WatchCallback, type WatchHandle, type ShallowReactive } from "vue"
 
 export class WatchBehavior<TSource> {
     //#region 【Fields】
     private _watch?: WatchHandle
-    private _source: WatchSource<TSource>
+    private _source: WatchSource<TSource> | ShallowReactive<any>
     private _callback: WatchCallback<TSource>
     //#endregion 【Fields】
 
     //#region 【Ctor】
-    constructor(source: WatchSource<TSource>, callback: WatchCallback<TSource>) {
+    constructor(source: WatchSource<TSource> | ShallowReactive<TSource>, callback: WatchCallback<TSource>) {
         this._source = source
         this._callback = callback
     }

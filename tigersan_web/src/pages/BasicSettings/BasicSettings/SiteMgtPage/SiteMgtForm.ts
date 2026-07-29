@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, MapModel, Texts, SearchModel, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdName, MyActionResult, loading, MapModel, Texts, SearchModel, TextModel } from '@/0_tigersan_ui/tigerui'
 import { siteMgtTable } from './SiteMgtTable'
-import { companyHelper, siteHelper, siteTypeHelper, SiteModel } from '@/models'
+import { companyHelper, siteHelper, siteTypeHelper, SiteEntity } from '@/models'
 
 export class SiteMgtForm {
     //#region 【Fields】
@@ -29,7 +29,7 @@ export class SiteMgtForm {
     readonly selectTypeForm = siteTypeHelper.GetIdNameSelectModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<SiteModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<SiteEntity, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -40,7 +40,7 @@ export class SiteMgtForm {
     }
 
     /** “类型”项目配置 */
-    readonly configType: FormItemConfig<SiteModel, IdNameModel> = {
+    readonly configType: FormItemConfig<SiteEntity, IdName> = {
         _propName: 'type',
         PropText: Texts.Type,
         IsEquired: true,
@@ -51,7 +51,7 @@ export class SiteMgtForm {
     }
 
     /** “编号”项目配置 */
-    readonly configCode: FormItemConfig<SiteModel, string> = {
+    readonly configCode: FormItemConfig<SiteEntity, string> = {
         _propName: 'code',
         PropText: Texts.Code,
         IsEquired: true,
@@ -60,7 +60,7 @@ export class SiteMgtForm {
     }
 
     /** “名称”项目配置 */
-    readonly configName: FormItemConfig<SiteModel, string> = {
+    readonly configName: FormItemConfig<SiteEntity, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: true,
@@ -69,7 +69,7 @@ export class SiteMgtForm {
     }
 
     /** “地址”项目配置 */
-    readonly configAddr: FormItemConfig<SiteModel, string> = {
+    readonly configAddr: FormItemConfig<SiteEntity, string> = {
         _propName: 'addr',
         PropText: Texts.Addr,
         IsEquired: true,
@@ -78,7 +78,7 @@ export class SiteMgtForm {
     }
 
     /** “详细地址”项目配置 */
-    readonly configAddrDetail: FormItemConfig<SiteModel, string> = {
+    readonly configAddrDetail: FormItemConfig<SiteEntity, string> = {
         _propName: 'addrDetail',
         PropText: Texts.AddrDetail,
         IsEquired: true,
@@ -87,7 +87,7 @@ export class SiteMgtForm {
     }
 
     /** “围栏路径”项目配置 */
-    readonly configFencePath: FormItemConfig<SiteModel, string> = {
+    readonly configFencePath: FormItemConfig<SiteEntity, string> = {
         _propName: 'fencePath',
         PropText: Texts.FencePath,
         IsEquired: true,
@@ -96,7 +96,7 @@ export class SiteMgtForm {
     }
 
     /** “经度”项目配置 */
-    readonly configLongitude: FormItemConfig<SiteModel, number> = {
+    readonly configLongitude: FormItemConfig<SiteEntity, number> = {
         _propName: 'longitude',
         PropText: Texts.Longitude,
         IsEquired: true,
@@ -105,7 +105,7 @@ export class SiteMgtForm {
     }
 
     /** “纬度”项目配置 */
-    readonly configLatitude: FormItemConfig<SiteModel, number> = {
+    readonly configLatitude: FormItemConfig<SiteEntity, number> = {
         _propName: 'latitude',
         PropText: Texts.Latitude,
         IsEquired: true,
@@ -114,7 +114,7 @@ export class SiteMgtForm {
     }
 
     /** “联系人”项目配置 */
-    readonly configManager: FormItemConfig<SiteModel, string> = {
+    readonly configManager: FormItemConfig<SiteEntity, string> = {
         _propName: 'manager',
         PropText: Texts.Manager,
         IsEquired: false,
@@ -123,7 +123,7 @@ export class SiteMgtForm {
     }
 
     /** “电话”项目配置 */
-    readonly configPhone: FormItemConfig<SiteModel, string> = {
+    readonly configPhone: FormItemConfig<SiteEntity, string> = {
         _propName: 'phone',
         PropText: Texts.Phone,
         IsEquired: false,
@@ -132,7 +132,7 @@ export class SiteMgtForm {
     }
 
     /** “备注”项目配置 */
-    readonly configComment: FormItemConfig<SiteModel, string> = {
+    readonly configComment: FormItemConfig<SiteEntity, string> = {
         _propName: 'comment',
         PropText: Texts.Comment,
         IsEquired: false,
@@ -142,7 +142,7 @@ export class SiteMgtForm {
 
     /** “增”源数据获取方法 */
     readonly AddGetSource = () => {
-        const site = new SiteModel()
+        const site = new SiteEntity()
         site.code = ObjectHelper.GetDateId()
         return site
     }
@@ -165,7 +165,7 @@ export class SiteMgtForm {
     }
 
     /** “场地”表单配置 */
-    readonly configSiteMgtForm: FormConfig<SiteModel> = {
+    readonly configSiteMgtForm: FormConfig<SiteEntity> = {
         _getSource: this.AddGetSource,
         _onInit: this.UpdateFence,
         _beforeInitAsync: async isEdit => {
@@ -286,7 +286,7 @@ export class SiteMgtForm {
         this.siteForm._getSource = this.AddGetSource
 
         this.siteForm._onSubmitAsync = async source => {
-            const res = await siteHelper.Add(source as SiteModel)
+            const res = await siteHelper.Add(source as SiteEntity)
 
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
@@ -304,14 +304,14 @@ export class SiteMgtForm {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new SiteModel()
+                return new SiteEntity()
             }
 
             return ObjectHelper.ShallowCopy(rowData)
         }
 
         this.siteForm._onSubmitAsync = async source => {
-            const res = await siteHelper.Edit(source as SiteModel)
+            const res = await siteHelper.Edit(source as SiteEntity)
 
             this.map._polygonEditor?.close()
             await this.Refresh()

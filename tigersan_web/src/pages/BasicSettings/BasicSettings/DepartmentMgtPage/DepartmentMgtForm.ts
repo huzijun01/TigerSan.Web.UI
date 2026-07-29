@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, GetSubmitResult, IdName, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { departmentMgtTable } from './DepartmentMgtTable'
-import { companyHelper, departmentHelper, DepartmentModel } from '@/models'
+import { companyHelper, departmentHelper, DepartmentEntity } from '@/models'
 
 export class DepartmentMgtForm {
     //#region 【Fields】
@@ -14,7 +14,7 @@ export class DepartmentMgtForm {
     readonly pagination = new PaginationModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<DepartmentModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<DepartmentEntity, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -25,7 +25,7 @@ export class DepartmentMgtForm {
     }
 
     /** “名称”项目配置 */
-    readonly configName: FormItemConfig<DepartmentModel, string> = {
+    readonly configName: FormItemConfig<DepartmentEntity, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: true,
@@ -36,10 +36,10 @@ export class DepartmentMgtForm {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new DepartmentModel()
+    readonly AddGetSource = () => new DepartmentEntity()
 
     /** “部门”表单配置 */
-    readonly configDepartmentMgtForm: FormConfig<DepartmentModel> = {
+    readonly configDepartmentMgtForm: FormConfig<DepartmentEntity> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             await companyHelper.UpdateIdNames()
@@ -113,7 +113,7 @@ export class DepartmentMgtForm {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new DepartmentModel()
+                return new DepartmentEntity()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

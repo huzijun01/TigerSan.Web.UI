@@ -1,8 +1,8 @@
 import { ItemType, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
-import { companyHelper, departmentHelper, RoleAuthorityModel } from '@/models'
+import { companyHelper, departmentHelper, RoleAuthorityEntity } from '@/models'
 
 /** 列头 */
-export const roleMgtTable = new TableModel<RoleAuthorityModel>([
+export const roleMgtTable = new TableModel<RoleAuthorityEntity>([
     {
         _propName: 'company',
         Text: Texts.Company,

@@ -1,8 +1,8 @@
-import { companyHelper, siteTypeHelper, SiteModel } from '@/models'
+import { companyHelper, siteTypeHelper, SiteEntity } from '@/models'
 import { ItemType, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
-export const siteMgtTable = new TableModel<SiteModel>([
+export const siteMgtTable = new TableModel<SiteEntity>([
     {
         _propName: 'company',
         Text: Texts.Company,

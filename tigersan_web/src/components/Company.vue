@@ -12,14 +12,14 @@
 
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import { CompanyModel } from '@/models'
+import { CompanyEntity } from '@/models'
 import { Icons, StringHelper } from '@/0_tigersan_ui/tigerui'
 
 //字段:
 const { model } = defineProps({
     model: {
-        type: Object as PropType<CompanyModel>,
-        default: () => new CompanyModel()
+        type: Object as PropType<CompanyEntity>,
+        default: () => new CompanyEntity()
     },
 })
 

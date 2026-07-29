@@ -2,7 +2,7 @@
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
-    public interface IIdNameCompanyServiceBase<TEntity> : IIdNameServiceBase<TEntity> where TEntity : IdNameCompanyEntityBase
+    public interface IIdNameCompanyServiceBase<TEntity> : IIdNameServiceBase<TEntity> where TEntity : IdNameCompany
     {
     }
 }

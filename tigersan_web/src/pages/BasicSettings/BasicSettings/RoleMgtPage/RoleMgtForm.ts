@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdNameModel, MyActionResult, AuthorityModel, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, ArrayHelper, PaginationModel, AuthorityHelper, authorityHelper, GetSubmitResult, IdName, MyActionResult, AuthorityModel, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { roleMgtTable } from './RoleMgtTable'
-import { companyHelper, roleHelper, departmentHelper, RoleAuthorityModel } from '@/models'
+import { companyHelper, roleHelper, departmentHelper, RoleAuthorityEntity } from '@/models'
 
 export class RoleMgtForm {
     //#region 【Fields】
@@ -27,7 +27,7 @@ export class RoleMgtForm {
     readonly pagination = new PaginationModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<RoleAuthorityEntity, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -38,7 +38,7 @@ export class RoleMgtForm {
     }
 
     /** “部门”项目配置 */
-    readonly configDepartment: FormItemConfig<RoleAuthorityModel, IdNameModel> = {
+    readonly configDepartment: FormItemConfig<RoleAuthorityEntity, IdName> = {
         _propName: 'department',
         PropText: Texts.Department,
         IsEquired: true,
@@ -49,7 +49,7 @@ export class RoleMgtForm {
     }
 
     /** “名称”项目配置 */
-    readonly configName: FormItemConfig<RoleAuthorityModel, string> = {
+    readonly configName: FormItemConfig<RoleAuthorityEntity, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: true,
@@ -58,7 +58,7 @@ export class RoleMgtForm {
     }
 
     /** “权限”项目配置 */
-    readonly configAuthorities: FormItemConfig<RoleAuthorityModel, number> = {
+    readonly configAuthorities: FormItemConfig<RoleAuthorityEntity, number> = {
         _propName: 'authorities',
         PropText: Texts.Authorities,
         IsEquired: true,
@@ -67,10 +67,10 @@ export class RoleMgtForm {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new RoleAuthorityModel()
+    readonly AddGetSource = () => new RoleAuthorityEntity()
 
     /** “角色”表单配置 */
-    readonly configRoleMgtForm: FormConfig<RoleAuthorityModel> = {
+    readonly configRoleMgtForm: FormConfig<RoleAuthorityEntity> = {
         _itemConfigs: [
             this.configCompany,
             this.configDepartment,
@@ -193,7 +193,7 @@ export class RoleMgtForm {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new RoleAuthorityModel()
+                return new RoleAuthorityEntity()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

@@ -1,8 +1,8 @@
-import { SelectModel, IdValueModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
-import { axiosHelper, IdModel, IdHelper } from "@/helpers"
+import { SelectModel, IdValue, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
+import { axiosHelper, IdEntityBase, IdHelper } from "@/helpers"
 
-/** "批次"模型 */
-export class BatchModel extends IdModel {
+/** "批次"实体 */
+export class BatchEntity extends IdEntityBase {
     company: bigint = 0n
     scenario: bigint = 0n
     batchId = ''
@@ -12,14 +12,14 @@ export class BatchModel extends IdModel {
     comment?: string
 }
 
-class BatchHelper extends IdHelper<BatchModel> {
+class BatchHelper extends IdHelper<BatchEntity> {
     constructor() {
         super('Batch')
         this._strIdValueList = 'IdBatchIdList'
     }
 
     /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdValueModel> {
+    GetIdNameSelectModel(): SelectModel<IdValue> {
         const select = super.GetIdValueSelectModel(Texts.Batch)
         select.IsAllowSearch.value = true
         return select
@@ -50,7 +50,7 @@ class BatchHelper extends IdHelper<BatchModel> {
         company?: bigint,
         scenario?: bigint,
         batchId?: string,
-    }) => await axiosHelper.GetList<BatchModel>(this._action, {
+    }) => await axiosHelper.GetList<BatchEntity>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {

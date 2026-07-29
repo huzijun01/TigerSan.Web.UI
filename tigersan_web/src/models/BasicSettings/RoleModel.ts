@@ -1,20 +1,20 @@
-import { IdNameModel, AuthorityModel, SelectModel, Texts } from "@/0_tigersan_ui/tigerui"
+import { IdName, AuthorityModel, SelectModel, Texts } from "@/0_tigersan_ui/tigerui"
 import { IdNameHelper, axiosHelper } from "@/helpers"
 
-/** "角色"模型 */
-export class RoleAuthorityModel extends IdNameModel {
+/** "角色"实体 */
+export class RoleAuthorityEntity extends IdName {
     company: bigint = 0n
     department: bigint = 0n
     authorities: AuthorityModel[] = []
 }
 
-class RoleHelper extends IdNameHelper<RoleAuthorityModel> {
+class RoleHelper extends IdNameHelper<RoleAuthorityEntity> {
     constructor() {
         super('Role')
     }
 
     /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+    GetIdNameSelectModel(): SelectModel<IdName> {
         return super.GetIdNameSelectModel(Texts.Role)
     }
 
@@ -40,7 +40,7 @@ class RoleHelper extends IdNameHelper<RoleAuthorityModel> {
         pageNumber?: number,
         company?: bigint,
         department?: bigint,
-    }) => await axiosHelper.GetList<RoleAuthorityModel>(this._action, {
+    }) => await axiosHelper.GetList<RoleAuthorityEntity>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
@@ -65,12 +65,12 @@ class RoleHelper extends IdNameHelper<RoleAuthorityModel> {
     }
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属部门”集合 */
     readonly GetBelongDepartmentListAsync = async (company?: bigint) => {
         if (!company) return []
-        return await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
+        return await axiosHelper.GetData<IdName[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
     }
 }
 

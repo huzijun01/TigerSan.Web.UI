@@ -1,8 +1,8 @@
-import { companyHelper, DepartmentModel } from '@/models'
+import { companyHelper, DepartmentEntity } from '@/models'
 import { ItemType, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
-export const departmentMgtTable = new TableModel<DepartmentModel>([
+export const departmentMgtTable = new TableModel<DepartmentEntity>([
     {
         _propName: 'company',
         Text: Texts.Company,

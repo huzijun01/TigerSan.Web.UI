@@ -15,10 +15,10 @@
 ### 集合查询参数
 
 ```cs
-int? pageSize, // 页大小
-int? pageNumber, // 页号
-string? sort, // 排序属性名
-bool? ascending, // 是否正序
+[FromQuery] int? pageSize, // 页大小
+[FromQuery] int? pageNumber, // 页号
+[FromQuery] string? sort, // 排序属性名
+[FromQuery] bool? ascending, // 是否正序
 [FromBody] FilterDto? filter // 筛选器对象
 ```
 
@@ -26,66 +26,53 @@ bool? ascending, // 是否正序
 
 ## MyActionResult - 统一返回结果
 
-```cs
-public class MyActionResult<TData>
-{
-    /// <summary>结果码</summary>
-    public ActionResultCode Code { get; set; } = ActionResultCode.Success;
-    /// <summary>信息</summary>
-    public string Message { get; set; } = string.Empty;
-    /// <summary>数据</summary>
-    public TData? Data { get; set; }
+```typescript
+export enum ActionResultCode {
+    Success = 0,
+    Warning = 1,
+    Error = 2,
+    InvalidToken = 3,
+    InvalidCaptcha = 4,
+}
+
+export class MyActionResult<TData> {
+    code: ActionResultCode
+    message = ''
+    data?: TData
 }
 ```
 
 ## FilterDto - 筛选器对象
 
-```cs
-#region 过滤器
-/// <summary>过滤器</summary>
-public class FilterDto
-{
-    /// <summary>父表</summary>
-    public ParentFilter? Parent { get; set; }
-    /// <summary>“过滤器”集合</summary>
-    public List<PropFilter>? Filters { get; set; }
+```typescript
+/** “过滤器”对象 */
+export class FilterDto {
+    parent?: ParentFilter
+    filters?: PropFilter[]
 }
-#endregion
 
-#region “属性”过滤器
-/// <summary>“属性”过滤器</summary>
-public class PropFilter
-{
-    /// <summary>属性名</summary>
-    public string PropName { get; set; } = string.Empty;
-    /// <summary>值</summary>
-    public object? Value { get; set; }
-    /// <summary>值集合</summary>
-    public List<object>? Values { get; set; }
+/** “属性”过滤器 */
+export class PropFilter {
+    propName = ''
+    value?: unknown
+    values?: unknown[] = []
 }
-#endregion
 
-#region “父表”过滤器
-/// <summary>“父表”过滤器</summary>
-public class ParentFilter
-{
-    /// <summary>ID</summary>
-    public long? Id { get; set; }
-    /// <summary>ID集合</summary>
-    public List<long>? Ids { get; set; }
-    /// <summary>父表</summary>
-    public ParentFilter? Parent { get; set; }
+/** “父表”过滤器 */
+export class ParentFilter {
+    id?: bigint
+    ids?: bigint[] = []
+    parent?: ParentFilter
 }
-#endregion
 ```
 
 ## IdName - ID名称对
 
-```cs
-public class IdName
-{
-    public long Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+```typescript
+/** ID名称对 */
+export class IdName {
+    id: bigint = 0n
+    name = ''
 }
 ```
 
@@ -101,38 +88,42 @@ public class IdName
 | 登出 | User/Logout | Get | string username | MyActionResult |
 | 获取验证码 | User/Captcha | Post |   | MyActionResult\<CaptchaData> |
 
+除了“Login、LoginByToken、Captcha”外，访问其它接口时，均需携带Authorization头，其值为登录时得到的token。
+
 ### Model
 
-```cs
-public class PersonEntity
-{
-    public long Id { get; set; }
-    public long Role { get; set; }
-    public bool IsAdmin { get; set; } = false;
-    public string Username { get; set; } = string.Empty;
-    public string Nickname { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string PasswordHash { get; set; } = string.Empty;
-    public string? Avatar { get; set; }
-    public string? Phone { get; set; }
-    public string? Mail { get; set; }
+```typescript
+
+/** "人员"实体 */
+export class PersonEntity {
+    id: bigint = 0n
+    company: bigint = 0n
+    department: bigint = 0n
+    role: bigint = 0n
+    isAdmin = false
+    username = ''
+    nickname = ''
+    password = ''
+    avatar?: string
+    phone?: string
+    mail?: string
 }
 
-public class UserInfo : PersonEntity
-{
-    public bool IsRoot { get; set; } = false;
-    public string Captcha { get; set; } = string.Empty;
-    public IdName CompanyIdName { get; set; } = new IdName();
-    public IdName DepartmentIdName { get; set; } = new IdName();
-    public IdName RoleIdName { get; set; } = new IdName();
-    public List<AuthorityEntity> Authorities { get; set; } = new List<AuthorityEntity>();
-    public string? Token { get; set; } = string.Empty;
+/** 用户信息 */
+export class UserInfo extends PersonEntity {
+    isRoot = false
+    captcha = ''
+    companyIdName = new IdNameModel()
+    departmentIdName = new IdNameModel()
+    roleIdName = new IdNameModel()
+    authorities: AuthorityModel[] = []
+    token?: string
 }
 
-public class CaptchaData
-{
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public byte[]? Captcha { get; set; }
+/** 验证码数据 */
+export class CaptchaData {
+    id = ''
+    captcha = ''
 }
 ```
 
@@ -163,42 +154,66 @@ public class CaptchaData
 
 ### Model
 
-```cs
-public class TagEntity
-{
-    public long Id { get; set; }
-    public long Batch { get; set; }
-    public long Type { get; set; }
-    public long? Station { get; set; }
-    public bool? IsFall { get; set; }
-    public bool IsEnable { get; set; } = false;
-    public EqpTypes EqpType { get; set; } = EqpTypes.Tag;
-    public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
-    public LocationModes? LocationMode { get; set; }
-    public string TagId { get; set; } = string.Empty;
-    public long? Asset { get; set; }
-    public string? AssetId { get; set; }
-    public string? Rfid { get; set; }
-    public string? Imei { get; set; }
-    public string? Iccid { get; set; }
-    public int? Battery { get; set; }
-    public int? Signal { get; set; }
-    public double? Temperature { get; set; }
-    public double? Longitude { get; set; }
-    public double? Latitude { get; set; }
-    public string? Comment { get; set; }
-    public DateTime? ReportTime { get; set; }
+```typescript
+/** 设备类型 */
+export enum EqpTypes {
+    /** 标签 */
+    Tag = 0,
+    /** 定位器 */
+    Locator = 1,
 }
 
-public class TagDto : TagEntity
-{
-    public long? Company { get; set; }
-    public string? CompanyName { get; set; }
-    public long? Site { get; set; }
-    public string? SiteName { get; set; }
-    public string? Address { get; set; }
+/** “标签”实体 */
+export class TagEntity {
+    id: bigint = 0n
+    batch: bigint = 0n
+    type: bigint = 0n
+    station?: bigint
+    isFall?: boolean
+    isEnable = false
+    eqpType = EqpTypes.Tag
+    onlineState = OnlineStates.Offline
+    locationMode?: LocationModes
+    tagId = ''
+    assetId? = ''
+    rfid? = ''
+    imei? = ''
+    iccid? = ''
+    battery?: number
+    signal?: number
+    temperature?: number
+    longitude?: number
+    latitude?: number
+    comment?: string
+    reportTime?: Date
+    image?: string
+}
+
+/** “标签”对象 */
+export class TagDto extends TagEntity {
+    batchId = ''
+    typeName = ''
+    company?: bigint
+    companyName?: string
+    site?: bigint
+    siteName?: string
+    address?: string
 }
 ```
+
+## 标签类型
+
+| Name | Action | Method | Param | Return |
+| --- | --- | --- | --- | --- |
+| 数量 | TagType/Count | Post | \[FromBody\] FilterDto? filter | MyActionResult\<int> |
+| 单条 | TagType/{id} | Get |   | MyActionResult\<IdName> |
+| 集合 | TagType/List | Post | 集合查询参数 | MyActionResult\<List\<IdName>> |
+| 增单条 | TagType | Post | \[FromBody\] IdName entity | MyActionResult\<IdName> |
+| 增多条 | TagType/Range | Post | \[FromBody\] List\<IdName> entities | MyActionResult\<object> |
+| 改单条 | TagType | Put | \[FromBody\] IdName entity | MyActionResult\<object> |
+| 改多条 | TagType/Range | Put | \[FromBody\] List\<IdName> entities | MyActionResult\<object> |
+| 删单条 | TagType/{id} | Delete |   | MyActionResult\<object> |
+| 删多条 | TagType/Range | Delete | \[FromBody\] List\<IdName> entities | MyActionResult\<object> |
 
 ## 资产
 
@@ -222,61 +237,79 @@ public class TagDto : TagEntity
 
 ### Model
 
-```cs
-public class AssetPosition
-{
-    public long Id { get; set; }
-    public string AssetId { get; set; } = string.Empty;
-    public long? LastRecord { get; set; }
-    public double? Longitude { get; set; }
-    public double? Latitude { get; set; }
-    public DateTime? ReportTime { get; set; }
-    public LocationModes? LocationMode { get; set; }
+```typescript
+/** 资产状态 */
+export enum AssetStates {
+    /** 无记录 */
+    NoRecord = 0,
+    /** 入库 */
+    Inbound = 1,
+    /** 在库 */
+    InStore = 2,
+    /** 滞留 */
+    Stolid = 3,
+    /** 出库 */
+    Outbound = 4,
+    /** 在途 */
+    InTransit = 5,
+    /** 超时 */
+    Timeout = 6,
 }
 
-public class AssetEntity : IdEntityBase
-{
-    public long Department { get; set; }
-    public long Type { get; set; }
-    public string AssetId { get; set; } = string.Empty;
-    public string? Name { get; set; } = string.Empty;
-    public string? Comment { get; set; } = string.Empty;
-    public long? Tag { get; set; }
-    public long? TagType { get; set; }
+/** "资产"实体 */
+export class AssetEntity {
+    id: bigint = 0n
+    department: bigint = 0n
+    type: bigint = 0n
+    assetId = ''
+    state: AssetStates = AssetStates.NoRecord
+    onlineState: OnlineStates = OnlineStates.Offline
+    isAuto: boolean = true
+    isFall?: boolean
+    errorType?: ErrorTypes
+    tag?: bigint
+    tagId?: string
+    tagType?: bigint
+    vehicle?: bigint
+    transfer?: bigint
+    lastRecord?: bigint
+    name? = ''
+    comment?: string
+    bindingTime?: Date
+    calculationTime?: Date
+}
+
+/** "资产"对象 */
+export class AssetDto extends AssetEntity {
+    company: bigint = 0n
+    companyName = ''
+    departmentName = ''
+    typeName = ''
+    stateName = ''
+    rfid?: string
+    plate?: string
+    siteName?: string
+    battery?: number
+    fullAddr?: string
+    transferCode?: string
     // 计算:
-    public AssetStates State { get; set; }
-    public OnlineStates OnlineState { get; set; }
-    public bool IsAuto { get; set; } = true;
-    public bool? IsFall { get; set; } = false;
-    public ErrorTypes? ErrorType { get; set; }
-    public long? Vehicle { get; set; }
-    public long? Transfer { get; set; }
-    public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
-    public DateTime? BindingTime { get; set; }
-    public DateTime? CalculationTime { get; set; }
-    public int? DailyMove { get; set; }
-    public int? MonthlyMove { get; set; }
-    public int? TotalMove { get; set; }
-    public double? StayDuration { get; set; }
-    public double? TravelDuration { get; set; }
-    public double? OfflineDuration { get; set; }
+    dailyMove?: number
+    monthlyMove?: number
+    totalMove?: number
+    stayDuration?: number
+    offlineDuration?: number
+    travelDuration?: number
 }
 
-public class AssetDto : AssetEntity
-{
-    public long Company { get; set; }
-    public string CompanyName { get; set; } = string.Empty;
-    public string DepartmentName { get; set; } = string.Empty;
-    public string TypeName { get; set; } = string.Empty;
-    // 记录:
-    public string? TagId { get; set; }
-    public string? Rfid { get; set; }
-    public string? Plate { get; set; }
-    public long? Site { get; set; }
-    public string? SiteName { get; set; }
-    public int? Battery { get; set; }
-    public string? FullAddr { get; set; }
-    public string? TransferCode { get; set; }
+/** 资产位置 */
+export class AssetPosition {
+    id: bigint = 0n
+    assetId = ''
+    lastRecord?: bigint
+    longitude = 0
+    latitude = 0
+    reportTime?: Date
+    locationMode?: LocationModes
 }
 ```
 
@@ -302,11 +335,86 @@ public class AssetDto : AssetEntity
 ### 路径查询参数
 
 ```cs
-long asset,
-DateTime? start,
-DateTime? end,
-LocationModes? locationMode,
+[FromQuery] long asset,
+[FromQuery] DateTime? start,
+[FromQuery] DateTime? end,
+[FromQuery] LocationModes? locationMode,
 [FromBody] FilterDto? filter
+```
+
+```typescript
+/** 定位方式 */
+export enum LocationModes {
+    /** 基站 */
+    BaseStation = 0,
+    /** 4G */
+    _4G = 1,
+    /** GPS */
+    GPS = 2,
+    /** WiFi */
+    WiFi = 3,
+    /** 4G+蓝牙 */
+    _4G_Bluetooth = 4,
+    /** GPS+蓝牙 */
+    GPS_Bluetooth = 5,
+    /** WiFi+蓝牙 */
+    WiFi_Bluetooth = 6,
+    /** 4G校准 */
+    _4G_Calibrate = 7,
+    /** WiFi校准 */
+    WiFi_Calibrate = 8,
+    /** 4G+蓝牙校准 */
+    _4G_Bluetooth_Calibrate = 9,
+    /** WiFi+蓝牙校准 */
+    WiFi_Bluetooth_Calibrate = 10,
+    /** 信标辅助定位 */
+    Beacon_Assistance = 11,
+}
+
+/** 资产经纬度 */
+export class AssetLngLat {
+    longitude = 0
+    latitude = 0
+    site?: bigint
+    address?: string
+    reportTime: Date = new Date()
+    locationMode?: LocationModes
+}
+
+/** "资产记录"实体 */
+export class AssetRecordEntity {
+    id: bigint = 0n
+    asset: bigint = 0n
+    tag: bigint = 0n
+    state: AssetStates = AssetStates.NoRecord
+    // Tag:
+    onlineState: OnlineStates = OnlineStates.Offline
+    locationMode?: LocationModes
+    site?: bigint
+    targetSite?: bigint
+    station?: bigint
+    battery?: number
+    signal?: number
+    temperature?: number
+    longitude?: number
+    latitude?: number
+    comment?: string
+    reportTime?: Date
+}
+
+/** "资产记录"对象 */
+export class AssetRecordDto extends AssetRecordEntity {
+    siteName?: string
+    stationName?: string
+    addr?: string
+    addrDetail?: string
+    address?: string
+    targetSiteName?: string
+    targetAddr?: string
+    targetAddrDetail?: string
+    fullAddr = ''
+    fullTarget = ''
+}
 ```
 
 ## 绑定记录
@@ -327,20 +435,16 @@ LocationModes? locationMode,
 
 ### Model
 
-```cs
-public class BindingRecordEntity
-{
-    public long? Id { get; set; }
-    public long Tag { get; set; }
-    public long Asset { get; set; }
-    public bool IsBinding { get; set; }
-    public DateTime Time { get; set; } = DateTimeHelper.GetUtcNow();
-}
-
-public class BindingRecordDto : BindingRecordEntity
-{
-    public string TagId { get; set; } = string.Empty;
-    public string AssetId { get; set; } = string.Empty;
+```typescript
+/** “绑定记录”实体 */
+export class BindingRecordEntity {
+    id: bigint = 0n
+    tag: bigint = 0n
+    asset: bigint = 0n
+    tagId = ''
+    assetId = ''
+    isBinding = true
+    time: Date = new Date()
 }
 ```
 
@@ -362,14 +466,14 @@ public class BindingRecordDto : BindingRecordEntity
 ### Model
 
 ```cs
-public class VehicleEntity
-{
-    public long Id { get; set; }
-    public long Company { get; set; }
-    public string Plate { get; set; } = string.Empty;
-    public string? Logistics { get; set; }
-    public string? Driver { get; set; }
-    public string? Phone { get; set; }
+/** “车辆”实体 */
+export class VehicleEntity {
+    id: bigint = 0n
+    company: bigint = 0n
+    plate = ''
+    logistics?: string
+    driver?: string
+    phone?: string
 }
 ```
 

@@ -1,9 +1,9 @@
 import { type ComputedRef } from "vue"
-import { IdNameModel, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { IdName, SelectModel } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper } from "./AxiosHelper"
 import { IdNameHelper } from "./IdNameHelper"
 
-export class DictionaryHelper extends IdNameHelper<IdNameModel> {
+export class DictionaryHelper extends IdNameHelper<IdName> {
     //#region 【Fields】
     private _placeholder: string | ComputedRef
     //#endregion 【Fields】
@@ -17,7 +17,7 @@ export class DictionaryHelper extends IdNameHelper<IdNameModel> {
 
     //#region 【Functions】
     /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+    GetIdNameSelectModel(): SelectModel<IdName> {
         return super.GetIdNameSelectModel(this._placeholder)
     }
 
@@ -35,7 +35,7 @@ export class DictionaryHelper extends IdNameHelper<IdNameModel> {
         pageSize?: number,
         pageNumber?: number,
         company?: bigint,
-    }) => await axiosHelper.GetList<IdNameModel>(this._action, {
+    }) => await axiosHelper.GetList<IdName>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         filter: {

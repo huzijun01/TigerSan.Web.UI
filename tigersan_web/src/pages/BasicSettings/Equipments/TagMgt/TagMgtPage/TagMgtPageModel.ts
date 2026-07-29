@@ -1,9 +1,9 @@
 import { computed, ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IdValueModel, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IdValue, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
 import { GetTagTable } from './TagMgtTable'
 import { AssetFilter } from '@/pages/Home/AssetLedgerPage/AssetFilter'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
-import { TagModel, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTypes, EqpType, companyHelper, assetHelper, imageModelHelper } from '@/models'
+import { TagDto, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTypes, EqpType, companyHelper, assetHelper, imageModelHelper } from '@/models'
 
 export class TagMgtPageModel {
     //#region 【Props】
@@ -52,7 +52,7 @@ export class TagMgtPageModel {
     readonly searchTagId = new SearchModel()
 
     /** “批次”项目配置 */
-    readonly configBatch: FormItemConfig<TagModel, IdValueModel> = {
+    readonly configBatch: FormItemConfig<TagDto, IdValue> = {
         _propName: 'batch',
         PropText: Texts.Batch,
         IsEquired: true,
@@ -63,7 +63,7 @@ export class TagMgtPageModel {
     }
 
     /** “类型”项目配置 */
-    readonly configType: FormItemConfig<TagModel, IdNameModel> = {
+    readonly configType: FormItemConfig<TagDto, IdName> = {
         _propName: 'type',
         PropText: Texts.Type,
         IsEquired: true,
@@ -74,7 +74,7 @@ export class TagMgtPageModel {
     }
 
     /** “标签ID”项目配置 */
-    readonly configTagId: FormItemConfig<TagModel, string> = {
+    readonly configTagId: FormItemConfig<TagDto, string> = {
         _propName: 'tagId',
         PropText: Texts.TagId,
         IsEquired: true,
@@ -83,7 +83,7 @@ export class TagMgtPageModel {
     }
 
     /** “资产ID”项目配置 */
-    readonly configAssetId: FormItemConfig<TagModel, string> = {
+    readonly configAssetId: FormItemConfig<TagDto, string> = {
         _propName: 'assetId',
         PropText: Texts.AssetId,
         IsEquired: false,
@@ -91,7 +91,7 @@ export class TagMgtPageModel {
     }
 
     /** “RFID”项目配置 */
-    readonly configRFID: FormItemConfig<TagModel, string> = {
+    readonly configRFID: FormItemConfig<TagDto, string> = {
         _propName: 'rfid',
         PropText: 'RFID',
         IsEquired: false,
@@ -99,7 +99,7 @@ export class TagMgtPageModel {
     }
 
     /** “备注”项目配置 */
-    readonly configComment: FormItemConfig<TagModel, string> = {
+    readonly configComment: FormItemConfig<TagDto, string> = {
         _propName: 'comment',
         PropText: Texts.Comment,
         IsEquired: false,
@@ -107,7 +107,7 @@ export class TagMgtPageModel {
     }
 
     /** “图片”项目配置 */
-    readonly configImage: FormItemConfig<TagModel, string | undefined> = {
+    readonly configImage: FormItemConfig<TagDto, string | undefined> = {
         _propName: 'image',
         PropText: TextModel.Computed('Image', '图片'),
         IsEquired: false,
@@ -116,13 +116,13 @@ export class TagMgtPageModel {
 
     /** “增”源数据获取方法 */
     readonly AddGetSource = () => {
-        const tag = new TagModel()
+        const tag = new TagDto()
         tag.eqpType = this.eqpType
         return tag
     }
 
     /** “标签”表单配置 */
-    readonly configTagForm: FormConfig<TagModel> = {
+    readonly configTagForm: FormConfig<TagDto> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (isEdit) {
@@ -330,7 +330,7 @@ export class TagMgtPageModel {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new TagModel()
+                return new TagDto()
             }
 
             return ObjectHelper.ShallowCopy(rowData)
@@ -375,7 +375,7 @@ export class TagMgtPageModel {
                         return
                     }
 
-                    const rowDatas: TagModel[] = []
+                    const rowDatas: TagDto[] = []
                     this.table.SelectedRowDatas.value.forEach(rowData => {
                         const newRowData = ObjectHelper.ShallowCopy(rowData)
                         newRowData.isEnable = isEnable
@@ -435,7 +435,7 @@ export class TagMgtPageModel {
         const rowData = this.table.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new TagModel()
+            return new TagDto()
         }
         const tag = ObjectHelper.ShallowCopy(rowData)
 

@@ -1,5 +1,5 @@
-/** “过滤器”模型 */
-export class FilterModel {
+/** “过滤器”对象 */
+export class FilterDto {
     parent?: ParentFilter
     filters?: PropFilter[]
 }

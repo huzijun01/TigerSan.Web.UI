@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, GetSubmitResult, IdNameModel, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, GetSubmitResult, IdName, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { GetTableModel } from './BindingRecordTable'
-import { bindingRecordHelper, BindingRecordModel } from '@/models'
+import { bindingRecordHelper, BindingRecordEntity } from '@/models'
 
 export class BindingRecordPageModel {
     //#region 【Fields】
@@ -11,7 +11,7 @@ export class BindingRecordPageModel {
     readonly pagination = new PaginationModel()
 
     /** “标签ID”项目配置 */
-    readonly configTagId: FormItemConfig<BindingRecordModel, IdNameModel> = {
+    readonly configTagId: FormItemConfig<BindingRecordEntity, IdName> = {
         _propName: 'tagId',
         PropText: Texts.TagId,
         IsEquired: true,
@@ -22,7 +22,7 @@ export class BindingRecordPageModel {
     }
 
     /** “资产ID”项目配置 */
-    readonly configAssetId: FormItemConfig<BindingRecordModel, string> = {
+    readonly configAssetId: FormItemConfig<BindingRecordEntity, string> = {
         _propName: 'assetId',
         PropText: Texts.AssetId,
         IsEquired: true,
@@ -33,10 +33,10 @@ export class BindingRecordPageModel {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new BindingRecordModel()
+    readonly AddGetSource = () => new BindingRecordEntity()
 
     /** 表单配置 */
-    readonly configBindingRecordPageModel: FormConfig<BindingRecordModel> = {
+    readonly configBindingRecordPageModel: FormConfig<BindingRecordEntity> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
         },
@@ -114,7 +114,7 @@ export class BindingRecordPageModel {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new BindingRecordModel()
+                return new BindingRecordEntity()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

@@ -1,16 +1,15 @@
 import { type ComputedRef } from "vue"
-import { KeyValueModel, BigintHelper, FilterModel, IdValueModel, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { KeyValueModel, BigintHelper, FilterDto, IdValue, SelectModel } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper } from "@/helpers/AxiosHelper"
 
-/** "组织机构"模型 */
-export class IdModel {
+/** “ID”实体基类 */
+export class IdEntityBase {
     id: bigint = 0n
 }
 
-export class IdHelper<TModel extends IdModel> {
+export class IdHelper<TModel extends IdEntityBase> {
     readonly _action: string
-    /** 更新“ID值对”集合 */
-    _idValues?: IdValueModel[]
+    _idValues?: IdValue[]
     _strIdValueList = ''
 
     constructor(action: string) {
@@ -62,7 +61,7 @@ export class IdHelper<TModel extends IdModel> {
         isDistinct?: boolean,
         strIdValueList?: string,
         params?: KeyValueModel[],
-        filter?: FilterModel
+        filter?: FilterDto
     }) => {
         if (param && this._strIdValueList) {
             param.strIdValueList = this._strIdValueList
@@ -71,7 +70,7 @@ export class IdHelper<TModel extends IdModel> {
     }
 
     /** 获取“ID值对” */
-    readonly GetIdValue = (id: bigint): IdValueModel | undefined => {
+    readonly GetIdValue = (id: bigint): IdValue | undefined => {
         if (!this._idValues) {
             console.warn('The _idValues is undefined!')
             return
@@ -100,8 +99,8 @@ export class IdHelper<TModel extends IdModel> {
     }
 
     /** 获取“ID值对”筛选框模型 */
-    GetIdValueSelectModel(placeholder: string | ComputedRef<string>, width: number = 208): SelectModel<IdValueModel> {
-        const select = new SelectModel<IdValueModel>()
+    GetIdValueSelectModel(placeholder: string | ComputedRef<string>, width: number = 208): SelectModel<IdValue> {
+        const select = new SelectModel<IdValue>()
         select.Width.value = width
         select.Placeholder.value = placeholder
         select._getItemsAsync = async () => await this.GetIdValues()

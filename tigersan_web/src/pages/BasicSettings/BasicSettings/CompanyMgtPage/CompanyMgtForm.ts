@@ -1,9 +1,9 @@
 import { computed, ref, watch, type WatchHandle } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading, TreeModel, ArrayHelper, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
-import { companyHelper, CompanyHelper, CompanyModel, CompanyInfoModel } from '@/models'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, BigintHelper, GetSubmitResult, IdName, MyActionResult, loading, TreeModel, ArrayHelper, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { companyHelper, CompanyHelper, CompanyEntity, CompanyInfoModel } from '@/models'
 
 /** 树 */
-const tree = new TreeModel<CompanyModel>()
+const tree = new TreeModel<CompanyEntity>()
 /** “公司”选择框 */
 const selectCompany = companyHelper.GetIdNameSelectModel()
 /** 全局“公司”选择框 */
@@ -36,7 +36,7 @@ selectCompany._onChange = () => {
 
 selectCompanyGlobal.IsAllowMultiSelect.value = true
 selectCompanyGlobal._getItemsAsync = undefined
-selectCompanyGlobal._getItems = () => tree.GetCheckedNodeArray().map(i => new IdNameModel(i._data?.id, i._data?.name))
+selectCompanyGlobal._getItems = () => tree.GetCheckedNodeArray().map(i => new IdName(i._data?.id, i._data?.name))
 selectCompanyGlobal._onInit = select => select.SelectAll()
 
 export class CompanyMgtForm {
@@ -59,7 +59,7 @@ export class CompanyMgtForm {
     readonly selectParentCompany = companyHelper.GetIdNameSelectModel()
 
     /** “公司名称”项目配置 */
-    readonly configName: FormItemConfig<CompanyModel, string> = {
+    readonly configName: FormItemConfig<CompanyEntity, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: true,
@@ -70,7 +70,7 @@ export class CompanyMgtForm {
     }
 
     /** “公司地址”项目配置 */
-    readonly configAddr: FormItemConfig<CompanyModel, string> = {
+    readonly configAddr: FormItemConfig<CompanyEntity, string> = {
         _propName: 'addr',
         PropText: Texts.Addr,
         IsEquired: true,
@@ -81,7 +81,7 @@ export class CompanyMgtForm {
     }
 
     /** “父公司”项目配置 */
-    readonly configParent: FormItemConfig<CompanyModel, IdNameModel> = {
+    readonly configParent: FormItemConfig<CompanyEntity, IdName> = {
         _propName: 'parent',
         PropText: Texts.Parent,
         IsEquired: false,
@@ -94,11 +94,11 @@ export class CompanyMgtForm {
 
     /** “增”源数据获取方法 */
     readonly AddGetSource = () => {
-        return new CompanyModel()
+        return new CompanyEntity()
     }
 
     /** “组织机构”表单配置 */
-    readonly configCompanyForm: FormConfig<CompanyModel> = {
+    readonly configCompanyForm: FormConfig<CompanyEntity> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             this.selectParentCompany._getItemsAsync = isEdit ? this.EditGetItemsAsync : this.AddGetItemsAsync
@@ -152,7 +152,7 @@ export class CompanyMgtForm {
         this.companyForm._getSource = this.AddGetSource
 
         this.companyForm._onSubmitAsync = async source => {
-            const res = await companyHelper.Add(source as CompanyModel)
+            const res = await companyHelper.Add(source as CompanyEntity)
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }

@@ -1,9 +1,9 @@
-import { BindingRecordModel, IsBinding } from '@/models'
+import { BindingRecordEntity, IsBinding } from '@/models'
 import { ItemType, ObjectHelper, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
 
 /** 列头 */
 export function GetTableModel() {
-    const table = new TableModel<BindingRecordModel>([
+    const table = new TableModel<BindingRecordEntity>([
         {
             _propName: 'tagId',
             Text: Texts.TagId,

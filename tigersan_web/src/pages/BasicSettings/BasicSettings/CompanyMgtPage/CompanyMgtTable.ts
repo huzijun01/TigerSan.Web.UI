@@ -1,7 +1,7 @@
-import { CompanyModel } from '@/models'
+import { CompanyEntity } from '@/models'
 import { ItemType, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
 
-export const companyMgtTable = new TableModel<CompanyModel>([
+export const companyMgtTable = new TableModel<CompanyEntity>([
     {
         _propName: 'Name',
         Text: Texts.Name,

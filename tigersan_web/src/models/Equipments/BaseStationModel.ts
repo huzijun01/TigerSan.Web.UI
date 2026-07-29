@@ -1,15 +1,12 @@
-import { IdNameModel, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
+import { IdName, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper, IdNameHelper } from "@/helpers"
 
-/** “基站”模型 */
-export class BaseStationModel extends IdNameModel {
-    company: bigint = 0n
+/** “基站”实体 */
+export class BaseStationEntity extends IdName {
     site: bigint = 0n
     type: bigint = 0n
     isEnable = false
     macAddr = ''
-    addr = ''
-    addrDetail = ''
     onlineState = OnlineStates.Offline
     heartbeatInterval = 28800
     reportInterval = 28800
@@ -19,14 +16,24 @@ export class BaseStationModel extends IdNameModel {
     image?: string
 }
 
-class BaseStationHelper extends IdNameHelper<BaseStationModel> {
+/** “基站”对象 */
+export class BaseStationDto extends BaseStationEntity {
+    typeName = ''
+    siteName = ''
+    company: bigint = 0n
+    companyName = ''
+    addr = ''
+    addrDetail = ''
+}
+
+class BaseStationHelper extends IdNameHelper<BaseStationDto> {
     constructor() {
         super('BaseStation')
     }
 
     // 查:
     /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+    GetIdNameSelectModel(): SelectModel<IdName> {
         return super.GetIdNameSelectModel(Texts.BaseStation)
     }
 
@@ -69,7 +76,7 @@ class BaseStationHelper extends IdNameHelper<BaseStationModel> {
             type?: bigint,
             macAddr?: string,
         }
-    ) => await axiosHelper.GetList<BaseStationModel>(this._action, {
+    ) => await axiosHelper.GetList<BaseStationDto>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
@@ -90,16 +97,16 @@ class BaseStationHelper extends IdNameHelper<BaseStationModel> {
     })
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属公司”集合 */
     readonly GetBelongSiteListAsync = async (company?: bigint) => {
         if (!company) return []
-        return await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongSiteList`, [{ key: 'company', value: company }])
+        return await axiosHelper.GetData<IdName[]>(`${this._action}/BelongSiteList`, [{ key: 'company', value: company }])
     }
 
     /** 获取“所属基站类型”集合 */
-    readonly GetBelongStationTypeListAsync = async (company?: bigint, site?: bigint) => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongStationTypeList`,
+    readonly GetBelongStationTypeListAsync = async (company?: bigint, site?: bigint) => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongStationTypeList`,
         [{ key: 'company', value: company }, { key: 'site', value: site }])
 }
 

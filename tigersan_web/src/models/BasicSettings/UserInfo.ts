@@ -1,18 +1,20 @@
-import { IdNameModel, AuthorityModel, ObjectHelper, StringHelper } from "@/0_tigersan_ui/tigerui"
-import { PersonModel } from "./PersonModel"
-import { axiosHelper, IdModel } from "@/helpers"
+import { IdName, AuthorityModel, ObjectHelper, StringHelper } from "@/0_tigersan_ui/tigerui"
+import { PersonEntity } from "./PersonModel"
+import { axiosHelper, IdEntityBase } from "@/helpers"
 
+/** 验证码数据 */
 export class CaptchaData {
     id = ''
     captcha = ''
 }
 
-export class UserInfo extends PersonModel {
+/** 用户信息 */
+export class UserInfo extends PersonEntity {
     isRoot = false
     captcha = ''
-    companyIdName = new IdNameModel()
-    departmentIdName = new IdNameModel()
-    roleIdName = new IdNameModel()
+    companyIdName = new IdName()
+    departmentIdName = new IdName()
+    roleIdName = new IdName()
     authorities: AuthorityModel[] = []
     token?: string
 
@@ -31,7 +33,7 @@ export class UserInfo extends PersonModel {
     }
 }
 
-export class PasswordEditModel extends IdModel {
+export class PasswordEditModel extends IdEntityBase {
     password = ''
     oldPassword = ''
     confirmPassword = ''

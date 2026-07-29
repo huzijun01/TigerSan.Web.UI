@@ -9,7 +9,7 @@ import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
 import { AssetStatePageModel } from './AssetStatePage/AssetStatePageModel'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
 import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
-import { AssetModel, AssetState, AssetStates, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
+import { AssetDto, AssetState, AssetStates, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
 import { BindingRecordPageModel } from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPageModel'
 import { TransferPageModel } from '../TransferPage/TransferPageModel'
 
@@ -67,7 +67,7 @@ export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
-export const assetLedgerTable = new TableModel<AssetModel>([
+export const assetLedgerTable = new TableModel<AssetDto>([
     {
         _propName: 'assetId',
         Text: Texts.AssetId,

@@ -1,7 +1,8 @@
 import { OnlineStates } from "@/0_tigersan_ui/tigerui"
-import { IdModel, IdHelper, axiosHelper } from "@/helpers"
+import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 import { AssetStates, LocationModes } from "../base/AssetStates"
 
+/** 资产经纬度 */
 export class AssetLngLat {
     longitude = 0
     latitude = 0
@@ -11,8 +12,8 @@ export class AssetLngLat {
     locationMode?: LocationModes
 }
 
-/** "资产基类"模型 */
-export class AssetRecordModel extends IdModel {
+/** "资产记录"实体 */
+export class AssetRecordEntity extends IdEntityBase {
     asset: bigint = 0n
     tag: bigint = 0n
     state: AssetStates = AssetStates.NoRecord
@@ -29,7 +30,10 @@ export class AssetRecordModel extends IdModel {
     latitude?: number
     comment?: string
     reportTime?: Date
-    // 附加:
+}
+
+/** "资产记录"对象 */
+export class AssetRecordDto extends AssetRecordEntity {
     siteName?: string
     stationName?: string
     addr?: string
@@ -42,7 +46,7 @@ export class AssetRecordModel extends IdModel {
     fullTarget = ''
 }
 
-class AssetRecordHelper extends IdHelper<AssetRecordModel> {
+class AssetRecordHelper extends IdHelper<AssetRecordDto> {
     constructor() {
         super('AssetRecord')
     }
@@ -89,7 +93,7 @@ class AssetRecordHelper extends IdHelper<AssetRecordModel> {
         station?: bigint,
         onlineState?: OnlineStates,
         locationMode?: LocationModes,
-    }) => await axiosHelper.GetList<AssetRecordModel>(this._action, {
+    }) => await axiosHelper.GetList<AssetRecordDto>(this._action, {
         strList: 'FullList',
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
@@ -139,7 +143,7 @@ class AssetRecordHelper extends IdHelper<AssetRecordModel> {
     })
 
     // 增:
-    readonly Add = async (source: AssetRecordModel, isRange: boolean = false) =>
+    readonly Add = async (source: AssetRecordDto, isRange: boolean = false) =>
         await axiosHelper.Add(`${this._action}/ByPackage`, source, isRange)
 }
 

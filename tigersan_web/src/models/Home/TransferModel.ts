@@ -1,6 +1,6 @@
-import { axiosHelper, IdHelper, IdModel } from "@/helpers"
+import { axiosHelper, IdHelper, IdEntityBase } from "@/helpers"
 
-export class TransferModel extends IdModel {
+export class TransferModel extends IdEntityBase {
     asset = 0n
     site = 0n
     target = 0n

@@ -1,8 +1,8 @@
-import { IdNameModel } from "@/0_tigersan_ui/tigerui"
-import { IdModel, IdHelper, axiosHelper } from "@/helpers"
+import { IdName } from "@/0_tigersan_ui/tigerui"
+import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 
-/** "组织机构"模型 */
-export class PersonModel extends IdModel {
+/** "人员"实体 */
+export class PersonEntity extends IdEntityBase {
     company: bigint = 0n
     department: bigint = 0n
     role: bigint = 0n
@@ -15,7 +15,7 @@ export class PersonModel extends IdModel {
     mail?: string
 }
 
-class PersonHelper extends IdHelper<PersonModel> {
+class PersonHelper extends IdHelper<PersonEntity> {
     constructor() {
         super('Person')
     }
@@ -51,7 +51,7 @@ class PersonHelper extends IdHelper<PersonModel> {
         department?: bigint,
         role?: bigint,
         name?: string,
-    }) => await axiosHelper.GetList<PersonModel>(this._action, {
+    }) => await axiosHelper.GetList<PersonEntity>(this._action, {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
@@ -72,18 +72,18 @@ class PersonHelper extends IdHelper<PersonModel> {
     })
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属部门”集合 */
     readonly GetBelongDepartmentListAsync = async (company?: bigint) => {
         if (!company) return []
-        return await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
+        return await axiosHelper.GetData<IdName[]>(`${this._action}/BelongDepartmentList`, [{ key: 'company', value: company }])
     }
 
     /** 获取“所属角色”集合 */
     readonly GetBelongRoleListAsync = async (department?: bigint) => {
         if (!department) return []
-        return await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongRoleList`, [{ key: 'department', value: department }])
+        return await axiosHelper.GetData<IdName[]>(`${this._action}/BelongRoleList`, [{ key: 'department', value: department }])
     }
 }
 

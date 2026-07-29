@@ -1,8 +1,8 @@
-import { IdNameModel, Point2, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
+import { IdName, Point2, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper, IdNameHelper } from "@/helpers"
 
-/** "组织机构"模型 */
-export class SiteModel extends IdNameModel {
+/** "场地"实体 */
+export class SiteEntity extends IdName {
     company: bigint = 0n
     type: bigint = 0n
     code = ''
@@ -17,14 +17,14 @@ export class SiteModel extends IdNameModel {
     comment? = ''
 }
 
-class SiteHelper extends IdNameHelper<SiteModel> {
+class SiteHelper extends IdNameHelper<SiteEntity> {
     constructor() {
         super('Site')
     }
 
     // 查:
     /** 获取“筛选框模型” */
-    GetIdNameSelectModel(): SelectModel<IdNameModel> {
+    GetIdNameSelectModel(): SelectModel<IdName> {
         return super.GetIdNameSelectModel(Texts.Site)
     }
 
@@ -54,7 +54,7 @@ class SiteHelper extends IdNameHelper<SiteModel> {
         code?: string,
     }) => {
         const pageSize = StringHelper.IsNotEmpty(param.code) ? 1 : param.pageSize
-        return await axiosHelper.GetList<SiteModel>(this._action, {
+        return await axiosHelper.GetList<SiteEntity>(this._action, {
             pageSize: pageSize,
             pageNumber: param.pageNumber,
             filter: {
@@ -78,12 +78,12 @@ class SiteHelper extends IdNameHelper<SiteModel> {
     }
 
     /** 获取“所属公司”集合 */
-    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongCompanyList`)
+    readonly GetBelongCompanyListAsync = async () => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongCompanyList`)
 
     /** 获取“所属类型”集合 */
     readonly GetBelongSiteTypeListAsync = async (company?: bigint) => {
         if (!company) return []
-        return await axiosHelper.GetData<IdNameModel[]>(`${this._action}/BelongSiteTypeList`, [{ key: 'company', value: company }])
+        return await axiosHelper.GetData<IdName[]>(`${this._action}/BelongSiteTypeList`, [{ key: 'company', value: company }])
     }
 }
 

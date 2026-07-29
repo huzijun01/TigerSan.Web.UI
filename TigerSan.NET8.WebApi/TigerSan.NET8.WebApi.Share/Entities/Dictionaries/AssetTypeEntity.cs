@@ -3,7 +3,7 @@
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("asset_type")]
-    public class AssetTypeEntity : IdNameCompanyEntityBase
+    public class AssetTypeEntity : IdNameCompany
     {
     }
 }

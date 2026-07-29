@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { PaginationModel, IdNameModel, FormItemConfig, Verify, FormConfig, FormModel, TableModel, ItemType, loading, ArrayHelper, GetSubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, BigintHelper, Texts } from '@/0_tigersan_ui/tigerui'
+import { PaginationModel, IdNameCompany, FormItemConfig, Verify, FormConfig, FormModel, TableModel, ItemType, loading, ArrayHelper, GetSubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, BigintHelper, Texts } from '@/0_tigersan_ui/tigerui'
 import { DictionaryHelper } from '@/helpers'
 import { companyHelper } from './CompanyModel'
 
@@ -20,10 +20,10 @@ export class DictionaryModel {
     readonly pagination = new PaginationModel()
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new IdNameModel()
+    readonly AddGetSource = () => new IdNameCompany()
 
     /** “名称”项目配置 */
-    readonly configName: FormItemConfig<IdNameModel, string> = {
+    readonly configName: FormItemConfig<IdNameCompany, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: true,
@@ -34,7 +34,7 @@ export class DictionaryModel {
     }
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<IdNameModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<IdNameCompany, IdNameCompany> = {
         _propName: 'companyName',
         PropText: Texts.Company,
         IsEquired: true,
@@ -45,7 +45,7 @@ export class DictionaryModel {
     }
 
     /** 表单配置 */
-    readonly configForm: FormConfig<IdNameModel> = {
+    readonly configForm: FormConfig<IdNameCompany> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (this._isShowCompany) {
@@ -59,10 +59,10 @@ export class DictionaryModel {
     }
 
     /** 表单模型 */
-    readonly form: FormModel<IdNameModel>
+    readonly form: FormModel<IdNameCompany>
 
     /** 表格模型 */
-    readonly table = new TableModel<IdNameModel>([
+    readonly table = new TableModel<IdNameCompany>([
         {
             _propName: 'name',
             Text: Texts.Name,
@@ -148,7 +148,7 @@ export class DictionaryModel {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new IdNameModel()
+                return new IdNameCompany()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

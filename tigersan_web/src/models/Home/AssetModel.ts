@@ -1,9 +1,9 @@
 import { ArrayHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
-import { IdModel, IdHelper, axiosHelper } from "@/helpers"
+import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 import { AssetStates, ErrorTypes, LocationModes } from "../base/AssetStates"
 
-/** "资产基类"模型 */
-class AssetBaseModel extends IdModel {
+/** "资产"实体 */
+export class AssetEntity extends IdEntityBase {
     department: bigint = 0n
     type: bigint = 0n
     assetId = ''
@@ -24,9 +24,8 @@ class AssetBaseModel extends IdModel {
     calculationTime?: Date
 }
 
-/** "资产"模型 */
-export class AssetModel extends AssetBaseModel {
-    // 附加:
+/** "资产"对象 */
+export class AssetDto extends AssetEntity {
     company: bigint = 0n
     companyName = ''
     departmentName = ''
@@ -47,8 +46,8 @@ export class AssetModel extends AssetBaseModel {
     travelDuration?: number
 }
 
-/** "资产位置"模型 */
-export class AssetPosition extends IdModel {
+/** 资产位置 */
+export class AssetPosition extends IdEntityBase {
     assetId = ''
     lastRecord?: bigint
     longitude = 0
@@ -57,13 +56,13 @@ export class AssetPosition extends IdModel {
     locationMode?: LocationModes
 }
 
-export class AssetHelper extends IdHelper<AssetModel> {
+export class AssetHelper extends IdHelper<AssetDto> {
     constructor() {
         super('Asset')
     }
 
     /** 根据“id”或“TagId”获取“单条数据” */
-    readonly GetFull = async (id?: bigint, rfid?: string) => await axiosHelper.Get<AssetModel>(`${this._action}/Full`, [
+    readonly GetFull = async (id?: bigint, rfid?: string) => await axiosHelper.Get<AssetDto>(`${this._action}/Full`, [
         { key: 'tagId', value: id ? id.toString() : undefined },
         { key: 'rfid', value: rfid }
     ], false)
@@ -134,10 +133,10 @@ export class AssetHelper extends IdHelper<AssetModel> {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
         if (param.rfid) {
             const res = await this.GetFull(undefined, param.rfid)
-            const asset = res.data as AssetModel
-            return asset ? [asset] : new Array<AssetModel>()
+            const asset = res.data as AssetDto
+            return asset ? [asset] : new Array<AssetDto>()
         } else {
-            return await axiosHelper.GetList<AssetModel>(this._action, {
+            return await axiosHelper.GetList<AssetDto>(this._action, {
                 strList: 'FullList',
                 pageSize: param.pageSize,
                 pageNumber: param.pageNumber,

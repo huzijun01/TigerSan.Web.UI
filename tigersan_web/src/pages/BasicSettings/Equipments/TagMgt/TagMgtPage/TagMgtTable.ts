@@ -1,9 +1,9 @@
 import { Battery, IsEnable, IsFall, ItemType, ObjectHelper, OnlineState, Signal, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
-import { TagModel, batchHelper, tagTypeHelper, baseStationHelper, LocationMode } from '@/models'
+import { TagDto, LocationMode } from '@/models'
 
 // 列头:
 export function GetTagTable() {
-    const table = new TableModel<TagModel>([
+    const table = new TableModel<TagDto>([
         {
             _propName: 'tagId',
             Text: Texts.TagId,
@@ -26,26 +26,23 @@ export function GetTagTable() {
             Type: ItemType.TextBox,
         },
         {
-            _propName: 'batch',
+            _propName: 'batchId',
             Text: Texts.Batch,
             IsReadonly: true,
             Type: ItemType.TextBox,
-            _getStringAsync: source => batchHelper.GetValue(source.batch)
         },
         {
-            _propName: 'type',
+            _propName: 'typeName',
             Text: Texts.Type,
             IsReadonly: true,
             Type: ItemType.TextBox,
-            _getStringAsync: source => tagTypeHelper.GetNameAsync(source.type)
         },
         {
-            _propName: 'station',
+            _propName: 'stationName',
             Text: Texts.BaseStation,
             IsReadonly: true,
             IsRequired: false,
             Type: ItemType.TextBox,
-            _getStringAsync: source => baseStationHelper.GetNameAsync(source.station)
         },
         {
             _propName: 'siteName',

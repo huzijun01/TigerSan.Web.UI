@@ -1,28 +1,25 @@
 import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
-import { BaseStationModel, companyHelper, siteHelper, stationTypeHelper } from '@/models'
+import { BaseStationDto } from '@/models'
 
 // 列头:
-export const baseStationMgtTable = new TableModel<BaseStationModel>([
+export const baseStationMgtTable = new TableModel<BaseStationDto>([
     {
-        _propName: 'company',
+        _propName: 'companyName',
         Text: Texts.Company,
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => companyHelper.GetNameAsync(source.company)
     },
     {
-        _propName: 'site',
+        _propName: 'siteName',
         Text: Texts.Site,
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => siteHelper.GetNameAsync(source.site)
     },
     {
-        _propName: 'type',
+        _propName: 'typeName',
         Text: Texts.Type,
         IsReadonly: true,
         Type: ItemType.TextBox,
-        _getStringAsync: source => stationTypeHelper.GetNameAsync(source.type)
     },
     {
         _propName: 'macAddr',

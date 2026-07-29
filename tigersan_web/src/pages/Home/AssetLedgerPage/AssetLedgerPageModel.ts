@@ -1,10 +1,10 @@
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdNameModel, MyActionResult, loading, Texts, IsFall, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdName, MyActionResult, loading, Texts, IsFall, TextModel } from '@/0_tigersan_ui/tigerui'
 import { AssetFilter } from './AssetFilter'
 import { AssetFormModel } from './AssetFormModel'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
 import { TransferPageModel } from '../TransferPage/TransferPageModel'
 import { CompanyMgtForm } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm'
-import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetModel, siteHelper, tagTypeHelper, TransferModel, transferHelper } from '@/models'
+import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetDto, siteHelper, tagTypeHelper, TransferModel, transferHelper } from '@/models'
 
 export class OutboundModel {
     company: bigint = 0n
@@ -107,7 +107,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
             const rowData = assetLedgerTable.SelectedRowDatas.value[0]
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new AssetModel()
+                return new AssetDto()
             }
 
             return ObjectHelper.ShallowCopy(rowData)
@@ -159,7 +159,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
         const rowData = assetLedgerTable.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new AssetModel()
+            return new AssetDto()
         }
 
         this.transferPage.form.Title.value = Texts.Transfer.value
@@ -181,7 +181,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
     }
 
     /** “公司”项目配置 */
-    readonly configOutboundCompany: FormItemConfig<OutboundModel, IdNameModel> = {
+    readonly configOutboundCompany: FormItemConfig<OutboundModel, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -192,7 +192,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
     }
 
     /** “场地”项目配置 */
-    readonly configSite: FormItemConfig<OutboundModel, IdNameModel> = {
+    readonly configSite: FormItemConfig<OutboundModel, IdName> = {
         _propName: 'site',
         PropText: Texts.Site,
         IsEquired: true,

@@ -1,7 +1,7 @@
 import { ref } from "vue"
-import { FormItemConfig, IdNameModel, BigintHelper, Verify, Texts, FormConfig, FormModel, IsAuto } from "@/0_tigersan_ui/tigerui"
+import { FormItemConfig, IdName, BigintHelper, Verify, Texts, FormConfig, FormModel, IsAuto } from "@/0_tigersan_ui/tigerui"
 import { assetLedgerTable } from "./AssetLedgerTable"
-import { companyHelper, departmentHelper, assetTypeHelper, vehicleHelper, AssetModel } from "@/models"
+import { companyHelper, departmentHelper, assetTypeHelper, vehicleHelper, AssetDto } from "@/models"
 
 export class AssetFormModel {
     //#region 【Fields】
@@ -13,7 +13,7 @@ export class AssetFormModel {
     readonly selectVehicleForm = vehicleHelper.GetIdPlateSelectModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<AssetModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<AssetDto, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -24,7 +24,7 @@ export class AssetFormModel {
     }
 
     /** “部门”项目配置 */
-    readonly configDepartment: FormItemConfig<AssetModel, IdNameModel> = {
+    readonly configDepartment: FormItemConfig<AssetDto, IdName> = {
         _propName: 'department',
         PropText: Texts.Department,
         IsEquired: true,
@@ -35,7 +35,7 @@ export class AssetFormModel {
     }
 
     /** “类型”项目配置 */
-    readonly configAssetType: FormItemConfig<AssetModel, IdNameModel> = {
+    readonly configAssetType: FormItemConfig<AssetDto, IdName> = {
         _propName: 'type',
         PropText: Texts.Type,
         IsEquired: true,
@@ -46,7 +46,7 @@ export class AssetFormModel {
     }
 
     /** “调拨”项目配置 */
-    readonly configIsAuto: FormItemConfig<AssetModel, boolean> = {
+    readonly configIsAuto: FormItemConfig<AssetDto, boolean> = {
         _propName: 'isAuto',
         PropText: Texts.Allot,
         IsEquired: true,
@@ -55,7 +55,7 @@ export class AssetFormModel {
     }
 
     /** “资产ID”项目配置 */
-    readonly configAssetId: FormItemConfig<AssetModel, string> = {
+    readonly configAssetId: FormItemConfig<AssetDto, string> = {
         _propName: 'assetId',
         PropText: Texts.AssetId,
         IsEquired: true,
@@ -64,7 +64,7 @@ export class AssetFormModel {
     }
 
     /** “标签ID”项目配置 */
-    readonly configTagId: FormItemConfig<AssetModel, string> = {
+    readonly configTagId: FormItemConfig<AssetDto, string> = {
         _propName: 'tagId',
         PropText: Texts.TagId,
         IsEquired: false,
@@ -72,7 +72,7 @@ export class AssetFormModel {
     }
 
     /** “名称”项目配置 */
-    readonly configName: FormItemConfig<AssetModel, string> = {
+    readonly configName: FormItemConfig<AssetDto, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: false,
@@ -80,7 +80,7 @@ export class AssetFormModel {
     }
 
     /** “备注”项目配置 */
-    readonly configComment: FormItemConfig<AssetModel, string> = {
+    readonly configComment: FormItemConfig<AssetDto, string> = {
         _propName: 'comment',
         PropText: Texts.Comment,
         IsEquired: false,
@@ -88,7 +88,7 @@ export class AssetFormModel {
     }
 
     /** “名称”项目配置 */
-    readonly configVehicle: FormItemConfig<AssetModel, IdNameModel> = {
+    readonly configVehicle: FormItemConfig<AssetDto, IdName> = {
         _propName: 'name',
         PropText: Texts.Vehicle,
         IsEquired: false,
@@ -98,10 +98,10 @@ export class AssetFormModel {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new AssetModel()
+    readonly AddGetSource = () => new AssetDto()
 
     /** “资产”表单配置 */
-    readonly configAssetLedgerForm: FormConfig<AssetModel> = {
+    readonly configAssetLedgerForm: FormConfig<AssetDto> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (isEdit) {

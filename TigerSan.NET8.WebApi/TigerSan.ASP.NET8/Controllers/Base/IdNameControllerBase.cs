@@ -7,7 +7,7 @@ namespace TigerSan.NET8.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public abstract class IdNameControllerBase<TEntity, TIIdNameService> : IdControllerBase<TEntity, TIIdNameService> where TEntity : IdNameEntityBase where TIIdNameService : IIdNameServiceBase<TEntity>
+    public abstract class IdNameControllerBase<TEntity, TIIdNameService> : IdControllerBase<TEntity, TIIdNameService> where TEntity : IdName where TIIdNameService : IIdNameServiceBase<TEntity>
     {
         #region 【Ctor】
         public IdNameControllerBase(TIIdNameService service) : base(service)

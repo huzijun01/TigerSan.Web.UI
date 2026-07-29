@@ -4,20 +4,26 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [PrimaryKey(nameof(Id))]
-    public abstract class IdNameEntityBase : IdEntityBase
+    public class IdName : IdEntityBase
     {
         [SnakeColumn]
         public string Name { get; set; } = string.Empty;
 
         #region 【Ctor】
-        public IdNameEntityBase()
+        public IdName()
         {
         }
 
-        public IdNameEntityBase(long id, string name)
+        public IdName(long id, string name)
         {
             Id = id;
             Name = name;
+        }
+
+        public IdName(IdName idName)
+        {
+            Id = idName.Id;
+            Name = idName.Name;
         }
         #endregion 【Ctor】
     }

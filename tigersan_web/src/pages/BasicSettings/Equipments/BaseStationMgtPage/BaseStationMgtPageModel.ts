@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdNameModel, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
 import { baseStationMgtTable } from './BaseStationMgtTable'
-import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationModel, imageModelHelper } from '@/models'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper } from '@/models'
 
 export class BaseStationMgtPageModel {
     //#region 【Props】
@@ -34,7 +34,7 @@ export class BaseStationMgtPageModel {
     readonly selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
 
     /** “公司”项目配置 */
-    readonly configCompany: FormItemConfig<BaseStationModel, IdNameModel> = {
+    readonly configCompany: FormItemConfig<BaseStationDto, IdName> = {
         _propName: 'company',
         PropText: Texts.Company,
         IsEquired: true,
@@ -45,7 +45,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “场地”项目配置 */
-    readonly configSite: FormItemConfig<BaseStationModel, IdNameModel> = {
+    readonly configSite: FormItemConfig<BaseStationDto, IdName> = {
         _propName: 'site',
         PropText: Texts.Site,
         IsEquired: true,
@@ -56,7 +56,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “类型”项目配置 */
-    readonly configType: FormItemConfig<BaseStationModel, IdNameModel> = {
+    readonly configType: FormItemConfig<BaseStationDto, IdName> = {
         _propName: 'type',
         PropText: Texts.Type,
         IsEquired: true,
@@ -67,7 +67,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “MAC地址”项目配置 */
-    readonly configMacAddr: FormItemConfig<BaseStationModel, string> = {
+    readonly configMacAddr: FormItemConfig<BaseStationDto, string> = {
         _propName: 'macAddr',
         PropText: Texts.MacAddr,
         IsEquired: true,
@@ -76,7 +76,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “名称”项目配置 */
-    readonly configName: FormItemConfig<BaseStationModel, string> = {
+    readonly configName: FormItemConfig<BaseStationDto, string> = {
         _propName: 'name',
         PropText: Texts.Name,
         IsEquired: true,
@@ -85,7 +85,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “心跳（秒）”项目配置 */
-    readonly configHeartbeatInterval: FormItemConfig<BaseStationModel, string> = {
+    readonly configHeartbeatInterval: FormItemConfig<BaseStationDto, string> = {
         _propName: 'heartbeatInterval',
         PropText: TextModel.Computed('HeartbeatInterval', '心跳'),
         IsEquired: true,
@@ -94,7 +94,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “上报周期（秒）”项目配置 */
-    readonly configReportInterval: FormItemConfig<BaseStationModel, string> = {
+    readonly configReportInterval: FormItemConfig<BaseStationDto, string> = {
         _propName: 'reportInterval',
         PropText: TextModel.Computed('ReportInterval', '上报周期'),
         IsEquired: true,
@@ -103,7 +103,7 @@ export class BaseStationMgtPageModel {
     }
 
     /** “图片”项目配置 */
-    readonly configImage: FormItemConfig<BaseStationModel, string> = {
+    readonly configImage: FormItemConfig<BaseStationDto, string> = {
         _propName: 'image',
         PropText: TextModel.Computed('Image', '图片'),
         IsEquired: false,
@@ -111,10 +111,10 @@ export class BaseStationMgtPageModel {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new BaseStationModel()
+    readonly AddGetSource = () => new BaseStationDto()
 
     /** “基站”表单配置 */
-    readonly configBaseStationForm: FormConfig<BaseStationModel> = {
+    readonly configBaseStationForm: FormConfig<BaseStationDto> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (isEdit) {
@@ -303,7 +303,7 @@ export class BaseStationMgtPageModel {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new BaseStationModel()
+                return new BaseStationDto()
             }
 
             return ObjectHelper.ShallowCopy(rowData)
@@ -349,7 +349,7 @@ export class BaseStationMgtPageModel {
                         return
                     }
 
-                    const rowDatas: BaseStationModel[] = []
+                    const rowDatas: BaseStationDto[] = []
                     baseStationMgtTable.SelectedRowDatas.value.forEach(rowData => {
                         const newRowData = ObjectHelper.ShallowCopy(rowData)
                         newRowData.isEnable = isEnable

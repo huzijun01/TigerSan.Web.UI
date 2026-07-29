@@ -1,8 +1,8 @@
 import { ArrayHelper } from "@/0_tigersan_ui/tigerui"
-import { IdModel, IdHelper, axiosHelper } from "@/helpers"
+import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 
 /** "资产基类"模型 */
-export class InventoryRecordModel extends IdModel {
+export class InventoryRecordModel extends IdEntityBase {
     site = 0n
     inStore = 0
     stolid = 0

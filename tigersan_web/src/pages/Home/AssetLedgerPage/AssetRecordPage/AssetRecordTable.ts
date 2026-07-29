@@ -1,5 +1,5 @@
 import { Battery, ItemType, ObjectHelper, OnlineState, PaginationModel, Signal, TableModel, TextModel, Texts } from '@/0_tigersan_ui/tigerui'
-import { AssetRecordModel, AssetState, LocationMode } from '@/models'
+import { AssetRecordDto, AssetState, LocationMode } from '@/models'
 
 // 字段:
 /** 分页器 */
@@ -7,7 +7,7 @@ export const pagination = new PaginationModel()
 pagination.IsShowSelectedRowCount.value = true
 
 /** 列头 */
-export const assetRecordTable = new TableModel<AssetRecordModel>([
+export const assetRecordTable = new TableModel<AssetRecordDto>([
     {
         _propName: 'stationName',
         Text: Texts.BaseStation,

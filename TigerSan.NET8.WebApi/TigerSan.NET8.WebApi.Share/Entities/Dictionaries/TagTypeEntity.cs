@@ -3,7 +3,7 @@
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("tag_type")]
-    public class TagTypeEntity : IdNameEntityBase
+    public class TagTypeEntity : IdName
     {
     }
 }

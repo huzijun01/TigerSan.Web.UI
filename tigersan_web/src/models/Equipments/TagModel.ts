@@ -1,10 +1,10 @@
 import { OnlineStates } from "@/0_tigersan_ui/tigerui"
 import { EqpTypes } from "../base/EqpTypes"
 import { LocationModes } from "../base/AssetStates"
-import { axiosHelper, IdModel, IdHelper } from "@/helpers"
+import { axiosHelper, IdEntityBase, IdHelper } from "@/helpers"
 
-/** “标签”模型 */
-export class TagModel extends IdModel {
+/** “标签”实体 */
+export class TagEntity extends IdEntityBase {
     batch: bigint = 0n
     type: bigint = 0n
     station?: bigint
@@ -26,7 +26,12 @@ export class TagModel extends IdModel {
     comment?: string
     reportTime?: Date
     image?: string
-    // 附加:
+}
+
+/** “标签”对象 */
+export class TagDto extends TagEntity {
+    batchId = ''
+    typeName = ''
     company?: bigint
     companyName?: string
     site?: bigint
@@ -34,13 +39,13 @@ export class TagModel extends IdModel {
     address?: string
 }
 
-class TagHelper extends IdHelper<TagModel> {
+class TagHelper extends IdHelper<TagDto> {
     constructor() {
         super('Tag')
     }
 
     /** 根据“TagId”或“RFID”获取“单条数据” */
-    readonly GetFull = async (tagId?: string, rfid?: string) => await axiosHelper.Get<TagModel>(`${this._action}/Full`, [
+    readonly GetFull = async (tagId?: string, rfid?: string) => await axiosHelper.Get<TagDto>(`${this._action}/Full`, [
         { key: 'tagId', value: tagId },
         { key: 'rfid', value: rfid }
     ], false)
@@ -101,10 +106,10 @@ class TagHelper extends IdHelper<TagModel> {
     }) => {
         if (param.rfid) {
             const res = await this.GetFull(undefined, param.rfid)
-            const asset = res.data as TagModel
-            return asset ? [asset] : new Array<TagModel>()
+            const asset = res.data as TagDto
+            return asset ? [asset] : new Array<TagDto>()
         } else {
-            return await axiosHelper.GetList<TagModel>(this._action, {
+            return await axiosHelper.GetList<TagDto>(this._action, {
                 strList: 'FullList',
                 pageSize: param.pageSize,
                 pageNumber: param.pageNumber,

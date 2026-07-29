@@ -85,8 +85,8 @@
     }
     #endregion
 
-    #region ID值对
-    /// <summary>ID值对</summary>
+    #region “ID-值”对
+    /// <summary>“ID-值”对</summary>
     public class IdValue<TField>
     {
         public long Id { get; set; }

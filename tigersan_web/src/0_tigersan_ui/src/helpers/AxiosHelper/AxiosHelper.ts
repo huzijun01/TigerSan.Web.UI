@@ -2,9 +2,9 @@
 import { AxiosBase } from "./AxiosBase"
 import { KeyValueModel } from "../ParamHelper"
 import { DialogHelper } from "../../stores/dialog"
-import { FilterModel } from "../../models/FilterModel"
+import { FilterDto } from "../../models/FilterModel"
 import { MyActionResult } from "../../models/MyActionResult"
-import { IdNameModel, IdValueModel } from "../../models/SelectModel"
+import { IdName, IdValue } from "../../models/SelectModel"
 
 export class AxiosHelper extends AxiosBase {
     //#region 【Ctor】
@@ -19,7 +19,7 @@ export class AxiosHelper extends AxiosBase {
         action: string,
         param: {
             params?: KeyValueModel[],
-            filter?: FilterModel
+            filter?: FilterDto
         }): Promise<number> => {
         try {
             const actionResult = await this.Post(`${action}/Count`, param.params, param.filter)
@@ -49,7 +49,7 @@ export class AxiosHelper extends AxiosBase {
             sort?: string,
             ascending?: boolean,
             params?: KeyValueModel[],
-            filter?: FilterModel
+            filter?: FilterDto
         }): Promise<T[]> => {
         try {
             const arrParams: KeyValueModel[] = [
@@ -78,13 +78,13 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    readonly SelectIdValue = async <T extends IdValueModel>(
+    readonly SelectIdValue = async <T extends IdValue>(
         action: string,
         param: {
             isDistinct?: boolean,
             strIdValueList?: string,
             params?: KeyValueModel[],
-            filter?: FilterModel
+            filter?: FilterDto
         }): Promise<T[]> => {
         try {
             const arrParams: KeyValueModel[] = [{ key: 'isDistinct', value: param.isDistinct }]
@@ -108,13 +108,13 @@ export class AxiosHelper extends AxiosBase {
         }
     }
 
-    readonly SelectIdName = async <T extends IdNameModel>(
+    readonly SelectIdName = async <T extends IdName>(
         action: string,
         param: {
             isDistinct?: boolean,
             strIdNameList?: string,
             params?: KeyValueModel[],
-            filter?: FilterModel
+            filter?: FilterDto
         }): Promise<T[]> => {
         try {
             const arrParams: KeyValueModel[] = [{ key: 'isDistinct', value: param.isDistinct }]

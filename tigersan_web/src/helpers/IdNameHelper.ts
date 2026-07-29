@@ -1,11 +1,11 @@
 import { type ComputedRef } from "vue"
-import { KeyValueModel, IdNameModel, FilterModel, BigintHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { KeyValueModel, IdName, FilterDto, BigintHelper, SelectModel } from "@/0_tigersan_ui/tigerui"
 import { IdHelper } from "./IdHelper"
 import { axiosHelper } from "@/helpers/AxiosHelper"
 
-export class IdNameHelper<TModel extends IdNameModel> extends IdHelper<TModel> {
+export class IdNameHelper<TModel extends IdName> extends IdHelper<TModel> {
     /** 更新“ID名称对”集合 */
-    _idNames?: IdNameModel[]
+    _idNames?: IdName[]
 
     constructor(action: string) {
         super(action)
@@ -16,11 +16,11 @@ export class IdNameHelper<TModel extends IdNameModel> extends IdHelper<TModel> {
     readonly GetIdNames = async (param?: {
         isDistinct?: boolean,
         params?: KeyValueModel[],
-        filter?: FilterModel
+        filter?: FilterDto
     }) => await axiosHelper.SelectIdName(this._action, param ?? {})
 
     /** 获取“ID名称对” */
-    readonly GetIdName = (id: bigint): IdNameModel | undefined => {
+    readonly GetIdName = (id: bigint): IdName | undefined => {
         if (!this._idNames) {
             console.warn('The _idNames is undefined!')
             return
@@ -67,8 +67,8 @@ export class IdNameHelper<TModel extends IdNameModel> extends IdHelper<TModel> {
     }
 
     /** 获取“ID名称对”筛选框模型 */
-    GetIdNameSelectModel(placeholder: string | ComputedRef<string>, width: number = 208): SelectModel<IdNameModel> {
-        const select = new SelectModel<IdNameModel>()
+    GetIdNameSelectModel(placeholder: string | ComputedRef<string>, width: number = 208): SelectModel<IdName> {
+        const select = new SelectModel<IdName>()
         select.Width.value = width
         select.Placeholder.value = placeholder
         select._getItemsAsync = async () => await this.GetIdNames()

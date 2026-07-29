@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { PaginationModel, FormItemConfig, IdNameModel, Verify, FormConfig, FormModel, TableModel, ItemType, loading, ArrayHelper, GetSubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, BigintHelper, Texts, SearchModel, IsEnd, StringHelper, TextModel } from '@/0_tigersan_ui/tigerui'
+import { PaginationModel, FormItemConfig, IdName, Verify, FormConfig, FormModel, TableModel, ItemType, loading, ArrayHelper, GetSubmitResult, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, BigintHelper, Texts, SearchModel, IsEnd, StringHelper, TextModel } from '@/0_tigersan_ui/tigerui'
 import { siteHelper, transferHelper, TransferModel } from '@/models'
 
 export class TransferPageModel {
@@ -26,7 +26,7 @@ export class TransferPageModel {
     }
 
     /** “终点”项目配置 */
-    readonly configTarget: FormItemConfig<TransferModel, IdNameModel> = {
+    readonly configTarget: FormItemConfig<TransferModel, IdName> = {
         _propName: 'target',
         PropText: Texts.Target,
         IsEquired: true,

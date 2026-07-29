@@ -8,7 +8,7 @@ using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Services.Models.Base
 {
-    public class IdNameRepeatableServiceBase<TEntity> : IdServiceBase<TEntity>, IIdNameServiceBase<TEntity> where TEntity : IdNameEntityBase
+    public class IdNameRepeatableServiceBase<TEntity> : IdServiceBase<TEntity>, IIdNameServiceBase<TEntity> where TEntity : IdName
     {
         #region 【Ctor】
         public IdNameRepeatableServiceBase(AppDbContext db, DbSet<TEntity> dbSet) : base(db, dbSet)
@@ -38,7 +38,7 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
                     select = select.Distinct();
                 }
 
-                return MyResults<List<IdName>>.Success(null, await select.ToListAsync());
+                return MyResults<List<IdName>>.Success(null, (List<IdName>)await EntityFrameworkQueryableExtensions.ToListAsync<IdName>(select));
             }
             catch (Exception e)
             {

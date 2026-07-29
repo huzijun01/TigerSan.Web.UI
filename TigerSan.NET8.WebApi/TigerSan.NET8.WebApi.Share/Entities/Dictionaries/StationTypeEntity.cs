@@ -3,7 +3,7 @@
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
     [Table("scenario")]
-    public class ScenarioEntity : IdNameEntityBase
+    public class ScenarioEntity : IdName
     {
     }
 }
