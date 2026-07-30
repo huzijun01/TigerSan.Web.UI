@@ -37,12 +37,10 @@ const { refContainer } = model
 
 onMounted(async () => {
     if (model._isAutoInit) await model.InitAsync()
-    model._watchIsDark.Start()
 })
 
 onBeforeUnmount(() => {
-    model._map?.destroy()
-    model._watchIsDark.Stop()
+    model.Destroy()
 })
 </script>
 

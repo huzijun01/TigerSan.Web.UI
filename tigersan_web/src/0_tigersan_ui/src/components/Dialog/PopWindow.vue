@@ -1,5 +1,5 @@
 <template>
-    <Pop :isShow="model.IsShow.value">
+    <Pop :isShow="model.IsShow.value" :maskStyle="model.MaskStyle.value">
         <div class="pop-window" :style="model.Style.value">
             <div class="title-panel flex-between">
                 <span class="title">{{ model.ShowTitle.value }}</span>

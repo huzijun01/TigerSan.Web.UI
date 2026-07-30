@@ -811,6 +811,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (editingTag != null || oldTag.Asset == null || newTag.Asset == null) return MyResults<object>.OperationSuccess;
                 _editingTags.Add(newTag.Id, newTag); // 开始修改
 
+                await PushTagDto.PushTagDtoAsync(newTag);
+
                 #region 获取“基站”
                 BaseStationEntity? oldStation = null;
                 if (oldTag.Station != null)

@@ -19,11 +19,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region [查]
         [HttpGet]
         [Route("Full")]
-        /// <summary>根据“id”或“TagId”获取“单条完整数据”</summary>
-        public async Task<MyActionResult<AssetDto>> GetFull(long? id = null, string? rfid = null)
+        /// <summary>根据“id”或“assetId”或“rfid”获取“单条完整数据”</summary>
+        public async Task<MyActionResult<AssetDto>> GetFull(
+            long? id = null,
+            string? assetId = null,
+            string? rfid = null)
         {
             if (AccessibleCompanies == null) return MyResults<AssetDto>.AccessibleCompaniesCannotBeNull;
-            return await _service.GetFull(AccessibleCompanies.Select(i => i.Id).ToList(), id, rfid);
+            return await _service.GetFull(AccessibleCompanies.Select(i => i.Id).ToList(), id, assetId, rfid);
         }
 
         [HttpGet]

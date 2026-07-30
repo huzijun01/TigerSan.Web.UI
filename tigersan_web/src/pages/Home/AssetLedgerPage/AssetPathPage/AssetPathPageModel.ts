@@ -97,9 +97,7 @@ export class AssetPathPageModel {
         const points: LnglatData<AssetInfoModel, AssetInfoModel>[] = positions.map(position => {
             const infoModel = new AssetInfoModel(this.GetAssetPosition(position))
             infoModel.Background.value = 'var(--theme-input-background)'
-            const ld = new LnglatData([position.longitude, position.latitude], infoModel, AssetInfo, infoModel)
-            ld.onClick = this.OnMarkerClick
-            return ld
+            return new LnglatData([position.longitude, position.latitude], infoModel, AssetInfo, infoModel)
         })
 
         this.map.ClearMarkers()

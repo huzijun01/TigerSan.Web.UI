@@ -326,7 +326,7 @@ export class AssetPosition {
 | 改多条 | AssetRecord/Range | Put | \[FromBody\] List\<AssetRecordEntity> entities | MyActionResult\<object> |
 | 删单条 | AssetRecord/{id} | Delete |   | MyActionResult\<object> |
 | 删多条 | AssetRecord/Range | Delete | \[FromBody\] List\<AssetRecordEntity> entities | MyActionResult\<object> |
-| 完整数据 | AssetRecord/Full | Get | long? id, string? rfid | MyActionResult\<AssetRecordDto> |
+| 完整数据 | AssetRecord/Full | Get | long? id, string? assetId, string? rfid | MyActionResult\<AssetRecordDto> |
 | 最新数据 | AssetRecord/Last | Get | long asset | MyActionResult\<AssetRecordEntity> |
 | 最新完整数据 | AssetRecord/FullLast | Get | long asset | MyActionResult\<AssetRecordDto> |
 | 完整集合 | AssetRecord/FullList | Post | 集合查询参数 | MyActionResult\<List\<AssetRecordDto>> |

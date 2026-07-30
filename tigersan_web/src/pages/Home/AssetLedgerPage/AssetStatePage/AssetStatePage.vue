@@ -7,31 +7,7 @@
             </div>
         </div>
         <div class="right-panel">
-            <!-- 基础详情： -->
-            <div class="title">{{ Texts.BasicDetail.value }}</div>
-            <KeyValue :isAutoHidden="true" :propName="Texts.Company.value"
-                :propValue="model.Asset.value?.companyName" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.Department.value"
-                :propValue="model.Asset.value?.departmentName" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.Tag.value" :propValue="model.Asset.value?.tagId" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.AllotMode.value"
-                :propValue="IsAuto.ToString(model.Asset.value?.isAuto)" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.IsFall.value"
-                :propValue="IsFall.ToString(model.Asset.value?.isFall ?? false)" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.AssetType.value" :propValue="model.Asset.value?.typeName" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.ErrorType.value"
-                :propValue="ErrorType.GetName(model.Asset.value?.errorType)" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.Vehicle.value" :propValue="model.Asset.value?.plate" />
-            <!-- 标签详情： -->
-            <div class="title">{{ Texts.TagDetail.value }}</div>
-            <KeyValue :isAutoHidden="true" :propName="Texts.TagType.value"
-                :propValue="tagTypeHelper.GetName(model.Asset.value?.tagType)" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.OnlineState.value"
-                :propValue="OnlineState.ToString(model.Tag.value?.onlineState)" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.Battery.value" :propValue="model.Tag.value?.battery" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.Site.value" :propValue="model.Asset.value?.siteName" />
-            <KeyValue :isAutoHidden="true" :propName="Texts.ReportTime.value"
-                :propValue="ObjectHelper.GetDateString(model.Tag.value?.reportTime)" />
+            <AssetState :asset="model.Asset.value" :tag="model.Tag.value" />
         </div>
         <div class="bottom-panel flex-left">
             <div class="addr-panel flex-left">
@@ -44,10 +20,10 @@
 </template>
 
 <script lang="ts" setup>
+import AssetState from './AssetState.vue'
 import { onMounted } from 'vue'
+import { Map, Texts } from '@/0_tigersan_ui/tigerui'
 import { AssetStatePageModel } from './AssetStatePageModel'
-import { Map, Texts, KeyValue, IsFall, ObjectHelper, OnlineState, IsAuto, StringHelper } from '@/0_tigersan_ui/tigerui'
-import { ErrorType, LocationMode, tagTypeHelper } from '@/models';
 
 // 【字段】:
 const { model } = defineProps({
@@ -77,16 +53,6 @@ onMounted(() => {
     .right-panel {
         grid-column: 2/3;
         padding: 0 15px;
-
-        &>* {
-            margin-bottom: 10px;
-        }
-
-        .title {
-            margin: 15px 0;
-            font-size: 18px;
-            font-weight: bold;
-        }
     }
 
     .bottom-panel {

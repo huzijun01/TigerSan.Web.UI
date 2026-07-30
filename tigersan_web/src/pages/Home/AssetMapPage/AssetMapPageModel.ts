@@ -2,10 +2,12 @@ import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
-import { loading, MapModel, PaginationModel, LnglatData } from "@/0_tigersan_ui/tigerui"
+import { loading, MapModel, PaginationModel, LnglatData, PopWindowModel } from "@/0_tigersan_ui/tigerui"
 import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
+import { AssetStateModel } from "../AssetLedgerPage/AssetStatePage/AssetStateModel"
 
 export class AssetMapPageModel {
+    //#region 【Fields】
     /** 筛选 */
     readonly filter: AssetFilter
     /** 总数 */
@@ -18,7 +20,13 @@ export class AssetMapPageModel {
     readonly AssetInfoes = shallowReactive<AssetInfoModel[]>([])
     /** 地图 */
     readonly map = new MapModel<AssetPosition, AssetInfoModel>({ animateEnable: false })
+    /** “资产状态”弹窗 */
+    readonly popState = new PopWindowModel()
+    /** 资产状态 */
+    readonly assetState = new AssetStateModel()
+    //#endregion 【Fields】
 
+    //#region 【Ctor】
     constructor() {
         this.filter = new AssetFilter(this.Refresh)
 
@@ -30,6 +38,13 @@ export class AssetMapPageModel {
         watch(this.Positions, this.UpdateAssetInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
+        this.popState.MaskStyle.value = {
+            justifyContent: 'end',
+            paddingRight: '5%',
+            backdropFilter: 'none',
+            pointerEvents: 'none',
+            background: 'transparent',
+        }
         this.map.IsShowButton.value = false
         this.map._onInitAsync = async () => {
             const filter = this.filter
@@ -47,8 +62,17 @@ export class AssetMapPageModel {
             this.Positions.splice(0)
             this.Positions.push(...positions)
         }
+        this.map._onMarkerClick = data => {
+            if (!data?.data) return
+            this.popState.Title.value = data.data.assetId
+            this.assetState.Init(data.data.assetId).then(res => {
+                if (res) this.popState.Show()
+            })
+        }
     }
+    //#endregion 【Ctor】
 
+    //#region 【Functions】
     /** 刷新 */
     readonly Refresh = async () => {
         loading.IsShow.value = true
@@ -71,7 +95,6 @@ export class AssetMapPageModel {
                 const infoModel = new AssetInfoModel(position)
                 infoModel.Background.value = 'var(--theme-input-background)'
                 const ld = new LnglatData([position.longitude, position.latitude], position, AssetInfo, infoModel)
-                ld.onClick = this.OnMarkerClick
                 points.push(ld)
             }
         })
@@ -86,14 +109,15 @@ export class AssetMapPageModel {
         })
     }
 
-    /** 点击“标记”时 */
-    readonly OnMarkerClick = (data?: AssetPosition) => {
-    }
-
     /** 点击“项目”时 */
     readonly OnItemClick = (info: AssetInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
         this.map.ZoomByVector2([position.longitude, position.latitude])
+        this.popState.Title.value = position.assetId
+        this.assetState.Init(position.assetId).then(res => {
+            if (res) this.popState.Show()
+        })
     }
+    //#endregion 【Functions】
 }

@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, type PropType } from 'vue'
+import { onBeforeUnmount, shallowRef, type App, type PropType } from 'vue'
 import { Icons } from '../../base'
 import { ComponentHelper } from '../../helpers'
 import { MarkerModel } from '../../models/Map/MarkerModel'
@@ -32,13 +32,15 @@ const infoStyle: any = {
     left: `${MarkerModel.size}px`,
 }
 
+let app: App | undefined
+
 function OnClick() {
     model.onClick?.(model.data)
 }
 
 const InitInfo = () => {
     if (model.info && refInfo.value && refInfo.value.children.length < 1) {
-        const app = ComponentHelper.CreateApp(model.info, { model: model.infoModel })
+        app = ComponentHelper.CreateApp(model.info, { model: model.infoModel })
         if (!app) {
             console.warn('The app is undefined!')
             return
@@ -46,6 +48,11 @@ const InitInfo = () => {
         app.mount(refInfo.value)
     }
 }
+
+onBeforeUnmount(() => {
+    app?.unmount()
+    app = undefined
+})
 </script>
 
 <style scoped lang="less">

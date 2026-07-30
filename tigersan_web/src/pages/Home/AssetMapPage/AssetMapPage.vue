@@ -38,12 +38,18 @@
             </div>
         </div>
     </PageCard>
+
+    <!-- 弹窗 -->
+    <PopWindow :model="model.popState">
+        <AssetState :asset="model.assetState.Asset.value" :tag="model.assetState.Tag.value" />
+    </PopWindow>
 </template>
 
 <script lang="ts" setup>
 import AssetInfo from '@/components/AssetInfo.vue'
+import AssetState from '../AssetLedgerPage/AssetStatePage/AssetState.vue'
 import { onMounted, onBeforeUnmount } from 'vue'
-import { PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
+import { PopWindow, PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
 import { AssetMapPageModel } from './AssetMapPageModel'
 // 【字段】:
 const model = new AssetMapPageModel()
@@ -56,6 +62,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
     model.filter.StopWatch()
+    model.popState.Close()
 })
 
 // 【方法】:

@@ -1,4 +1,4 @@
-import { computed, ref, watch, type StyleValue } from "vue"
+import { computed, ref, shallowRef, watch, type StyleValue } from "vue"
 import { Texts } from "../../texts"
 import { LanguageBehavior } from "../../helpers"
 
@@ -21,6 +21,8 @@ export class PopWindowModel {
     readonly MinWidth = ref<string | undefined>()
     /** 最小高度 */
     readonly MinHeight = ref<string | undefined>()
+    /** 遮罩样式 */
+    readonly MaskStyle = shallowRef<StyleValue | undefined>()
 
     //#region [computed]
     /** 样式 */

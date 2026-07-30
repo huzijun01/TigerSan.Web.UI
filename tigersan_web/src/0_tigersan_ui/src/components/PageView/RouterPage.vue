@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
-import { shallowRef, onMounted, type App } from 'vue'
+import { shallowRef, onMounted, type App, onBeforeMount } from 'vue'
 import { useRouter } from '../../stores'
 import { RouterPageModel } from '../../models'
 import { ComponentHelper } from '../../helpers'
@@ -22,6 +22,7 @@ RouterPageModel._onPageChange = page => {
 
     if (appCache && refRoot.value.children.length > 0) {
         appCache.unmount()
+        appCache = undefined
     }
 
     // 创建App:
@@ -33,6 +34,11 @@ RouterPageModel._onPageChange = page => {
 
 onMounted(() => {
     router.GoTo('/')
+})
+
+onBeforeMount(() => {
+    appCache?.unmount()
+    appCache = undefined
 })
 </script>
 

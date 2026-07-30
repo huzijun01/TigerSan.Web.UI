@@ -72,13 +72,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“完整数据”
-        /// <summary>获取“完整数据”</summary>
         public async Task<MyActionResult<AssetDto>> GetFull(
             List<long> companies,
             long? id = null,
+            string? assetId = null,
             string? rfid = null)
         {
-            if (id == null && rfid == null) return MyResults<AssetDto>.Success();
+            if (id == null && string.IsNullOrEmpty(assetId) && string.IsNullOrEmpty(rfid)) return MyResults<AssetDto>.Success();
 
             AssetEntity? entity;
 
@@ -86,7 +86,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
             }
-            else if (rfid != null)
+            else if (!string.IsNullOrEmpty(assetId))
+            {
+                entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.AssetId == assetId);
+            }
+            else if (!string.IsNullOrEmpty(rfid))
             {
                 var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Rfid == rfid);
                 if (tag == null) return MyResults<AssetDto>.ResourceNotExist;

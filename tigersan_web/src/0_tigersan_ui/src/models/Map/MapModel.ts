@@ -18,7 +18,6 @@ export class LnglatData<TData, TInfoModel> {
     data?: TData
     info?: Component
     infoModel?: TInfoModel
-    onClick?: (data?: TData) => void
 
     constructor(
         lnglat: AMap.LngLatLike,
@@ -73,6 +72,8 @@ export class MapModel<TData, TInfoModel> {
     _onInit?: Function
     /** 初始化后（异步） */
     _onInitAsync?: ActionAsync
+    /** 点击“标记”后 */
+    _onMarkerClick?: (data?: LnglatData<TData, TInfoModel>) => void
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -218,6 +219,7 @@ export class MapModel<TData, TInfoModel> {
                 model.data = opts
                 model.info = opts.info
                 model.infoModel = opts.infoModel
+                model.onClick = map._onMarkerClick
             }
         }
 
@@ -347,6 +349,7 @@ export class MapModel<TData, TInfoModel> {
             return
         }
 
+        this.Destroy()
         this._beforeInit?.()
         await this._beforeInitAsync?.()
 
@@ -362,22 +365,43 @@ export class MapModel<TData, TInfoModel> {
             opts1.mapStyle = ThemeHelper.IsDark.value ? MapStyle.grey : undefined
         }
 
-        this.RemoveMapType()
         this._map = new AMap.Map(this.refContainer.value, opts1)
+        if (this._isShowMapType) await this.InitMapType()
+
+        this._onInit?.()
+        await this._onInitAsync?.()
+        this._watchIsDark.Start()
+    }
+
+    /** 销毁 */
+    readonly Destroy = () => {
+        // 停止主题监听器
+        this._watchIsDark.Stop()
+
+        // 移除所有自定义事件监听
+        this.RemoveEvent()
+        this.RemoveMapType()
+
+        // 清空所有覆盖物与图层
+        this.ClearMarkers()
+        this.ClearOverlays(ClassNames.Polygon)
+        this.ClearOverlays(ClassNames.Polyline)
+
+        // 销毁地图实例
+        this._map?.destroy()
+        this._map = undefined
+        this._mapType = undefined
+
+        // 重置状态标记
         this._cluster = undefined
+        this._polyline = undefined
         this._placeSearch = undefined
         this._polygonEditor = undefined
-        this._polyline = undefined
         this._markers.splice(0)
         this._markerModels.splice(0)
         this._PolygonCount.value = 0
         this._IsEditing.value = false
         this._IsCreating.value = false
-        this.RemoveMapType()
-        if (this._isShowMapType) await this.InitMapType()
-
-        this._onInit?.()
-        await this._onInitAsync?.()
     }
 
     /** 更新"地图样式" */
@@ -547,13 +571,6 @@ export class MapModel<TData, TInfoModel> {
         })
         this._cluster.on(MapEvents.click, (e: AMap.MarkerClusterArgs) => {
             this.ZoomByClusterData(e.clusterData)
-            const cd = e.clusterData[0]
-            if (cd) {
-                const opts = this._markerDataMap.get(cd)
-                if (opts && opts.onClick) {
-                    opts.onClick(opts.data)
-                }
-            }
         })
     }
 
@@ -571,7 +588,8 @@ export class MapModel<TData, TInfoModel> {
             const model = new MarkerModel({
                 data: lnglatData,
                 info: lnglatData.info,
-                infoModel: lnglatData.infoModel
+                infoModel: lnglatData.infoModel,
+                onClick: this._onMarkerClick,
             })
             const markerElement = ComponentHelper.GetElement(Marker, { model })
             if (!markerElement) {
@@ -590,14 +608,7 @@ export class MapModel<TData, TInfoModel> {
             this._markers.push(marker)
             this._markerModels.push(model)
 
-            MapModel.AddEvent(marker, {
-                click: args => {
-                    const target = args.target as AMap.Marker
-                    this.ZoomTo(target.getPosition())
-                    if (!lnglatData.onClick) return
-                    lnglatData.onClick(target.getExtData() as TData)
-                }
-            })
+            MapModel.AddEvent(marker)
 
             if (callback) {
                 MapModel.AddEvent(marker, callback)

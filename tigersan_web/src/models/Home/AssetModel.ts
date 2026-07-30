@@ -62,9 +62,10 @@ export class AssetHelper extends IdHelper<AssetDto> {
     }
 
     /** 根据“id”或“TagId”获取“单条数据” */
-    readonly GetFull = async (id?: bigint, rfid?: string) => await axiosHelper.Get<AssetDto>(`${this._action}/Full`, [
+    readonly GetFull = async (id?: bigint, assetId?: string, rfid?: string) => await axiosHelper.Get<AssetDto>(`${this._action}/Full`, [
         { key: 'tagId', value: id ? id.toString() : undefined },
-        { key: 'rfid', value: rfid }
+        { key: 'assetId', value: assetId },
+        { key: 'rfid', value: rfid },
     ], false)
 
     /** 筛选“总数” */
@@ -85,7 +86,7 @@ export class AssetHelper extends IdHelper<AssetDto> {
     }) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
         if (param.rfid) {
-            const res = await this.GetFull(undefined, param.rfid)
+            const res = await this.GetFull(undefined, undefined, param.rfid)
             return res.data ? 1 : 0
         } else {
             return await axiosHelper.GetCount(this._action, {
@@ -132,7 +133,7 @@ export class AssetHelper extends IdHelper<AssetDto> {
     }) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
         if (param.rfid) {
-            const res = await this.GetFull(undefined, param.rfid)
+            const res = await this.GetFull(undefined, undefined, param.rfid)
             const asset = res.data as AssetDto
             return asset ? [asset] : new Array<AssetDto>()
         } else {

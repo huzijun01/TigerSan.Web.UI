@@ -1,20 +1,25 @@
-import { computed, ref, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { loading, MapModel, MyActionResult, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { TagDto, AssetInfoModel, AssetDto, assetHelper, tagHelper, LocationMode } from '@/models'
 
 export class AssetStatePageModel {
+    //#region 【Fields】
     /** 地图 */
     readonly map = new MapModel<any, AssetInfoModel>({ animateEnable: false })
+    //#endregion 【Fields】
 
+    //#region 【Props】
     /** 资产 */
-    readonly Asset = ref<AssetDto | undefined>()
-    /** 位置 */
-    readonly Tag = shallowRef<TagDto>()
+    readonly Asset = shallowRef<AssetDto | undefined>()
+    /** 标签 */
+    readonly Tag = shallowRef<TagDto | undefined>()
     /** 定位方式 */
     readonly LocationMode = computed(() => LocationMode.GetName(this.Tag.value?.locationMode))
     /** 是否显示“定位方式” */
     readonly IsShowLocationMode = computed(() => StringHelper.IsNotEmpty(this.LocationMode.value))
+    //#endregion 【Props】
 
+    //#region 【Ctor】
     constructor() {
         this.map._isAutoInit = false
         this.map.IsShowSelect.value = false
@@ -47,7 +52,9 @@ export class AssetStatePageModel {
             }
         }
     }
+    //#endregion 【Ctor】
 
+    //#region 【Functions】
     /** 查 */
     readonly Refresh = async () => {
         try {
@@ -68,4 +75,5 @@ export class AssetStatePageModel {
             loading.IsShow.value = false
         }
     }
+    //#endregion 【Functions】
 }

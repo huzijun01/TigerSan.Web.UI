@@ -63,8 +63,8 @@ class TagHelper extends IdHelper<TagDto> {
         tagId?: string,
         rfid?: string,
     }) => {
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, param.rfid)
+        if (param.rfid || param.tagId) {
+            const res = await this.GetFull(param.tagId, param.rfid)
             return res.data ? 1 : 0
         } else {
             return await axiosHelper.GetCount(this._action, {
@@ -82,7 +82,6 @@ class TagHelper extends IdHelper<TagDto> {
                         { propName: 'IsEnable', value: param.isEnable },
                         { propName: 'OnlineState', value: param.state },
                         { propName: 'IsFall', value: param.isFall },
-                        { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
                     ],
                 }
             })
@@ -104,8 +103,8 @@ class TagHelper extends IdHelper<TagDto> {
         tagId?: string,
         rfid?: string,
     }) => {
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, param.rfid)
+        if (param.rfid || param.tagId) {
+            const res = await this.GetFull(param.tagId, param.rfid)
             const asset = res.data as TagDto
             return asset ? [asset] : new Array<TagDto>()
         } else {
@@ -127,7 +126,6 @@ class TagHelper extends IdHelper<TagDto> {
                         { propName: 'IsEnable', value: param.isEnable },
                         { propName: 'OnlineState', value: param.state },
                         { propName: 'IsFall', value: param.isFall },
-                        { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
                     ],
                 }
             })
