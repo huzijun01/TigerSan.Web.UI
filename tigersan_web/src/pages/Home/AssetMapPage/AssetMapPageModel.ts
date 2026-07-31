@@ -57,6 +57,7 @@ export class AssetMapPageModel {
         }
         this.map._onMarkerClick = data => {
             if (!data?.data) return
+            this.map.SetMarker(data.lnglat)
             this.drawerState.Title.value = data.data.assetId
             this.assetState.Init(data.data.assetId).then(res => {
                 if (res) this.drawerState.Show()
@@ -106,7 +107,9 @@ export class AssetMapPageModel {
     readonly OnItemClick = (info: AssetInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
-        this.map.ZoomByVector2([position.longitude, position.latitude])
+        const point: AMap.Vector2 = [position.longitude, position.latitude]
+        this.map.SetMarker(point)
+        this.map.ZoomByVector2(point)
         this.drawerState.Title.value = position.assetId
         this.assetState.Init(position.assetId).then(res => {
             if (res) this.drawerState.Show()

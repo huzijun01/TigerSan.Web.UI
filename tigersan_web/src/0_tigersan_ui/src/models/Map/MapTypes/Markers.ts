@@ -142,7 +142,7 @@ declare global {
             /** 可见性 */
             visible?: boolean
             /** Z轴层级 */
-            zIndex?: boolean
+            zIndex?: number
             /** 偏移 */
             offset?: Vector2 | LngLat
             /** 锚点 */

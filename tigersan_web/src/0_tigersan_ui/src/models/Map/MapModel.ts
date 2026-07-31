@@ -34,6 +34,8 @@ export class LnglatData<TData, TInfoModel> {
 /** “地图”模型 */
 export class MapModel<TData, TInfoModel> {
     //#region 【Fields】
+    /** 标记 */
+    private _marker?: AMap.Marker
     /** 是否“自动初始化” */
     _isAutoInit = true
     /** 是否“显示地图类型” */
@@ -383,6 +385,7 @@ export class MapModel<TData, TInfoModel> {
         this.RemoveMapType()
 
         // 清空所有覆盖物与图层
+        this.RemoveMarker()
         this.ClearMarkers()
         this.ClearOverlays(ClassNames.Polygon)
         this.ClearOverlays(ClassNames.Polyline)
@@ -540,10 +543,25 @@ export class MapModel<TData, TInfoModel> {
             var poi = item.Value.value
             if (poi == undefined) return
             this.ZoomTo(poi.location, MapModel.GetZoom(poi.shopinfo))
-            this._map?.add(new AMap.Marker({ position: poi.location }))
+            this.SetMarker(poi.location)
         }
         selectAddr._onUnselect = this.InitAsync
         return selectAddr
+    }
+
+    /** 设置“标记” */
+    readonly SetMarker = (position: AMap.Vector2 | AMap.LngLat) => {
+        if (!this._map) return
+        this.RemoveMarker()
+        this._marker = new AMap.Marker({ position, zIndex: 999 })
+        this._map.add(this._marker)
+    }
+
+    /** 移除“标记” */
+    readonly RemoveMarker = () => {
+        if (!this._marker) return
+        this._map?.remove(this._marker)
+        this._marker = undefined
     }
 
     /** 初始化“标记聚合” */
