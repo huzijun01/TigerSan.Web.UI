@@ -9,22 +9,22 @@ declare global {
             /** 绑定回调 */
             on(
                 type: string,
-                callback: (res: SearchResult) => void,
+                callback: (res: SearchResult) => any,
                 context?: object,
                 once?: boolean): void
             /** 绑定回调 */
             off(
                 type: string,
-                callback: (res: SearchResult) => void,
+                callback: (res: SearchResult) => any,
                 context?: object): void
             /** 搜索 */
-            search(keyword: string, callback?: (res: SearchResult) => void): void
+            search(keyword: string, callback?: (res: SearchResult) => any): void
             /** 范围搜索 */
-            searchInBounds(keyword: string, bounds: Bounds, callback?: (res: SearchResult) => void): void
+            searchInBounds(keyword: string, bounds: Bounds, callback?: (res: SearchResult) => any): void
             /** 中心点搜索 */
-            searchNearBy(keyword: string, center: LngLat, radius: number, callback?: (res: SearchResult) => void): void
+            searchNearBy(keyword: string, center: LngLat, radius: number, callback?: (res: SearchResult) => any): void
             /** 中心点搜索 */
-            getDetails(PGUID: string, callback?: (res: SearchResult) => void): void
+            getDetails(PGUID: string, callback?: (res: SearchResult) => any): void
             /** 设置“查询类别” */
             setType(type: string): void
             /** 设置“页码” */

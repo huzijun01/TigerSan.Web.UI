@@ -19,6 +19,7 @@ export * from "./helpers/TokenHelper"
 export * from "./helpers/Verify"
 // Behaviors:
 export * from "./helpers/Behaviors/CheckboxBehavior"
+export * from "./helpers/Behaviors/ClickOutsideBehavior"
 export * from "./helpers/Behaviors/ContentSizeBehavior"
 export * from "./helpers/Behaviors/FolderBehavior"
 export * from "./helpers/Behaviors/LanguageBehavior"

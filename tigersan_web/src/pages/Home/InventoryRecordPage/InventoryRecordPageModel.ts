@@ -73,7 +73,7 @@ export class InventoryRecordPageModel {
         this.table._onSlotChange = this.Refresh
         this.pagination._onChange = this.Refresh
         this.selectSite._onChange = this.Refresh
-        this.selectSite._getItemsAsync = async () => await siteHelper.SelectIdNameByCompanyAsync(undefined, CompanyMgtForm.AccessibleCompanies.value)
+        this.selectSite._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(undefined, CompanyMgtForm.AccessibleCompanies.value)
     }
     //#endregion 【Ctor】
 

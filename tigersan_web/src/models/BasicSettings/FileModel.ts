@@ -51,7 +51,7 @@ class FileModelHelper {
         isOverwrite?: boolean,
         maxSize?: bigint,
         controller?: AbortController,
-        onProgress?: (percentCompleted: number) => void
+        onProgress?: (percentCompleted: number) => any
     }) => {
         const formData = new FormData()
 

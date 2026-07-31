@@ -1,5 +1,5 @@
 import { type ComputedRef } from "vue"
-import { IdName, SelectModel } from "@/0_tigersan_ui/tigerui"
+import { ArrayHelper, IdName, SelectModel } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper } from "./AxiosHelper"
 import { IdNameHelper } from "./IdNameHelper"
 
@@ -44,13 +44,11 @@ export class DictionaryHelper extends IdNameHelper<IdName> {
     })
 
     /** 根据“公司”获取“ID名称对”集合 */
-    readonly GetIdNamesByCompany = async (company?: bigint) => {
-        if (!company) return []
+    readonly GetIdNamesByCompany = async (company?: bigint, companies?: bigint[]) => {
+        if (!company && ArrayHelper.IsEmpty(companies)) return []
         return await this.GetIdNames({
             filter: {
-                filters: [
-                    { propName: 'Company', value: company }
-                ]
+                filters: [{ propName: 'Company', value: company, values: companies }]
             }
         })
     }

@@ -9,7 +9,7 @@ export class CheckboxBehaviorModel {
     _itemModel: object
     /** “选中状态”改变后
      * （由“CheckboxBehavior”传入） */
-    _onIsCheckedChanged?: (itemModel?: object) => void
+    _onIsCheckedChanged?: (itemModel?: object) => any
     //#endregion 【Fields】
 
     //#region 【Props】

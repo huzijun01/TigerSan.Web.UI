@@ -2,7 +2,7 @@ import { nanoid } from "nanoid"
 import { ref, watch, computed, shallowRef, shallowReactive, type Component, type StyleValue } from "vue"
 import { type Data } from "../../helpers"
 
-export type TabPageHandler = (pageModel: TabPageModel) => void
+export type TabPageHandler = (pageModel: TabPageModel) => any
 
 export class TabPageConfig {
     /** 标题 */

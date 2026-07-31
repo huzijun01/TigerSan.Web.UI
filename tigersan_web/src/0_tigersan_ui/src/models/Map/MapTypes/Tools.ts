@@ -78,17 +78,17 @@ declare global {
         /** “多边形编辑器”回调 */
         type PolygonEditorCallback = {
             /** 添加节点 */
-            addnode?: (args: PolygonEditorArgs) => void
+            addnode?: (args: PolygonEditorArgs) => any
             /** 移除节点 */
-            removenode?: (args: PolygonEditorArgs) => void
+            removenode?: (args: PolygonEditorArgs) => any
             /** 调整 */
-            adjust?: (args: PolygonEditorArgs) => void
+            adjust?: (args: PolygonEditorArgs) => any
             /** 移动 */
-            move?: (args: PolygonEditorEndArgs) => void
+            move?: (args: PolygonEditorEndArgs) => any
             /** 添加 */
-            add?: (args: PolygonEditorEndArgs) => void
+            add?: (args: PolygonEditorEndArgs) => any
             /** 结束编辑 */
-            end?: (args: PolygonEditorEndArgs) => void
+            end?: (args: PolygonEditorEndArgs) => any
         }
     }
 }

@@ -1,10 +1,10 @@
 import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
+import { loading, MapModel, PaginationModel, LnglatData, DrawerModel } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
-import { loading, MapModel, PaginationModel, LnglatData, PopWindowModel } from "@/0_tigersan_ui/tigerui"
-import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
 import { AssetStateModel } from "../AssetLedgerPage/AssetStatePage/AssetStateModel"
+import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
 
 export class AssetMapPageModel {
     //#region 【Fields】
@@ -20,8 +20,8 @@ export class AssetMapPageModel {
     readonly AssetInfoes = shallowReactive<AssetInfoModel[]>([])
     /** 地图 */
     readonly map = new MapModel<AssetPosition, AssetInfoModel>({ animateEnable: false })
-    /** “资产状态”弹窗 */
-    readonly popState = new PopWindowModel()
+    /** “资产状态”抽屉 */
+    readonly drawerState = new DrawerModel()
     /** 资产状态 */
     readonly assetState = new AssetStateModel()
     //#endregion 【Fields】
@@ -38,13 +38,6 @@ export class AssetMapPageModel {
         watch(this.Positions, this.UpdateAssetInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
-        this.popState.MaskStyle.value = {
-            justifyContent: 'end',
-            paddingRight: '5%',
-            backdropFilter: 'none',
-            pointerEvents: 'none',
-            background: 'transparent',
-        }
         this.map.IsShowButton.value = false
         this.map._onInitAsync = async () => {
             const filter = this.filter
@@ -64,9 +57,9 @@ export class AssetMapPageModel {
         }
         this.map._onMarkerClick = data => {
             if (!data?.data) return
-            this.popState.Title.value = data.data.assetId
+            this.drawerState.Title.value = data.data.assetId
             this.assetState.Init(data.data.assetId).then(res => {
-                if (res) this.popState.Show()
+                if (res) this.drawerState.Show()
             })
         }
     }
@@ -114,9 +107,9 @@ export class AssetMapPageModel {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
         this.map.ZoomByVector2([position.longitude, position.latitude])
-        this.popState.Title.value = position.assetId
+        this.drawerState.Title.value = position.assetId
         this.assetState.Init(position.assetId).then(res => {
-            if (res) this.popState.Show()
+            if (res) this.drawerState.Show()
         })
     }
     //#endregion 【Functions】

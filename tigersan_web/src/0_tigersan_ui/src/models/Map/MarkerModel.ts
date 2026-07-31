@@ -18,7 +18,7 @@ export class MarkerModel<TData, TInfoModel> {
     /** “信息”模型 */
     infoModel?: TInfoModel
     /** 点击时 */
-    onClick?: (data: any) => void
+    onClick?: (data: any) => any
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -59,5 +59,5 @@ export type MarkerModelOptions<TData, TInfoModel> = {
     /** “信息”模型 */
     infoModel?: TInfoModel
     /** 点击时 */
-    onClick?: (data?: TData) => void
+    onClick?: (data?: TData) => any
 }

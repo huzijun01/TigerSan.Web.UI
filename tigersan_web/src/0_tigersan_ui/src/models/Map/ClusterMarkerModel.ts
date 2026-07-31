@@ -8,7 +8,7 @@ export class ClusterMarkerModel<TData> {
     /** 数据 */
     data?: TData
     /** 点击时 */
-    onClick?: (data: any) => void
+    onClick?: (data: any) => any
 
     constructor(opts?: ClusterMarkerModelOptions<TData>) {
         if (!opts) return
@@ -28,5 +28,5 @@ export type ClusterMarkerModelOptions<TData> = {
     /** 数据 */
     data?: TData
     /** 点击时 */
-    onClick?: (data: any) => void
+    onClick?: (data: any) => any
 }

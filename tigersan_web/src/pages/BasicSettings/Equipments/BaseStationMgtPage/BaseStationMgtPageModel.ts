@@ -163,7 +163,7 @@ export class BaseStationMgtPageModel {
         this.selectCompany._getItemsAsync = async () => await baseStationHelper.GetBelongCompanyListAsync()
         this.selectSite._getItemsAsync = async () => await baseStationHelper.GetBelongSiteListAsync(this.selectCompany.Value.value?.id)
         this.selectType._getItemsAsync = async () => await baseStationHelper.GetBelongStationTypeListAsync(this.selectCompany.Value.value?.id, this.selectSite.Value.value?.id)
-        this.selectSiteForm._getItemsAsync = async () => await siteHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
+        this.selectSiteForm._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
 
         // 更新:
         this.selectCompanyForm._onChange = this.selectSiteForm.UpdateItemsAsync

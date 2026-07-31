@@ -9,6 +9,7 @@ import Lottie from "./components/Content/Lottie.vue"
 import CountCard from "./components/Dashboard/CountCard.vue"
 // Dialog:
 import Dialog from "./components/Dialog/Dialog.vue"
+import Drawer from "./components/Dialog/Drawer.vue"
 import ImagePreview from "./components/Dialog/ImagePreview.vue"
 import Loading from "./components/Dialog/Loading.vue"
 import Pop from "./components/Dialog/Pop.vue"
@@ -77,6 +78,7 @@ export {
     CountCard,
     // Dialog:
     Dialog,
+    Drawer,
     ImagePreview,
     Loading,
     Pop,

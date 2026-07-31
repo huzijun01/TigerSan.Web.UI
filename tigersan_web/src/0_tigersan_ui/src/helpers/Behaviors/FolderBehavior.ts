@@ -1,8 +1,8 @@
 import { type Ref } from "vue"
 import type { NumberAction } from "../../types"
 
-export type FolderHandler<TFolder extends IFolder> = (folderModel: TFolder) => void
-export type ButtonHandler<TButton extends IButton> = (buttonModel: TButton) => void
+export type FolderHandler<TFolder extends IFolder> = (folderModel: TFolder) => any
+export type ButtonHandler<TButton extends IButton> = (buttonModel: TButton) => any
 
 export class SubItemCount {
     FolderCount = 0

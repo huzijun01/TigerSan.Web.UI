@@ -162,7 +162,7 @@ declare global {
             /** 获取“比例尺” */
             getScale(dpi: number): number
             /** 获取“所在城市” */
-            getCity(callback: (info: string) => void, lnglat?: Vector2 | LngLat): void
+            getCity(callback: (info: string) => any, lnglat?: Vector2 | LngLat): void
             /** 设置“所在城市”
              * @param cityName - 行政区名称或adcode */
             setCity(cityName: string): string

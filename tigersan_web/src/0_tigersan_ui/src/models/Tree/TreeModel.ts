@@ -5,7 +5,7 @@ import type { NumberAction } from "../../types"
 import { AuthorityVerify } from "../Authority/AuthorityVerify"
 import { ArrayHelper, BigintHelper, ContentSizeBehavior, FolderBehavior, LanguageBehavior, type IRoot } from "../../helpers"
 
-export type TreeNodeModelFunc<TData> = (node: TreeNodeModel<TData>) => void
+export type TreeNodeModelFunc<TData> = (node: TreeNodeModel<TData>) => any
 
 /** “树节点”模型 */
 export class TreeNodeModel<TData> extends ContentSizeBehavior {
@@ -297,7 +297,7 @@ export class TreeModel<TData> implements IRoot {
     /** 激活后 */
     _onActive?: TreeNodeModelFunc<TData>
     /** “激活状态”改变后 */
-    _onActiveChange?: (node: TreeNodeModel<TData>, isActive: boolean) => void
+    _onActiveChange?: (node: TreeNodeModel<TData>, isActive: boolean) => any
     /** 选中后 */
     _onChecked?: TreeNodeModelFunc<TData>
     /** 失活后 */

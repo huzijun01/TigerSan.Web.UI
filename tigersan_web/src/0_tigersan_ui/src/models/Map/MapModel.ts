@@ -73,7 +73,7 @@ export class MapModel<TData, TInfoModel> {
     /** 初始化后（异步） */
     _onInitAsync?: ActionAsync
     /** 点击“标记”后 */
-    _onMarkerClick?: (data?: LnglatData<TData, TInfoModel>) => void
+    _onMarkerClick?: (data?: LnglatData<TData, TInfoModel>) => any
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -183,7 +183,7 @@ export class MapModel<TData, TInfoModel> {
     }
 
     /** 获取"地址查询" */
-    static async GetPlaceSearchAsync(callback?: (res: AMap.SearchResult) => void) {
+    static async GetPlaceSearchAsync(callback?: (res: AMap.SearchResult) => any) {
         if (!await MapModel.LoadPluginAsync([MapPlugins.PlaceSearch])) return undefined
 
         const placeSearch = new AMap.PlaceSearch({})

@@ -23,7 +23,7 @@ export class DatePickerModel {
     _placeholder = '请选择时间'
     _startPlaceholder = '开始时间'
     _endPlaceholder = '结束时间'
-    _onChange?: (value?: string | [string, string]) => void
+    _onChange?: (value?: string | [string, string]) => any
     //#endregion 【Fields】
 
     //#region 【Props】

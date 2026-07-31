@@ -6,8 +6,8 @@ import { SelectModel } from '../Inputs/SelectModel'
 import type { TStringGetter, UnknownSetter, ObjectArrayFunc, TStringGetterAsync, TGetter } from '../../types'
 import { ObjectHelper, CheckboxBehaviorModel, CheckboxBehavior, ArrayHelper, ConfigBase, SizeBehavior, LanguageBehavior, WatchBehavior, config } from '../../helpers'
 
-export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => void
-export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => void
+export type TableItemFunc<T extends object> = (itemModel: TableItemModel<T>) => any
+export type TableHeaderFunc<T extends object> = (itemModel: TableHeaderModel<T>) => any
 
 /** 文本对齐 */
 export enum TextAlign {
@@ -46,9 +46,9 @@ export class TableModel<TSource extends object> {
     /** 初始化“列头” */
     _initHeader?: TableHeaderFunc<TSource>
     /** 初始化“行模型”后 */
-    _onInitRowModels?: (rowDatas: TSource[]) => void
+    _onInitRowModels?: (rowDatas: TSource[]) => any
     /** 初始化“列头模型”后 */
-    _onInitHeaderModels?: (headers: TableHeaderModel<TSource>[]) => void
+    _onInitHeaderModels?: (headers: TableHeaderModel<TSource>[]) => any
     /** “项目文本”输入 */
     _onItemTextInput?: TableItemFunc<TSource>
     /** “项目文本”改变 */
@@ -56,7 +56,7 @@ export class TableModel<TSource extends object> {
     /** “选中状态”改变 */
     _onSelectStateChange?: ObjectArrayFunc
     /** “筛选状态”改变 */
-    _onSlotChange?: (header?: TableHeaderModel<TSource>, isAscending?: boolean) => void
+    _onSlotChange?: (header?: TableHeaderModel<TSource>, isAscending?: boolean) => any
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -370,7 +370,7 @@ export class TableHeaderModel<TSource extends object> {
     /** “对象”修改方法 */
     _setObject: UnknownSetter = ObjectHelper.DefaultTSetter
     /** “项目”点击后 */
-    _onItemClick?: (itemModel: TableItemModel<TSource>) => void
+    _onItemClick?: (itemModel: TableItemModel<TSource>) => any
     /** “项目”点击后（异步） */
     _onItemClickAsync?: (itemModel: TableItemModel<TSource>) => Promise<void>
     //#endregion 【Fields】
@@ -541,7 +541,7 @@ export class TableHeaderConfig<TSource extends object> {
     /** “对象”修改方法 */
     _setObject?: UnknownSetter
     /** “项目”点击后 */
-    _onItemClick?: (itemModel: TableItemModel<TSource>) => void
+    _onItemClick?: (itemModel: TableItemModel<TSource>) => any
     /** “项目”点击后（异步） */
     _onItemClickAsync?: (itemModel: TableItemModel<TSource>) => Promise<void>
     /** 类型 */

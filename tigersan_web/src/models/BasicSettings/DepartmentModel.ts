@@ -39,8 +39,8 @@ class DepartmentHelper extends IdNameHelper<DepartmentEntity> {
         }
     })
 
-    /** 获取“ID名称对”集合 */
-    readonly SelectIdNameByCompanyAsync = async (company?: bigint, companies?: bigint[]) => {
+    /** 根据“公司”获取“ID名称对”集合 */
+    readonly GetIdNamesByCompany = async (company?: bigint, companies?: bigint[]) => {
         if (!company && ArrayHelper.IsEmpty(companies)) return []
         return await this.GetIdNames({
             filter: {

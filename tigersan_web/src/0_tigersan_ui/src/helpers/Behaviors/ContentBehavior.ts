@@ -8,7 +8,7 @@ export class ContentBehavior {
     private readonly _id: string
     private readonly _component: Component
     private readonly _getContent: () => App<any> | undefined
-    private readonly _setContent: (content?: App<any>) => void
+    private readonly _setContent: (content?: App<any>) => any
     //#endregion 【Fields】
 
     //#region 【Ctor】
@@ -16,7 +16,7 @@ export class ContentBehavior {
         id: string,
         component: Component,
         getContent: () => App<any> | undefined,
-        setContent: (content?: App<any>) => void,
+        setContent: (content?: App<any>) => any,
     ) {
         this._id = id
         this._component = component

@@ -5,8 +5,8 @@ import type { StringFunc } from "../../types"
 import { ConverterBase } from "./ConverterBase"
 import { RectPosition, RectHelper, ObjectHelper, TimerHelper, CheckboxBehavior, CheckboxBehaviorModel, LanguageBehavior } from '../../helpers'
 
-export type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => void
-export type MenuItemModelsAction<TSource> = (itemModels: MenuItemModel<TSource>[]) => void
+export type MenuItemModelAction<TSource> = (itemModel: MenuItemModel<TSource>) => any
+export type MenuItemModelsAction<TSource> = (itemModels: MenuItemModel<TSource>[]) => any
 
 /** “菜单项目”模型 */
 export class MenuItemModel<TSource> extends ConverterBase<TSource> {
@@ -75,7 +75,7 @@ export class SelectModel<TSource> extends ConverterBase<TSource> {
     /** 是否“默认选中首个”时触发“选择事件” */
     _isSelectFirstEmitOnSelect = true
     /** 初始化后 */
-    _onInit?: (select: SelectModel<TSource>) => void
+    _onInit?: (select: SelectModel<TSource>) => any
     /** 获取“项目集合” */
     _getItems?: () => TSource[]
     /** 获取“项目集合”（异步）：优先执行该方法 */

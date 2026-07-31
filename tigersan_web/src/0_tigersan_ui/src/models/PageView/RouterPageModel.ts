@@ -12,7 +12,7 @@ export class RouterPageModel {
     //#region 【Fields】
     /** 页面改变时
      * （由“RouterPage”传入） */
-    static _onPageChange?: (page: PageModel) => void
+    static _onPageChange?: (page: PageModel) => any
     //#endregion 【Fields】
 
     //#region 【Props】

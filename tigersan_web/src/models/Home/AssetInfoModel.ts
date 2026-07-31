@@ -10,7 +10,7 @@ export class AssetInfoModel {
     //#region 【Fields】
     readonly _id = nanoid()
     /** 点击时 */
-    _onClick?: (info: AssetInfoModel) => void
+    _onClick?: (info: AssetInfoModel) => any
     //#endregion 【Fields】
 
     //#region 【Props】

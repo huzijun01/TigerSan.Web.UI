@@ -12,7 +12,7 @@ export class ConverterBase<TValue> {
     /** 转换器 */
     _converter?: T2String<TValue>
     /** 改变时 */
-    _onChange?: (value: TValue | undefined) => void
+    _onChange?: (value: TValue | undefined) => any
     //#endregion 【Fields】
 
     //#region 【Props】

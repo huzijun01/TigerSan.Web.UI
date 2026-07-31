@@ -4,7 +4,7 @@ import { NavBarModel } from './NavBarModel'
 import { NavItemModel } from './NavItemModel'
 import { NavFolderModel } from './NavFolderModel'
 
-export type NavButtonHandler = (buttonModel: NavButtonModel) => void
+export type NavButtonHandler = (buttonModel: NavButtonModel) => any
 
 export class NavButtonModel extends NavItemModel {
     //#region 【Fields】

@@ -27,7 +27,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
         super()
         this.filter = new AssetFilter(this.Refresh)
         this.transferPage.IsAssetIdReadonly.value = true
-        this.selectSiteOutboundForm._getItemsAsync = async () => await siteHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
+        this.selectSiteOutboundForm._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectCompanyForm._getItemsAsync = undefined
         this.selectCompanyForm._getItems = () => CompanyMgtForm.selectCompanyGlobal.CheckedValues.value as []
         // 更新:

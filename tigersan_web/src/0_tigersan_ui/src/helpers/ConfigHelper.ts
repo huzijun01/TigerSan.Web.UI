@@ -16,7 +16,7 @@ export class AppConfig {
 export class ConfigModel {
     //#region 【Fields】
     /** “地区”改变后 */
-    _onLocaleChanged?: (lang: Language) => void
+    _onLocaleChanged?: (lang: Language) => any
     /** 配置 */
     readonly config = new ConfigBase('AppConfig', new AppConfig())
     //#endregion 【Fields】

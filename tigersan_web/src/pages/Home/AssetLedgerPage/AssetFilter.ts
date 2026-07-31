@@ -34,7 +34,8 @@ export class AssetFilter {
 
         this.selectAssetState.IsSelectAll.value = true
         this.selectAssetState.IsAllowMultiSelect.value = true
-        this.selectDepartment._getItemsAsync = async () => await departmentHelper.SelectIdNameByCompanyAsync(undefined, CompanyMgtForm.AccessibleCompanies.value)
+        this.selectAssetType._getItemsAsync = async () => await assetTypeHelper.GetIdNamesByCompany(undefined, CompanyMgtForm.AccessibleCompanies.value)
+        this.selectDepartment._getItemsAsync = async () => await departmentHelper.GetIdNamesByCompany(undefined, CompanyMgtForm.AccessibleCompanies.value)
         this.selectDepartment._onChange = this._refresh
         this.selectAssetType._onChange = this._refresh
         this.selectTagType._onChange = this._refresh

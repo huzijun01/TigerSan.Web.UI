@@ -5,7 +5,7 @@ import { NavButtonModel, type NavButtonHandler } from './NavButtonModel'
 import { NavFolderModel, type NavFolderHandler } from './NavFolderModel'
 import { FolderBehavior, type IRoot } from '../../helpers/Behaviors/FolderBehavior'
 
-export type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => void
+export type TryNavButtonHandler = (buttonModel: NavButtonModel | undefined) => any
 
 export class NavBarModel implements IRoot {
     //#region 【Fields】

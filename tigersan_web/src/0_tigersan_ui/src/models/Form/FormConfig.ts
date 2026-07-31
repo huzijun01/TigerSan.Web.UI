@@ -10,17 +10,17 @@ export class FormConfig<TSource extends object> {
     /** “源数据获取”方法  */
     _getSource: TObjectAction<TSource>
     /** 关闭后 */
-    _onClose?: (isCancel: boolean) => void
+    _onClose?: (isCancel: boolean) => any
     /** 提交时 */
     _onSubmit?: FormSubmit<TSource>
     /** 提交时（异步） */
     _onSubmitAsync?: FormSubmitAsync<TSource>
     /** 初始化前 */
-    _beforeInit?: (isEdit: boolean) => void
+    _beforeInit?: (isEdit: boolean) => any
     /** 初始化前（异步） */
     _beforeInitAsync?: (isEdit: boolean) => Promise<void>
     /** 初始化后 */
-    _onInit?: (isEdit: boolean) => void
+    _onInit?: (isEdit: boolean) => any
     /** 初始化后（异步）：优先执行该方法 */
     _onInitAsync?: (isEdit: boolean) => Promise<void>
     //#endregion 【Fields】

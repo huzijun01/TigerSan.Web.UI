@@ -80,36 +80,36 @@ declare global {
 
         /** “地图”回调 */
         type MapCallback = {
-            add?: (args: MapArgs) => void
-            resize?: (args: MapArgs) => void
-            complete?: (args: MapArgs) => void
-            click?: (args: MapArgs) => void
-            dblclick?: (args: MapArgs) => void
-            mapmove?: (args: MapArgs) => void
-            hotspotclick?: (args: MapArgs) => void
-            hotspotover?: (args: MapArgs) => void
-            hotspotout?: (args: MapArgs) => void
-            movestart?: (args: MapArgs) => void
-            moveend?: (args: MapArgs) => void
-            zoomchange?: (args: MapArgs) => void
-            zoomstart?: (args: MapArgs) => void
-            zoomend?: (args: MapArgs) => void
-            rotatechange?: (args: MapArgs) => void
-            rotatestart?: (args: MapArgs) => void
-            rotateend?: (args: MapArgs) => void
-            mousemove?: (args: MapArgs) => void
-            mousewheel?: (args: MapArgs) => void
-            mouseover?: (args: MapArgs) => void
-            mouseout?: (args: MapArgs) => void
-            mouseup?: (args: MapArgs) => void
-            mousedown?: (args: MapArgs) => void
-            rightclick?: (args: MapArgs) => void
-            dragstart?: (args: MapArgs) => void
-            dragging?: (args: MapArgs) => void
-            dragend?: (args: MapArgs) => void
-            touchstart?: (args: MapArgs) => void
-            touchmove?: (args: MapArgs) => void
-            touchend?: (args: MapArgs) => void
+            add?: (args: MapArgs) => any
+            resize?: (args: MapArgs) => any
+            complete?: (args: MapArgs) => any
+            click?: (args: MapArgs) => any
+            dblclick?: (args: MapArgs) => any
+            mapmove?: (args: MapArgs) => any
+            hotspotclick?: (args: MapArgs) => any
+            hotspotover?: (args: MapArgs) => any
+            hotspotout?: (args: MapArgs) => any
+            movestart?: (args: MapArgs) => any
+            moveend?: (args: MapArgs) => any
+            zoomchange?: (args: MapArgs) => any
+            zoomstart?: (args: MapArgs) => any
+            zoomend?: (args: MapArgs) => any
+            rotatechange?: (args: MapArgs) => any
+            rotatestart?: (args: MapArgs) => any
+            rotateend?: (args: MapArgs) => any
+            mousemove?: (args: MapArgs) => any
+            mousewheel?: (args: MapArgs) => any
+            mouseover?: (args: MapArgs) => any
+            mouseout?: (args: MapArgs) => any
+            mouseup?: (args: MapArgs) => any
+            mousedown?: (args: MapArgs) => any
+            rightclick?: (args: MapArgs) => any
+            dragstart?: (args: MapArgs) => any
+            dragging?: (args: MapArgs) => any
+            dragend?: (args: MapArgs) => any
+            touchstart?: (args: MapArgs) => any
+            touchmove?: (args: MapArgs) => any
+            touchend?: (args: MapArgs) => any
         }
     }
 }

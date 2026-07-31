@@ -150,7 +150,7 @@ export class AssetFormModel {
     //#region 【Ctor】
     constructor() {
         this.selectIsAutoForm.Width.value = 208
-        this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
+        this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectAssetTypeForm._getItemsAsync = async () => await assetTypeHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectVehicleForm._getItemsAsync = async () => await vehicleHelper.GetIdPlatesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectCompanyForm._onChange = () => {

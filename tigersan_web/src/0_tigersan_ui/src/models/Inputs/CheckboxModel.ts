@@ -5,7 +5,7 @@ import { nanoid } from "nanoid"
 export class CheckboxModel {
     //#region 【Fields】
     _id = nanoid()
-    _onChange?: (model: CheckboxModel) => void
+    _onChange?: (model: CheckboxModel) => any
     //#endregion 【Fields】
 
     //#region 【Props】

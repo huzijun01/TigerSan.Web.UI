@@ -146,7 +146,7 @@ export class PersonMgtForm {
         this.selectCompany._getItemsAsync = async () => await personHelper.GetBelongCompanyListAsync()
         this.selectDepartment._getItemsAsync = async () => await personHelper.GetBelongDepartmentListAsync(this.selectCompany.Value.value?.id)
         this.selectRole._getItemsAsync = async () => await personHelper.GetBelongRoleListAsync(this.selectDepartment.Value.value?.id)
-        this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
+        this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectRoleForm._getItemsAsync = async () => await roleHelper.SelectIdNameByDepartment(this.selectDepartmentForm.Value.value?.id)
         // 更新:
         this.selectCompanyForm._onChange = this.selectDepartmentForm.UpdateItemsAsync

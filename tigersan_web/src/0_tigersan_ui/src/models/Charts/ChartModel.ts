@@ -2,7 +2,7 @@ import * as echarts from 'echarts'
 import { ref, shallowRef, type CSSProperties } from 'vue'
 import { config, ThemeHelper, WatchBehavior } from '../../helpers'
 
-export type ChartEvent = (chart: echarts.ECharts) => void
+export type ChartEvent = (chart: echarts.ECharts) => any
 
 export class ChartModel {
     //#region 【Fields】

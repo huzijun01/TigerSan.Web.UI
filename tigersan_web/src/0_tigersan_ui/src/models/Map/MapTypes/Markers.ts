@@ -254,9 +254,9 @@ declare global {
             /** 图标样式 */
             styles?: Array<Object>
             /** “标记聚合”渲染方法 */
-            renderMarker?: (context: AMap.RenderMarkerObject) => void
+            renderMarker?: (context: AMap.RenderMarkerObject) => any
             /** “标记聚合”渲染方法 */
-            renderClusterMarker?: (context: AMap.RenderClusterMarkerObject) => void
+            renderClusterMarker?: (context: AMap.RenderClusterMarkerObject) => any
         }
 
         /** “标记聚合”回调参数 */

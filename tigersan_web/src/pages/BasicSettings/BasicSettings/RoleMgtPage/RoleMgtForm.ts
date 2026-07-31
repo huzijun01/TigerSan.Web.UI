@@ -127,7 +127,7 @@ export class RoleMgtForm {
         this.authorityHelperForm._tree._configs = authorityHelper._tree._configs
         this.selectCompany._getItemsAsync = async () => await roleHelper.GetBelongCompanyListAsync()
         this.selectDepartment._getItemsAsync = async () => await roleHelper.GetBelongDepartmentListAsync(this.selectCompany.Value.value?.id)
-        this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.SelectIdNameByCompanyAsync(this.selectCompanyForm.Value.value?.id)
+        this.selectDepartmentForm._getItemsAsync = async () => await departmentHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
 
         // 更新:
         this.selectCompanyForm._onChange = this.selectDepartmentForm.UpdateItemsAsync

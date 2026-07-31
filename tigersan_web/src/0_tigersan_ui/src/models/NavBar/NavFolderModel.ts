@@ -4,7 +4,7 @@ import { NavItemModel } from './NavItemModel'
 import { NavButtonModel } from './NavButtonModel'
 import { FolderBehavior } from '../../helpers/Behaviors/FolderBehavior'
 
-export type NavFolderHandler = (folderModel: NavFolderModel) => void
+export type NavFolderHandler = (folderModel: NavFolderModel) => any
 
 export class NavFolderModel extends NavItemModel {
     //#region 【Fields】
