@@ -94,7 +94,7 @@ export class UploadImageModel {
 
     /** 打开 */
     readonly Open = () => {
-        this._upload._preview.IsShow.value = true
+        this._upload._preview.Show()
         this._upload._preview.Title.value = this._config.name
         this._upload._preview.Url.value = this.BlobUrl.value
     }

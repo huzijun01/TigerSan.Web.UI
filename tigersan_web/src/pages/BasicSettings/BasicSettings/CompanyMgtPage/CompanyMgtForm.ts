@@ -6,8 +6,10 @@ import { companyHelper, CompanyHelper, CompanyEntity, CompanyInfoModel } from '@
 const tree = new TreeModel<CompanyEntity>()
 /** “公司”选择框 */
 const selectCompany = companyHelper.GetIdNameSelectModel()
+selectCompany.Width.value = 280
 /** 全局“公司”选择框 */
 const selectCompanyGlobal = companyHelper.GetIdNameSelectModel()
+selectCompanyGlobal.Width.value = 280
 /** “可访问公司”集合 */
 const AccessibleCompanies = computed(() => selectCompanyGlobal.CheckedValues.value.map(i => i?.id ?? 0n))
 
