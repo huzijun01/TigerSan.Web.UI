@@ -26,6 +26,11 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
 
     public static class IQueryableExtendion
     {
+        #region 【Contains】
+        private static readonly Lazy<MethodInfo?> StringContainsMethod
+            = new Lazy<MethodInfo?>(() => typeof(string).GetMethod("Contains", BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(string) }, null), true);
+        #endregion 【Contains】
+
         #region 【Where】
         private static readonly Lazy<MethodInfo?> _cachedWhereMethod = new Lazy<MethodInfo?>(GetWhereMethod, true);
 
@@ -305,13 +310,57 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
 
                 Expression body;
 
-                if (values.Count > 10) // 超过10个值，使用 Contains（避免栈溢出）
+                // 5. 构建表达式主体
+                bool isStringFuzzy = propertyType == typeof(string) && filter.IsFuzzy == true;
+
+                if (isStringFuzzy)
                 {
-                    body = GetContainsExpression(parameter, property, propertyType, values);
+                    // 获取 string.Contains 方法
+                    var containsMethod = StringContainsMethod.Value;
+                    if (containsMethod == null)
+                    {
+                        return MyResults<IQueryable>.Error(LogHelper.Instance.Error("String.Contains method not found."));
+                    }
+
+                    Expression? combinedExpression = null;
+
+                    foreach (var val in values)
+                    {
+                        if (val == null) continue;
+
+                        var strVal = val.ToString();
+                        if (string.IsNullOrEmpty(strVal)) continue;
+
+                        // 构造常量表达式
+                        var constant = Expression.Constant(strVal, typeof(string));
+
+                        // 构造 x.Prop.Contains(strVal)
+                        var containsCall = Expression.Call(property, containsMethod, constant);
+
+                        if (combinedExpression == null)
+                        {
+                            combinedExpression = containsCall;
+                        }
+                        else
+                        {
+                            // 组合: prev OR current
+                            combinedExpression = Expression.OrElse(combinedExpression, containsCall);
+                        }
+                    }
+
+                    // 如果所有值都无效，返回 false
+                    body = combinedExpression ?? Expression.Constant(false, typeof(bool));
                 }
-                else // 值少的时候用原来的 OR（性能更好）
+                else
                 {
-                    body = GetOrExpression(parameter, property, propertyType, values);
+                    if (values.Count > 10) // 超过10个值，使用 Contains（避免栈溢出）
+                    {
+                        body = GetContainsExpression(parameter, property, propertyType, values);
+                    }
+                    else // 值少的时候用原来的 OR（性能更好）
+                    {
+                        body = GetOrExpression(parameter, property, propertyType, values);
+                    }
                 }
 
                 // 创建“Lambda”表达式:

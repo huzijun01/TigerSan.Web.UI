@@ -12,10 +12,13 @@ export class TagMgtPageModel {
     /** “离线”总数 */
     readonly OfflineCount = ref(0)
 
+    //#region [computed]
+    /** 是否“允许绑定” */
     readonly IsAllowBinding = computed(() => {
         const rowData = this.table.SelectedRowDatas.value[0]
         return rowData && !StringHelper.IsNotEmpty(rowData.assetId)
     })
+    //#endregion [computed]
     //#endregion 【Props】
 
     //#region 【Fields】
@@ -168,6 +171,7 @@ export class TagMgtPageModel {
         this.searchTagId.Placeholder.value = Texts.TagId
         this.assetForm.IsCompanyEnable = false
         this.assetForm.IsTagIdEnable.value = false
+        this.assetForm.IsStationIdEnable.value = false
 
         // 更新:
         this.table._onSelectStateChange = this.InitSelectIsEnableState
@@ -430,12 +434,12 @@ export class TagMgtPageModel {
         }
     }
 
-    /** 增 */
+    /** 绑定 */
     readonly Binding = async () => {
         const rowData = this.table.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
-            return new TagDto()
+            return
         }
         const tag = ObjectHelper.ShallowCopy(rowData)
 
@@ -460,6 +464,7 @@ export class TagMgtPageModel {
         this.assetForm.assetForm.Show()
     }
 
+    /** 维修 */
     readonly Repair = () => {
         DialogHelper.Information('维修')
     }

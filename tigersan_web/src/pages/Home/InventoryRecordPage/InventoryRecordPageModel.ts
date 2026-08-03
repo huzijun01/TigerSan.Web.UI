@@ -65,10 +65,10 @@ export class InventoryRecordPageModel {
     constructor() {
         this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtForm.AccessibleCompanies, this.Refresh)
 
+        this.table.IsAllowMultiSelect.value = false
         this.table._onInitHeaderModels = () => {
             this.table.SetSlotHeader('time', false)
         }
-        this.table.IsAllowMultiSelect.value = false
         this.pagination.IsShowSelectedRowCount.value = true
         this.table._onSlotChange = this.Refresh
         this.pagination._onChange = this.Refresh

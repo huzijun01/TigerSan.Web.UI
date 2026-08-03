@@ -47,21 +47,31 @@ export class MyActionResult<TData> {
 ```typescript
 /** “过滤器”对象 */
 export class FilterDto {
+    /** 父表 */
     parent?: ParentFilter
+    /** “过滤器”集合 */
     filters?: PropFilter[]
 }
 
 /** “属性”过滤器 */
 export class PropFilter {
+    /** 属性名 */
     propName = ''
+    /** 是否“模糊查询” */
+    isFuzzy?: boolean
+    /** 值 */
     value?: unknown
+    /** 值集合 */
     values?: unknown[] = []
 }
 
 /** “父表”过滤器 */
 export class ParentFilter {
+    /** ID */
     id?: bigint
+    /** ID集合 */
     ids?: bigint[] = []
+    /** 父表 */
     parent?: ParentFilter
 }
 ```
@@ -193,6 +203,7 @@ export class TagEntity {
 export class TagDto extends TagEntity {
     batchId = ''
     typeName = ''
+    stationName = ''
     company?: bigint
     companyName?: string
     site?: bigint
@@ -259,24 +270,33 @@ export enum AssetStates {
 /** "资产"实体 */
 export class AssetEntity {
     id: bigint = 0n
+    assetId = ''
     department: bigint = 0n
     type: bigint = 0n
-    assetId = ''
+    tag?: bigint
+    tagId?: string
+    tagType?: bigint
+    station?: bigint
+    stationId?: string
+    vehicle?: bigint
+    transfer?: bigint
+    name? = ''
+    comment?: string
+    // 计算:
+    lastRecord?: bigint // 计算时才更新，建议使用GetLast获取最新记录
     state: AssetStates = AssetStates.NoRecord
     onlineState: OnlineStates = OnlineStates.Offline
     isAuto: boolean = true
     isFall?: boolean
     errorType?: ErrorTypes
-    tag?: bigint
-    tagId?: string
-    tagType?: bigint
-    vehicle?: bigint
-    transfer?: bigint
-    lastRecord?: bigint
-    name? = ''
-    comment?: string
     bindingTime?: Date
     calculationTime?: Date
+    dailyMove?: number
+    monthlyMove?: number
+    totalMove?: number
+    stayDuration?: number
+    offlineDuration?: number
+    travelDuration?: number
 }
 
 /** "资产"对象 */
@@ -292,13 +312,6 @@ export class AssetDto extends AssetEntity {
     battery?: number
     fullAddr?: string
     transferCode?: string
-    // 计算:
-    dailyMove?: number
-    monthlyMove?: number
-    totalMove?: number
-    stayDuration?: number
-    offlineDuration?: number
-    travelDuration?: number
 }
 
 /** 资产位置 */
@@ -404,8 +417,9 @@ export class AssetRecordEntity {
 
 /** "资产记录"对象 */
 export class AssetRecordDto extends AssetRecordEntity {
+    tagId?: string
+    stationId?: string
     siteName?: string
-    stationName?: string
     addr?: string
     addrDetail?: string
     address?: string

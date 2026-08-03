@@ -57,6 +57,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
                 isAuto: filter.selectIsAuto.Value.value,
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
+                name: filter.searchName.Value.value,
                 assetId: filter.searchAssetId.Value.value,
                 rfid: filter.searchRfid.Value.value,
             })
@@ -74,7 +75,9 @@ export class AssetLedgerPageModel extends AssetFormModel {
                 isAuto: filter.selectIsAuto.Value.value,
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
+                name: filter.searchName.Value.value,
                 assetId: filter.searchAssetId.Value.value,
+                tagId: filter.searchTagId.Value.value,
                 rfid: filter.searchRfid.Value.value,
             }).then(arr => {
                 ArrayHelper.Set(assetLedgerTable.RowDatas, arr)

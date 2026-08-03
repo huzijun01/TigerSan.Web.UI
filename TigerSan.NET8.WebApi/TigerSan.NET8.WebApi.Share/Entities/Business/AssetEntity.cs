@@ -7,22 +7,32 @@ namespace TigerSan.NET8.WebApi.Share.Entities
     public class AssetEntity : IdEntityBase
     {
         [SnakeColumn]
+        public string AssetId { get; set; } = string.Empty;
+        [SnakeColumn]
         public long Department { get; set; }
         [SnakeColumn]
         public long Type { get; set; }
-        [SnakeColumn]
-        public string AssetId { get; set; } = string.Empty;
-        [SnakeColumn]
-        public string? Name { get; set; } = string.Empty;
-        [SnakeColumn]
-        public string? Comment { get; set; } = string.Empty;
         [SnakeColumn]
         public long? Tag { get; set; }
         [SnakeColumn]
         public string? TagId { get; set; }
         [SnakeColumn]
         public long? TagType { get; set; }
+        [SnakeColumn]
+        public long? Station { get; set; }
+        [SnakeColumn]
+        public string? StationId { get; set; }
+        [SnakeColumn]
+        public long? Vehicle { get; set; }
+        [SnakeColumn]
+        public long? Transfer { get; set; }
+        [SnakeColumn]
+        public string? Name { get; set; } = string.Empty;
+        [SnakeColumn]
+        public string? Comment { get; set; } = string.Empty;
         // 计算:
+        [SnakeColumn]
+        public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
         [SnakeColumn]
         public AssetStates State { get; set; }
         [SnakeColumn]
@@ -33,12 +43,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public bool? IsFall { get; set; } = false;
         [SnakeColumn]
         public ErrorTypes? ErrorType { get; set; }
-        [SnakeColumn]
-        public long? Vehicle { get; set; }
-        [SnakeColumn]
-        public long? Transfer { get; set; }
-        [SnakeColumn]
-        public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
         [SnakeColumn]
         public DateTime? BindingTime { get; set; }
         [SnakeColumn]
@@ -55,5 +59,33 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public double? TravelDuration { get; set; }
         [SnakeColumn]
         public double? OfflineDuration { get; set; }
+
+        public void Copy(TagEntity? tag)
+        {
+            if (tag == null)
+            {
+                Tag = null;
+                TagId = null;
+                TagType = null;
+            }
+            else
+            {
+                OnlineState = tag.OnlineState;
+                IsFall = tag.IsFall;
+            }
+        }
+
+        public void Copy(BaseStationEntity? station)
+        {
+            if (station == null)
+            {
+                Station = null;
+                StationId = null;
+            }
+            else
+            {
+                OnlineState = station.OnlineState;
+            }
+        }
     }
 }

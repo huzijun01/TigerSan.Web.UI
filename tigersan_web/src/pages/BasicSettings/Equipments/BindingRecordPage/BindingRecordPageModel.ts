@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, PaginationModel, GetSubmitResult, IdName, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { GetTableModel } from './BindingRecordTable'
-import { bindingRecordHelper, BindingRecordEntity } from '@/models'
+import { bindingRecordHelper, BindingRecordDto } from '@/models'
 
 export class BindingRecordPageModel {
     //#region 【Fields】
@@ -11,7 +11,7 @@ export class BindingRecordPageModel {
     readonly pagination = new PaginationModel()
 
     /** “标签ID”项目配置 */
-    readonly configTagId: FormItemConfig<BindingRecordEntity, IdName> = {
+    readonly configTagId: FormItemConfig<BindingRecordDto, IdName> = {
         _propName: 'tagId',
         PropText: Texts.TagId,
         IsEquired: true,
@@ -22,7 +22,7 @@ export class BindingRecordPageModel {
     }
 
     /** “资产ID”项目配置 */
-    readonly configAssetId: FormItemConfig<BindingRecordEntity, string> = {
+    readonly configAssetId: FormItemConfig<BindingRecordDto, string> = {
         _propName: 'assetId',
         PropText: Texts.AssetId,
         IsEquired: true,
@@ -33,10 +33,10 @@ export class BindingRecordPageModel {
     }
 
     /** “增”源数据获取方法 */
-    readonly AddGetSource = () => new BindingRecordEntity()
+    readonly AddGetSource = () => new BindingRecordDto()
 
     /** 表单配置 */
-    readonly configBindingRecordPageModel: FormConfig<BindingRecordEntity> = {
+    readonly configBindingRecordPageModel: FormConfig<BindingRecordDto> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
         },
@@ -56,7 +56,11 @@ export class BindingRecordPageModel {
     //#region 【Ctor】
     constructor() {
         this.table.IsAllowMultiSelect.value = false
+        this.table._onInitHeaderModels = () => {
+            this.table.SetSlotHeader('time', false)
+        }
         this.pagination.IsShowSelectedRowCount.value = true
+        this.table._onSlotChange = this.Refresh
         this.pagination._onChange = this.Refresh
     }
     //#endregion 【Ctor】
@@ -80,6 +84,7 @@ export class BindingRecordPageModel {
             await bindingRecordHelper.GetList({
                 pageSize: this.pagination.PageSize.value,
                 pageNumber: this.pagination.SelectedNum.value,
+                sort: this.table.SlotHeader.value?._propName,
                 tag: this._tag,
                 asset: this._asset,
             }).then(arr => {
@@ -114,7 +119,7 @@ export class BindingRecordPageModel {
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
-                return new BindingRecordEntity()
+                return new BindingRecordDto()
             }
 
             return ObjectHelper.ShallowCopy(rowData)

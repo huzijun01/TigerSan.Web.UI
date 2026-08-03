@@ -27,6 +27,8 @@
                     </div>
                     <div class="row-panel">
                         <Switch v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :model="model.switchIsEnable" />
+                        <button :disabled="!model.IsAllowBinding.value" @click="model.Binding">
+                            {{ Texts.Binding.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :disabled="!IsOnlySelected"
                             @click="model.Repair">维修</button>
                     </div>
@@ -34,11 +36,11 @@
             </div>
 
             <!-- 表格: -->
-            <Table :model="baseStationMgtTable"></Table>
+            <Table :model="model.table"></Table>
 
             <!-- 底部: -->
             <div class="bottom-panel flex-center ">
-                <Pagination :model="model.pagination" :selectedRowCount="baseStationMgtTable.SelectedRowCount.value">
+                <Pagination :model="model.pagination" :selectedRowCount="model.table.SelectedRowCount.value">
                     <KeyValue :propName="Texts.Online.value" :propValue="model.OnlineCount" :color="Colors.Success">
                     </KeyValue>
                     <KeyValue :propName="Texts.Offline.value" :propValue="model.OfflineCount" :color="Colors.Danger">
@@ -87,23 +89,30 @@
             </FormItem>
         </FormRow>
         <FormRow>
+            <FormItem :model="model.configAssetId.ItemModel">
+                <input type="text" v-model="model.configAssetId.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="model.configImage.ItemModel">
                 <Upload :model="model.upload" />
             </FormItem>
         </FormRow>
     </PopForm>
+
+    <AssetForm :form="model.assetForm" />
 </template>
 
 <script lang="ts" setup>
+import AssetForm from '@/pages/Home/AssetLedgerPage/AssetForm.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
-import { baseStationMgtTable } from './BaseStationMgtTable'
 import { BaseStationMgtPageModel } from './BaseStationMgtPageModel'
 import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, Upload } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 const model = new BaseStationMgtPageModel()
-const { IsOnlySelected } = baseStationMgtTable
+const { IsOnlySelected } = model.table
 
 // 【过程】:
 onMounted(() => {

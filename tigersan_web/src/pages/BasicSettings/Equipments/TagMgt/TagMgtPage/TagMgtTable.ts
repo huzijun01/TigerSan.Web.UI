@@ -1,8 +1,8 @@
 import { Battery, IsEnable, IsFall, ItemType, ObjectHelper, OnlineState, Signal, TableModel, Texts } from '@/0_tigersan_ui/tigerui'
 import { TagDto, LocationMode } from '@/models'
 
-// 列头:
 export function GetTagTable() {
+    // 列头:
     const table = new TableModel<TagDto>([
         {
             _propName: 'tagId',

@@ -1,7 +1,8 @@
-import { ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
-import { baseStationMgtTable } from './BaseStationMgtTable'
-import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper } from '@/models'
+import { computed, ref, watch } from 'vue'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode, StringHelper } from '@/0_tigersan_ui/tigerui'
+import { GetStationTable } from './BaseStationMgtTable'
+import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper, assetHelper } from '@/models'
 
 export class BaseStationMgtPageModel {
     //#region 【Props】
@@ -9,9 +10,19 @@ export class BaseStationMgtPageModel {
     readonly OnlineCount = ref(0)
     /** “离线”总数 */
     readonly OfflineCount = ref(0)
+
+    //#region [computed]
+    /** 是否“允许绑定” */
+    readonly IsAllowBinding = computed(() => {
+        const rowData = this.table.SelectedRowDatas.value[0]
+        return rowData && !StringHelper.IsNotEmpty(rowData.assetId)
+    })
+    //#endregion [computed]
     //#endregion 【Props】
 
     //#region 【Fields】
+    /** 表格 */
+    readonly table = GetStationTable()
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** 开关 */
@@ -102,6 +113,14 @@ export class BaseStationMgtPageModel {
         _isVerifyOk: source => Verify.IsGreaterThan(source.reportInterval)
     }
 
+    /** “资产ID”项目配置 */
+    readonly configAssetId: FormItemConfig<BaseStationDto, string> = {
+        _propName: 'assetId',
+        PropText: Texts.AssetId,
+        IsEquired: false,
+        Target: ref(),
+    }
+
     /** “图片”项目配置 */
     readonly configImage: FormItemConfig<BaseStationDto, string> = {
         _propName: 'image',
@@ -118,7 +137,7 @@ export class BaseStationMgtPageModel {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
             if (isEdit) {
-                const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
+                const rowData = this.table.SelectedRowDatas.value[0]
                 if (!rowData) {
                     console.warn('The rowData is undefined!')
                     return
@@ -143,18 +162,22 @@ export class BaseStationMgtPageModel {
             this.configMacAddr,
             this.configHeartbeatInterval,
             this.configReportInterval,
+            this.configAssetId,
             this.configImage,
         ]
     }
 
     /** “基站”表单模型 */
     readonly form = new FormModel(this.configBaseStationForm)
+
+    /** 资产表单 */
+    readonly assetForm = new AssetFormModel()
     //#endregion 【Fields】
 
     //#region 【Ctor】
     constructor() {
-        baseStationMgtTable._onSelectStateChange = this.InitSelectIsEnableState
-        watch(baseStationMgtTable.IsSelected, isSelected => this.switchIsEnable.IsEnable.value = isSelected)
+        this.table._onSelectStateChange = this.InitSelectIsEnableState
+        watch(this.table.IsSelected, isSelected => this.switchIsEnable.IsEnable.value = isSelected)
 
         this.pagination.IsShowSelectedRowCount.value = true
         this.switchIsEnable.IsEnable.value = false
@@ -164,6 +187,9 @@ export class BaseStationMgtPageModel {
         this.selectSite._getItemsAsync = async () => await baseStationHelper.GetBelongSiteListAsync(this.selectCompany.Value.value?.id)
         this.selectType._getItemsAsync = async () => await baseStationHelper.GetBelongStationTypeListAsync(this.selectCompany.Value.value?.id, this.selectSite.Value.value?.id)
         this.selectSiteForm._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
+        this.assetForm.IsCompanyEnable = false
+        this.assetForm.IsTagIdEnable.value = false
+        this.assetForm.IsStationIdEnable.value = false
 
         // 更新:
         this.selectCompanyForm._onChange = this.selectSiteForm.UpdateItemsAsync
@@ -237,7 +263,7 @@ export class BaseStationMgtPageModel {
             type: this.selectType.Value.value?.id,
             macAddr: this.searchMacAddr.Value.value,
         }).then(arr => {
-            baseStationMgtTable.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
+            this.table.UpdateRowDatas(arr, (r, n) => BigintHelper.IsEqualAndNotUndefined(r.id, n.id))
         })
     }
 
@@ -258,7 +284,7 @@ export class BaseStationMgtPageModel {
                 type: this.selectType.Value.value?.id,
                 macAddr: this.searchMacAddr.Value.value,
             }).then(arr => {
-                ArrayHelper.Set(baseStationMgtTable.RowDatas, arr)
+                ArrayHelper.Set(this.table.RowDatas, arr)
             })
         } finally {
             loading.IsShow.value = false
@@ -299,7 +325,7 @@ export class BaseStationMgtPageModel {
         this.form.Title.value = TextModel.GetText('Edit BaseStation', '修改基站')
 
         this.form._getSource = () => {
-            const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
+            const rowData = this.table.SelectedRowDatas.value[0]
 
             if (!rowData) {
                 console.warn('The rowData is undefined!')
@@ -334,7 +360,7 @@ export class BaseStationMgtPageModel {
 
     /** 改 */
     readonly EditIsEnable = (isEnable: boolean) => {
-        if (!baseStationMgtTable.IsSelected.value) return
+        if (!this.table.IsSelected.value) return
 
         DialogHelper.Show(
             '修改启用状态',
@@ -350,7 +376,7 @@ export class BaseStationMgtPageModel {
                     }
 
                     const rowDatas: BaseStationDto[] = []
-                    baseStationMgtTable.SelectedRowDatas.value.forEach(rowData => {
+                    this.table.SelectedRowDatas.value.forEach(rowData => {
                         const newRowData = ObjectHelper.ShallowCopy(rowData)
                         newRowData.isEnable = isEnable
                         rowDatas.push(newRowData)
@@ -369,7 +395,7 @@ export class BaseStationMgtPageModel {
     }
 
     readonly InitSelectIsEnableState = () => {
-        this.switchIsEnable.Value.value = baseStationMgtTable.IsSelected.value && baseStationMgtTable.SelectedRowDatas.value.every(r => r.isEnable)
+        this.switchIsEnable.Value.value = this.table.IsSelected.value && this.table.SelectedRowDatas.value.every(r => r.isEnable)
     }
 
     /** 删 */
@@ -386,7 +412,7 @@ export class BaseStationMgtPageModel {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const rowData = baseStationMgtTable.SelectedRowDatas.value[0]
+        const rowData = this.table.SelectedRowDatas.value[0]
         if (!rowData) {
             console.warn('The rowData is undefined!')
             return
@@ -403,6 +429,38 @@ export class BaseStationMgtPageModel {
             loading.IsShow.value = false
         }
     }
+
+    /** 绑定 */
+    readonly Binding = async () => {
+        const rowData = this.table.SelectedRowDatas.value[0]
+        if (!rowData) {
+            console.warn('The rowData is undefined!')
+            return
+        }
+        const station = ObjectHelper.ShallowCopy(rowData)
+
+        if (StringHelper.IsNotEmpty(station.assetId)) return
+
+        this.assetForm.assetForm.Title.value = `${Texts.Binding.value}${Texts.Asset.value}`
+
+        this.assetForm.assetForm._getSource = () => {
+            const source = this.assetForm.AddGetSource()
+            source.company = station.company ?? 0n
+            source.stationId = station.macAddr
+            source.assetId = ObjectHelper.GetDateId()
+            return source
+        }
+
+        this.assetForm.assetForm._onSubmitAsync = async source => {
+            const res = await assetHelper.Add(source)
+            await this.Refresh()
+            return GetSubmitResult(res, '绑定成功')
+        }
+
+        this.assetForm.assetForm.Show()
+    }
+
+    /** 维修 */
 
     readonly Repair = () => {
         DialogHelper.Information('维修')

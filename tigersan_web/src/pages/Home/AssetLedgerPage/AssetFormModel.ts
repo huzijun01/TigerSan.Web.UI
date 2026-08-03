@@ -71,6 +71,14 @@ export class AssetFormModel {
         Target: ref(),
     }
 
+    /** “基站ID”项目配置 */
+    readonly configStationId: FormItemConfig<AssetDto, string> = {
+        _propName: 'stationId',
+        PropText: Texts.StationId,
+        IsEquired: false,
+        Target: ref(),
+    }
+
     /** “名称”项目配置 */
     readonly configName: FormItemConfig<AssetDto, string> = {
         _propName: 'name',
@@ -128,6 +136,7 @@ export class AssetFormModel {
             this.configIsAuto,
             this.configAssetId,
             this.configTagId,
+            this.configStationId,
             this.configName,
             this.configComment,
             this.configVehicle,
@@ -145,6 +154,8 @@ export class AssetFormModel {
 
     /** “标签ID”是否使能 */
     readonly IsTagIdEnable = ref(true)
+    /** “基站ID”是否使能 */
+    readonly IsStationIdEnable = ref(true)
     //#endregion 【Props】
 
     //#region 【Ctor】

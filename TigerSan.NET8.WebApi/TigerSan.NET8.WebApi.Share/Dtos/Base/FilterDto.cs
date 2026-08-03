@@ -17,6 +17,8 @@
     {
         /// <summary>属性名</summary>
         public string PropName { get; set; } = string.Empty;
+        /// <summary>是否“模糊查询”</summary>
+        public bool? IsFuzzy { get; set; }
         /// <summary>值</summary>
         public object? Value { get; set; }
         /// <summary>值集合</summary>

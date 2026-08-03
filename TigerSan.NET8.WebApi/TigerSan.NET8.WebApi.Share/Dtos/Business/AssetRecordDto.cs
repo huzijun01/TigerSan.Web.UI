@@ -4,8 +4,9 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
 {
     public class AssetRecordDto : AssetRecordEntity
     {
+        public string? TagId { get; set; }
+        public string? StationId { get; set; }
         public string? SiteName { get; set; }
-        public string? StationName { get; set; }
         public string? Addr { get; set; }
         public string? AddrDetail { get; set; }
         public string? TargetSiteName { get; set; }

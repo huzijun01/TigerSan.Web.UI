@@ -32,6 +32,7 @@ export class TagEntity extends IdEntityBase {
 export class TagDto extends TagEntity {
     batchId = ''
     typeName = ''
+    stationName = ''
     company?: bigint
     companyName?: string
     site?: bigint

@@ -6,14 +6,21 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <Select :model="model.filter.selectDepartment" />
+                        <Select :model="model.filter.selectAssetType" />
+                        <Select :model="model.filter.selectTagType" />
+                    </div>
+                    <div class="row-panel">
                         <Select :model="model.filter.selectAssetState" />
                         <Select :model="model.filter.selectOnlineState" />
                         <Select :model="model.filter.selectErrorType" />
+                        <Select :model="model.filter.selectIsAuto" />
+                        <Select :model="model.filter.selectIsFall" />
                     </div>
                     <div class="row-panel">
+                        <Search :model="model.filter.searchName" />
                         <Search :model="model.filter.searchAssetId" />
-                        <Select :model="model.filter.selectAssetType" />
-                        <Select :model="model.filter.selectIsFall" />
+                        <Search :model="model.filter.searchTagId" />
+                        <Search :model="model.filter.searchRfid" />
                     </div>
                 </div>
                 <div class="button-panel">

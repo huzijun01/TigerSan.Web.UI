@@ -25,14 +25,17 @@
             </FormItem>
         </FormRow>
         <FormRow>
+            <FormItem :model="form.configStationId.ItemModel">
+                <input type="text" v-model="form.configStationId.Target.value" :disabled="!form.IsStationIdEnable.value">
+            </FormItem>
             <FormItem :model="form.configName.ItemModel">
                 <input type="text" v-model="form.configName.Target.value">
             </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="form.configComment.ItemModel">
                 <input type="text" v-model="form.configComment.Target.value">
             </FormItem>
-        </FormRow>
-        <FormRow>
             <FormItem :model="form.configVehicle.ItemModel">
                 <Select :model="form.selectVehicleForm" />
             </FormItem>

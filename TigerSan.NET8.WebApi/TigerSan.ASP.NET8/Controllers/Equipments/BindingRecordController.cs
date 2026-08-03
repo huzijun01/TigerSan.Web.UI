@@ -18,9 +18,12 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Last")]
         /// <summary>获取“完整数据”集合</summary>
-        public async Task<MyActionResult<BindingRecordEntity>> GetLast(long? tag = null, long? asset = null)
+        public async Task<MyActionResult<BindingRecordEntity>> GetLast(
+            long? asset = null, 
+            long? tag = null, 
+            long? station = null)
         {
-            return await _service.GetLast(tag, asset);
+            return await _service.GetLast(asset, tag, station);
         }
 
         [HttpPost]

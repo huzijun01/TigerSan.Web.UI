@@ -8,7 +8,9 @@ export class AssetFilter {
     /** “可访问公司”监听器 */
     readonly watchAccessibleCompanies
     /** 搜索框 */
+    readonly searchName = new SearchModel()
     readonly searchAssetId = new SearchModel()
+    readonly searchTagId = new SearchModel()
     readonly searchRfid = new SearchModel()
     /** 筛选 */
     readonly selectOnlineState = OnlineState.GetSelectModel()
@@ -24,9 +26,18 @@ export class AssetFilter {
     //#region 【Ctor】
     constructor(refresh?: Function) {
         this._refresh = refresh
+
+        this.searchName.Placeholder.value = Texts.Name
+        this.searchName._onChange = this._refresh
+        this.searchName._onSearch = this._refresh
+
         this.searchAssetId.Placeholder.value = Texts.AssetId
         this.searchAssetId._onChange = this._refresh
         this.searchAssetId._onSearch = this._refresh
+
+        this.searchTagId.Placeholder.value = Texts.TagId
+        this.searchTagId._onChange = this._refresh
+        this.searchTagId._onSearch = this._refresh
 
         this.searchRfid.Placeholder.value = 'RFID'
         this.searchRfid._onChange = this._refresh

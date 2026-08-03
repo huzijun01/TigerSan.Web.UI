@@ -9,22 +9,22 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long Asset { get; set; }
         [SnakeColumn]
-        public long Tag { get; set; }
+        public long? Tag { get; set; }
         [SnakeColumn]
-        public AssetStates State { get; set; } = AssetStates.NoRecord;
-        // Tag:
-        [SnakeColumn]
-        public DateTime ReportTime { get; set; }
-        [SnakeColumn]
-        public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
-        [SnakeColumn]
-        public LocationModes? LocationMode { get; set; }
+        public long? Station { get; set; }
         [SnakeColumn]
         public long? Site { get; set; }
         [SnakeColumn]
         public long? TargetSite { get; set; }
         [SnakeColumn]
-        public long? Station { get; set; }
+        public DateTime ReportTime { get; set; }
+        [SnakeColumn]
+        public AssetStates State { get; set; } = AssetStates.NoRecord;
+        // Tag:
+        [SnakeColumn]
+        public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
+        [SnakeColumn]
+        public LocationModes? LocationMode { get; set; }
         [SnakeColumn]
         public int? Battery { get; set; }
         [SnakeColumn]

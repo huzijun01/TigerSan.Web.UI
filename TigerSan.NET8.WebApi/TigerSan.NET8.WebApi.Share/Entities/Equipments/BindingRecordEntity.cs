@@ -8,22 +8,25 @@ namespace TigerSan.NET8.WebApi.Share.Entities
     public class BindingRecordEntity : IdEntityBase
     {
         [SnakeColumn]
-        public long Tag { get; set; }
+        public bool IsBinding { get; set; }
         [SnakeColumn]
         public long Asset { get; set; }
         [SnakeColumn]
-        public bool IsBinding { get; set; }
+        public long? Tag { get; set; }
+        [SnakeColumn]
+        public long? Station { get; set; }
         [SnakeColumn]
         public DateTime Time { get; set; } = DateTimeHelper.GetUtcNow();
 
         #region 【Ctor】
         public BindingRecordEntity() { }
 
-        public BindingRecordEntity(long tag, long asset, bool isBinding, DateTime? time)
+        public BindingRecordEntity(bool isBinding, long asset, long? tag = null, long? station = null, DateTime? time = null)
         {
-            Tag = tag;
-            Asset = asset;
             IsBinding = isBinding;
+            Asset = asset;
+            Tag = tag;
+            Station = station;
             if (time != null) Time = time.Value;
         }
         #endregion 【Ctor】
@@ -31,7 +34,10 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         #region 【Functions】
         public bool Equals(BindingRecordEntity entity)
         {
-            return Tag == entity.Tag && Asset == entity.Asset && IsBinding == entity.IsBinding;
+            return IsBinding == entity.IsBinding
+                && Asset == entity.Asset 
+                && Tag == entity.Tag
+                && Station == entity.Station;
         }
         #endregion 【Functions】
     }

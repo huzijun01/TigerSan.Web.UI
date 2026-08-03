@@ -45,12 +45,17 @@ export class AssetMapPageModel {
                 companies: CompanyMgtForm.AccessibleCompanies.value,
                 department: filter.selectDepartment.Value.value?.id,
                 type: filter.selectAssetType.Value.value?.id,
+                tagType: filter.selectTagType.Value.value?.id,
                 state: filter.selectAssetState.Value.value,
                 states: filter.selectAssetState.NotCheckAllCheckedValues.value,
                 onlineState: filter.selectOnlineState.Value.value,
+                isAuto: filter.selectIsAuto.Value.value,
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
+                name: filter.searchName.Value.value,
                 assetId: filter.searchAssetId.Value.value,
+                tagId: filter.searchTagId.Value.value,
+                rfid: filter.searchRfid.Value.value,
             })
             this.Positions.splice(0)
             this.Positions.push(...positions)

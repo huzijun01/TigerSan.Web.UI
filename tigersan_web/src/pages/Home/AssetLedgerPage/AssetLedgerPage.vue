@@ -6,18 +6,22 @@
                 <div class="filter-panel">
                     <div class="row-panel">
                         <Select :model="model.filter.selectDepartment" />
-                        <Search :model="model.filter.searchAssetId" />
-                        <Search :model="model.filter.searchRfid" />
-                        <Select :model="model.filter.selectIsAuto" />
-                        <Select :model="model.filter.selectIsFall" />
-                    </div>
-                    <div class="row-panel">
                         <Select :model="model.filter.selectAssetType" />
                         <Select :model="model.filter.selectTagType" />
+                    </div>
+                    <div class="row-panel">
                         <Select :model="model.filter.selectAssetState" />
                         <Select :model="model.filter.selectOnlineState" />
                         <Select :model="model.filter.selectErrorType" />
+                        <Select :model="model.filter.selectIsAuto" />
+                        <Select :model="model.filter.selectIsFall" />
                         <Select :model="selectColumnFilter" />
+                    </div>
+                    <div class="row-panel">
+                        <Search :model="model.filter.searchName" />
+                        <Search :model="model.filter.searchAssetId" />
+                        <Search :model="model.filter.searchTagId" />
+                        <Search :model="model.filter.searchRfid" />
                     </div>
                 </div>
                 <div class="button-panel">
@@ -76,6 +80,9 @@
     <PopWindow :model="tagDetail">
         <RowData :model="tag" />
     </PopWindow>
+    <PopWindow :model="stationDetail">
+        <RowData :model="station" />
+    </PopWindow>
     <PopWindow :model="transferDetail">
         <RowData :model="transfer" />
     </PopWindow>
@@ -91,7 +98,7 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView, RowData } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'
 import { AssetLedgerPageModel } from './AssetLedgerPageModel'
-import { tag, vehicle, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, vehicleDetail, IsAllowTransfer, IsAllowInbound, IsAllowOutbound, tabView, transferDetail, transfer } from './AssetLedgerTable'
+import { tag, vehicle, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, station, stationDetail, vehicleDetail, IsAllowTransfer, IsAllowInbound, IsAllowOutbound, tabView, transferDetail, transfer } from './AssetLedgerTable'
 // 【字段】:
 const model = new AssetLedgerPageModel()
 const { IsOnlySelected, IsSelected } = assetLedgerTable

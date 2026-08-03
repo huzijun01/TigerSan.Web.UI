@@ -1,27 +1,36 @@
-import { ArrayHelper, OnlineStates } from "@/0_tigersan_ui/tigerui"
+import { ArrayHelper, OnlineStates, FilterDto } from "@/0_tigersan_ui/tigerui"
 import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 import { AssetStates, ErrorTypes, LocationModes } from "../base/AssetStates"
 
 /** "资产"实体 */
 export class AssetEntity extends IdEntityBase {
+    assetId = ''
     department: bigint = 0n
     type: bigint = 0n
-    assetId = ''
+    tag?: bigint
+    tagId?: string
+    tagType?: bigint
+    station?: bigint
+    stationId?: string
+    vehicle?: bigint
+    transfer?: bigint
+    name? = ''
+    comment?: string
+    // 计算:
+    lastRecord?: bigint // 计算时才更新，建议使用GetLast获取最新记录
     state: AssetStates = AssetStates.NoRecord
     onlineState: OnlineStates = OnlineStates.Offline
     isAuto: boolean = true
     isFall?: boolean
     errorType?: ErrorTypes
-    tag?: bigint
-    tagId?: string
-    tagType?: bigint
-    vehicle?: bigint
-    transfer?: bigint
-    lastRecord?: bigint
-    name? = ''
-    comment?: string
     bindingTime?: Date
     calculationTime?: Date
+    dailyMove?: number
+    monthlyMove?: number
+    totalMove?: number
+    stayDuration?: number
+    offlineDuration?: number
+    travelDuration?: number
 }
 
 /** "资产"对象 */
@@ -37,13 +46,6 @@ export class AssetDto extends AssetEntity {
     battery?: number
     fullAddr?: string
     transferCode?: string
-    // 计算:
-    dailyMove?: number
-    monthlyMove?: number
-    totalMove?: number
-    stayDuration?: number
-    offlineDuration?: number
-    travelDuration?: number
 }
 
 /** 资产位置 */
@@ -54,6 +56,49 @@ export class AssetPosition extends IdEntityBase {
     latitude = 0
     reportTime?: Date
     locationMode?: LocationModes
+}
+
+/** “资产”过滤器 */
+export class AssetFilter {
+    company?: bigint
+    companies?: bigint[]
+    department?: bigint
+    type?: bigint
+    tagType?: bigint
+    state?: AssetStates
+    states?: Array<AssetStates | undefined>
+    onlineState?: OnlineStates
+    isAuto?: boolean
+    isFall?: boolean
+    errorType?: ErrorTypes
+    name?: string
+    assetId?: string
+    tagId?: string
+    rfid?: string
+
+    static GetFilter(param: AssetFilter): FilterDto {
+        return {
+            parent: {
+                id: param.department,
+                parent: {
+                    id: param.company,
+                    ids: param.companies,
+                },
+            },
+            filters: [
+                { propName: 'Type', value: param.type },
+                { propName: 'TagType', value: param.tagType },
+                { propName: 'State', value: param.state, values: param.states },
+                { propName: 'OnlineState', value: param.onlineState },
+                { propName: 'IsAuto', value: param.isAuto },
+                { propName: 'IsFall', value: param.isFall },
+                { propName: 'ErrorType', value: param.errorType },
+                { propName: 'Name', value: param.name === '' ? undefined : param.name, isFuzzy: true },
+                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
+                { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
+            ],
+        }
+    }
 }
 
 export class AssetHelper extends IdHelper<AssetDto> {
@@ -69,46 +114,14 @@ export class AssetHelper extends IdHelper<AssetDto> {
     ], false)
 
     /** 筛选“总数” */
-    readonly GetCount = async (param: {
-        company?: bigint,
-        companies?: bigint[],
-        department?: bigint,
-        type?: bigint,
-        tagType?: bigint,
-        state?: AssetStates,
-        states?: Array<AssetStates | undefined>,
-        onlineState?: OnlineStates,
-        isAuto?: boolean,
-        isFall?: boolean,
-        errorType?: ErrorTypes,
-        assetId?: string,
-        rfid?: string,
-    }) => {
+    readonly GetCount = async (param: AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
         if (param.rfid) {
             const res = await this.GetFull(undefined, undefined, param.rfid)
             return res.data ? 1 : 0
         } else {
             return await axiosHelper.GetCount(this._action, {
-                filter: {
-                    parent: {
-                        id: param.department,
-                        parent: {
-                            id: param.company,
-                            ids: param.companies,
-                        },
-                    },
-                    filters: [
-                        { propName: 'Type', value: param.type },
-                        { propName: 'TagType', value: param.tagType },
-                        { propName: 'State', value: param.state, values: param.states },
-                        { propName: 'OnlineState', value: param.onlineState },
-                        { propName: 'IsAuto', value: param.isAuto },
-                        { propName: 'IsFall', value: param.isFall },
-                        { propName: 'ErrorType', value: param.errorType },
-                        { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
-                    ],
-                }
+                filter: AssetFilter.GetFilter(param)
             })
         }
     }
@@ -117,20 +130,7 @@ export class AssetHelper extends IdHelper<AssetDto> {
     readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
-        company?: bigint,
-        companies?: bigint[],
-        department?: bigint,
-        type?: bigint,
-        tagType?: bigint,
-        state?: AssetStates,
-        states?: Array<AssetStates | undefined>,
-        onlineState?: OnlineStates,
-        isAuto?: boolean,
-        isFall?: boolean,
-        errorType?: ErrorTypes,
-        assetId?: string,
-        rfid?: string,
-    }) => {
+    } & AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
         if (param.rfid) {
             const res = await this.GetFull(undefined, undefined, param.rfid)
@@ -141,25 +141,7 @@ export class AssetHelper extends IdHelper<AssetDto> {
                 strList: 'FullList',
                 pageSize: param.pageSize,
                 pageNumber: param.pageNumber,
-                filter: {
-                    parent: {
-                        id: param.department,
-                        parent: {
-                            id: param.company,
-                            ids: param.companies,
-                        },
-                    },
-                    filters: [
-                        { propName: 'Type', value: param.type },
-                        { propName: 'TagType', value: param.tagType },
-                        { propName: 'State', value: param.state, values: param.states },
-                        { propName: 'OnlineState', value: param.onlineState },
-                        { propName: 'IsAuto', value: param.isAuto },
-                        { propName: 'IsFall', value: param.isFall },
-                        { propName: 'ErrorType', value: param.errorType },
-                        { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
-                    ],
-                }
+                filter: AssetFilter.GetFilter(param)
             })
         }
     }
@@ -173,39 +155,19 @@ export class AssetHelper extends IdHelper<AssetDto> {
     readonly GetPositionList = async (param: {
         pageSize?: number,
         pageNumber?: number,
-        company?: bigint,
-        companies?: bigint[],
-        department?: bigint,
-        type?: bigint,
-        state?: number,
-        states?: Array<number | undefined>,
-        onlineState?: OnlineStates,
-        isFall?: boolean,
-        errorType?: ErrorTypes,
-        assetId?: string,
-    }) => {
+    } & AssetFilter): Promise<AssetPosition[]> => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, undefined, param.rfid)
+            const asset = res.data as AssetDto | undefined
+            if (!asset) return []
+            param.assetId = asset.assetId
+        }
         return await axiosHelper.GetList<AssetPosition>(this._action, {
             strList: 'PositionList',
             pageSize: param.pageSize,
             pageNumber: param.pageNumber,
-            filter: {
-                parent: {
-                    id: param.department,
-                    parent: {
-                        id: param.company,
-                        ids: param.companies,
-                    },
-                },
-                filters: [
-                    { propName: 'Type', value: param.type },
-                    { propName: 'State', value: param.state, values: param.states },
-                    { propName: 'OnlineState', value: param.onlineState },
-                    { propName: 'IsFall', value: param.isFall },
-                    { propName: 'ErrorType', value: param.errorType },
-                    { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
-                ],
-            }
+            filter: AssetFilter.GetFilter(param)
         })
     }
 

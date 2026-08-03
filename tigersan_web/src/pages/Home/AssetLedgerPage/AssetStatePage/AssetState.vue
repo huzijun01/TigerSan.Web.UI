@@ -2,6 +2,7 @@
     <div class="state-panel">
         <!-- 基础详情： -->
         <div class="title">{{ Texts.BasicDetail.value }}</div>
+        <KeyValue :isAutoHidden="true" :propName="Texts.Name.value" :propValue="asset?.name" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Company.value" :propValue="asset?.companyName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Department.value" :propValue="asset?.departmentName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Tag.value" :propValue="asset?.tagId" />

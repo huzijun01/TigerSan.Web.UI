@@ -5,13 +5,14 @@ import BindingRecordPage from '@/pages/BasicSettings/Equipments/BindingRecordPag
 import { computed } from 'vue'
 import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd, TextModel } from '@/0_tigersan_ui/tigerui'
 import { VehiclePageModel } from '../VehiclePage/VehiclePageModel'
+import { TransferPageModel } from '../TransferPage/TransferPageModel'
 import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
 import { AssetStatePageModel } from './AssetStatePage/AssetStatePageModel'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
 import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
-import { AssetDto, AssetState, AssetStates, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
+import { AssetDto, AssetState, AssetStates, baseStationHelper, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
+import { GetStationTable } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable'
 import { BindingRecordPageModel } from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPageModel'
-import { TransferPageModel } from '../TransferPage/TransferPageModel'
 
 // 字段:
 /** 状态页 */
@@ -55,6 +56,9 @@ assetDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
 /** 标签详情 */
 export const tagDetail = new PopWindowModel()
 export const tag = new RowDataModel(GetTagTable())
+/** 基站详情 */
+export const stationDetail = new PopWindowModel()
+export const station = new RowDataModel(GetStationTable())
 /** 调拨详情 */
 export const transferDetail = new PopWindowModel()
 export const transfer = new RowDataModel(new TransferPageModel().table)
@@ -115,6 +119,29 @@ export const assetLedgerTable = new TableModel<AssetDto>([
             }
             tag.Data.value = res.data
             tagDetail.Show()
+        }
+    },
+    {
+        _propName: 'stationId',
+        Text: Texts.StationId,
+        IsFreeze: true,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.Link,
+        _onItemClickAsync: async itemModel => {
+            const rowData = itemModel._rowModel._rowData
+            if (!rowData.station) {
+                console.warn('The station is undefined!')
+                return
+            }
+            stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.assetId}`
+            const res = await baseStationHelper.Get(rowData.station)
+            if (!res.data) {
+                MyActionResult.ShowResult(res)
+                return
+            }
+            station.Data.value = res.data
+            stationDetail.Show()
         }
     },
     {
@@ -179,8 +206,8 @@ export const assetLedgerTable = new TableModel<AssetDto>([
         IsReadonly: true,
         IsRequired: false,
         Type: ItemType.TextBox,
-        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
-        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
+        _getSource: source => StringHelper.IsNotEmpty(source.tagId) || StringHelper.IsNotEmpty(source.stationId),
+        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId) || StringHelper.IsNotEmpty(source.stationId))
     },
     {
         _propName: 'isEnd',

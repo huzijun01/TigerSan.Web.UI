@@ -391,6 +391,26 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var dto = new AssetRecordDto();
                 dto.ShallowCopy(record);
 
+                if (record.Tag != null)
+                {
+                    var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Tag);
+                    if (tag != null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(tag));
+                        dto.TagId = tag.TagId;
+                    }
+                }
+
+                if (record.Station != null)
+                {
+                    var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
+                    if (station != null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(station));
+                        dto.StationId = station.MacAddr;
+                    }
+                }
+
                 if (record.Site != null)
                 {
                     var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
@@ -412,16 +432,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         dto.TargetSiteName = site.Name;
                         dto.TargetAddr = site.Addr;
                         dto.TargetAddrDetail = site.AddrDetail;
-                    }
-                }
-
-                if (record.Station != null)
-                {
-                    var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
-                    if (station != null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(station));
-                        dto.StationName = station.Name;
                     }
                 }
 
@@ -460,6 +470,27 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     var dto = new AssetRecordDto();
                     dto.ShallowCopy(record);
 
+                    if (record.Tag != null)
+                    {
+                        var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Tag);
+                        if (tag != null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(tag));
+                            dto.TagId = tag.TagId;
+                        }
+                    }
+
+                    if (record.Station != null)
+                    {
+                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
+                        if (station == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(station));
+                            continue;
+                        }
+                        dto.StationId = station.MacAddr;
+                    }
+
                     if (record.Site != null)
                     {
                         var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
@@ -484,17 +515,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         dto.TargetSiteName = site.Name;
                         dto.TargetAddr = site.Addr;
                         dto.TargetAddrDetail = site.AddrDetail;
-                    }
-
-                    if (record.Station != null)
-                    {
-                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
-                        if (station == null)
-                        {
-                            LogHelper.Instance.IsNull(nameof(station));
-                            continue;
-                        }
-                        dto.StationName = station.Name;
                     }
 
                     list.Add(dto);
@@ -848,12 +868,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 #endregion
 
-                #region 更新“是否掉落”
-                if (newTag.IsFall != oldTag.IsFall)
-                {
-                    asset.IsFall = newTag.IsFall;
-                }
-                #endregion
+                // 更新“资产状态”：
+                asset.Copy(newTag);
 
                 #region 获取“最新记录”
                 var resLast = await GetLast(newTag.Asset.Value);
@@ -1091,10 +1107,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 var records = await _db.AssetRecords.Where(r => r.Asset == id).OrderByDescending(r => r.ReportTime).ToListAsync();
                 var lastRecord = records.FirstOrDefault();
-
-                // 设置“状态”:
                 find.LastRecord = lastRecord?.Id;
-                find.State = lastRecord?.State ?? AssetStates.NoRecord;
+
+                // 更新“状态”:
+                if (find.Tag != null)
+                {
+                    find.Copy(await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Tag));
+                }
+                else if (find.Station != null)
+                {
+                    find.Copy(await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Station));
+                }
+                else
+                {
+                    find.IsFall = null;
+                    find.OnlineState = OnlineStates.Offline;
+                }
 
                 // 是否滞留:
                 if (find.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InStore)

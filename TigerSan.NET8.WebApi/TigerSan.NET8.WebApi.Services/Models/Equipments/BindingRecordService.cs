@@ -20,23 +20,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 【Functions】
         #region 获取“最新数据”
         /// <summary>获取“最新数据”</summary>
-        public async Task<MyActionResult<BindingRecordEntity>> GetLast(long? tag = null, long? asset = null)
+        public async Task<MyActionResult<BindingRecordEntity>> GetLast(
+            long? asset = null,
+            long? tag = null,
+            long? station = null)
         {
             try
             {
                 BindingRecordEntity? entity = null;
 
-                if (tag != null)
+                if (asset != null)
+                {
+                    entity = await _dbSet.AsNoTracking()
+                        .Where(x => x.Asset == asset)
+                        .OrderByDescending(r => r.Time)
+                        .FirstOrDefaultAsync();
+                }
+                else if (tag != null)
                 {
                     entity = await _dbSet.AsNoTracking()
                         .Where(x => x.Tag == tag)
                         .OrderByDescending(r => r.Time)
                         .FirstOrDefaultAsync();
                 }
-                else if (asset != null)
+                else if (station != null)
                 {
                     entity = await _dbSet.AsNoTracking()
-                        .Where(x => x.Asset == asset)
+                        .Where(x => x.Station == station)
                         .OrderByDescending(r => r.Time)
                         .FirstOrDefaultAsync();
                 }
@@ -77,14 +87,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     var dto = new BindingRecordDto();
                     dto.ShallowCopy(entity);
 
-                    // 添加“标签ID”:
-                    var tag = await _db.Tags.FirstOrDefaultAsync(i => i.Id == dto.Tag);
-                    if (tag == null)
-                    {
-                        return MyResults<List<BindingRecordDto>>.TagNotExist;
-                    }
-                    dto.TagId = tag.TagId;
-
                     // 添加“资产ID”:
                     var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == dto.Asset);
                     if (asset == null)
@@ -92,6 +94,28 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return MyResults<List<BindingRecordDto>>.AssetNotExist;
                     }
                     dto.AssetId = asset.AssetId;
+
+                    // 添加“标签ID”:
+                    if (dto.Tag != null)
+                    {
+                        var tag = await _db.Tags.FirstOrDefaultAsync(i => i.Id == dto.Tag);
+                        if (tag == null)
+                        {
+                            return MyResults<List<BindingRecordDto>>.TagNotExist;
+                        }
+                        dto.TagId = tag.TagId;
+                    }
+
+                    // 添加“基站ID”:
+                    if (dto.Station != null)
+                    {
+                        var station = await _db.BaseStations.FirstOrDefaultAsync(i => i.Id == dto.Station);
+                        if (station == null)
+                        {
+                            return MyResults<List<BindingRecordDto>>.StationNotExist;
+                        }
+                        dto.StationId = station.MacAddr;
+                    }
 
                     list.Add(dto);
                 }
@@ -114,7 +138,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                var res = await GetLast(entity.Tag, entity.Asset);
+                var res = await GetLast(entity.Asset, entity.Tag, entity.Station);
                 if (res.IsError) return res;
                 var lastRecord = res.Data;
                 if (lastRecord != null && lastRecord.Equals(entity)) return MyResults<BindingRecordEntity>.RecordAlreadyExists;

@@ -186,9 +186,11 @@ export class Texts {
     static readonly Scenario = TextModel.Computed('Scenario', '场景')
     static readonly SelectAll = TextModel.Computed('SelectAll', '全选')
     static readonly SiteType = TextModel.Computed('SiteType', '场地类型')
+    static readonly StationId = TextModel.Computed('StationId', '基站ID')
     static readonly StartTime = TextModel.Computed('StartTime', '开始时间')
     static readonly ShipmentTime = TextModel.Computed('ShipmentTime', '出货')
     static readonly StationType = TextModel.Computed('StationType', '基站类型')
+    static readonly StationDetail = TextModel.Computed('StationDetail', '基站详情')
     static readonly SystemSettings = TextModel.Computed('SystemSettings', '系统设置')
     static readonly SubmittedSuccessfully = TextModel.Computed('Submitted Successfully', '提交成功')
     // T:

@@ -9,7 +9,14 @@ pagination.IsShowSelectedRowCount.value = true
 /** 列头 */
 export const assetRecordTable = new TableModel<AssetRecordDto>([
     {
-        _propName: 'stationName',
+        _propName: 'tagId',
+        Text: Texts.Tag,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'stationId',
         Text: Texts.BaseStation,
         IsReadonly: true,
         IsRequired: false,

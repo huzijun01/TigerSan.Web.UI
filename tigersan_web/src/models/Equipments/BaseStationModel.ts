@@ -1,12 +1,23 @@
 import { IdName, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper, IdNameHelper } from "@/helpers"
 
+/** 设备类型 */
+export enum StationTypes {
+    /** 基础 */
+    Base = 0,
+    /** GPS */
+    GPS = 1,
+}
+
 /** “基站”实体 */
 export class BaseStationEntity extends IdName {
     site: bigint = 0n
     type: bigint = 0n
+    asset?: bigint
+    assetId?: string
     isEnable = false
     macAddr = ''
+    stationTypes = StationTypes.Base
     onlineState = OnlineStates.Offline
     heartbeatInterval = 28800
     reportInterval = 28800

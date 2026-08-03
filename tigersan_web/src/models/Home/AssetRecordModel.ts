@@ -34,8 +34,9 @@ export class AssetRecordEntity extends IdEntityBase {
 
 /** "资产记录"对象 */
 export class AssetRecordDto extends AssetRecordEntity {
+    tagId?: string
+    stationId?: string
     siteName?: string
-    stationName?: string
     addr?: string
     addrDetail?: string
     address?: string

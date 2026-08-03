@@ -14,11 +14,11 @@ export class OnlineState {
         return value === OnlineStates.Online ? Texts.Online.value : Texts.Offline.value
     }
 
-    static GetString(obj: object, propName: string = 'OnlineState'): string {
+    static GetString(obj: object, propName: string = 'onlineState'): string {
         return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineStates.Online ? Texts.Online.value : Texts.Offline.value
     }
 
-    static IsOnline(obj: object, propName: string = 'OnlineState'): boolean {
+    static IsOnline(obj: object, propName: string = 'onlineState'): boolean {
         return ObjectHelper.DefaultNumberGetter(obj, propName) === OnlineStates.Online
     }
 
