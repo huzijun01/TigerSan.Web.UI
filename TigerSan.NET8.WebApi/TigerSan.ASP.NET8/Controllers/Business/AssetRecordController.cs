@@ -100,7 +100,7 @@ namespace TigerSan.NET8.WebApi.Controllers
             if (station == null)
             {
                 LogHelper.Instance.IsNull(nameof(station));
-                return MyResults<object>.StationNotFound(asset.Id.ToString() ?? "");
+                return MyResults<object>.StationNotFound(asset.Station.ToString() ?? "");
             }
 
             BaseStationPackage package = new BaseStationPackage();

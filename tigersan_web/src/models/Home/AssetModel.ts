@@ -40,6 +40,7 @@ export class AssetDto extends AssetEntity {
     typeName = ''
     stateName = ''
     stationId?: string
+    // 记录:
     rfid?: string
     plate?: string
     siteName?: string

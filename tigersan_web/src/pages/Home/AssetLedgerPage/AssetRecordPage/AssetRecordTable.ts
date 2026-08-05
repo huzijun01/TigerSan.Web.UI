@@ -15,6 +15,12 @@ export const assetRecordTable = new TableModel<AssetRecordDto>([
         Type: ItemType.TextBox,
     },
     {
+        _propName: 'stationId',
+        Text: Texts.BaseStation,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+    },
+    {
         _propName: 'siteName',
         Text: TextModel.Computed('Site', '所在场地'),
         IsReadonly: true,

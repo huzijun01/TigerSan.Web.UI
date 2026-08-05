@@ -9,7 +9,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long Asset { get; set; }
         [SnakeColumn]
-        public long? Tag { get; set; }
+        public long Tag { get; set; }
         [SnakeColumn]
         public long? Site { get; set; }
         [SnakeColumn]

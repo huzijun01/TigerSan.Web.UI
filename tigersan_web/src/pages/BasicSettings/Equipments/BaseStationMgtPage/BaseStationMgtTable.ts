@@ -8,14 +8,7 @@ export function GetStationTable() {
             _propName: 'macAddr',
             Text: Texts.MacAddr,
             IsReadonly: true,
-            Type: ItemType.TextBox,
-        },
-        {
-            _propName: 'assetId',
-            Text: Texts.AssetId,
             IsFreeze: true,
-            IsReadonly: true,
-            IsRequired: false,
             Type: ItemType.TextBox,
         },
         {

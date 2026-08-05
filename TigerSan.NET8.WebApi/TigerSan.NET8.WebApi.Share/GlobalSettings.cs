@@ -13,7 +13,7 @@
         /// <summary>“图片”文件夹</summary>
         public static readonly string DirImages = Path.Combine(DirFiles, DirImagesName);
         /// <summary>“距离”阈值（米）</summary>
-        public static double DistanceThresholdMeters = 100;
+        public static double DistanceThresholdMeters = 50;
         /// <summary>“滞留”阈值（时）</summary>
         public static double StolidThresholdHours = 24;
         /// <summary>“超时”阈值（时）</summary>

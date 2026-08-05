@@ -17,10 +17,6 @@
     <ProjectReference Include="..\TigerSan.NET8.WebApi.Share\TigerSan.NET8.WebApi.Share.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if not exist &quot;$(OutDir)Log&quot; mkdir &quot;$(OutDir)Log&quot;" />
   </Target>

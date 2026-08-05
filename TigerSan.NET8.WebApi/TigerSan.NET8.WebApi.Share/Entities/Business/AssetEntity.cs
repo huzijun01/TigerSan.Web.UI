@@ -65,9 +65,11 @@ namespace TigerSan.NET8.WebApi.Share.Entities
                 Tag = null;
                 TagId = null;
                 TagType = null;
+                Station = null;
             }
             else
             {
+                Station = tag.Station;
                 OnlineState = tag.OnlineState;
                 IsFall = tag.IsFall;
             }

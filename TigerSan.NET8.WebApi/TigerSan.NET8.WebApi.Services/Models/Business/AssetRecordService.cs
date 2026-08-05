@@ -351,6 +351,77 @@ namespace TigerSan.NET8.WebApi.Services.Models
             return moves;
         }
         #endregion
+
+        #region 获取“完整数据”
+        /// <summary>获取“完整数据”</summary>
+        private async Task<MyActionResult<AssetRecordDto>> GetFull(AssetRecordEntity record)
+        {
+            try
+            {
+                var dto = new AssetRecordDto();
+                dto.ShallowCopy(record);
+
+                var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Tag);
+                if (tag == null)
+                {
+                    LogHelper.Instance.IsNull(nameof(tag));
+                }
+                else
+                {
+                    dto.TagId = tag.TagId;
+                }
+
+                if (record.Station != null)
+                {
+                    var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
+                    if (station == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(station));
+                    }
+                    else
+                    {
+                        dto.StationId = station.MacAddr;
+                    }
+                }
+
+                if (record.Site != null)
+                {
+                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
+                    if (site == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(site));
+                    }
+                    else
+                    {
+                        dto.SiteName = site.Name;
+                        dto.Addr = site.Addr;
+                        dto.AddrDetail = site.AddrDetail;
+                    }
+                }
+
+                if (record.TargetSite != null)
+                {
+                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.TargetSite);
+                    if (site == null)
+                    {
+                        LogHelper.Instance.IsNull(nameof(site));
+                    }
+                    else
+                    {
+                        dto.TargetSiteName = site.Name;
+                        dto.TargetAddr = site.Addr;
+                        dto.TargetAddrDetail = site.AddrDetail;
+                    }
+                }
+
+                return MyResults<AssetRecordDto>.Success(null, dto);
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetRecordDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [Private]
 
         #region [查]
@@ -388,54 +459,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .FirstOrDefaultAsync();
                 if (record == null) return MyResults<AssetRecordDto>.Success();
 
-                var dto = new AssetRecordDto();
-                dto.ShallowCopy(record);
-
-                if (record.Tag != null)
-                {
-                    var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Tag);
-                    if (tag != null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(tag));
-                        dto.TagId = tag.TagId;
-                    }
-                }
-
-                if (record.Station != null)
-                {
-                    var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
-                    if (station != null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(station));
-                        dto.StationId = station.MacAddr;
-                    }
-                }
-
-                if (record.Site != null)
-                {
-                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
-                    if (site != null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(site));
-                        dto.SiteName = site.Name;
-                        dto.Addr = site.Addr;
-                        dto.AddrDetail = site.AddrDetail;
-                    }
-                }
-
-                if (record.TargetSite != null)
-                {
-                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.TargetSite);
-                    if (site != null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(site));
-                        dto.TargetSiteName = site.Name;
-                        dto.TargetAddr = site.Addr;
-                        dto.TargetAddrDetail = site.AddrDetail;
-                    }
-                }
-
-                return MyResults<AssetRecordDto>.Success(null, dto);
+                return await GetFull(record);
             }
             catch (Exception e)
             {
@@ -467,57 +491,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 添加“数据”:
                 foreach (var record in records)
                 {
-                    var dto = new AssetRecordDto();
-                    dto.ShallowCopy(record);
-
-                    if (record.Tag != null)
+                    var resFull = await GetFull(record);
+                    if (resFull.Data != null)
                     {
-                        var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Tag);
-                        if (tag != null)
-                        {
-                            LogHelper.Instance.IsNull(nameof(tag));
-                            dto.TagId = tag.TagId;
-                        }
+                        list.Add(resFull.Data);
                     }
-
-                    if (record.Station != null)
+                    else
                     {
-                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Station);
-                        if (station == null)
-                        {
-                            LogHelper.Instance.IsNull(nameof(station));
-                            continue;
-                        }
-                        dto.StationId = station.MacAddr;
+                        var dto = new AssetRecordDto();
+                        dto.ShallowCopy(record);
+                        list.Add(dto);
                     }
-
-                    if (record.Site != null)
-                    {
-                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.Site);
-                        if (site == null)
-                        {
-                            LogHelper.Instance.IsNull(nameof(site));
-                            continue;
-                        }
-                        dto.SiteName = site.Name;
-                        dto.Addr = site.Addr;
-                        dto.AddrDetail = site.AddrDetail;
-                    }
-
-                    if (record.TargetSite != null)
-                    {
-                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == record.TargetSite);
-                        if (site == null)
-                        {
-                            LogHelper.Instance.IsNull(nameof(site));
-                            continue;
-                        }
-                        dto.TargetSiteName = site.Name;
-                        dto.TargetAddr = site.Addr;
-                        dto.TargetAddrDetail = site.AddrDetail;
-                    }
-
-                    list.Add(dto);
                 }
 
                 return MyResults<List<AssetRecordDto>>.Success(null, list);
