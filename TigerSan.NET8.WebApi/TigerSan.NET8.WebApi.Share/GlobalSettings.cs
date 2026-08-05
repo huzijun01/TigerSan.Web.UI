@@ -5,7 +5,7 @@
         /// <summary>最大“文件”大小（MB）</summary>
         public const long MaxFileSize = 200;
         /// <summary>最大“图片”大小（MB）</summary>
-        public const long MaxImageSize = 1;
+        public const long MaxImageSize = 2;
         /// <summary>“文件”文件夹</summary>
         public static readonly string DirFiles = Path.Combine(AppContext.BaseDirectory, "Files");
         /// <summary>“图片”文件夹名称</summary>
@@ -13,15 +13,15 @@
         /// <summary>“图片”文件夹</summary>
         public static readonly string DirImages = Path.Combine(DirFiles, DirImagesName);
         /// <summary>“距离”阈值（米）</summary>
-        public static double DistanceThresholdMeters = 500;
+        public static double DistanceThresholdMeters = 100;
         /// <summary>“滞留”阈值（时）</summary>
         public static double StolidThresholdHours = 24;
         /// <summary>“超时”阈值（时）</summary>
         public static double TimeoutThresholdHours = 24 * 3;
         /// <summary>“标签”上报间隔（秒）</summary>
-        public static double TagReportIntervalSeconds = 3600;
+        public static double TagReportIntervalSeconds = 1800;
         /// <summary>“定位器”上报间隔（秒）</summary>
-        public static double LocatorReportIntervalSeconds = 86400;
+        public static double LocatorReportIntervalSeconds = 86400 + 1800;
         /// <summary>“MQTT”上报间隔（秒）</summary>
         public static double MqttReportIntervalSeconds = 600;
         /// <summary>“计算”间隔（秒）</summary>

@@ -32,80 +32,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion 【Ctor】
 
         #region 【Functions】
-        #region [private]
-        #region 修改“基站”
-        private async Task<MyActionResult<object>> Edit(BaseStationEntity entity)
-        {
-            try
-            {
-                // 检验“资源”是否存在:
-                var find = await _dbSet.FirstOrDefaultAsync(i => i.Id == entity.Id);
-                if (find == null)
-                {
-                    return MyResults<object>.ResourceNotExist;
-                }
-
-                // 检验“资产ID”是否重复:
-                if (!string.IsNullOrEmpty(entity.AssetId) && await _dbSet.AnyAsync(i => i.AssetId == entity.AssetId && i.Id != entity.Id))
-                {
-                    return MyResults<object>.AssetIdRepeated;
-                }
-
-                // 解绑资产：
-                if (!string.IsNullOrEmpty(find.AssetId) && find.AssetId != entity.AssetId)
-                {
-                    var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == find.AssetId);
-                    if (asset != null)
-                    {
-                        asset.Station = null;
-                        asset.StationId = null;
-                        asset.BindingTime = null;
-
-                        // 添加“解绑记录”：
-                        var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(false, asset.Id, null, entity.Id), false);
-                        if (resAdd.IsError)
-                        {
-                            return MyResults<object>.Error(resAdd.Message);
-                        }
-                    }
-                }
-
-                // 绑定资产：
-                if (!string.IsNullOrEmpty(entity.AssetId))
-                {
-                    var asset = await _db.Assets.FirstOrDefaultAsync(i => i.AssetId == entity.AssetId);
-                    if (asset == null)
-                    {
-                        return MyResults<object>.AssetNotFound(entity.AssetId);
-                    }
-
-                    if (asset.Station != entity.Id)
-                    {
-                        // 添加“绑定记录”
-                        asset.BindingTime = DateTimeHelper.GetUtcNow();
-                        var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(true, asset.Id, null, entity.Id, asset.BindingTime), false);
-                        if (resAdd.IsError)
-                        {
-                            return MyResults<object>.Error(resAdd.Message);
-                        }
-                    }
-
-                    asset.Station = entity.Id;
-                    asset.StationId = entity.MacAddr;
-                }
-
-                // 修改“数据”:
-                find.ShallowCopy(entity);
-                return MyResults<object>.Success();
-            }
-            catch (Exception e)
-            {
-                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
-            }
-        }
-        #endregion
-        #endregion [private]
-
         #region [查]
         #region 根据“MAC地址”获取“单条数据”
         /// <summary>根据“MAC地址”获取“单条数据”</summary>
@@ -419,12 +345,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 检验“MacAddr”是否有效:
+                if (!Verify.IsValidMacAddr(entity.MacAddr))
+                {
+                    return MyResults<BaseStationEntity>.InvalidMacAddr;
+                }
+
+                // 检验“MacAddr”是否重复:
+                if (await _dbSet.AnyAsync(i => i.MacAddr == entity.MacAddr))
+                {
+                    return MyResults<BaseStationEntity>.MacAddrRepeated;
+                }
+
                 entity.UpdateId();
-                entity.Asset = null;
-                entity.AssetId = null;
-                entity.CreateTime = DateTimeHelper.GetUtcNow();
                 entity.ReportTime = null;
-                _dbSet.Add(entity);
+                entity.CreateTime = DateTimeHelper.GetUtcNow();
+                await _dbSet.AddAsync(entity);
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
@@ -447,12 +383,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 检验“MacAddr”是否有效:
+                if (entities.Any(i => !Verify.IsValidMacAddr(i.MacAddr)))
+                {
+                    return MyResults<object>.InvalidMacAddr;
+                }
+
+                // 检验“MacAddr”是否重复:
+                var macAddrs = entities.Select(i => i.MacAddr).ToList();
+                if (await _dbSet.AnyAsync(i => macAddrs.Contains(i.MacAddr)))
+                {
+                    return MyResults<object>.MacAddrRepeated;
+                }
+
                 entities.UpdateId(i =>
                 {
-                    i.Asset = null;
-                    i.AssetId = null;
-                    i.CreateTime = DateTimeHelper.GetUtcNow();
                     i.ReportTime = null;
+                    i.CreateTime = DateTimeHelper.GetUtcNow();
                 });
                 await _dbSet.AddRangeAsync(entities);
 
@@ -475,27 +422,26 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“单条数据”</summary>
         public override async Task<MyActionResult<object>> Edit(BaseStationEntity entity, bool isBeginTransaction = true)
         {
-            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
-
             try
             {
-                var res = await Edit(entity);
-                if (res.IsError)
+                // 检验“MacAddr”是否有效:
+                if (!Verify.IsValidMacAddr(entity.MacAddr))
                 {
-                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                    return MyResults<object>.Error(res.Message);
+                    return MyResults<object>.InvalidMacAddr;
                 }
 
-                await _db.SaveChangesAsync();
-                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+                // 检验“MacAddr”是否重复:
+                if (await _dbSet.AnyAsync(i => i.MacAddr == entity.MacAddr && i.Id != entity.Id))
+                {
+                    return MyResults<object>.MacAddrRepeated;
+                }
+
+                return await base.Edit(entity, isBeginTransaction);
             }
             catch (Exception e)
             {
-                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                 return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return MyResults<object>.OperationSuccess;
         }
         #endregion
 
@@ -503,38 +449,30 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>修改“多条数据”</summary>
         public override async Task<MyActionResult<object>> EditRange(List<BaseStationEntity> entities, bool isBeginTransaction = true)
         {
-            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
-
             try
             {
-                if (entities.Count < 1) return MyResults<object>.OperationSuccess;
-
-                foreach (var entity in entities)
+                // 检验“MacAddr”是否有效:
+                if (entities.Any(i => !Verify.IsValidMacAddr(i.MacAddr)))
                 {
-                    // 检验“资产ID”是否重复:
-                    if (!string.IsNullOrEmpty(entity.AssetId) && entities.Any(i => i.AssetId == entity.AssetId && i.Id != entity.Id))
-                    {
-                        return MyResults<object>.AssetIdRepeated;
-                    }
+                    return MyResults<object>.InvalidMacAddr;
+                }
 
-                    var res = await Edit(entity);
-                    if (res.IsError)
+                // 检验“MacAddr”是否重复:
+                var macAddrs = entities.Select(i => i.MacAddr).ToList();
+                foreach (var macAddr in macAddrs)
+                {
+                    if (await _dbSet.AnyAsync(i => i.MacAddr == macAddr && !entities.Any(e => e.Id == i.Id)))
                     {
-                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        return MyResults<object>.Error(res.Message);
+                        return MyResults<object>.MacAddrRepeated;
                     }
                 }
 
-                await _db.SaveChangesAsync();
-                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+                return await base.EditRange(entities, isBeginTransaction);
             }
             catch (Exception e)
             {
-                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                 return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return MyResults<object>.OperationSuccess;
         }
         #endregion
         #endregion [改]

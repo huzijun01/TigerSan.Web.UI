@@ -20,6 +20,7 @@ export class Texts {
     static readonly AssetDetail = TextModel.Computed('AssetDetail', '资产详情')
     static readonly AddedSuccessfully = TextModel.Computed('Added successfully', '添加成功')
     // B:
+    static readonly Base = TextModel.Computed('Base', '基础')
     static readonly Back = TextModel.Computed('Back', '返回')
     static readonly Batch = TextModel.Computed('Batch', '批次')
     static readonly Bound = TextModel.Computed('Bound', '已绑定')
@@ -47,9 +48,13 @@ export class Texts {
     static readonly CreateDir = TextModel.Computed('CreateDir', '新建文件夹')
     static readonly CreateTime = TextModel.Computed('CreateTime', '创建时间')
     static readonly CalculateTime = TextModel.Computed('CalculateTime', '计算时间')
-    static readonly CannotBeEmpty = TextModel.Computed('Cannot be empty', '不可为空')
+    static readonly CannotBeEmpty = TextModel.Computed('Cannot be empty!', '不可为空')
     static readonly ChangePassword = TextModel.Computed('Change password ', '修改密码')
     static readonly ConfirmPassword = TextModel.Computed('ConfirmPassword ', '确认密码')
+    static readonly CannotBeLessThan = TextModel.Computed('Cannot be less than ', '不可小于')
+    static readonly CannotBeGreaterThan = TextModel.Computed('Cannot be greater than ', '不可大于')
+    static readonly CannotContainSpaces = TextModel.Computed('Cannot contain spaces!', '不可包含空格')
+    static readonly ContainsIllegalCharacters = TextModel.Computed('Contains illegal characters!', '包含非法字符')
     // D:
     static readonly Done = TextModel.Computed('Done', '完成')
     static readonly DIR = TextModel.Computed('DIR', '文件夹')
@@ -103,8 +108,10 @@ export class Texts {
     static readonly Information = TextModel.Computed('Information', '信息')
     static readonly IsReadonly = TextModel.Computed('IsReadonly: ', '是否只读：')
     static readonly InTransitTimeout = TextModel.Computed('InTransitTimeout', '在途超时')
+    static readonly IncorrectFormat = TextModel.Computed('Incorrect format!', '格式不正确')
     static readonly IncorrectCaptcha = TextModel.Computed('Incorrect captcha!', '验证码不正确')
     static readonly InboundSuccessful = TextModel.Computed('Inbound operation successful', '入库成功')
+    static readonly IncorrectMacAddr = TextModel.Computed('The MAC address format is incorrect!', 'MAC地址格式不正确')
     // J:
     static readonly JoiningTime = TextModel.Computed('JoiningTime', '加入时间')
     // L:
@@ -119,6 +126,8 @@ export class Texts {
     static readonly LocationMode = TextModel.Computed('LocationMode', '定位方式')
     static readonly LastReportTime = TextModel.Computed('LastReportTime', '最后上报时间')
     static readonly LogoutConfirm = TextModel.Computed('Do you want to log out?', '是否退出登录？')
+    static readonly LengthCannotBeLessThan = TextModel.Computed('The length cannot be less than ', '长度不可小于')
+    static readonly LengthCannotBeGreaterThan = TextModel.Computed('The length cannot be greater than ', '长度不可大于')
     // M:
     static readonly Male = TextModel.Computed('Male', '男')
     static readonly Mail = TextModel.Computed('Mail', '邮箱')
@@ -126,6 +135,11 @@ export class Texts {
     static readonly Manager = TextModel.Computed('Manager', '联系人')
     static readonly MacAddr = TextModel.Computed('MacAddr', 'MAC地址')
     static readonly MonthlyMove = TextModel.Computed('MonthlyMove', '月周转')
+    static readonly MustContainLetter = TextModel.Computed('It must contain at least one letter!', '必须包含至少一个字母')
+    static readonly MustContainNumber = TextModel.Computed('It must contain at least one number!', '必须包含至少一个数字')
+    static readonly MustContainCapital = TextModel.Computed('It must contain at least one capital letter!', '必须包含至少一个大写字母')
+    static readonly MustContainLowercase = TextModel.Computed('It must contain at least one lowercase letter!', '必须包含至少一个小写字母')
+    static readonly MustContainSpecialCharacter = TextModel.Computed('It must contain at least one special character!', '必须包含至少一个特殊字符')
     // N:
     static readonly No = TextModel.Computed('No', '否')
     static readonly Null = TextModel.Computed('null', 'null')
@@ -136,6 +150,7 @@ export class Texts {
     static readonly NoRecord = TextModel.Computed('NoRecord', '无记录')
     static readonly NoContent = TextModel.Computed('No Content', '无内容')
     static readonly NewPassword = TextModel.Computed('NewPassword', '新密码')
+    static readonly NotEqual = TextModel.Computed('Values are not equal', '值不相等')
     // O:
     static readonly Ok = TextModel.Computed('Ok', '确定')
     static readonly Other = TextModel.Computed('Other', '其它')
@@ -148,6 +163,7 @@ export class Texts {
     static readonly OldPassword = TextModel.Computed('OldPassword', '旧密码')
     static readonly OnlineState = TextModel.Computed('OnlineState', '在线状态')
     static readonly OperationSuccessful = TextModel.Computed('Operation successful', '操作成功')
+    static readonly OnlyNumbersAllowed = TextModel.Computed('Only numbers allowed!', '只能包含数字')
     static readonly OutboundSuccessful = TextModel.Computed('Outbound operation successful', '出库成功')
     // P:
     static readonly Pie = TextModel.Computed('Pie', '饼图')

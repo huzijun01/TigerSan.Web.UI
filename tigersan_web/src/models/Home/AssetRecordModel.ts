@@ -20,9 +20,9 @@ export class AssetRecordEntity extends IdEntityBase {
     // Tag:
     onlineState: OnlineStates = OnlineStates.Offline
     locationMode?: LocationModes
+    station?: bigint
     site?: bigint
     targetSite?: bigint
-    station?: bigint
     battery?: number
     signal?: number
     temperature?: number
@@ -34,8 +34,7 @@ export class AssetRecordEntity extends IdEntityBase {
 
 /** "资产记录"对象 */
 export class AssetRecordDto extends AssetRecordEntity {
-    tagId?: string
-    stationId?: string
+    tagId = ''
     siteName?: string
     addr?: string
     addrDetail?: string
@@ -59,7 +58,6 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
         department?: bigint,
         state?: number,
         states?: Array<number | undefined>,
-        station?: bigint,
         onlineState?: OnlineStates,
         locationMode?: LocationModes,
     }) => await axiosHelper.GetCount(this._action, {
@@ -75,7 +73,6 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
             },
             filters: [
                 { propName: 'State', value: param.state, values: param.states },
-                { propName: 'Station', value: param.station },
                 { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'LocationMode', value: param.locationMode },
             ],
@@ -91,7 +88,6 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
         department?: bigint,
         state?: number,
         states?: Array<number | undefined>,
-        station?: bigint,
         onlineState?: OnlineStates,
         locationMode?: LocationModes,
     }) => await axiosHelper.GetList<AssetRecordDto>(this._action, {
@@ -112,7 +108,6 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
             },
             filters: [
                 { propName: 'State', value: param.state, values: param.states },
-                { propName: 'Station', value: param.station },
                 { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'LocationMode', value: param.locationMode },
             ],

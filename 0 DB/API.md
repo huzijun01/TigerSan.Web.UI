@@ -277,7 +277,6 @@ export class AssetEntity {
     tagId?: string
     tagType?: bigint
     station?: bigint
-    stationId?: string
     vehicle?: bigint
     transfer?: bigint
     name? = ''
@@ -306,6 +305,7 @@ export class AssetDto extends AssetEntity {
     departmentName = ''
     typeName = ''
     stateName = ''
+    stationId?: string
     rfid?: string
     plate?: string
     siteName?: string
@@ -396,16 +396,15 @@ export class AssetLngLat {
 
 /** "资产记录"实体 */
 export class AssetRecordEntity {
-    id: bigint = 0n
     asset: bigint = 0n
     tag: bigint = 0n
     state: AssetStates = AssetStates.NoRecord
     // Tag:
     onlineState: OnlineStates = OnlineStates.Offline
     locationMode?: LocationModes
+    station?: bigint
     site?: bigint
     targetSite?: bigint
-    station?: bigint
     battery?: number
     signal?: number
     temperature?: number
@@ -417,8 +416,7 @@ export class AssetRecordEntity {
 
 /** "资产记录"对象 */
 export class AssetRecordDto extends AssetRecordEntity {
-    tagId?: string
-    stationId?: string
+    tagId = ''
     siteName?: string
     addr?: string
     addrDetail?: string

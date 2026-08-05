@@ -70,13 +70,14 @@ namespace TigerSan.NET8.WebApi.Controllers
         [Route("PositionList")]
         /// <summary>获取“位置”集合</summary>
         public async Task<MyActionResult<List<AssetPosition>>> GetPositionList(
+            string? rfid = null,
             int? pageSize = null,
             int? pageNumber = null,
             string? sort = null,
             bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            return await _service.GetPositionList(pageSize, pageNumber, sort, ascending, filter);
+            return await _service.GetPositionList(rfid, pageSize, pageNumber, sort, ascending, filter);
         }
         #endregion [查]
 

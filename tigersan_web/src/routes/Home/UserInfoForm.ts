@@ -65,7 +65,7 @@ export class UserInfoForm {
         Target: this.password.Value,
         _onChange: () => this.isPasswordChanged = true,
         _isVerifyOk: (source, isEdit) => {
-            if (isEdit && !this.isPasswordChanged) return Verify.GetOK()
+            if (isEdit && !this.isPasswordChanged) return Verify.OK()
             return Verify.IsValidWeekPassword(source.password)
         }
     }

@@ -12,7 +12,6 @@ export class BindingRecordEntity extends IdEntityBase {
 export class BindingRecordDto extends BindingRecordEntity {
     assetId = ''
     tagId = ''
-    stationId = ''
 }
 
 class BindingRecordHelper extends IdHelper<BindingRecordDto> {

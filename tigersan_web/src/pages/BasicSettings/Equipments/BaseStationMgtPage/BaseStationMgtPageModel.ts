@@ -2,7 +2,7 @@ import { computed, ref, watch } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { GetStationTable } from './BaseStationMgtTable'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
-import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper, assetHelper } from '@/models'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper, StationType, StationTypes } from '@/models'
 
 export class BaseStationMgtPageModel {
     //#region 【Props】
@@ -43,6 +43,7 @@ export class BaseStationMgtPageModel {
     readonly selectCompanyForm = companyHelper.GetIdNameSelectModel()
     readonly selectSiteForm = siteHelper.GetIdNameSelectModel()
     readonly selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
+    readonly selectStationTypeForm = StationType.GetSelectModel()
 
     /** “公司”项目配置 */
     readonly configCompany: FormItemConfig<BaseStationDto, IdName> = {
@@ -66,6 +67,15 @@ export class BaseStationMgtPageModel {
         _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, Texts.CannotBeEmpty.value)
     }
 
+    /** “基站类型”项目配置 */
+    readonly configStationType: FormItemConfig<BaseStationDto, StationTypes> = {
+        _propName: 'stationType',
+        PropText: Texts.StationType,
+        IsEquired: true,
+        Target: this.selectStationTypeForm.Value,
+        _isVerifyOk: source => Verify.IsNotUndefined(source.stationType)
+    }
+
     /** “类型”项目配置 */
     readonly configType: FormItemConfig<BaseStationDto, IdName> = {
         _propName: 'type',
@@ -83,7 +93,7 @@ export class BaseStationMgtPageModel {
         PropText: Texts.MacAddr,
         IsEquired: true,
         Target: ref(),
-        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.macAddr)
+        _isVerifyOk: source => Verify.IsValidMacAddr(source.macAddr)
     }
 
     /** “名称”项目配置 */
@@ -111,14 +121,6 @@ export class BaseStationMgtPageModel {
         IsEquired: true,
         Target: ref(),
         _isVerifyOk: source => Verify.IsGreaterThan(source.reportInterval)
-    }
-
-    /** “资产ID”项目配置 */
-    readonly configAssetId: FormItemConfig<BaseStationDto, string> = {
-        _propName: 'assetId',
-        PropText: Texts.AssetId,
-        IsEquired: false,
-        Target: ref(),
     }
 
     /** “图片”项目配置 */
@@ -157,12 +159,12 @@ export class BaseStationMgtPageModel {
         _itemConfigs: [
             this.configCompany,
             this.configSite,
+            this.configStationType,
             this.configType,
             this.configName,
             this.configMacAddr,
             this.configHeartbeatInterval,
             this.configReportInterval,
-            this.configAssetId,
             this.configImage,
         ]
     }
@@ -430,38 +432,7 @@ export class BaseStationMgtPageModel {
         }
     }
 
-    /** 绑定 */
-    readonly Binding = async () => {
-        const rowData = this.table.SelectedRowDatas.value[0]
-        if (!rowData) {
-            console.warn('The rowData is undefined!')
-            return
-        }
-        const station = ObjectHelper.ShallowCopy(rowData)
-
-        if (StringHelper.IsNotEmpty(station.assetId)) return
-
-        this.assetForm.assetForm.Title.value = `${Texts.Binding.value}${Texts.Asset.value}`
-
-        this.assetForm.assetForm._getSource = () => {
-            const source = this.assetForm.AddGetSource()
-            source.company = station.company ?? 0n
-            source.stationId = station.macAddr
-            source.assetId = ObjectHelper.GetDateId()
-            return source
-        }
-
-        this.assetForm.assetForm._onSubmitAsync = async source => {
-            const res = await assetHelper.Add(source)
-            await this.Refresh()
-            return GetSubmitResult(res, '绑定成功')
-        }
-
-        this.assetForm.assetForm.Show()
-    }
-
     /** 维修 */
-
     readonly Repair = () => {
         DialogHelper.Information('维修')
     }

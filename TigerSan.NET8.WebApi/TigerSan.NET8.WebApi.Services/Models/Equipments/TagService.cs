@@ -229,7 +229,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         // 添加“绑定记录”
                         asset.BindingTime = DateTimeHelper.GetUtcNow();
-                        var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(true, asset.Id, entity.Id, null, asset.BindingTime), false);
+                        var resAdd = await _bindingRecordService.Add(new BindingRecordEntity(true, asset.Id, entity.Id, asset.BindingTime), false);
                         if (resAdd.IsError)
                         {
                             return MyResults<object>.Error(resAdd.Message);
@@ -494,10 +494,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>添加“单条数据”</summary>
         public override async Task<MyActionResult<TagEntity>> Add(TagEntity entity, bool isBeginTransaction = true)
         {
-            // 检验“资产ID”是否重复:
-            if (!string.IsNullOrEmpty(entity.AssetId) && await _dbSet.AnyAsync(i => i.AssetId == entity.AssetId))
+            // 检验“MacAddr”是否有效:
+            if (!Verify.IsValidMacAddr(entity.TagId))
             {
-                return MyResults<TagEntity>.AssetIdRepeated;
+                return MyResults<TagEntity>.InvalidMacAddr;
+            }
+
+            // 检验“标签ID”是否重复:
+            if (await _dbSet.AnyAsync(i => i.TagId == entity.TagId))
+            {
+                return MyResults<TagEntity>.TagIdRepeated;
             }
 
             // 检验“RFID”是否重复:
@@ -505,6 +511,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 return MyResults<TagEntity>.RfidRepeated;
             }
+
+            // 清空“资产”：
+            entity.Asset = null;
+            entity.AssetId = null;
 
             return await base.Add(entity, isBeginTransaction);
         }
@@ -514,20 +524,17 @@ namespace TigerSan.NET8.WebApi.Services.Models
         /// <summary>添加“多条数据”</summary>
         public override async Task<MyActionResult<object>> AddRange(List<TagEntity> entities, bool isBeginTransaction = true)
         {
-            // 检验“资产ID”是否重复:
-            var assetIds = entities.Where(e => !string.IsNullOrEmpty(e.AssetId)).Select(e => e.AssetId).ToList();
-            if (await _dbSet.AnyAsync(i => assetIds.Contains(i.AssetId)))
+            // 检验“MacAddr”是否有效:
+            if (entities.Any(i => !Verify.IsValidMacAddr(i.TagId)))
             {
-                return MyResults<object>.AssetIdRepeated;
+                return MyResults<object>.InvalidMacAddr;
             }
 
-            foreach (var entity in entities)
+            // 检验“标签ID”是否重复:
+            var tagIds = entities.Select(e => e.TagId).ToList();
+            if (await _dbSet.AnyAsync(i => tagIds.Contains(i.TagId)))
             {
-                // 检验“资产ID”是否重复:
-                if (!string.IsNullOrEmpty(entity.AssetId) && entities.Any(i => i.AssetId == entity.AssetId && i.Id != entity.Id))
-                {
-                    return MyResults<object>.AssetIdRepeated;
-                }
+                return MyResults<object>.TagIdRepeated;
             }
 
             // 检验“RFID”是否重复:
@@ -535,6 +542,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
             if (await _dbSet.AnyAsync(i => rfids.Contains(i.Rfid)))
             {
                 return MyResults<object>.RfidRepeated;
+            }
+
+            // 清空“资产”：
+            foreach (var entity in entities)
+            {
+                entity.Asset = null;
+                entity.AssetId = null;
             }
 
             return await base.AddRange(entities, isBeginTransaction);
@@ -551,6 +565,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                // 检验“MacAddr”是否有效:
+                if (!Verify.IsValidMacAddr(entity.TagId))
+                {
+                    return MyResults<object>.InvalidMacAddr;
+                }
+
                 var res = await Edit(entity);
                 if (res.IsError)
                 {
@@ -580,6 +600,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 if (entities.Count < 1) return MyResults<object>.OperationSuccess;
+
+                // 检验“MacAddr”是否有效:
+                if (entities.Any(i => !Verify.IsValidMacAddr(i.TagId)))
+                {
+                    return MyResults<object>.InvalidMacAddr;
+                }
 
                 foreach (var entity in entities)
                 {

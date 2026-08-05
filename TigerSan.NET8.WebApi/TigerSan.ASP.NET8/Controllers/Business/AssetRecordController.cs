@@ -100,10 +100,10 @@ namespace TigerSan.NET8.WebApi.Controllers
             if (station == null)
             {
                 LogHelper.Instance.IsNull(nameof(station));
-                return MyResults<object>.StationNotFound(asset.StationId ?? "");
+                return MyResults<object>.StationNotFound(asset.Id.ToString() ?? "");
             }
 
-            BluetoothTagPackage package = new BluetoothTagPackage();
+            BaseStationPackage package = new BaseStationPackage();
             package.ReportTime = DateTimeHelper.GetUtcNow().ToString();
             package.Data.Topic = station.MacAddr;
             package.Data.Longitude = entity.Longitude ?? 0;

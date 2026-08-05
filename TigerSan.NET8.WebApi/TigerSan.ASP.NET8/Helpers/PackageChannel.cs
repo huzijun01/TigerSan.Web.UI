@@ -129,7 +129,7 @@ namespace TigerSan.NET8.WebApi.Helpers
 
                 if (Equals(pkgBase.Type, PackageType.BluetoothTag))
                 {
-                    var pkgBluetoothTag = BluetoothTagPackage.Deserialize(data);
+                    var pkgBluetoothTag = BaseStationPackage.Deserialize(data);
                     if (pkgBluetoothTag == null)
                     {
                         LogHelper.Instance.IsNull(nameof(pkgBluetoothTag));
@@ -176,7 +176,6 @@ namespace TigerSan.NET8.WebApi.Helpers
             baseStation.ReportTime = GetUtc(ReportTime);
             baseStation.OnlineState = OnlineStates.Online;
             updateBaseStation?.Invoke(baseStation);
-
             await baseStationService.Edit(baseStation);
 
             return baseStation;
@@ -185,7 +184,7 @@ namespace TigerSan.NET8.WebApi.Helpers
 
         #region 修改“基站”和“标签”（蓝牙）
         /// <summary>修改“基站”和“标签”（蓝牙）</summary>
-        public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BluetoothTagPackage package)
+        public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BaseStationPackage package)
         {
             var tagService = TagService;
             var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
@@ -217,10 +216,10 @@ namespace TigerSan.NET8.WebApi.Helpers
                 #region 计算“经纬度”
                 if (baseStation == null)
                 {
-                    newTag.Longitude = 0;
-                    newTag.Latitude = 0;
+                    newTag.Longitude = null;
+                    newTag.Latitude = null;
                 }
-                else
+                else if (baseStation.StationType == StationTypes.Base)
                 {
                     var resGetSite = await SiteService.Get(baseStation.Site);
                     var site = resGetSite.Data;
@@ -230,6 +229,17 @@ namespace TigerSan.NET8.WebApi.Helpers
                     }
                     newTag.Longitude = site.Longitude;
                     newTag.Latitude = site.Latitude;
+                }
+                else if (baseStation.StationType == StationTypes.GPS && package.Data.IsValidLngLat)
+                {
+                    newTag.LocationMode = LocationModes.GPS;
+                    newTag.Longitude = package.Data.Longitude;
+                    newTag.Latitude = package.Data.Latitude;
+                }
+                else
+                {
+                    newTag.Longitude = null;
+                    newTag.Latitude = null;
                 }
                 #endregion 计算“经纬度”
 

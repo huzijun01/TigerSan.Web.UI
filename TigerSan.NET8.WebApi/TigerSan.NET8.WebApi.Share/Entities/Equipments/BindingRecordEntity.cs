@@ -12,21 +12,18 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long Asset { get; set; }
         [SnakeColumn]
-        public long? Tag { get; set; }
-        [SnakeColumn]
-        public long? Station { get; set; }
+        public long Tag { get; set; }
         [SnakeColumn]
         public DateTime Time { get; set; } = DateTimeHelper.GetUtcNow();
 
         #region 【Ctor】
         public BindingRecordEntity() { }
 
-        public BindingRecordEntity(bool isBinding, long asset, long? tag = null, long? station = null, DateTime? time = null)
+        public BindingRecordEntity(bool isBinding, long asset, long tag, DateTime? time = null)
         {
             IsBinding = isBinding;
             Asset = asset;
             Tag = tag;
-            Station = station;
             if (time != null) Time = time.Value;
         }
         #endregion 【Ctor】
@@ -36,8 +33,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         {
             return IsBinding == entity.IsBinding
                 && Asset == entity.Asset 
-                && Tag == entity.Tag
-                && Station == entity.Station;
+                && Tag == entity.Tag;
         }
         #endregion 【Functions】
     }

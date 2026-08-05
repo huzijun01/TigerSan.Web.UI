@@ -11,7 +11,6 @@ export class AssetEntity extends IdEntityBase {
     tagId?: string
     tagType?: bigint
     station?: bigint
-    stationId?: string
     vehicle?: bigint
     transfer?: bigint
     name? = ''
@@ -40,6 +39,7 @@ export class AssetDto extends AssetEntity {
     departmentName = ''
     typeName = ''
     stateName = ''
+    stationId?: string
     rfid?: string
     plate?: string
     siteName?: string
@@ -116,8 +116,8 @@ export class AssetHelper extends IdHelper<AssetDto> {
     /** 筛选“总数” */
     readonly GetCount = async (param: AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, undefined, param.rfid)
+        if (param.assetId || param.rfid) {
+            const res = await this.GetFull(undefined, param.assetId, param.rfid)
             return res.data ? 1 : 0
         } else {
             return await axiosHelper.GetCount(this._action, {
@@ -132,8 +132,8 @@ export class AssetHelper extends IdHelper<AssetDto> {
         pageNumber?: number,
     } & AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, undefined, param.rfid)
+        if (param.assetId || param.rfid) {
+            const res = await this.GetFull(undefined, param.assetId, param.rfid)
             const asset = res.data as AssetDto
             return asset ? [asset] : new Array<AssetDto>()
         } else {
@@ -157,17 +157,12 @@ export class AssetHelper extends IdHelper<AssetDto> {
         pageNumber?: number,
     } & AssetFilter): Promise<AssetPosition[]> => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, undefined, param.rfid)
-            const asset = res.data as AssetDto | undefined
-            if (!asset) return []
-            param.assetId = asset.assetId
-        }
         return await axiosHelper.GetList<AssetPosition>(this._action, {
             strList: 'PositionList',
             pageSize: param.pageSize,
             pageNumber: param.pageNumber,
-            filter: AssetFilter.GetFilter(param)
+            filter: AssetFilter.GetFilter(param),
+            params: [{ key: 'rfid', value: param.rfid }]
         })
     }
 

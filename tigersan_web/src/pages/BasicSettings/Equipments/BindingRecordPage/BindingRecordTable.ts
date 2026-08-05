@@ -21,14 +21,6 @@ export function GetTableModel() {
             _propName: 'tagId',
             Text: Texts.TagId,
             IsReadonly: true,
-            IsRequired: false,
-            Type: ItemType.TextBox,
-        },
-        {
-            _propName: 'stationId',
-            Text: Texts.StationId,
-            IsReadonly: true,
-            IsRequired: false,
             Type: ItemType.TextBox,
         },
         {

@@ -1114,10 +1114,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     find.Copy(await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Tag));
                 }
-                else if (find.Station != null)
-                {
-                    find.Copy(await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Station));
-                }
                 else
                 {
                     find.IsFall = null;

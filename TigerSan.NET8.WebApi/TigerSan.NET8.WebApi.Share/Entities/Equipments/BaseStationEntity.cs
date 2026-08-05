@@ -17,13 +17,9 @@ namespace TigerSan.NET8.WebApi.Share.Entities
     public class BaseStationEntity : IdName
     {
         [SnakeColumn]
-        public long Site { get; set; }
-        [SnakeColumn]
         public long Type { get; set; }
         [SnakeColumn]
-        public long? Asset { get; set; }
-        [SnakeColumn]
-        public string? AssetId { get; set; }
+        public long Site { get; set; }
         [SnakeColumn]
         public bool IsEnable { get; set; } = false;
         [SnakeColumn]

@@ -9,7 +9,7 @@ export class TagEntity extends IdEntityBase {
     type: bigint = 0n
     station?: bigint
     isFall?: boolean
-    isEnable = false
+    isEnable = true
     eqpType = EqpTypes.Tag
     onlineState = OnlineStates.Offline
     locationMode?: LocationModes
@@ -32,7 +32,7 @@ export class TagEntity extends IdEntityBase {
 export class TagDto extends TagEntity {
     batchId = ''
     typeName = ''
-    stationName = ''
+    stationName?: string
     company?: bigint
     companyName?: string
     site?: bigint

@@ -79,7 +79,7 @@ export class PersonMgtForm {
         IsEquired: true,
         Target: this.password.Value,
         _isVerifyOk: (source, isEdit) => {
-            if (isEdit && source.password === '') return Verify.GetOK()
+            if (isEdit && source.password === '') return Verify.OK()
             return Verify.IsValidWeekPassword(source.password)
         }
     }

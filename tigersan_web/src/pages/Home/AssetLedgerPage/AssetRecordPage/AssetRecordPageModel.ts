@@ -15,7 +15,6 @@ export class AssetRecordPageModel {
     get selectAssetState() { return this._filter.selectAssetState }
     /** 表单 */
     readonly selectStationForm = baseStationHelper.GetIdNameSelectModel()
-    // 更新:
 
     /** “基站”项目配置 */
     readonly configStation: FormItemConfig<AssetRecordDto, IdName> = {

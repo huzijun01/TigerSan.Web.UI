@@ -206,8 +206,8 @@ export const assetLedgerTable = new TableModel<AssetDto>([
         IsReadonly: true,
         IsRequired: false,
         Type: ItemType.TextBox,
-        _getSource: source => StringHelper.IsNotEmpty(source.tagId) || StringHelper.IsNotEmpty(source.stationId),
-        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId) || StringHelper.IsNotEmpty(source.stationId))
+        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
+        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
     },
     {
         _propName: 'isEnd',

@@ -18,42 +18,41 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
     public class MyResults<TData>
     {
         public static MyActionResult<List<IdName>> EmptyIdNameList { get => MyResults<List<IdName>>.Success(null, new List<IdName>()); }
-        public static MyActionResult<TData> OperationSuccess { get => new MyActionResult<TData>(ActionResultCode.Success, "Operation successful!"); }
-        public static MyActionResult<TData> RecordAlreadyExists { get => new MyActionResult<TData>(ActionResultCode.Warning, "Record already exists!"); }
-        public static MyActionResult<TData> SomeAuthoritiesUnavailable { get => new MyActionResult<TData>(ActionResultCode.Warning, "Some authorities are unavailable!"); }
-        public static MyActionResult<TData> EqpTypeNotMatch { get => new MyActionResult<TData>(ActionResultCode.Error, "EqpType does not match!"); }
-        public static MyActionResult<TData> CannotModifyOwnRole { get => new MyActionResult<TData>(ActionResultCode.Error, "User cannot modify their own role!"); }
-        public static MyActionResult<TData> ApiUnavailable { get => new MyActionResult<TData>(ActionResultCode.Error, "This API is unavailable!"); }
-        public static MyActionResult<TData> ResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource do not exist!"); }
-        public static MyActionResult<TData> SomeResourceNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "Some resources do not exist!"); }
-        public static MyActionResult<TData> ResourceExists { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource already exist!"); }
-        public static MyActionResult<TData> ResourceBeenOccupied { get => new MyActionResult<TData>(ActionResultCode.Error, "The resource have been occupied!"); }
-        public static MyActionResult<TData> NameRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The name cannot be repeated!"); }
-        public static MyActionResult<TData> AssetIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The AssetId cannot be repeated!"); }
-        public static MyActionResult<TData> TagIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The TagId cannot be repeated!"); }
-        public static MyActionResult<TData> StationIdRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The StationId cannot be repeated!"); }
-        public static MyActionResult<TData> RfidRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The RFID cannot be repeated!"); }
-        public static MyActionResult<TData> TagRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The Tag cannot be repeated!"); }
-        public static MyActionResult<TData> StationRepeated { get => new MyActionResult<TData>(ActionResultCode.Error, "The Station cannot be repeated!"); }
-        public static MyActionResult<TData> UserNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "User does not exist!"); }
-        public static MyActionResult<TData> PasswordIncorrect { get => new MyActionResult<TData>(ActionResultCode.Error, "The password is incorrect!"); }
-        public static MyActionResult<TData> TraceIdentifierIsNullOrEmpty { get => new MyActionResult<TData>(ActionResultCode.Error, "The id is null or empty!"); }
-        public static MyActionResult<TData> CaptchaGenerationFailed { get => new MyActionResult<TData>(ActionResultCode.Error, "Captcha generation failed!"); }
+        public static MyActionResult<TData> OperationSuccess { get => MyResults<TData>.Success("Operation successful!"); }
+        public static MyActionResult<TData> RecordAlreadyExists { get => MyResults<TData>.Warning("Record already exists!"); }
+        public static MyActionResult<TData> SomeAuthoritiesUnavailable { get => MyResults<TData>.Warning("Some authorities are unavailable!"); }
+        public static MyActionResult<TData> EqpTypeNotMatch { get => MyResults<TData>.Error("EqpType does not match!"); }
+        public static MyActionResult<TData> CannotModifyOwnRole { get => MyResults<TData>.Error("User cannot modify their own role!"); }
+        public static MyActionResult<TData> ApiUnavailable { get => MyResults<TData>.Error("This API is unavailable!"); }
+        public static MyActionResult<TData> ResourceNotExist { get => MyResults<TData>.Error("The resource do not exist!"); }
+        public static MyActionResult<TData> SomeResourceNotExist { get => MyResults<TData>.Error("Some resources do not exist!"); }
+        public static MyActionResult<TData> ResourceExists { get => MyResults<TData>.Error("The resource already exist!"); }
+        public static MyActionResult<TData> ResourceBeenOccupied { get => MyResults<TData>.Error("The resource have been occupied!"); }
+        public static MyActionResult<TData> NameRepeated { get => MyResults<TData>.Error("The name cannot be repeated!"); }
+        public static MyActionResult<TData> AssetIdRepeated { get => MyResults<TData>.Error("The AssetId cannot be repeated!"); }
+        public static MyActionResult<TData> TagIdRepeated { get => MyResults<TData>.Error("The TagId cannot be repeated!"); }
+        public static MyActionResult<TData> RfidRepeated { get => MyResults<TData>.Error("The RFID cannot be repeated!"); }
+        public static MyActionResult<TData> TagRepeated { get => MyResults<TData>.Error("The Tag cannot be repeated!"); }
+        public static MyActionResult<TData> MacAddrRepeated { get => MyResults<TData>.Error("The MacAddr cannot be repeated!"); }
+        public static MyActionResult<TData> InvalidMacAddr { get => MyResults<TData>.Error("The MacAddr is invalid!"); }
+        public static MyActionResult<TData> UserNotExist { get => MyResults<TData>.Error("User does not exist!"); }
+        public static MyActionResult<TData> PasswordIncorrect { get => MyResults<TData>.Error("The password is incorrect!"); }
+        public static MyActionResult<TData> TraceIdentifierIsNullOrEmpty { get => MyResults<TData>.Error("The id is null or empty!"); }
+        public static MyActionResult<TData> CaptchaGenerationFailed { get => MyResults<TData>.Error("Captcha generation failed!"); }
         public static MyActionResult<TData> CaptchaVerificationFailed { get => new MyActionResult<TData>(ActionResultCode.InvalidCaptcha, "Captcha verification failed!"); }
-        public static MyActionResult<TData> SiteNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The site do not exist!"); }
-        public static MyActionResult<TData> CompanyNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The company do not exist!"); }
-        public static MyActionResult<TData> AssetNotBoundTag { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset is not bound to a tag!"); }
-        public static MyActionResult<TData> AssetNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The asset do not exist!"); }
-        public static MyActionResult<TData> TagNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag do not exist!"); }
-        public static MyActionResult<TData> TagNotBoundAsset { get => new MyActionResult<TData>(ActionResultCode.Error, "The tag is not bound to a asset!"); }
-        public static MyActionResult<TData> IncorrectTagType { get => new MyActionResult<TData>(ActionResultCode.Error, "Incorrect tag type!"); }
-        public static MyActionResult<TData> StationNotExist { get => new MyActionResult<TData>(ActionResultCode.Error, "The station do not exist!"); }
-        public static MyActionResult<TData> AccessibleCompaniesCannotBeNull { get => new MyActionResult<TData>(ActionResultCode.Error, "The AccessibleCompanies cannot be null!"); }
-        public static MyActionResult<TData> UnsupportedFileType { get => new MyActionResult<TData>(ActionResultCode.Error, "Unsupported file type!"); }
-        public static MyActionResult<TData> DirAlreadyExists { get => new MyActionResult<TData>(ActionResultCode.Error, $"The directory already exists!"); }
-        public static MyActionResult<TData> FileAlreadyExists { get => new MyActionResult<TData>(ActionResultCode.Error, $"The file already exists!"); }
-        public static MyActionResult<TData> NameCannotBeEmpty { get => new MyActionResult<TData>(ActionResultCode.Error, $"The name cannot be empty!"); }
-        public static MyActionResult<TData> FileIsNullOrEmpty { get => new MyActionResult<TData>(ActionResultCode.Error, $"The file is null or empty!"); }
+        public static MyActionResult<TData> SiteNotExist { get => MyResults<TData>.Error("The site do not exist!"); }
+        public static MyActionResult<TData> CompanyNotExist { get => MyResults<TData>.Error("The company do not exist!"); }
+        public static MyActionResult<TData> AssetNotBoundTag { get => MyResults<TData>.Error("The asset is not bound to a tag!"); }
+        public static MyActionResult<TData> AssetNotExist { get => MyResults<TData>.Error("The asset do not exist!"); }
+        public static MyActionResult<TData> TagNotExist { get => MyResults<TData>.Error("The tag do not exist!"); }
+        public static MyActionResult<TData> TagNotBoundAsset { get => MyResults<TData>.Error("The tag is not bound to a asset!"); }
+        public static MyActionResult<TData> IncorrectTagType { get => MyResults<TData>.Error("Incorrect tag type!"); }
+        public static MyActionResult<TData> AccessibleCompaniesCannotBeNull { get => MyResults<TData>.Error("The AccessibleCompanies cannot be null!"); }
+        public static MyActionResult<TData> UnsupportedFileType { get => MyResults<TData>.Error("Unsupported file type!"); }
+        public static MyActionResult<TData> DirAlreadyExists { get => MyResults<TData>.Error($"The directory already exists!"); }
+        public static MyActionResult<TData> FileAlreadyExists { get => MyResults<TData>.Error($"The file already exists!"); }
+        public static MyActionResult<TData> NameCannotBeEmpty { get => MyResults<TData>.Error($"The name cannot be empty!"); }
+        public static MyActionResult<TData> FileIsNullOrEmpty { get => MyResults<TData>.Error($"The file is null or empty!"); }
         public static MyActionResult<TData> AuthorizationHeaderMissing { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Authorization header is missing!"); }
         public static MyActionResult<TData> InvalidOrExpiredToken { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Invalid or expired token!"); }
         public static MyActionResult<TData> LoggedInByAnotherUser { get => new MyActionResult<TData>(ActionResultCode.InvalidToken, "Account logged in by others!"); }
@@ -62,26 +61,26 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> Success(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Success, msg ?? OperationSuccess.Message, data); }
         public static MyActionResult<TData> Warning(string? msg = null, TData? data = default) { return new MyActionResult<TData>(ActionResultCode.Warning, msg ?? nameof(Warning), data); }
         public static MyActionResult<TData> Error(string msg) { return new MyActionResult<TData>(ActionResultCode.Error, msg); }
-        public static MyActionResult<TData> ParentCompanyNotExist(long id, long parent) { return new MyActionResult<TData>(ActionResultCode.Error, $"The parent company does not exist! ({id}, {parent})"); }
+        public static MyActionResult<TData> ParentCompanyNotExist(long id, long parent) { return MyResults<TData>.Error($"The parent company does not exist! ({id}, {parent})"); }
         public static MyActionResult<TData> InvalidToken(string msg) { return new MyActionResult<TData>(ActionResultCode.InvalidToken, msg); }
-        public static MyActionResult<TData> IsNull(string name) { return new MyActionResult<TData>(ActionResultCode.Error, $"The {name} is null!"); }
-        public static MyActionResult<TData> Error(Exception e) { return new MyActionResult<TData>(ActionResultCode.Error, e.Message); }
-        public static Func<long, MyActionResult<TData>> FileSizeExceedsLimit = size => new MyActionResult<TData>(ActionResultCode.Error, $"File size exceeds the limit! ({size}MB)");
-        public static Func<string?, MyActionResult<TData>> DirIsNotEmpty = path => new MyActionResult<TData>(ActionResultCode.Error, $"The directory is not empty!({path})");
-        public static Func<string?, MyActionResult<TData>> InvalidPath = path => new MyActionResult<TData>(ActionResultCode.Error, $"The path is invalid!({path})");
-        public static Func<string?, MyActionResult<TData>> PathDoesNotExist = path => new MyActionResult<TData>(ActionResultCode.Error, $"The path does not exist!({path})");
-        public static Func<string, MyActionResult<TData>> TagNotFound = tagId => new MyActionResult<TData>(ActionResultCode.Error, $"The tag not found! ({tagId})");
-        public static Func<string, MyActionResult<TData>> StationNotFound = stationId => new MyActionResult<TData>(ActionResultCode.Error, $"The station not found! ({stationId})");
-        public static Func<string, MyActionResult<TData>> AssetNoSite = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset have no site! ({assetId})");
-        public static Func<string, MyActionResult<TData>> TargetSameToSite = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The target cannot be the same as the site! ({assetId})");
-        public static Func<string, MyActionResult<TData>> AssetNotFound = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset not found! ({assetId})");
-        public static Func<string, MyActionResult<TData>> CodeCannotBeEmpty = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The code cannot be empty! ({assetId})");
-        public static Func<string, MyActionResult<TData>> AssetsHaveBeenAllocated = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The assets have been allocated! ({assetId})");
-        public static Func<string, MyActionResult<TData>> CannotModify = code => new MyActionResult<TData>(ActionResultCode.Error, $"Cannot modify!({code})");
-        public static Func<string, MyActionResult<TData>> NoAssetRecord = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"No asset record! ({assetId})");
-        public static Func<string, MyActionResult<TData>> NotInbound = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the Inbound state! ({assetId})");
-        public static Func<string, MyActionResult<TData>> NotInStoreOrStolid = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The asset is not in the InStore or Stolid state! ({assetId})");
-        public static Func<string, MyActionResult<TData>> TargetSiteSameAsCurrent = assetId => new MyActionResult<TData>(ActionResultCode.Error, $"The target site cannot be the same as the current site! ({assetId})");
+        public static MyActionResult<TData> IsNull(string name) { return MyResults<TData>.Error($"The {name} is null!"); }
+        public static MyActionResult<TData> Error(Exception e) { return MyResults<TData>.Error(e.Message); }
+        public static Func<long, MyActionResult<TData>> FileSizeExceedsLimit = size => MyResults<TData>.Error($"File size exceeds the limit! ({size}MB)");
+        public static Func<string?, MyActionResult<TData>> DirIsNotEmpty = path => MyResults<TData>.Error($"The directory is not empty!({path})");
+        public static Func<string?, MyActionResult<TData>> InvalidPath = path => MyResults<TData>.Error($"The path is invalid!({path})");
+        public static Func<string?, MyActionResult<TData>> PathDoesNotExist = path => MyResults<TData>.Error($"The path does not exist!({path})");
+        public static Func<string, MyActionResult<TData>> TagNotFound = tagId => MyResults<TData>.Error($"The tag not found! ({tagId})");
+        public static Func<string, MyActionResult<TData>> StationNotFound = stationId => MyResults<TData>.Error($"The station not found! ({stationId})");
+        public static Func<string, MyActionResult<TData>> AssetNoSite = assetId => MyResults<TData>.Error($"The asset have no site! ({assetId})");
+        public static Func<string, MyActionResult<TData>> TargetSameToSite = assetId => MyResults<TData>.Error($"The target cannot be the same as the site! ({assetId})");
+        public static Func<string, MyActionResult<TData>> AssetNotFound = assetId => MyResults<TData>.Error($"The asset not found! ({assetId})");
+        public static Func<string, MyActionResult<TData>> CodeCannotBeEmpty = assetId => MyResults<TData>.Error($"The code cannot be empty! ({assetId})");
+        public static Func<string, MyActionResult<TData>> AssetsHaveBeenAllocated = assetId => MyResults<TData>.Error($"The assets have been allocated! ({assetId})");
+        public static Func<string, MyActionResult<TData>> CannotModify = code => MyResults<TData>.Error($"Cannot modify!({code})");
+        public static Func<string, MyActionResult<TData>> NoAssetRecord = assetId => MyResults<TData>.Error($"No asset record! ({assetId})");
+        public static Func<string, MyActionResult<TData>> NotInbound = assetId => MyResults<TData>.Error($"The asset is not in the Inbound state! ({assetId})");
+        public static Func<string, MyActionResult<TData>> NotInStoreOrStolid = assetId => MyResults<TData>.Error($"The asset is not in the InStore or Stolid state! ({assetId})");
+        public static Func<string, MyActionResult<TData>> TargetSiteSameAsCurrent = assetId => MyResults<TData>.Error($"The target site cannot be the same as the current site! ({assetId})");
         public static Func<string, MyActionResult<TData>> NoCaptchaRecord = id => new MyActionResult<TData>(ActionResultCode.InvalidCaptcha, $"No Captcha record!({id})");
         #endregion 【Functions】
     }

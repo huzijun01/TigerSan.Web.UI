@@ -21,8 +21,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long? Station { get; set; }
         [SnakeColumn]
-        public string? StationId { get; set; }
-        [SnakeColumn]
         public long? Vehicle { get; set; }
         [SnakeColumn]
         public long? Transfer { get; set; }
@@ -72,19 +70,6 @@ namespace TigerSan.NET8.WebApi.Share.Entities
             {
                 OnlineState = tag.OnlineState;
                 IsFall = tag.IsFall;
-            }
-        }
-
-        public void Copy(BaseStationEntity? station)
-        {
-            if (station == null)
-            {
-                Station = null;
-                StationId = null;
-            }
-            else
-            {
-                OnlineState = station.OnlineState;
             }
         }
     }

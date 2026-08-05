@@ -20,6 +20,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             FilterDto? filter = null);
         public Task<MyActionResult<AssetPosition>> GetPosition(long asset);
         public Task<MyActionResult<List<AssetPosition>>> GetPositionList(
+            string? rfid = null,
             int? pageSize = null,
             int? pageNumber = null,
             string? sort = null,

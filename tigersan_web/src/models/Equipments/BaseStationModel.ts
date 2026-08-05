@@ -1,12 +1,41 @@
-import { IdName, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
+import { IdName, ObjectHelper, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
 import { axiosHelper, IdNameHelper } from "@/helpers"
 
-/** 设备类型 */
+/** 基站类型 */
 export enum StationTypes {
     /** 基础 */
     Base = 0,
     /** GPS */
     GPS = 1,
+}
+
+/** 基站类型 */
+export class StationType {
+    static GetString(obj: object, propName: string = 'stationType'): string {
+        return StationType.GetName(ObjectHelper.DefaultTGetter(obj, propName, undefined))
+    }
+
+    static GetName(state?: StationTypes): string {
+        if (state === undefined || state === null) return ''
+        switch (state) {
+            case StationTypes.Base:
+                return Texts.Base.value
+            case StationTypes.GPS:
+                return 'GPS'
+            default:
+                return Texts.Unknown.value
+        }
+    }
+
+    /** 获取“筛选框模型” */
+    static GetSelectModel(): SelectModel<StationTypes> {
+        const select = new SelectModel<StationTypes>()
+        select.Width.value = 208
+        select.Placeholder.value = Texts.StationType
+        select.Items.push(...[0, 1])
+        select._converter = this.GetName
+        return select
+    }
 }
 
 /** “基站”实体 */
@@ -15,9 +44,9 @@ export class BaseStationEntity extends IdName {
     type: bigint = 0n
     asset?: bigint
     assetId?: string
-    isEnable = false
+    isEnable = true
     macAddr = ''
-    stationTypes = StationTypes.Base
+    stationType = StationTypes.Base
     onlineState = OnlineStates.Offline
     heartbeatInterval = 28800
     reportInterval = 28800

@@ -5,10 +5,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IBindingRecordService : IIdServiceBase<BindingRecordEntity>
     {
-        public Task<MyActionResult<BindingRecordEntity>> GetLast(
-            long? asset = null,
-            long? tag = null,
-            long? station = null);
+        public Task<MyActionResult<BindingRecordEntity>> GetLast(long? asset = null, long? tag = null);
         public Task<MyActionResult<List<BindingRecordDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,

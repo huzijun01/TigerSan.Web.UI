@@ -4,20 +4,28 @@ using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Share.Packages
 {
-    /// <summary>“蓝牙标签”数据包</summary>
-    public class BluetoothTagPackage : PackageBase
+    /// <summary>基站定位模式</summary>
+    public enum StationLocationModes
+    {
+        WifiScan = 1,
+        AGPS = 2,
+        GPS = 3,
+    }
+
+    /// <summary>“基站”数据包</summary>
+    public class BaseStationPackage : PackageBase
     {
         /// <summary>数据</summary>
         [JsonProperty("data")]
-        public BluetoothTagGroupData Data { get; set; } = new BluetoothTagGroupData();
+        public BaseStationData Data { get; set; } = new BaseStationData();
 
         #region 【Functions】
         #region 反序列化
-        public static new BluetoothTagPackage? Deserialize(string str)
+        public static new BaseStationPackage? Deserialize(string str)
         {
             try
             {
-                return JsonConvert.DeserializeObject<BluetoothTagPackage>(str);
+                return JsonConvert.DeserializeObject<BaseStationPackage>(str);
             }
             catch (Exception e)
             {
@@ -30,9 +38,9 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         #endregion 【Functions】
     }
 
-    #region “蓝牙标签”集合数据
-    /// <summary>“蓝牙标签”集合数据</summary>
-    public class BluetoothTagGroupData : DataBase
+    #region “基站”数据
+    /// <summary>“基站”数据</summary>
+    public class BaseStationData : DataBase
     {
         /// <summary>经度</summary>
         [JsonProperty("j")]
@@ -42,9 +50,9 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         [JsonProperty("w")]
         public double Latitude { get; set; }
 
-        /// <summary>上报类型</summary>
+        /// <summary>定位模式</summary>
         [JsonProperty("h")]
-        public int ReportType { get; set; }
+        public StationLocationModes LocationMode { get; set; }
 
         /// <summary>标签数据集合（内置蓝牙）</summary>
         [JsonProperty("nodes0")]
@@ -53,6 +61,10 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         /// <summary>标签数据集合（外置蓝牙）</summary>
         [JsonProperty("nodes1")]
         public List<BluetoothTagData> TagDatas1 { get; set; } = new List<BluetoothTagData>();
+
+        /// <summary>经纬度是否可用</summary>
+        [JsonIgnore]
+        public bool IsValidLngLat { get => Longitude > 0 && Latitude > 0; }
     }
     #endregion
 

@@ -27,8 +27,6 @@
                     </div>
                     <div class="row-panel">
                         <Switch v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :model="model.switchIsEnable" />
-                        <button :disabled="!model.IsAllowBinding.value" @click="model.Binding">
-                            {{ Texts.Binding.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :disabled="!IsOnlySelected"
                             @click="model.Repair">维修</button>
                     </div>
@@ -56,13 +54,14 @@
             <FormItem :model="model.configCompany.ItemModel">
                 <Select :model="model.selectCompanyForm" />
             </FormItem>
-        </FormRow>
-        <FormRow>
             <FormItem :model="model.configSite.ItemModel">
                 <Select :model="model.selectSiteForm" />
             </FormItem>
         </FormRow>
         <FormRow>
+            <FormItem :model="model.configStationType.ItemModel">
+                <Select :model="model.selectStationTypeForm" />
+            </FormItem>
             <FormItem :model="model.configType.ItemModel">
                 <Select :model="model.selectTypeForm" />
             </FormItem>
@@ -71,8 +70,6 @@
             <FormItem :model="model.configName.ItemModel">
                 <input type="text" v-model="model.configName.Target.value">
             </FormItem>
-        </FormRow>
-        <FormRow>
             <FormItem :model="model.configMacAddr.ItemModel">
                 <input type="text" v-model="model.configMacAddr.Target.value">
             </FormItem>
@@ -82,15 +79,8 @@
                 <input type="text" :placeholder="Texts.Seconds.value"
                     v-model="model.configHeartbeatInterval.Target.value">
             </FormItem>
-        </FormRow>
-        <FormRow>
             <FormItem :model="model.configReportInterval.ItemModel">
                 <input type="text" :placeholder="Texts.Seconds.value" v-model="model.configReportInterval.Target.value">
-            </FormItem>
-        </FormRow>
-        <FormRow>
-            <FormItem :model="model.configAssetId.ItemModel">
-                <input type="text" v-model="model.configAssetId.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>

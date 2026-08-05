@@ -82,7 +82,7 @@ export class TagMgtPageModel {
         PropText: Texts.TagId,
         IsEquired: true,
         Target: ref(),
-        _isVerifyOk: source => Verify.IsNotUndefinedOrEmpty(source.tagId)
+        _isVerifyOk: source => Verify.IsValidMacAddr(source.tagId)
     }
 
     /** “资产ID”项目配置 */

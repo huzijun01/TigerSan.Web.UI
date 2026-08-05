@@ -183,7 +183,7 @@ export class ObjectHelper {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         let random = ''
         for (let i = 0; i < 2; i++) {
-            random += chars[Math.floor(Math.random() * 26)];
+            random += chars[Math.floor(Math.random() * 26)]
         }
         return `${timestamp}${random}`
     }

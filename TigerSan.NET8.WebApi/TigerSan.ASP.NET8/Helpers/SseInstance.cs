@@ -103,7 +103,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         #region [DB]
         #region 修改“基站”和“标签”（蓝牙）
         /// <summary>修改“基站”和“标签”（蓝牙）</summary>
-        public static async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BluetoothTagPackage package)
+        public static async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BaseStationPackage package)
         {
             if (_instance == null)
             {

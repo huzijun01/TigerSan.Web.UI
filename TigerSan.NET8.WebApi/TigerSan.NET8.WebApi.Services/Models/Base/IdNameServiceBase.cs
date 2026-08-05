@@ -127,14 +127,13 @@ namespace TigerSan.NET8.WebApi.Services.Models.Base
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+                return MyResults<object>.OperationSuccess;
             }
             catch (Exception e)
             {
                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                 return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
-
-            return MyResults<object>.OperationSuccess;
         }
         #endregion
         #endregion [改]
