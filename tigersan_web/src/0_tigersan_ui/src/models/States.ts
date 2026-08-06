@@ -183,6 +183,40 @@ export class IsEnd {
     }
 }
 
+/** 是否移动 */
+export class IsMobile {
+    static ToString(value?: boolean) {
+        return value ? Texts.Mobile.value : Texts.Fixed.value
+    }
+
+    static GetString(obj: object, propName: string = 'isMobile'): string {
+        return IsMobile.ToString(ObjectHelper.DefaultTGetter(obj, propName, false))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.Placeholder.value = Texts.InstallMode
+        select.SetItems([true, false])
+        select._converter = IsMobile.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isMobile') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Brand
+                itemModel.Background.value = Colors.Brand10
+            }
+        }
+    }
+}
+
 export class Battery {
     /** 初始化“项目模型” */
     static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'battery') {

@@ -12,6 +12,8 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
         public string? Address { get; set; }
+        /// <summary>经纬度是否可用</summary>
+        public bool IsValidLngLat { get => Longitude > 0 && Latitude > 0; }
 
         public Location(
             double? longitude,

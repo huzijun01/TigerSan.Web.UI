@@ -84,6 +84,7 @@ export class Texts {
     static readonly Form = TextModel.Computed('Form', '表单')
     static readonly File = TextModel.Computed('File', '文件')
     static readonly FILE = TextModel.Computed('FILE', '文件')
+    static readonly Fixed = TextModel.Computed('Fixed', '固定')
     static readonly Fence = TextModel.Computed('Fence', '围栏')
     static readonly Female = TextModel.Computed('Female', '女')
     static readonly Feedback = TextModel.Computed('Feedback', '反馈')
@@ -106,6 +107,7 @@ export class Texts {
     static readonly IsEnable = TextModel.Computed('IsEnable', '激活状态')
     static readonly IsBinding = TextModel.Computed('IsBinding', '是否绑定')
     static readonly Information = TextModel.Computed('Information', '信息')
+    static readonly InstallMode = TextModel.Computed('InstallMode', '安装方式')
     static readonly IsReadonly = TextModel.Computed('IsReadonly: ', '是否只读：')
     static readonly InTransitTimeout = TextModel.Computed('InTransitTimeout', '在途超时')
     static readonly IncorrectFormat = TextModel.Computed('Incorrect format!', '格式不正确')
@@ -131,6 +133,7 @@ export class Texts {
     // M:
     static readonly Male = TextModel.Computed('Male', '男')
     static readonly Mail = TextModel.Computed('Mail', '邮箱')
+    static readonly Mobile = TextModel.Computed('Mobile', '移动')
     static readonly Manual = TextModel.Computed('Manual', '手动')
     static readonly Manager = TextModel.Computed('Manager', '联系人')
     static readonly MacAddr = TextModel.Computed('MacAddr', 'MAC地址')

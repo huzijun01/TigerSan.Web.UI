@@ -5,9 +5,10 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
+                        <Search :model="model.searchMacAddr" />
                         <Select :model="model.selectState" />
                         <Select :model="model.selectIsEnable" />
-                        <Search :model="model.searchMacAddr" />
+                        <Select :model="model.selectIsMobile" />
                     </div>
                     <div class="row-panel">
                         <Select :model="model.selectCompany" />
@@ -59,8 +60,8 @@
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="model.configStationType.ItemModel">
-                <Select :model="model.selectStationTypeForm" />
+            <FormItem :model="model.configIsMobile.ItemModel">
+                <Select :model="model.selectIsMobileForm" />
             </FormItem>
             <FormItem :model="model.configType.ItemModel">
                 <Select :model="model.selectTypeForm" />

@@ -21,7 +21,6 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> OperationSuccess { get => MyResults<TData>.Success("Operation successful!"); }
         public static MyActionResult<TData> RecordAlreadyExists { get => MyResults<TData>.Warning("Record already exists!"); }
         public static MyActionResult<TData> SomeAuthoritiesUnavailable { get => MyResults<TData>.Warning("Some authorities are unavailable!"); }
-        public static MyActionResult<TData> EqpTypeNotMatch { get => MyResults<TData>.Error("EqpType does not match!"); }
         public static MyActionResult<TData> CannotModifyOwnRole { get => MyResults<TData>.Error("User cannot modify their own role!"); }
         public static MyActionResult<TData> ApiUnavailable { get => MyResults<TData>.Error("This API is unavailable!"); }
         public static MyActionResult<TData> ResourceNotExist { get => MyResults<TData>.Error("The resource do not exist!"); }
@@ -70,6 +69,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static Func<string?, MyActionResult<TData>> InvalidPath = path => MyResults<TData>.Error($"The path is invalid!({path})");
         public static Func<string?, MyActionResult<TData>> PathDoesNotExist = path => MyResults<TData>.Error($"The path does not exist!({path})");
         public static Func<string, MyActionResult<TData>> TagNotFound = tagId => MyResults<TData>.Error($"The tag not found! ({tagId})");
+        public static Func<string, MyActionResult<TData>> EqpTypeNotMatch = tagId => MyResults<TData>.Error($"EqpType does not match! ({tagId})");
         public static Func<string, MyActionResult<TData>> StationNotFound = stationId => MyResults<TData>.Error($"The station not found! ({stationId})");
         public static Func<string, MyActionResult<TData>> AssetNoSite = assetId => MyResults<TData>.Error($"The asset have no site! ({assetId})");
         public static Func<string, MyActionResult<TData>> TargetSameToSite = assetId => MyResults<TData>.Error($"The target cannot be the same as the site! ({assetId})");

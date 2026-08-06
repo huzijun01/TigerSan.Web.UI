@@ -1,8 +1,8 @@
 import { computed, ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode, StringHelper } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode, StringHelper, IsMobile } from '@/0_tigersan_ui/tigerui'
 import { GetStationTable } from './BaseStationMgtTable'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
-import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper, StationType, StationTypes } from '@/models'
+import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper } from '@/models'
 
 export class BaseStationMgtPageModel {
     //#region 【Props】
@@ -36,14 +36,15 @@ export class BaseStationMgtPageModel {
     /** 筛选 */
     readonly selectState = OnlineState.GetSelectModel()
     readonly selectIsEnable = IsEnable.GetSelectModel()
+    readonly selectIsMobile = IsMobile.GetSelectModel()
     readonly selectCompany = companyHelper.GetIdNameSelectModel()
     readonly selectSite = siteHelper.GetIdNameSelectModel()
     readonly selectType = stationTypeHelper.GetIdNameSelectModel()
     /** 表单 */
+    readonly selectIsMobileForm = IsMobile.GetSelectModel()
     readonly selectCompanyForm = companyHelper.GetIdNameSelectModel()
     readonly selectSiteForm = siteHelper.GetIdNameSelectModel()
     readonly selectTypeForm = stationTypeHelper.GetIdNameSelectModel()
-    readonly selectStationTypeForm = StationType.GetSelectModel()
 
     /** “公司”项目配置 */
     readonly configCompany: FormItemConfig<BaseStationDto, IdName> = {
@@ -67,13 +68,13 @@ export class BaseStationMgtPageModel {
         _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, Texts.CannotBeEmpty.value)
     }
 
-    /** “基站类型”项目配置 */
-    readonly configStationType: FormItemConfig<BaseStationDto, StationTypes> = {
-        _propName: 'stationType',
-        PropText: Texts.StationType,
+    /** “是否移动”项目配置 */
+    readonly configIsMobile: FormItemConfig<BaseStationDto, boolean> = {
+        _propName: 'isMobile',
+        PropText: Texts.InstallMode,
         IsEquired: true,
-        Target: this.selectStationTypeForm.Value,
-        _isVerifyOk: source => Verify.IsNotUndefined(source.stationType)
+        Target: this.selectIsMobileForm.Value,
+        _isVerifyOk: source => Verify.IsNotUndefined(source.isMobile)
     }
 
     /** “类型”项目配置 */
@@ -159,7 +160,7 @@ export class BaseStationMgtPageModel {
         _itemConfigs: [
             this.configCompany,
             this.configSite,
-            this.configStationType,
+            this.configIsMobile,
             this.configType,
             this.configName,
             this.configMacAddr,
@@ -192,6 +193,7 @@ export class BaseStationMgtPageModel {
         this.assetForm.IsCompanyEnable = false
         this.assetForm.IsTagIdEnable.value = false
         this.assetForm.IsStationIdEnable.value = false
+        this.selectIsMobileForm.Width.value = 208
 
         // 更新:
         this.selectCompanyForm._onChange = this.selectSiteForm.UpdateItemsAsync
@@ -203,6 +205,7 @@ export class BaseStationMgtPageModel {
         this.selectType._onChange = this.Refresh
         this.selectState._onChange = this.Refresh
         this.selectIsEnable._onChange = this.Refresh
+        this.selectIsMobile._onChange = this.Refresh
 
         // 上传器:
         this.upload._isAutoLoad = false
@@ -230,6 +233,7 @@ export class BaseStationMgtPageModel {
             company: this.selectCompany.Value.value?.id,
             site: this.selectSite.Value.value?.id,
             isEnable: this.selectIsEnable.Value.value,
+            isMobile: this.selectIsMobile.Value.value,
             state: OnlineStates.Online,
             type: this.selectType.Value.value?.id,
             macAddr: this.searchMacAddr.Value.value,
@@ -238,6 +242,7 @@ export class BaseStationMgtPageModel {
             company: this.selectCompany.Value.value?.id,
             site: this.selectSite.Value.value?.id,
             isEnable: this.selectIsEnable.Value.value,
+            isMobile: this.selectIsMobile.Value.value,
             state: OnlineStates.Offline,
             type: this.selectType.Value.value?.id,
             macAddr: this.searchMacAddr.Value.value,
@@ -246,6 +251,7 @@ export class BaseStationMgtPageModel {
             company: this.selectCompany.Value.value?.id,
             site: this.selectSite.Value.value?.id,
             isEnable: this.selectIsEnable.Value.value,
+            isMobile: this.selectIsMobile.Value.value,
             state: this.selectState.Value.value,
             type: this.selectType.Value.value?.id,
             macAddr: this.searchMacAddr.Value.value,
@@ -282,6 +288,7 @@ export class BaseStationMgtPageModel {
                 company: this.selectCompany.Value.value?.id,
                 site: this.selectSite.Value.value?.id,
                 isEnable: this.selectIsEnable.Value.value,
+                isMobile: this.selectIsMobile.Value.value,
                 state: this.selectState.Value.value,
                 type: this.selectType.Value.value?.id,
                 macAddr: this.searchMacAddr.Value.value,

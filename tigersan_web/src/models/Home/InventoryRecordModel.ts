@@ -1,7 +1,7 @@
 import { ArrayHelper } from "@/0_tigersan_ui/tigerui"
 import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 
-/** "资产基类"模型 */
+/** "盘点记录"模型 */
 export class InventoryRecordModel extends IdEntityBase {
     site = 0n
     inStore = 0
@@ -14,17 +14,20 @@ export class InventoryRecordModel extends IdEntityBase {
     siteName = ''
 }
 
+/** "盘点记录"过滤器 */
+export type InventoryRecordFilter = {
+    site?: bigint,
+    company?: bigint,
+    companies?: bigint[],
+}
+
 class InventoryRecordHelper extends IdHelper<InventoryRecordModel> {
     constructor() {
         super('InventoryRecord')
     }
 
     /** 筛选“总数” */
-    readonly GetCount = async (param: {
-        site?: bigint,
-        company?: bigint,
-        companies?: bigint[],
-    }) => {
+    readonly GetCount = async (param: InventoryRecordFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
         return await axiosHelper.GetCount(this._action, {
             filter: {
@@ -48,10 +51,7 @@ class InventoryRecordHelper extends IdHelper<InventoryRecordModel> {
         pageNumber?: number,
         sort?: string,
         ascending?: boolean,
-        site?: bigint,
-        company?: bigint,
-        companies?: bigint[],
-    }) => {
+    } & InventoryRecordFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
         return await axiosHelper.GetList<InventoryRecordModel>(this._action, {
             strList: 'FullList',

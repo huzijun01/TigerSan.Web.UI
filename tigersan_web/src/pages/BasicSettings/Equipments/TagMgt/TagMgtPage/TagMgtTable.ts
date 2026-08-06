@@ -77,6 +77,7 @@ export function GetTagTable() {
             Text: 'RFID',
             IsReadonly: true,
             IsRequired: false,
+            IsShowSlot: true,
             Type: ItemType.TextBox,
         },
         {

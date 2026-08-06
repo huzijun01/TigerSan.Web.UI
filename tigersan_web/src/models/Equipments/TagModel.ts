@@ -40,6 +40,20 @@ export class TagDto extends TagEntity {
     address?: string
 }
 
+/** “标签”过滤器 */
+export type TagFilter = {
+    company?: bigint,
+    batch?: bigint,
+    type?: bigint,
+    station?: bigint,
+    eqpType?: EqpTypes,
+    isEnable?: boolean,
+    state?: OnlineStates,
+    isFall?: boolean,
+    tagId?: string,
+    rfid?: string,
+}
+
 class TagHelper extends IdHelper<TagDto> {
     constructor() {
         super('Tag')
@@ -52,18 +66,7 @@ class TagHelper extends IdHelper<TagDto> {
     ], false)
 
     /** 筛选“总数” */
-    readonly GetCount = async (param: {
-        company?: bigint,
-        batch?: bigint,
-        type?: bigint,
-        station?: bigint,
-        eqpType?: EqpTypes,
-        isEnable?: boolean,
-        state?: OnlineStates,
-        isFall?: boolean,
-        tagId?: string,
-        rfid?: string,
-    }) => {
+    readonly GetCount = async (param: TagFilter) => {
         if (param.rfid || param.tagId) {
             const res = await this.GetFull(param.tagId, param.rfid)
             return res.data ? 1 : 0
@@ -93,17 +96,9 @@ class TagHelper extends IdHelper<TagDto> {
     readonly GetList = async (param: {
         pageSize?: number,
         pageNumber?: number,
-        company?: bigint,
-        batch?: bigint,
-        type?: bigint,
-        station?: bigint,
-        eqpType?: EqpTypes,
-        isEnable?: boolean,
-        state?: OnlineStates,
-        isFall?: boolean,
-        tagId?: string,
-        rfid?: string,
-    }) => {
+        sort?: string,
+        ascending?: boolean,
+    } & TagFilter) => {
         if (param.rfid || param.tagId) {
             const res = await this.GetFull(param.tagId, param.rfid)
             const asset = res.data as TagDto
@@ -113,6 +108,8 @@ class TagHelper extends IdHelper<TagDto> {
                 strList: 'FullList',
                 pageSize: param.pageSize,
                 pageNumber: param.pageNumber,
+                sort: param.sort,
+                ascending: param.ascending,
                 filter: {
                     parent: {
                         id: param.batch,

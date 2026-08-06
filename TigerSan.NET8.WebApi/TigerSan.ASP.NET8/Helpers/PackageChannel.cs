@@ -1,14 +1,15 @@
 ﻿using System.Globalization;
 using System.Threading.Channels;
 using TigerSan.CsvLog;
-using TigerSan.TimerHelper;
+using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Services.Models;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
-using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Share.Extensions;
-using TigerSan.NET8.WebApi.Interfaces.Models;
+using TigerSan.NET8.WebApi.Share.Helpers;
+using TigerSan.NET8.WebApi.Share.Packages;
+using TigerSan.TimerHelper;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -159,35 +160,21 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
-        #region 修改“基站”
-        /// <summary>修改“基站”</summary>
-        public async Task<BaseStationEntity?> EditBaseStationAsync(
-            string CollectorId,
-            string ReportTime,
-            Action<BaseStationEntity>? updateBaseStation)
-        {
-            var baseStationService = BaseStationService;
-
-            // 修改“基站”:
-            var res = await baseStationService.GetByMacAddr(CollectorId);
-            var baseStation = res.Data;
-            if (baseStation == null) return null;
-
-            baseStation.ReportTime = GetUtc(ReportTime);
-            baseStation.OnlineState = OnlineStates.Online;
-            updateBaseStation?.Invoke(baseStation);
-            await baseStationService.Edit(baseStation);
-
-            return baseStation;
-        }
-        #endregion
-
         #region 修改“基站”和“标签”（蓝牙）
         /// <summary>修改“基站”和“标签”（蓝牙）</summary>
         public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BaseStationPackage package)
         {
             var tagService = TagService;
-            var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
+            var baseStationService = BaseStationService;
+
+            #region 获取“基站”
+            var res = await baseStationService.GetByMacAddr(package.Data.CollectorId);
+            var baseStation = res.Data;
+            if (baseStation == null)
+            {
+                LogHelper.Instance.Warning($"BaseStation not found! ({package.Data.CollectorId})");
+            }
+            #endregion
 
             package.Data.TagDatas0.AddRange(package.Data.TagDatas1);
 
@@ -195,10 +182,10 @@ namespace TigerSan.NET8.WebApi.Helpers
             {
                 var resGetFullByTagId = await tagService.GetFullByTagId(tagData.TagId);
                 var tag = resGetFullByTagId.Data;
-                if (tag == null) return MyResults<object>.IsNull(nameof(tag));
+                if (tag == null) continue;
                 if (tag.EqpType != EqpTypes.Tag)
                 {
-                    LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch.Message);
+                    LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch(tagData.TagId).Message);
                     continue;
                 }
 
@@ -219,41 +206,66 @@ namespace TigerSan.NET8.WebApi.Helpers
                     newTag.Longitude = null;
                     newTag.Latitude = null;
                 }
-                else if (baseStation.StationType == StationTypes.Base)
-                {
-                    var resGetSite = await SiteService.Get(baseStation.Site);
-                    var site = resGetSite.Data;
-                    if (site == null)
-                    {
-                        return resGetSite.Convert<object>();
-                    }
-                    newTag.Longitude = site.Longitude;
-                    newTag.Latitude = site.Latitude;
-                }
-                else if (baseStation.StationType == StationTypes.GPS && package.Data.IsValidLngLat)
-                {
-                    newTag.LocationMode = LocationModes.GPS;
-                    newTag.Longitude = package.Data.Longitude;
-                    newTag.Latitude = package.Data.Latitude;
-                }
                 else
                 {
-                    newTag.Longitude = null;
-                    newTag.Latitude = null;
+                    if (baseStation.IsMobile)
+                    {
+                        switch (package.Data.LocationMode)
+                        {
+                            case StationLocationModes.WifiScan:
+                                newTag.LocationMode = LocationModes.WiFi_Bluetooth;
+                                break;
+                            case StationLocationModes.AGPS:
+                                newTag.LocationMode = LocationModes._4G_Bluetooth;
+                                break;
+                            default:
+                                newTag.LocationMode = LocationModes.GPS_Bluetooth;
+                                break;
+                        }
+
+                        if (package.Data.IsValidLngLat)
+                        {
+                            newTag.Longitude = package.Data.Longitude;
+                            newTag.Latitude = package.Data.Latitude;
+                        }
+                        else
+                        {
+                            newTag.Longitude = null;
+                            newTag.Latitude = null;
+                        }
+                    }
+                    else
+                    {
+                        var resGetSite = await SiteService.Get(baseStation.Site);
+                        var site = resGetSite.Data;
+                        if (site == null)
+                        {
+                            newTag.Longitude = null;
+                            newTag.Latitude = null;
+                            LogHelper.Instance.Warning(MyResults<object>.SiteNotExist.Message);
+                        }
+                        else
+                        {
+                            newTag.Longitude = site.Longitude;
+                            newTag.Latitude = site.Latitude;
+                        }
+                    }
+
+                    // 更新“基站”状态：
+                    baseStation.OnlineState = OnlineStates.Online;
+                    baseStation.ReportTime = newTag.ReportTime;
+                    baseStation.LocationMode = newTag.LocationMode;
+                    baseStation.Longitude = newTag.Longitude;
+                    baseStation.Latitude = newTag.Latitude;
+                    await baseStationService.Edit(baseStation);
                 }
                 #endregion 计算“经纬度”
 
                 var resEdit = await tagService.Edit(newTag);
-                if (!resEdit.IsSuccess)
-                {
-                    return resEdit.Convert<object>();
-                }
+                if (!resEdit.IsSuccess) continue;
 
                 var resAsset = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
-                if (!resAsset.IsSuccess)
-                {
-                    return resAsset.Convert<object>();
-                }
+                if (!resAsset.IsSuccess) continue;
             }
 
             return MyResults<object>.Success();
@@ -265,15 +277,15 @@ namespace TigerSan.NET8.WebApi.Helpers
         public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(Locator4gPackage package)
         {
             var tagService = TagService;
-            var baseStation = await EditBaseStationAsync(package.Data.CollectorId, package.ReportTime, null);
 
             var resGetFullByTagId = await tagService.GetFullByTagId(package.Data.CollectorId);
             var tag = resGetFullByTagId.Data;
             if (tag == null) return MyResults<object>.IsNull(nameof(tag));
             if (tag.EqpType != EqpTypes.Locator)
             {
-                LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch.Message);
-                return MyResults<object>.EqpTypeNotMatch;
+                var error = MyResults<object>.EqpTypeNotMatch(package.Data.CollectorId);
+                LogHelper.Instance.Warning(error.Message);
+                return error;
             }
 
             var newTag = new TagDto();
@@ -283,7 +295,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             newTag.ReportTime = GetUtc(package.ReportTime);
             newTag.OnlineState = OnlineStates.Online;
             newTag.IsFall = package.Data.IsFall;
-            newTag.Station = baseStation?.Id;
+            newTag.Station = null;
             newTag.Battery = package.Data.Battery;
             newTag.Signal = package.Data.WifiScan.FirstOrDefault()?.Signal;
 
@@ -318,8 +330,16 @@ namespace TigerSan.NET8.WebApi.Helpers
                 }
             }
 
-            newTag.Longitude = location?.Longitude;
-            newTag.Latitude = location?.Latitude;
+            if (location != null && location.IsValidLngLat)
+            {
+                newTag.Longitude = location?.Longitude;
+                newTag.Latitude = location?.Latitude;
+            }
+            else
+            {
+                newTag.Longitude = null;
+                newTag.Latitude = null;
+            }
             #endregion 计算“经纬度”
 
             #region 获取“地址”

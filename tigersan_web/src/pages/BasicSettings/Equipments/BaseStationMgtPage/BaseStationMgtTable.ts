@@ -1,5 +1,5 @@
-import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
-import { BaseStationDto } from '@/models'
+import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel, IsMobile } from '@/0_tigersan_ui/tigerui'
+import { BaseStationDto, LocationMode } from '@/models'
 
 export function GetStationTable() {
     // 列头:
@@ -48,6 +48,13 @@ export function GetStationTable() {
             Type: ItemType.TextBox,
         },
         {
+            _propName: 'isMobile',
+            Text: Texts.InstallMode,
+            IsReadonly: true,
+            Type: ItemType.TextBox,
+            _getString: IsMobile.GetString,
+        },
+        {
             _propName: 'isEnable',
             Text: Texts.IsEnable,
             IsReadonly: true,
@@ -93,12 +100,35 @@ export function GetStationTable() {
             Type: ItemType.TextBox,
             _getString: source => ObjectHelper.GetDateString(source.reportTime)
         },
+        {
+            _propName: 'locationMode',
+            Text: Texts.LocationMode,
+            IsReadonly: true,
+            IsRequired: false,
+            Type: ItemType.TextBox,
+            _getString: LocationMode.GetString,
+        },
+        {
+            _propName: 'longitude',
+            Text: Texts.Longitude,
+            IsReadonly: true,
+            IsRequired: false,
+            Type: ItemType.TextBox,
+        },
+        {
+            _propName: 'latitude',
+            Text: Texts.Latitude,
+            IsReadonly: true,
+            IsRequired: false,
+            Type: ItemType.TextBox,
+        },
     ])
 
     // 初始化:
     table.IsAllowMultiSelect.value = true
 
     table._initItem = itemModel => {
+        IsMobile.InitItemModel(itemModel)
         IsEnable.InitItemModel(itemModel)
         OnlineState.InitItemModel(itemModel)
         Battery.InitItemModel(itemModel)

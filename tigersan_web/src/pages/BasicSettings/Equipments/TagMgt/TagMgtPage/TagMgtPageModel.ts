@@ -174,6 +174,7 @@ export class TagMgtPageModel {
         this.assetForm.IsStationIdEnable.value = false
 
         // 更新:
+        this.table._onSlotChange = this.Refresh
         this.table._onSelectStateChange = this.InitSelectIsEnableState
         this.searchTagId._onSearch = this.Refresh
         this.searchTagId._onChange = this.Refresh
@@ -278,6 +279,8 @@ export class TagMgtPageModel {
             await tagHelper.GetList({
                 pageSize: this.pagination.PageSize.value,
                 pageNumber: this.pagination.SelectedNum.value,
+                sort: this.table.SlotHeader.value?._propName,
+                ascending: this.table.IsAscending.value,
                 company: this.selectCompany.Value.value?.id,
                 batch: this.selectBatch.Value.value?.id,
                 station: this.selectStation.Value.value?.id,

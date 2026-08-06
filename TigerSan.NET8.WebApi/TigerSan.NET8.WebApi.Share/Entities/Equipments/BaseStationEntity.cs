@@ -4,15 +4,6 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
-    /// <summary>基站类型</summary>
-    public enum StationTypes
-    {
-        /// <summary>基础</summary>
-        Base = 0,
-        /// <summary>GPS</summary>
-        GPS = 1,
-    }
-
     [Table("base_station")]
     public class BaseStationEntity : IdName
     {
@@ -23,7 +14,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public bool IsEnable { get; set; } = false;
         [SnakeColumn]
-        public StationTypes StationType { get; set; } = StationTypes.Base;
+        public bool IsMobile { get; set; } = false;
         [SnakeColumn]
         public OnlineStates OnlineState { get; set; } = OnlineStates.Offline;
         [SnakeColumn]
@@ -38,6 +29,12 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public DateTime CreateTime { get; set; } = DateTimeHelper.GetUtcNow();
         [SnakeColumn]
         public DateTime? ReportTime { get; set; } = null;
+        [SnakeColumn]
+        public LocationModes? LocationMode { get; set; }
+        [SnakeColumn]
+        public double? Longitude { get; set; }
+        [SnakeColumn]
+        public double? Latitude { get; set; }
         [SnakeColumn]
         public string? Image { get; set; }
     }
