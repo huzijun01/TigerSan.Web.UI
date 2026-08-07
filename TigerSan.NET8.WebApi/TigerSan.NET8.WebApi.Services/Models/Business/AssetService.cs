@@ -323,6 +323,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             if (find != null)
                             {
                                 find.Tag = dto.Tag = null;
+                                find.TagId = dto.TagId = null;
                                 _db.SaveChanges();
                             }
                         }

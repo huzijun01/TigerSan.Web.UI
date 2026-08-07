@@ -852,9 +852,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 #endregion
 
-                // 更新“资产状态”：
-                asset.Copy(newTag);
-
                 #region 获取“最新记录”
                 var resLast = await GetLast(newTag.Asset.Value);
                 if (resLast.IsError)
@@ -1057,6 +1054,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                 }
 
+                // 更新“资产状态”：
+                asset.Copy(newTag);
+                asset.Copy(newRecord);
+
                 await Calculate(newTag.Id, false);
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
@@ -1083,29 +1084,18 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 // 检验“资源”是否存在:
-                var find = await _db.Assets.FirstOrDefaultAsync(i => i.Id == id);
-                if (find == null)
+                var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == id);
+                if (asset == null)
                 {
                     return MyResults<object>.ResourceNotExist;
                 }
 
                 var records = await _db.AssetRecords.Where(r => r.Asset == id).OrderByDescending(r => r.ReportTime).ToListAsync();
                 var lastRecord = records.FirstOrDefault();
-                find.LastRecord = lastRecord?.Id;
-
-                // 更新“状态”:
-                if (find.Tag != null)
-                {
-                    find.Copy(await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Tag));
-                }
-                else
-                {
-                    find.IsFall = null;
-                    find.OnlineState = OnlineStates.Offline;
-                }
+                asset.LastRecord = lastRecord?.Id;
 
                 // 是否滞留:
-                if (find.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InStore)
+                if (asset.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InStore)
                 {
                     var lastInbound = records.LastOrDefault(r => r.State == AssetStates.Inbound);
                     if (lastInbound == null)
@@ -1118,13 +1108,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         stolid.ShallowCopy(lastRecord);
                         stolid.UpdateId();
                         stolid.ReportTime = DateTimeHelper.GetUtcNow();
-                        find.State = stolid.State = AssetStates.Stolid;
+                        asset.State = stolid.State = AssetStates.Stolid;
                         await _db.AssetRecords.AddAsync(stolid);
                     }
                 }
 
                 // 是否超时:
-                if (find.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InTransit)
+                if (asset.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InTransit)
                 {
                     var lastOutbound = records.LastOrDefault(r => r.State == AssetStates.Outbound);
                     if (lastOutbound == null)
@@ -1137,24 +1127,24 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         timeout.ShallowCopy(lastRecord);
                         timeout.UpdateId();
                         timeout.ReportTime = DateTimeHelper.GetUtcNow();
-                        find.State = timeout.State = AssetStates.Timeout;
+                        asset.State = timeout.State = AssetStates.Timeout;
                         await _db.AssetRecords.AddAsync(timeout);
                     }
                 }
 
                 // 计算“周转”:
                 var now = DateTimeHelper.GetUtcNow();
-                find.DailyMove = GetMoves(records, now.Date); // 当日0点
-                find.MonthlyMove = GetMoves(records, new DateTime(now.Year, now.Month, 1)); // 当月1日0点
-                find.TotalMove = GetMoves(records);
+                asset.DailyMove = GetMoves(records, now.Date); // 当日0点
+                asset.MonthlyMove = GetMoves(records, new DateTime(now.Year, now.Month, 1)); // 当月1日0点
+                asset.TotalMove = GetMoves(records);
 
                 // 计算“时长”:
-                find.StayDuration = GetStayDuration(records);
-                find.TravelDuration = GetTravelDuration(records);
-                find.OfflineDuration = GetOfflineDuration(records);
+                asset.StayDuration = GetStayDuration(records);
+                asset.TravelDuration = GetTravelDuration(records);
+                asset.OfflineDuration = GetOfflineDuration(records);
 
                 // 计算时间:
-                find.CalculationTime = DateTimeHelper.GetUtcNow();
+                asset.CalculationTime = DateTimeHelper.GetUtcNow();
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务

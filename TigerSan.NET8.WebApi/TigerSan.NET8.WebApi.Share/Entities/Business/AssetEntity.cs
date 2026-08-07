@@ -17,32 +17,34 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public string? TagId { get; set; }
         [SnakeColumn]
-        public long? TagType { get; set; }
-        [SnakeColumn]
-        public long? Station { get; set; }
-        [SnakeColumn]
         public long? Vehicle { get; set; }
         [SnakeColumn]
         public long? Transfer { get; set; }
         [SnakeColumn]
+        public bool IsAuto { get; set; } = true;
+        [SnakeColumn]
         public string? Name { get; set; } = string.Empty;
         [SnakeColumn]
         public string? Comment { get; set; } = string.Empty;
-        // 计算:
-        [SnakeColumn]
-        public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
-        [SnakeColumn]
-        public AssetStates State { get; set; }
-        [SnakeColumn]
-        public OnlineStates OnlineState { get; set; }
-        [SnakeColumn]
-        public bool IsAuto { get; set; } = true;
-        [SnakeColumn]
-        public bool? IsFall { get; set; } = false;
         [SnakeColumn]
         public ErrorTypes? ErrorType { get; set; }
         [SnakeColumn]
         public DateTime? BindingTime { get; set; }
+        // Tag:
+        [SnakeColumn]
+        public OnlineStates OnlineState { get; set; }
+        [SnakeColumn]
+        public bool? IsFall { get; set; } = false;
+        [SnakeColumn]
+        public long? TagType { get; set; }
+        [SnakeColumn]
+        public long? Station { get; set; }
+        // 记录:
+        [SnakeColumn]
+        public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
+        [SnakeColumn]
+        public AssetStates State { get; set; }
+        // 计算:
         [SnakeColumn]
         public DateTime? CalculationTime { get; set; }
         [SnakeColumn]
@@ -58,6 +60,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public double? OfflineDuration { get; set; }
 
+        #region 复制（标签）
         public void Copy(TagEntity? tag)
         {
             if (tag == null)
@@ -69,10 +72,28 @@ namespace TigerSan.NET8.WebApi.Share.Entities
             }
             else
             {
-                Station = tag.Station;
                 OnlineState = tag.OnlineState;
                 IsFall = tag.IsFall;
+                TagType = tag.Type;
+                Station = tag.Station;
             }
         }
+        #endregion
+
+        #region 复制（记录）
+        public void Copy(AssetRecordEntity? record)
+        {
+            if (record == null)
+            {
+                LastRecord = null;
+                State = AssetStates.NoRecord;
+            }
+            else
+            {
+                LastRecord = record.Id;
+                State = record.State;
+            }
+        }
+        #endregion
     }
 }
