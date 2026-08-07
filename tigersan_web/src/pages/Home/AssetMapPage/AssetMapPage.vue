@@ -15,12 +15,13 @@
                         <Select :model="model.filter.selectErrorType" />
                         <Select :model="model.filter.selectIsAuto" />
                         <Select :model="model.filter.selectIsFall" />
+                        <Search :model="model.filter.searchRfid" />
                     </div>
                     <div class="row-panel">
                         <Search :model="model.filter.searchName" />
                         <Search :model="model.filter.searchAssetId" />
                         <Search :model="model.filter.searchTagId" />
-                        <Search :model="model.filter.searchRfid" />
+                        <Search :model="model.filter.searchStationId" />
                     </div>
                 </div>
                 <div class="button-panel">

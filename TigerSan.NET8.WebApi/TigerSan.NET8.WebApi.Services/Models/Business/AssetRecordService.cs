@@ -1055,7 +1055,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 // 更新“资产状态”：
-                asset.Copy(newTag);
+                asset.Copy(newTag, newStation?.MacAddr);
                 asset.Copy(newRecord);
 
                 await Calculate(newTag.Id, false);

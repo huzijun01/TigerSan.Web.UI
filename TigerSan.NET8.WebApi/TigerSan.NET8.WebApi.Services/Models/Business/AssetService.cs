@@ -347,17 +347,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
                     }
 
-                    // 添加“基站ID”:
-                    var station = await _db.BaseStations.FirstOrDefaultAsync(t => t.Id == entity.Station);
-                    if (station == null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(station));
-                    }
-                    else
-                    {
-                        dto.StationId = station.MacAddr;
-                    }
-
                     // 添加“车辆信息”:
                     if (dto.Vehicle != null)
                     {

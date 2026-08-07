@@ -73,9 +73,10 @@ export class AssetFilter {
     isFall?: boolean
     errorType?: ErrorTypes
     name?: string
+    rfid?: string
     assetId?: string
     tagId?: string
-    rfid?: string
+    stationId?: string
 
     static GetFilter(param: AssetFilter): FilterDto {
         return {
@@ -95,8 +96,9 @@ export class AssetFilter {
                 { propName: 'IsFall', value: param.isFall },
                 { propName: 'ErrorType', value: param.errorType },
                 { propName: 'Name', value: param.name === '' ? undefined : param.name, isFuzzy: true },
-                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId },
-                { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId },
+                { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId, isFuzzy: true },
+                { propName: 'TagId', value: param.tagId === '' ? undefined : param.tagId, isFuzzy: true },
+                { propName: 'StationId', value: param.stationId === '' ? undefined : param.stationId, isFuzzy: true },
             ],
         }
     }
@@ -117,8 +119,8 @@ export class AssetHelper extends IdHelper<AssetDto> {
     /** 筛选“总数” */
     readonly GetCount = async (param: AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
-        if (param.assetId || param.rfid) {
-            const res = await this.GetFull(undefined, param.assetId, param.rfid)
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, undefined, param.rfid)
             return res.data ? 1 : 0
         } else {
             return await axiosHelper.GetCount(this._action, {
@@ -133,8 +135,8 @@ export class AssetHelper extends IdHelper<AssetDto> {
         pageNumber?: number,
     } & AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
-        if (param.assetId || param.rfid) {
-            const res = await this.GetFull(undefined, param.assetId, param.rfid)
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, undefined, param.rfid)
             const asset = res.data as AssetDto
             return asset ? [asset] : new Array<AssetDto>()
         } else {

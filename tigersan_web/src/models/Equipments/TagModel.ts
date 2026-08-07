@@ -1,4 +1,4 @@
-import { OnlineStates } from "@/0_tigersan_ui/tigerui"
+import { FilterDto, OnlineStates, StringHelper } from "@/0_tigersan_ui/tigerui"
 import { EqpTypes } from "../base/EqpTypes"
 import { LocationModes } from "../base/AssetStates"
 import { axiosHelper, IdEntityBase, IdHelper } from "@/helpers"
@@ -41,17 +41,37 @@ export class TagDto extends TagEntity {
 }
 
 /** “标签”过滤器 */
-export type TagFilter = {
-    company?: bigint,
-    batch?: bigint,
-    type?: bigint,
-    station?: bigint,
-    eqpType?: EqpTypes,
-    isEnable?: boolean,
-    state?: OnlineStates,
-    isFall?: boolean,
-    tagId?: string,
-    rfid?: string,
+export class TagFilter {
+    company?: bigint
+    batch?: bigint
+    type?: bigint
+    station?: bigint
+    eqpType?: EqpTypes
+    isEnable?: boolean
+    state?: OnlineStates
+    isFall?: boolean
+    tagId?: string
+    rfid?: string
+
+    static GetFilter(param: TagFilter): FilterDto {
+        return {
+            parent: {
+                id: param.batch,
+                parent: {
+                    id: param.company,
+                },
+            },
+            filters: [
+                { propName: 'TagId', value: StringHelper.IsNotEmpty(param.tagId) ? param.tagId : undefined, isFuzzy: true },
+                { propName: 'Type', value: param.type },
+                { propName: 'Station', value: param.station },
+                { propName: 'EqpType', value: param.eqpType },
+                { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'OnlineState', value: param.state },
+                { propName: 'IsFall', value: param.isFall },
+            ],
+        }
+    }
 }
 
 class TagHelper extends IdHelper<TagDto> {
@@ -67,27 +87,12 @@ class TagHelper extends IdHelper<TagDto> {
 
     /** 筛选“总数” */
     readonly GetCount = async (param: TagFilter) => {
-        if (param.rfid || param.tagId) {
-            const res = await this.GetFull(param.tagId, param.rfid)
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, param.rfid)
             return res.data ? 1 : 0
         } else {
             return await axiosHelper.GetCount(this._action, {
-                filter: {
-                    parent: {
-                        id: param.batch,
-                        parent: {
-                            id: param.company,
-                        },
-                    },
-                    filters: [
-                        { propName: 'Type', value: param.type },
-                        { propName: 'Station', value: param.station },
-                        { propName: 'EqpType', value: param.eqpType },
-                        { propName: 'IsEnable', value: param.isEnable },
-                        { propName: 'OnlineState', value: param.state },
-                        { propName: 'IsFall', value: param.isFall },
-                    ],
-                }
+                filter: TagFilter.GetFilter(param)
             })
         }
     }
@@ -99,8 +104,8 @@ class TagHelper extends IdHelper<TagDto> {
         sort?: string,
         ascending?: boolean,
     } & TagFilter) => {
-        if (param.rfid || param.tagId) {
-            const res = await this.GetFull(param.tagId, param.rfid)
+        if (param.rfid) {
+            const res = await this.GetFull(undefined, param.rfid)
             const asset = res.data as TagDto
             return asset ? [asset] : new Array<TagDto>()
         } else {
@@ -110,22 +115,7 @@ class TagHelper extends IdHelper<TagDto> {
                 pageNumber: param.pageNumber,
                 sort: param.sort,
                 ascending: param.ascending,
-                filter: {
-                    parent: {
-                        id: param.batch,
-                        parent: {
-                            id: param.company,
-                        },
-                    },
-                    filters: [
-                        { propName: 'Type', value: param.type },
-                        { propName: 'Station', value: param.station },
-                        { propName: 'EqpType', value: param.eqpType },
-                        { propName: 'IsEnable', value: param.isEnable },
-                        { propName: 'OnlineState', value: param.state },
-                        { propName: 'IsFall', value: param.isFall },
-                    ],
-                }
+                filter: TagFilter.GetFilter(param)
             })
         }
     }

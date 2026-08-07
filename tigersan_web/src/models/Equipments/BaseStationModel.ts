@@ -34,33 +34,35 @@ export class BaseStationDto extends BaseStationEntity {
 }
 
 /** “基站”过滤器 */
-export type BaseStationFilter = {
-    company?: bigint,
-    site?: bigint,
-    isEnable?: boolean,
-    isMobile?: boolean,
-    state?: OnlineStates,
-    type?: bigint,
-    macAddr?: string,
-}
+export class BaseStationFilter {
+    company?: bigint
+    site?: bigint
+    isEnable?: boolean
+    isMobile?: boolean
+    state?: OnlineStates
+    type?: bigint
+    macAddr?: string
 
-function GetFilter(param: BaseStationFilter): FilterDto {
-    return {
-        filters: [
-            { propName: 'IsEnable', value: param.isEnable },
-            { propName: 'IsMobile', value: param.isMobile },
-            { propName: 'OnlineState', value: param.state },
-            { propName: 'Type', value: param.type },
-            { propName: 'MacAddr', value: StringHelper.IsNotEmpty(param.macAddr) ? param.macAddr : undefined },
-        ],
-        parent: {
-            id: param.site,
+    static GetFilter(param: BaseStationFilter): FilterDto {
+        return {
+            filters: [
+                { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'IsMobile', value: param.isMobile },
+                { propName: 'OnlineState', value: param.state },
+                { propName: 'Type', value: param.type },
+                { propName: 'MacAddr', value: StringHelper.IsNotEmpty(param.macAddr) ? param.macAddr : undefined, isFuzzy: true },
+            ],
             parent: {
-                id: param.company,
+                id: param.site,
+                parent: {
+                    id: param.company,
+                }
             }
         }
     }
 }
+
+
 
 class BaseStationHelper extends IdNameHelper<BaseStationDto> {
     constructor() {
@@ -75,7 +77,7 @@ class BaseStationHelper extends IdNameHelper<BaseStationDto> {
 
     /** 筛选“总数” */
     readonly GetCount = async (param: BaseStationFilter) => await axiosHelper.GetCount(this._action, {
-        filter: GetFilter(param)
+        filter: BaseStationFilter.GetFilter(param)
     })
 
     /** 筛选“数据”集合 */
@@ -86,7 +88,7 @@ class BaseStationHelper extends IdNameHelper<BaseStationDto> {
         pageSize: param.pageSize,
         pageNumber: param.pageNumber,
         strList: 'FullList',
-        filter: GetFilter(param),
+        filter: BaseStationFilter.GetFilter(param),
     })
 
     /** 获取“所属公司”集合 */

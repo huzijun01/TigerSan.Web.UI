@@ -58,8 +58,10 @@ export class AssetLedgerPageModel extends AssetFormModel {
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
                 name: filter.searchName.Value.value,
-                assetId: filter.searchAssetId.Value.value,
                 rfid: filter.searchRfid.Value.value,
+                assetId: filter.searchAssetId.Value.value,
+                tagId: filter.searchTagId.Value.value,
+                stationId: filter.searchStationId.Value.value,
             })
 
             await assetHelper.GetList({
@@ -76,9 +78,10 @@ export class AssetLedgerPageModel extends AssetFormModel {
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
                 name: filter.searchName.Value.value,
+                rfid: filter.searchRfid.Value.value,
                 assetId: filter.searchAssetId.Value.value,
                 tagId: filter.searchTagId.Value.value,
-                rfid: filter.searchRfid.Value.value,
+                stationId: filter.searchStationId.Value.value,
             }).then(arr => {
                 ArrayHelper.Set(assetLedgerTable.RowDatas, arr)
             })

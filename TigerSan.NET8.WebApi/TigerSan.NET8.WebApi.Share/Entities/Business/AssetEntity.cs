@@ -39,6 +39,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public long? TagType { get; set; }
         [SnakeColumn]
         public long? Station { get; set; }
+        [SnakeColumn]
+        public string? StationId { get; set; }
         // 记录:
         [SnakeColumn]
         public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
@@ -61,7 +63,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public double? OfflineDuration { get; set; }
 
         #region 复制（标签）
-        public void Copy(TagEntity? tag)
+        public void Copy(TagEntity? tag, string? stationId)
         {
             if (tag == null)
             {
@@ -69,6 +71,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
                 TagId = null;
                 TagType = null;
                 Station = null;
+                StationId = null;
             }
             else
             {
@@ -76,6 +79,7 @@ namespace TigerSan.NET8.WebApi.Share.Entities
                 IsFall = tag.IsFall;
                 TagType = tag.Type;
                 Station = tag.Station;
+                StationId = stationId;
             }
         }
         #endregion

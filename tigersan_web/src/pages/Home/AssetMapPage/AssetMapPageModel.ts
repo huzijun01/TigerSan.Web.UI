@@ -53,9 +53,10 @@ export class AssetMapPageModel {
                 isFall: filter.selectIsFall.Value.value,
                 errorType: filter.selectErrorType.Value.value,
                 name: filter.searchName.Value.value,
+                rfid: filter.searchRfid.Value.value,
                 assetId: filter.searchAssetId.Value.value,
                 tagId: filter.searchTagId.Value.value,
-                rfid: filter.searchRfid.Value.value,
+                stationId: filter.searchStationId.Value.value,
             })
             this.Positions.splice(0)
             this.Positions.push(...positions)

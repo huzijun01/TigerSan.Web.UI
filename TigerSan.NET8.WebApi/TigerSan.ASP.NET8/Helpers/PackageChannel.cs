@@ -226,6 +226,34 @@ namespace TigerSan.NET8.WebApi.Helpers
                         {
                             newTag.Longitude = package.Data.Longitude;
                             newTag.Latitude = package.Data.Latitude;
+
+                            if (newTag.LocationMode == LocationModes.GPS_Bluetooth)
+                            {
+                                var resConvert = await MapHelper.ConvertCoordinatesAsync(GlobalSettings.AMapKey, newTag.Longitude, newTag.Latitude);
+                                if (resConvert.Data == null)
+                                {
+                                    newTag.Longitude = null;
+                                    newTag.Latitude = null;
+                                }
+                                else
+                                {
+                                    newTag.Longitude = resConvert.Data.Longitude;
+                                    newTag.Latitude = resConvert.Data.Latitude;
+                                }
+                            }
+
+                            #region 获取“地址”
+                            if (newTag.Longitude != null && newTag.Latitude != null)
+                            {
+                                var resGetAddress = await MapHelper.GetAddressByLocation(newTag.Longitude.Value, newTag.Latitude.Value, GlobalSettings.AMapKey);
+                                var address = resGetAddress.Data;
+                                if (address == null)
+                                {
+                                    return resGetAddress.Convert<object>();
+                                }
+                                newTag.Address = address;
+                            }
+                            #endregion 获取“地址”
                         }
                         else
                         {

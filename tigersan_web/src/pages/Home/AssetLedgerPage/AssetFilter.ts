@@ -8,10 +8,11 @@ export class AssetFilter {
     /** “可访问公司”监听器 */
     readonly watchAccessibleCompanies
     /** 搜索框 */
+    readonly searchRfid = new SearchModel()
     readonly searchName = new SearchModel()
     readonly searchAssetId = new SearchModel()
     readonly searchTagId = new SearchModel()
-    readonly searchRfid = new SearchModel()
+    readonly searchStationId = new SearchModel()
     /** 筛选 */
     readonly selectOnlineState = OnlineState.GetSelectModel()
     readonly selectIsAuto = IsAuto.GetSelectModel()
@@ -27,6 +28,10 @@ export class AssetFilter {
     constructor(refresh?: Function) {
         this._refresh = refresh
 
+        this.searchRfid.Placeholder.value = 'RFID'
+        this.searchRfid._onChange = this._refresh
+        this.searchRfid._onSearch = this._refresh
+
         this.searchName.Placeholder.value = Texts.Name
         this.searchName._onChange = this._refresh
         this.searchName._onSearch = this._refresh
@@ -39,9 +44,9 @@ export class AssetFilter {
         this.searchTagId._onChange = this._refresh
         this.searchTagId._onSearch = this._refresh
 
-        this.searchRfid.Placeholder.value = 'RFID'
-        this.searchRfid._onChange = this._refresh
-        this.searchRfid._onSearch = this._refresh
+        this.searchStationId.Placeholder.value = Texts.StationId
+        this.searchStationId._onChange = this._refresh
+        this.searchStationId._onSearch = this._refresh
 
         this.selectAssetState.IsSelectAll.value = true
         this.selectAssetState.IsAllowMultiSelect.value = true

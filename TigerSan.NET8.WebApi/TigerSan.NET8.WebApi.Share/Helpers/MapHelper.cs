@@ -93,6 +93,48 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
     }
     #endregion
 
+    #region 原坐标系枚举
+    /// <summary>
+    /// 原坐标系枚举
+    /// </summary>
+    public enum CoordSysType
+    {
+        /// <summary>
+        /// GPS坐标系
+        /// </summary>
+        gps,
+        /// <summary>
+        /// MapBar坐标系
+        /// </summary>
+        mapbar,
+        /// <summary>
+        /// 百度坐标系
+        /// </summary>
+        baidu,
+        /// <summary>
+        /// 高德自身坐标系（不执行转换）
+        /// </summary>
+        autonavi
+    }
+    #endregion
+
+    #region 高德坐标转换接口内部响应映射模型
+    /// <summary>
+    /// 高德坐标转换接口内部响应映射模型
+    /// </summary>
+    public class AmapConvertApiResponse
+    {
+        /// <summary>返回状态：1=成功，0=失败</summary>
+        public int Status { get; set; }
+        /// <summary>返回状态信息，成功时返回OK，失败返回错误原因</summary>
+        public string Info { get; set; } = string.Empty;
+        /// <summary>高德官方错误码，例如10001代表无效用户密钥</summary>
+        public string Infocode { get; set; } = string.Empty;
+        /// <summary>转换完成后的坐标字符串</summary>
+        public string Locations { get; set; } = string.Empty;
+    }
+    #endregion
+
     public static class MapHelper
     {
         #region 根据“WiFi”获取“位置”
@@ -354,6 +396,84 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             var formattedAddress = regeocode.GetProperty("formatted_address").GetString();
 
             return MyResults<string>.Success(null, formattedAddress);
+        }
+        #endregion
+
+        #region 坐标转换
+        public static async Task<MyActionResult<Location>> ConvertCoordinatesAsync(
+            string amapKey,
+            double? longitude,
+            double? latitude,
+            CoordSysType coordSys = CoordSysType.gps)
+        {
+            #region 前置参数合法性校验
+            if (string.IsNullOrWhiteSpace(amapKey))
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning("高德Web服务API密钥不能为空"));
+
+            // 校验经纬度数值范围合规
+            if (!longitude.HasValue || longitude.Value is < -180 or > 180)
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning("经度参数非法，合法范围为-180到180"));
+            if (!latitude.HasValue || latitude.Value is < -90 or > 90)
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning("纬度参数非法，合法范围为-90到90"));
+
+            // 按照高德接口要求，经纬度小数点后最多保留6位，避免接口校验不通过
+            var formatLng = Math.Round(longitude.Value, 6);
+            var formatLat = Math.Round(latitude.Value, 6);
+            var locationParam = $"{formatLng},{formatLat}";
+            #endregion
+
+            var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(15) };
+            const string apiUrl = "https://restapi.amap.com/v3/assistant/coordinate/convert?";
+
+            try
+            {
+                #region 拼接符合高德接口规则的请求URL
+                var queryParams = new Dictionary<string, string>
+                {
+                    ["key"] = amapKey,
+                    ["locations"] = locationParam,
+                    ["coordsys"] = coordSys.ToString(),
+                    ["output"] = "JSON"
+                };
+                var queryContent = new FormUrlEncodedContent(queryParams);
+                var fullRequestUrl = $"{apiUrl}{await queryContent.ReadAsStringAsync()}";
+                #endregion
+
+                // 发送请求调用高德坐标转换接口
+                var response = await httpClient.GetAsync(fullRequestUrl);
+                if (!response.IsSuccessStatusCode)
+                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"HTTP请求失败: {response.StatusCode}"));
+
+                // 解析接口返回的JSON结果
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var amapResponse = System.Text.Json.JsonSerializer.Deserialize<AmapConvertApiResponse>(responseContent);
+
+                // 兼容当前附件中返回的10001无效密钥等错误场景
+                if (amapResponse == null)
+                    return MyResults<Location>.Warning(LogHelper.Instance.Warning("高德接口返回结果解析失败"));
+                if (amapResponse.Status != 1)
+                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"坐标转换失败，错误信息：{amapResponse.Info}，错误码：{amapResponse.Infocode}"));
+
+                // 解析转换后的高德坐标
+                var locStr = amapResponse.Locations.Split(',');
+                if (locStr?.Length == 2)
+                {
+                    double.TryParse(locStr[0], out var parsedLng);
+                    double.TryParse(locStr[1], out var parsedLat);
+                    var convertResult = new Location(parsedLng, parsedLat, null);
+                    return MyResults<Location>.Success(null, convertResult);
+                }
+
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning("高德返回坐标格式非法"));
+            }
+            catch (Exception ex)
+            {
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning($"坐标转换请求异常: {ex.Message}"));
+            }
+            finally
+            {
+                httpClient.Dispose();
+            }
         }
         #endregion
     }
