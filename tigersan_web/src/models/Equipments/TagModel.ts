@@ -63,6 +63,7 @@ export class TagFilter {
             },
             filters: [
                 { propName: 'TagId', value: StringHelper.IsNotEmpty(param.tagId) ? param.tagId : undefined, isFuzzy: true },
+                { propName: 'Rfid', value: StringHelper.IsNotEmpty(param.rfid) ? param.rfid : undefined, isFuzzy: true },
                 { propName: 'Type', value: param.type },
                 { propName: 'Station', value: param.station },
                 { propName: 'EqpType', value: param.eqpType },
@@ -86,16 +87,9 @@ class TagHelper extends IdHelper<TagDto> {
     ], false)
 
     /** 筛选“总数” */
-    readonly GetCount = async (param: TagFilter) => {
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, param.rfid)
-            return res.data ? 1 : 0
-        } else {
-            return await axiosHelper.GetCount(this._action, {
-                filter: TagFilter.GetFilter(param)
-            })
-        }
-    }
+    readonly GetCount = async (param: TagFilter) => await axiosHelper.GetCount(this._action, {
+        filter: TagFilter.GetFilter(param)
+    })
 
     /** 筛选“数据”集合 */
     readonly GetList = async (param: {
@@ -103,22 +97,14 @@ class TagHelper extends IdHelper<TagDto> {
         pageNumber?: number,
         sort?: string,
         ascending?: boolean,
-    } & TagFilter) => {
-        if (param.rfid) {
-            const res = await this.GetFull(undefined, param.rfid)
-            const asset = res.data as TagDto
-            return asset ? [asset] : new Array<TagDto>()
-        } else {
-            return await axiosHelper.GetList<TagDto>(this._action, {
-                strList: 'FullList',
-                pageSize: param.pageSize,
-                pageNumber: param.pageNumber,
-                sort: param.sort,
-                ascending: param.ascending,
-                filter: TagFilter.GetFilter(param)
-            })
-        }
-    }
+    } & TagFilter) => await axiosHelper.GetList<TagDto>(this._action, {
+        strList: 'FullList',
+        pageSize: param.pageSize,
+        pageNumber: param.pageNumber,
+        sort: param.sort,
+        ascending: param.ascending,
+        filter: TagFilter.GetFilter(param)
+    })
 }
 
 export const tagHelper = new TagHelper()

@@ -12,8 +12,8 @@ export class BaseStationEntity extends IdName {
     macAddr = ''
     isMobile = false
     onlineState = OnlineStates.Offline
-    heartbeatInterval = 28800
-    reportInterval = 28800
+    heartbeatInterval = 3600
+    reportInterval = 3600
     monthOffline: bigint = 0n
     createTime: Date = new Date()
     reportTime?: Date

@@ -33,7 +33,7 @@ inventoryRecordService.StartInventory();
 // SSE监听：
 SseInstance.InitInstance(app.Services).Start();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
