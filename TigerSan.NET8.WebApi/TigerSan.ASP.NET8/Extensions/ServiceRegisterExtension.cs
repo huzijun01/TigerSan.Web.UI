@@ -86,6 +86,7 @@ namespace TigerSan.NET8.WebApi.Extensions
             // Equipments:
             services.AddTransient<IBaseStationService, BaseStationService>();
             services.AddTransient<IBindingRecordService, BindingRecordService>();
+            services.AddTransient<IStationRecordService, StationRecordService>();
             services.AddTransient<ITagService, TagService>();
         }
         #endregion

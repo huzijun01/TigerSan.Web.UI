@@ -39,6 +39,7 @@ namespace TigerSan.NET8.WebApi.Share
         // Equipments:
         public DbSet<BaseStationEntity> BaseStations { get; set; }
         public DbSet<BindingRecordEntity> BindingRecords { get; set; }
+        public DbSet<StationRecordEntity> StationRecords { get; set; }
         public DbSet<TagEntity> Tags { get; set; }
         #endregion 【Properties】
 

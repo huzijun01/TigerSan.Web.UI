@@ -29,5 +29,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<object>> Calculate(long id, bool isBeginTransaction = true);
         /// <summary>修改“资产记录”</summary>
         public Task<MyActionResult<object>> EditAssetRecordAsync(TagDto oldTag, TagDto newTag, bool isBeginTransaction = true);
+        /// <summary>清理“过期记录”</summary>
+        public Task<MyActionResult<int>> ClearExpiredRecord();
     }
 }

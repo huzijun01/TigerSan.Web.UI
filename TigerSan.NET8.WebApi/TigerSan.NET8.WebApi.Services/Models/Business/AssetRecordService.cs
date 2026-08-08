@@ -76,14 +76,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 是否“移动”
         /// <summary>是否“移动”</summary>
-        private bool IsMoved(TagDto oldTag, TagDto newTag)
+        private bool IsMoved(TagDto oldRecord, TagDto newRecord)
         {
-            if (oldTag.Longitude == null
-                || oldTag.Latitude == null
-                || newTag.Longitude == null
-                || newTag.Latitude == null) return false;
-            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
-            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
+            if (newRecord.Longitude == null || newRecord.Latitude == null) return false;
+            if (oldRecord.Longitude == null || oldRecord.Latitude == null) return true;
+            var p1 = new Point2(oldRecord.Longitude.Value, oldRecord.Latitude.Value);
+            var p2 = new Point2(newRecord.Longitude.Value, newRecord.Latitude.Value);
             return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
         }
         #endregion
@@ -552,10 +550,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var queryable = start != null && end != null
                     ? _dbSet.AsNoTracking().Where(i => i.Asset == asset
+                    && i.OnlineState == OnlineStates.Online
                     && i.Longitude != null && i.Longitude.Value > 0
                     && i.Latitude != null && i.Latitude.Value > 0
                     && i.ReportTime >= start && i.ReportTime <= end)
                     : _dbSet.AsNoTracking().Where(i => i.Asset == asset
+                    && i.OnlineState == OnlineStates.Online
                     && i.Longitude != null && i.Longitude.Value > 0
                     && i.Latitude != null && i.Latitude.Value > 0);
 
@@ -1156,6 +1156,26 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
 
             return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+
+        #region 清理“过期记录”
+        public async Task<MyActionResult<int>> ClearExpiredRecord()
+        {
+            try
+            {
+                var expirationThreshold = DateTimeHelper.GetUtcNow().AddDays(-GlobalSettings.AssetRecordKeepDays);
+
+                var deletedCount = await _dbSet
+                    .Where(r => r.ReportTime < expirationThreshold)
+                    .ExecuteDeleteAsync();
+
+                return MyResults<int>.Success(null, deletedCount);
+            }
+            catch (Exception e)
+            {
+                return MyResults<int>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
         }
         #endregion
         #endregion [Other]

@@ -11,10 +11,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 {
     public class InventoryRecordService : IdServiceBase<InventoryRecordEntity>, IInventoryRecordService
     {
-        #region 【Fields】
-        private readonly DailyTask _dailyTask;
-        #endregion 【Fields】
-
         #region 【Ctor】
         static InventoryRecordService()
         {
@@ -25,7 +21,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         public InventoryRecordService(AppDbContext db) : base(db, db.InventoryRecords)
         {
-            _dailyTask = new DailyTask(null, () => InventoryAll());
         }
         #endregion 【Ctor】
 
@@ -128,47 +123,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion [查]
 
         #region [Other]
-        #region “盘点”是否开始
-        public bool IsInventoryStarted()
-        {
-            return _dailyTask.IsStarted;
-        }
-        #endregion
-
-        #region 开始“盘点”
-        public MyActionResult<object> StartInventory()
-        {
-            try
-            {
-                _dailyTask.Start();
-
-                Console.WriteLine("The inventory task has been started!");
-                return MyResults<object>.Success();
-            }
-            catch (Exception e)
-            {
-                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
-            }
-        }
-        #endregion
-
-        #region 停止“盘点”
-        public MyActionResult<object> StopInventory()
-        {
-            try
-            {
-                _dailyTask.Stop();
-
-                Console.WriteLine("The inventory task has been stopped!");
-                return MyResults<object>.Success();
-            }
-            catch (Exception e)
-            {
-                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
-            }
-        }
-        #endregion
-
         #region 盘点
         public async Task<MyActionResult<object>> Inventory(long site)
         {

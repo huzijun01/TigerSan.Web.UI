@@ -16,12 +16,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             bool? ascending = null,
             FilterDto? filter = null);
         // Other:
-        /// <summary>“盘点”是否开始</summary>
-        public bool IsInventoryStarted();
-        /// <summary>开始“盘点”</summary>
-        public MyActionResult<object> StartInventory();
-        /// <summary>停止“盘点”</summary>
-        public MyActionResult<object> StopInventory();
         /// <summary>盘点</summary>
         public Task<MyActionResult<object>> Inventory(long site);
         /// <summary>盘点全部</summary>

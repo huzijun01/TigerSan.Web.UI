@@ -8,7 +8,7 @@ export class AssetLngLat {
     latitude = 0
     site?: bigint
     address?: string
-    reportTime: Date = new Date()
+    reportTime = new Date()
     locationMode?: LocationModes
 }
 
@@ -19,6 +19,7 @@ export class AssetRecordEntity extends IdEntityBase {
     state: AssetStates = AssetStates.NoRecord
     // Tag:
     onlineState: OnlineStates = OnlineStates.Offline
+    reportTime = new Date()
     locationMode?: LocationModes
     station?: bigint
     site?: bigint
@@ -29,7 +30,6 @@ export class AssetRecordEntity extends IdEntityBase {
     longitude?: number
     latitude?: number
     comment?: string
-    reportTime?: Date
 }
 
 /** "资产记录"对象 */

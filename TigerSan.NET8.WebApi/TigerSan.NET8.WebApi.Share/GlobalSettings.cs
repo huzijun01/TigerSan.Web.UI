@@ -12,6 +12,10 @@
         public static readonly string DirImagesName = "Images";
         /// <summary>“图片”文件夹</summary>
         public static readonly string DirImages = Path.Combine(DirFiles, DirImagesName);
+        /// <summary>“资产记录”保存天数</summary>
+        public static double AssetRecordKeepDays = 60;
+        /// <summary>“基站记录”保存天数</summary>
+        public static double StationRecordKeepDays = 7;
         /// <summary>“距离”阈值（米）</summary>
         public static double DistanceThresholdMeters = 50;
         /// <summary>“滞留”阈值（时）</summary>

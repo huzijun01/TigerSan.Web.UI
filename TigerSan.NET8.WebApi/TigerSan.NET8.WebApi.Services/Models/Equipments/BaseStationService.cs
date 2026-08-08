@@ -14,7 +14,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
     public class BaseStationService : IdNameServiceBase<BaseStationEntity>, IBaseStationService
     {
         #region 【Fields】
-        private readonly IBindingRecordService _bindingRecordService;
+        private readonly IStationRecordService _stationRecordService;
         #endregion 【Fields】
 
         #region 【Ctor】
@@ -25,9 +25,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 .SetParent(typeof(CompanyEntity), nameof(_db.Companies));
         }
 
-        public BaseStationService(AppDbContext db, IBindingRecordService bindingRecordService) : base(db, db.BaseStations)
+        public BaseStationService(
+            AppDbContext db,
+            IStationRecordService stationRecordService) : base(db, db.BaseStations)
         {
-            _bindingRecordService = bindingRecordService;
+            _stationRecordService = stationRecordService;
         }
         #endregion 【Ctor】
 
@@ -574,6 +576,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 foreach (var timeOut in timeOuts)
                 {
                     timeOut.OnlineState = OnlineStates.Offline;
+                    await _stationRecordService.Add(new StationRecordEntity().Copy(timeOut, null));
                 }
 
                 await _db.SaveChangesAsync();

@@ -1,5 +1,34 @@
-import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel, IsMobile } from '@/0_tigersan_ui/tigerui'
+import StationPathPage from './StationPathPage/StationPathPage.vue'
+import StationRecordPage from './StationRecordPage/StationRecordPage.vue'
+import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel, IsMobile, PopWindowModel, MyActionResult, TabViewModel } from '@/0_tigersan_ui/tigerui'
 import { BaseStationDto, LocationMode } from '@/models'
+import { StationPathPageModel } from './StationPathPage/StationPathPageModel'
+import { StationRecordPageModel } from './StationRecordPage/StationRecordPageModel'
+
+/** 轨迹页 */
+export const pathPage = new StationPathPageModel()
+/** 记录页 */
+export const recordPage = new StationRecordPageModel()
+/** 标签视图 */
+export const tabView = new TabViewModel([
+    {
+        Title: '轨迹',
+        _component: StationPathPage,
+        _rootProps: { model: pathPage },
+    },
+    {
+        Title: '记录',
+        _component: StationRecordPage,
+        _rootProps: { model: recordPage },
+    },
+])
+
+// 弹窗:
+/** 资产详情 */
+export const stationDetail = new PopWindowModel()
+stationDetail.MinWidth.value = '80vw'
+stationDetail.MinHeight.value = '70vh'
+stationDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
 
 export function GetStationTable() {
     // 列头:
@@ -9,7 +38,16 @@ export function GetStationTable() {
             Text: Texts.MacAddr,
             IsReadonly: true,
             IsFreeze: true,
-            Type: ItemType.TextBox,
+            Type: ItemType.Link,
+            _onItemClickAsync: async itemModel => {
+                const rowData = itemModel._rowModel._rowData
+                pathPage._station = rowData.id
+                recordPage._station = rowData.id
+                const weekRange = ObjectHelper.GetOneWeekAgoAndTodayString()
+                pathPage.date.Date.value = [weekRange.start, weekRange.end]
+                stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.macAddr}`
+                stationDetail.Show()
+            }
         },
         {
             _propName: 'companyName',

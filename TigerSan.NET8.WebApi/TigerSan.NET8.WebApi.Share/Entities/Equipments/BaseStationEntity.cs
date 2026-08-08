@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Attributes;
+using Newtonsoft.Json;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
@@ -37,5 +38,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public double? Latitude { get; set; }
         [SnakeColumn]
         public string? Image { get; set; }
+        /// <summary>经纬度是否可用</summary>
+        [JsonIgnore]
+        public bool IsValidLngLat { get => Longitude > 0 && Latitude > 0; }
     }
 }

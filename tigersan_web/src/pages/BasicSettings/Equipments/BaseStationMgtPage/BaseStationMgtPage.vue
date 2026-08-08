@@ -92,6 +92,11 @@
     </PopForm>
 
     <AssetForm :form="model.assetForm" />
+
+    <!-- 弹窗 -->
+    <PopWindow :model="stationDetail">
+        <TabView :model="tabView" />
+    </PopWindow>
 </template>
 
 <script lang="ts" setup>
@@ -99,7 +104,8 @@ import AssetForm from '@/pages/Home/AssetLedgerPage/AssetForm.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { BaseStationMgtPageModel } from './BaseStationMgtPageModel'
-import { Texts, Table, Select, Switch, Search, PageCard, Pagination, PopForm, FormRow, FormItem, KeyValue, Colors, Upload } from '@/0_tigersan_ui/tigerui'
+import { Texts, Table, Select, Switch, Search, TabView, PageCard, Pagination, PopWindow, PopForm, FormRow, FormItem, KeyValue, Colors, Upload } from '@/0_tigersan_ui/tigerui'
+import { stationDetail, tabView } from './BaseStationMgtTable'
 
 // 【字段】:
 const model = new BaseStationMgtPageModel()

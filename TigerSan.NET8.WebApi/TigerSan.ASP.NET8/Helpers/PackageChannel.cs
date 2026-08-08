@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Threading.Channels;
 using TigerSan.CsvLog;
+using TigerSan.TimerHelper;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Helpers;
@@ -8,7 +9,6 @@ using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 using TigerSan.NET8.WebApi.Interfaces.Models;
-using TigerSan.TimerHelper;
 
 namespace TigerSan.NET8.WebApi.Helpers
 {
@@ -34,6 +34,8 @@ namespace TigerSan.NET8.WebApi.Helpers
         private IBaseStationService BaseStationService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IBaseStationService>(); }
         /// <summary>“资产记录”服务</summary>
         private IAssetRecordService AssetRecordService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IAssetRecordService>(); }
+        /// <summary>“基站记录”服务</summary>
+        private IStationRecordService StationRecordService { get => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IStationRecordService>(); }
         #endregion 【Properties】
 
         #region 【Ctor】
@@ -148,7 +150,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                         return;
                     }
 
-                    await EditBaseStationAndTagAsync(pkgLocator4g);
+                    await EditLocator4gAsync(pkgLocator4g);
                     //Console.WriteLine(pkgLocator4g.Serialize());
                 }
                 else
@@ -285,6 +287,10 @@ namespace TigerSan.NET8.WebApi.Helpers
                     baseStation.Longitude = newTag.Longitude;
                     baseStation.Latitude = newTag.Latitude;
                     await baseStationService.Edit(baseStation);
+                    if (baseStation.IsMobile && baseStation.IsValidLngLat)
+                    {
+                        await StationRecordService.Add(new StationRecordEntity().Copy(baseStation, newTag.Address));
+                    }
                 }
                 #endregion 计算“经纬度”
 
@@ -299,9 +305,9 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
-        #region 修改“基站”和“标签”（4G）
-        /// <summary>修改“基站”和“标签”（4G）</summary>
-        public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(Locator4gPackage package)
+        #region 修改“标签”（4G）
+        /// <summary>修改“标签”（4G）</summary>
+        public async Task<MyActionResult<object>> EditLocator4gAsync(Locator4gPackage package)
         {
             var tagService = TagService;
 

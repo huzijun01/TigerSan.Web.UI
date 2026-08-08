@@ -22,7 +22,7 @@
                     <KeyValue :propName="Texts.Count.value" :propValue="model.Count" />
                 </div>
                 <div class="list-panel">
-                    <AssetInfo v-for="a in model.AssetInfoes" :key="a._id" :model="a" />
+                    <AssetInfo v-for="a in model.StationInfoes" :key="a._id" :model="a" />
                 </div>
                 <div class="pagination-panel">
                     <Pagination :model="model.pagination" />
@@ -38,14 +38,14 @@
 <script lang="ts" setup>
 import AssetInfo from '@/components/AssetInfo.vue'
 import { onMounted } from 'vue'
-import { AssetPathPageModel } from './AssetPathPageModel'
+import { StationPathPageModel } from './StationPathPageModel'
 import { Map, Texts, KeyValue, Pagination, DatePicker, Select } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 const { model } = defineProps({
     model: {
-        type: AssetPathPageModel,
-        default: () => new AssetPathPageModel()
+        type: StationPathPageModel,
+        default: () => new StationPathPageModel()
     }
 })
 

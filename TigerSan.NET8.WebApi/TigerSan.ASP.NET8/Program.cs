@@ -27,11 +27,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// 每日盘点：
-var inventoryRecordService = app.Services.CreateScope().ServiceProvider.GetRequiredService<IInventoryRecordService>();
-inventoryRecordService.StartInventory();
 // SSE监听：
 SseInstance.InitInstance(app.Services).Start();
+
+// 每日任务：
+new DailyTask(null, async () =>
+{
+    // 盘点：
+    await app.Services.CreateScope().ServiceProvider.GetRequiredService<IInventoryRecordService>().InventoryAll();
+    // 清理“过期数据”：
+    await app.Services.CreateScope().ServiceProvider.GetRequiredService<IAssetRecordService>().ClearExpiredRecord();
+    await app.Services.CreateScope().ServiceProvider.GetRequiredService<IStationRecordService>().ClearExpiredRecord();
+}).Start();
 
 //app.UseHttpsRedirection();
 
