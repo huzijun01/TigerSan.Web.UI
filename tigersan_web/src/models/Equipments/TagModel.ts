@@ -15,10 +15,10 @@ export class TagEntity extends IdEntityBase {
     onlineState = OnlineStates.Offline
     locationMode?: LocationModes
     tagId = ''
-    assetId? = ''
-    rfid? = ''
-    imei? = ''
-    iccid? = ''
+    assetId?: string
+    rfid?: string
+    imei?: string
+    iccid?: string
     battery?: number
     signal?: number
     temperature?: number
@@ -46,6 +46,7 @@ export class TagFilter {
     batch?: bigint
     type?: bigint
     station?: bigint
+    stationId?: string
     eqpType?: EqpTypes
     isEnable?: boolean
     state?: OnlineStates
@@ -64,6 +65,7 @@ export class TagFilter {
             filters: [
                 { propName: 'TagId', value: StringHelper.IsNotEmpty(param.tagId) ? param.tagId : undefined, isFuzzy: true },
                 { propName: 'Rfid', value: StringHelper.IsNotEmpty(param.rfid) ? param.rfid : undefined, isFuzzy: true },
+                { propName: 'StationId', value: StringHelper.IsNotEmpty(param.stationId) ? param.stationId : undefined, isFuzzy: true },
                 { propName: 'Type', value: param.type },
                 { propName: 'Station', value: param.station },
                 { propName: 'EqpType', value: param.eqpType },

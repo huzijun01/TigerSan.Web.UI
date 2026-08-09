@@ -12,9 +12,9 @@ export class SiteEntity extends IdName {
     latitude = 0
     fencePath?: string
     fencePoints?: Point2[]
-    manager? = ''
-    phone? = ''
-    comment? = ''
+    manager?: string
+    phone?: string
+    comment?: string
 }
 
 class SiteHelper extends IdNameHelper<SiteEntity> {

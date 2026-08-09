@@ -13,7 +13,7 @@ export class AssetEntity extends IdEntityBase {
     station?: bigint
     vehicle?: bigint
     transfer?: bigint
-    name? = ''
+    name?: string
     comment?: string
     // 计算:
     lastRecord?: bigint // 计算时才更新，建议使用GetLast获取最新记录

@@ -53,6 +53,7 @@ export class TagMgtPageModel {
 
     // 搜索框:
     readonly searchTagId = new SearchModel()
+    readonly searchStationId = new SearchModel()
 
     /** “批次”项目配置 */
     readonly configBatch: FormItemConfig<TagDto, IdValue> = {
@@ -178,6 +179,7 @@ export class TagMgtPageModel {
         this.switchIsEnable.IsEnable.value = false
         this.switchIsEnable._onChange = this.EditIsEnable
         this.searchTagId.Placeholder.value = Texts.TagId
+        this.searchStationId.Placeholder.value = Texts.StationId
         this.assetForm.IsCompanyEnable = false
         this.assetForm.IsTagIdEnable.value = false
         this.assetForm.IsStationIdEnable.value = false
@@ -187,6 +189,8 @@ export class TagMgtPageModel {
         this.table._onSelectStateChange = this.InitSelectIsEnableState
         this.searchTagId._onSearch = this.Refresh
         this.searchTagId._onChange = this.Refresh
+        this.searchStationId._onSearch = this.Refresh
+        this.searchStationId._onChange = this.Refresh
         this.pagination._onChange = this.Refresh
         this.selectCompany._onChange = this.Refresh
         this.selectBatch._onChange = this.Refresh
@@ -229,6 +233,7 @@ export class TagMgtPageModel {
             state: OnlineStates.Online,
             isFall: this.selectIsFall.Value.value,
             tagId: this.searchTagId.Value.value,
+            stationId: this.searchStationId.Value.value,
             rfid: this.searchRfid.Value.value,
         })
         this.OfflineCount.value = await tagHelper.GetCount({
@@ -241,6 +246,7 @@ export class TagMgtPageModel {
             state: OnlineStates.Offline,
             isFall: this.selectIsFall.Value.value,
             tagId: this.searchTagId.Value.value,
+            stationId: this.searchStationId.Value.value,
             rfid: this.searchRfid.Value.value,
         })
         this.pagination.Count.value = await tagHelper.GetCount({
@@ -253,6 +259,7 @@ export class TagMgtPageModel {
             isFall: this.selectIsFall.Value.value,
             state: this.selectOnlineState.Value.value,
             tagId: this.searchTagId.Value.value,
+            stationId: this.searchStationId.Value.value,
             rfid: this.searchRfid.Value.value,
         })
     }
@@ -299,6 +306,7 @@ export class TagMgtPageModel {
                 isFall: this.selectIsFall.Value.value,
                 type: this.selectTagType.Value.value?.id,
                 tagId: this.searchTagId.Value.value,
+                stationId: this.searchStationId.Value.value,
                 rfid: this.searchRfid.Value.value,
             }).then(arr => {
                 ArrayHelper.Set(this.table.RowDatas, arr)

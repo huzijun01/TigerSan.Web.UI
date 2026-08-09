@@ -5,17 +5,20 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="model.selectCompany" />
-                        <Select :model="model.selectBatch" />
-                        <Select :model="model.selectStation" />
                         <Select :model="model.selectOnlineState" />
+                        <Select :model="model.selectIsEnable" />
+                        <Select :model="model.selectIsFall" />
                     </div>
                     <div class="row-panel">
                         <Search :model="model.searchTagId" />
+                        <Search :model="model.searchStationId" />
                         <Search :model="model.searchRfid" />
+                    </div>
+                    <div class="row-panel">
+                        <Select :model="model.selectCompany" />
+                        <Select :model="model.selectBatch" />
+                        <Select :model="model.selectStation" />
                         <Select :model="model.selectTagType" />
-                        <Select :model="model.selectIsEnable" />
-                        <Select :model="model.selectIsFall" />
                     </div>
                 </div>
                 <div class="button-panel">

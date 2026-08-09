@@ -4,9 +4,9 @@ import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel, CheckboxMod
 /** “灯光设置”模型 */
 class LightSettingModel {
     /** 设备类型 */
-    ProductType? = ''
+    ProductType?: string
     /** 固件版本 */
-    FirmwareVersion? = ''
+    FirmwareVersion?: string
     /** 是否启用 */
     Enable = false
     /** 灯色 */

@@ -4,9 +4,9 @@ import { Verify, FormModel, FormConfig, FormItemConfig, SwitchModel, Texts } fro
 /** “响铃设置”模型 */
 class RingingSettingModel {
     /** 设备类型 */
-    ProductType? = ''
+    ProductType?: string
     /** 固件版本 */
-    FirmwareVersion? = ''
+    FirmwareVersion?: string
     /** 是否启用 */
     Enable = false
     /** 闪烁时长（快、响铃） */
