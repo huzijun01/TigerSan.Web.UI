@@ -84,6 +84,92 @@ namespace TigerSan.NET8.WebApi.Helpers
             return time;
         }
         #endregion
+
+        #region 获取“基站位置”
+        private async Task<StationLngLat?> GetStationPosion(BaseStationData data, BaseStationEntity baseStation)
+        {
+            try
+            {
+                var position = new StationLngLat();
+
+                if (baseStation.IsMobile)
+                {
+                    position = new StationLngLat();
+
+                    switch (data.LocationMode)
+                    {
+                        case StationLocationModes.WifiScan:
+                            position.LocationMode = LocationModes.WiFi_Bluetooth;
+                            break;
+                        case StationLocationModes.AGPS:
+                            position.LocationMode = LocationModes._4G_Bluetooth;
+                            break;
+                        default:
+                            position.LocationMode = LocationModes.GPS_Bluetooth;
+                            break;
+                    }
+
+                    if (data.IsValidLngLat)
+                    {
+                        position.Longitude = data.Longitude;
+                        position.Latitude = data.Latitude;
+
+                        if (position.LocationMode == LocationModes.GPS_Bluetooth)
+                        {
+                            var resConvert = await MapHelper.ConvertCoordinatesAsync(GlobalSettings.AMapKey, position.Longitude, position.Latitude);
+                            if (resConvert.Data == null)
+                            {
+                                position.Longitude = null;
+                                position.Latitude = null;
+                            }
+                            else
+                            {
+                                position.Longitude = resConvert.Data.Longitude;
+                                position.Latitude = resConvert.Data.Latitude;
+                            }
+                        }
+
+                        #region 获取“地址”
+                        if (position.Longitude != null && position.Latitude != null)
+                        {
+                            var resGetAddress = await MapHelper.GetAddressByLocation(position.Longitude.Value, position.Latitude.Value, GlobalSettings.AMapKey);
+                            position.Address = resGetAddress.Data;
+                        }
+                        #endregion 获取“地址”
+                    }
+                    else
+                    {
+                        position.Longitude = null;
+                        position.Latitude = null;
+                    }
+                }
+                else
+                {
+                    position.LocationMode = LocationModes.BaseStation;
+                    var resGetSite = await SiteService.Get(baseStation.Site);
+                    var site = resGetSite.Data;
+                    if (site == null)
+                    {
+                        position.Longitude = null;
+                        position.Latitude = null;
+                        LogHelper.Instance.Warning(MyResults<object>.SiteNotExist.Message);
+                    }
+                    else
+                    {
+                        position.Longitude = site.Longitude;
+                        position.Latitude = site.Latitude;
+                    }
+                }
+
+                return position;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Instance.Error(ex.GetMessage());
+                return null;
+            }
+        }
+        #endregion
         #endregion [Private]
 
         #region [管道]
@@ -173,7 +259,62 @@ namespace TigerSan.NET8.WebApi.Helpers
             var baseStation = res.Data;
             if (baseStation == null)
             {
-                LogHelper.Instance.Warning($"BaseStation not found! ({package.Data.CollectorId})");
+                return MyResults<object>.Warning($"BaseStation not found! ({package.Data.CollectorId})");
+            }
+            #endregion
+
+            #region 获取“基站位置”
+            StationLngLat? position = await GetStationPosion(package.Data, baseStation);
+            if (position == null)
+            {
+                return MyResults<object>.Warning($"The position is null! ({package.Data.CollectorId})");
+            }
+            #endregion
+
+            #region 更新“基站”状态：
+            baseStation.OnlineState = OnlineStates.Online;
+            baseStation.ReportTime = GetUtc(package.ReportTime);
+            baseStation.LocationMode = position.LocationMode;
+            baseStation.Longitude = position.Longitude;
+            baseStation.Latitude = position.Latitude;
+            await baseStationService.Edit(baseStation);
+
+            // 添加“基站记录”
+            if (baseStation.IsMobile && baseStation.IsValidLngLat)
+            {
+                await StationRecordService.Add(new StationRecordEntity().Copy(baseStation, position.Address));
+            }
+            #endregion
+
+            #region 修改“绑定标签”的“资产记录”
+            var bindingTags = (await tagService.GetFullList(null, null, null, null, new FilterDto()
+            {
+                Filters = new List<PropFilter>()
+                {
+                    new PropFilter()
+                    {
+                        PropName = nameof(TagEntity.StationId),
+                        Value = baseStation.MacAddr,
+                    }
+                }
+            })).Data;
+
+            if (bindingTags != null)
+            {
+                foreach (var bindingTag in bindingTags)
+                {
+                    var oldTag = new TagDto();
+                    oldTag.ShallowCopy(bindingTag);
+                    // 基站：
+                    bindingTag.ReportTime = baseStation.ReportTime;
+                    // 位置：
+                    bindingTag.LocationMode = position.LocationMode;
+                    bindingTag.Longitude = position.Longitude;
+                    bindingTag.Latitude = position.Latitude;
+                    bindingTag.Address = position.Address;
+
+                    await AssetRecordService.EditAssetRecordAsync(oldTag, bindingTag);
+                }
             }
             #endregion
 
@@ -182,123 +323,33 @@ namespace TigerSan.NET8.WebApi.Helpers
             foreach (var tagData in package.Data.TagDatas0)
             {
                 var resGetFullByTagId = await tagService.GetFullByTagId(tagData.TagId);
-                var tag = resGetFullByTagId.Data;
-                if (tag == null) continue;
-                if (tag.EqpType != EqpTypes.Tag)
+                var oldTag = resGetFullByTagId.Data;
+                if (oldTag == null) continue;
+                if (oldTag.EqpType != EqpTypes.Tag)
                 {
                     LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch(tagData.TagId).Message);
                     continue;
                 }
 
                 var newTag = new TagDto();
-                newTag.ShallowCopy(tag);
-                newTag.ReportTime = GetUtc(package.ReportTime);
+                newTag.ShallowCopy(oldTag);
+                // 基站：
+                newTag.ReportTime = baseStation.ReportTime;
                 newTag.OnlineState = OnlineStates.Online;
-                newTag.LocationMode = LocationModes.BaseStation;
+                // 位置：
+                newTag.LocationMode = position.LocationMode;
+                newTag.Longitude = position.Longitude;
+                newTag.Latitude = position.Latitude;
+                newTag.Address = position.Address;
+                // 数据包：
                 newTag.IsFall = tagData.IsFall;
-                newTag.Station = baseStation?.Id;
+                newTag.Station = baseStation.Id;
                 newTag.Battery = tagData.Battery;
                 newTag.Temperature = tagData.Temperature;
                 newTag.Signal = tagData.Signal;
 
-                #region 计算“经纬度”
-                if (baseStation == null)
-                {
-                    newTag.Longitude = null;
-                    newTag.Latitude = null;
-                }
-                else
-                {
-                    if (baseStation.IsMobile)
-                    {
-                        switch (package.Data.LocationMode)
-                        {
-                            case StationLocationModes.WifiScan:
-                                newTag.LocationMode = LocationModes.WiFi_Bluetooth;
-                                break;
-                            case StationLocationModes.AGPS:
-                                newTag.LocationMode = LocationModes._4G_Bluetooth;
-                                break;
-                            default:
-                                newTag.LocationMode = LocationModes.GPS_Bluetooth;
-                                break;
-                        }
-
-                        if (package.Data.IsValidLngLat)
-                        {
-                            newTag.Longitude = package.Data.Longitude;
-                            newTag.Latitude = package.Data.Latitude;
-
-                            if (newTag.LocationMode == LocationModes.GPS_Bluetooth)
-                            {
-                                var resConvert = await MapHelper.ConvertCoordinatesAsync(GlobalSettings.AMapKey, newTag.Longitude, newTag.Latitude);
-                                if (resConvert.Data == null)
-                                {
-                                    newTag.Longitude = null;
-                                    newTag.Latitude = null;
-                                }
-                                else
-                                {
-                                    newTag.Longitude = resConvert.Data.Longitude;
-                                    newTag.Latitude = resConvert.Data.Latitude;
-                                }
-                            }
-
-                            #region 获取“地址”
-                            if (newTag.Longitude != null && newTag.Latitude != null)
-                            {
-                                var resGetAddress = await MapHelper.GetAddressByLocation(newTag.Longitude.Value, newTag.Latitude.Value, GlobalSettings.AMapKey);
-                                var address = resGetAddress.Data;
-                                if (address == null)
-                                {
-                                    return resGetAddress.Convert<object>();
-                                }
-                                newTag.Address = address;
-                            }
-                            #endregion 获取“地址”
-                        }
-                        else
-                        {
-                            newTag.Longitude = null;
-                            newTag.Latitude = null;
-                        }
-                    }
-                    else
-                    {
-                        var resGetSite = await SiteService.Get(baseStation.Site);
-                        var site = resGetSite.Data;
-                        if (site == null)
-                        {
-                            newTag.Longitude = null;
-                            newTag.Latitude = null;
-                            LogHelper.Instance.Warning(MyResults<object>.SiteNotExist.Message);
-                        }
-                        else
-                        {
-                            newTag.Longitude = site.Longitude;
-                            newTag.Latitude = site.Latitude;
-                        }
-                    }
-
-                    // 更新“基站”状态：
-                    baseStation.OnlineState = OnlineStates.Online;
-                    baseStation.ReportTime = newTag.ReportTime;
-                    baseStation.LocationMode = newTag.LocationMode;
-                    baseStation.Longitude = newTag.Longitude;
-                    baseStation.Latitude = newTag.Latitude;
-                    await baseStationService.Edit(baseStation);
-                    if (baseStation.IsMobile && baseStation.IsValidLngLat)
-                    {
-                        await StationRecordService.Add(new StationRecordEntity().Copy(baseStation, newTag.Address));
-                    }
-                }
-                #endregion 计算“经纬度”
-
-                var resEdit = await tagService.Edit(newTag);
-                if (!resEdit.IsSuccess) continue;
-
-                var resAsset = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
-                if (!resAsset.IsSuccess) continue;
+                await tagService.Edit(newTag);
+                await AssetRecordService.EditAssetRecordAsync(oldTag, newTag);
             }
 
             return MyResults<object>.Success();
@@ -312,9 +363,9 @@ namespace TigerSan.NET8.WebApi.Helpers
             var tagService = TagService;
 
             var resGetFullByTagId = await tagService.GetFullByTagId(package.Data.CollectorId);
-            var tag = resGetFullByTagId.Data;
-            if (tag == null) return MyResults<object>.IsNull(nameof(tag));
-            if (tag.EqpType != EqpTypes.Locator)
+            var oldTag = resGetFullByTagId.Data;
+            if (oldTag == null) return MyResults<object>.IsNull(nameof(oldTag));
+            if (oldTag.EqpType != EqpTypes.Locator)
             {
                 var error = MyResults<object>.EqpTypeNotMatch(package.Data.CollectorId);
                 LogHelper.Instance.Warning(error.Message);
@@ -322,7 +373,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             }
 
             var newTag = new TagDto();
-            newTag.ShallowCopy(tag, [nameof(TagDto.LocationMode)]);
+            newTag.ShallowCopy(oldTag, [nameof(TagDto.LocationMode)]);
             newTag.Imei = package.Data.IMEI;
             newTag.Iccid = package.Data.ICCID;
             newTag.ReportTime = GetUtc(package.ReportTime);
@@ -394,7 +445,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                 return resEdit.Convert<object>();
             }
 
-            var resRecord = await AssetRecordService.EditAssetRecordAsync(tag, newTag);
+            var resRecord = await AssetRecordService.EditAssetRecordAsync(oldTag, newTag);
             if (!resRecord.IsSuccess)
             {
                 return resRecord.Convert<object>();

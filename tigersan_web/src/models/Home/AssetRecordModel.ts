@@ -115,9 +115,35 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
         }
     })
 
+    /** 获取“坐标”总数 */
+    readonly GetCoordCount = async (param: {
+        asset: bigint,
+        start?: string,
+        end?: string,
+        company?: bigint,
+        department?: bigint,
+        locationMode?: LocationModes,
+    }) => await axiosHelper.Post<number>(`${this._action}/CoordCount`, [
+        { key: 'asset', value: param.asset },
+        { key: 'start', value: param.start },
+        { key: 'end', value: param.end },
+        { key: 'locationMode', value: param.locationMode },
+    ], {
+        parent: {
+            parent: {
+                id: param.department,
+                parent: {
+                    id: param.company,
+                }
+            }
+        },
+    })
+
     /** 获取“路径” */
     readonly GetPath = async (param: {
         asset: bigint,
+        pageSize?: number,
+        pageNumber?: number,
         start?: string,
         end?: string,
         company?: bigint,
@@ -125,6 +151,8 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
         locationMode?: LocationModes,
     }) => await axiosHelper.Post<AssetLngLat[]>(`${this._action}/Path`, [
         { key: 'asset', value: param.asset },
+        { key: 'pageSize', value: param.pageSize },
+        { key: 'pageNumber', value: param.pageNumber },
         { key: 'start', value: param.start },
         { key: 'end', value: param.end },
         { key: 'locationMode', value: param.locationMode },

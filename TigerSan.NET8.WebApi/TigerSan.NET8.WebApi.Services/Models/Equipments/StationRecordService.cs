@@ -28,24 +28,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 【Functions】
         #region [Private]
-        #region 是否“移动”
-        /// <summary>是否“移动”</summary>
-        private bool IsMoved(StationRecordEntity oldRecord, StationRecordEntity newRecord)
-        {
-            if (newRecord.Longitude == null || newRecord.Latitude == null) return false;
-            if (oldRecord.Longitude == null || oldRecord.Latitude == null) return true;
-            var p1 = new Point2(oldRecord.Longitude.Value, oldRecord.Latitude.Value);
-            var p2 = new Point2(newRecord.Longitude.Value, newRecord.Latitude.Value);
-            return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
-        }
-        #endregion
-        #endregion [Private]
-
-        #region [查]
-        #region 获取“路径”
-        /// <summary>获取“路径”</summary>
-        public async Task<MyActionResult<List<StationRecordEntity>>> GetPath(
+        #region 获取“查询条件”
+        /// <summary>获取“查询条件”</summary>
+        private async Task<MyActionResult<IQueryable<StationRecordEntity>>> GetIQueryable(
             long station,
+            int? pageSize = null,
+            int? pageNumber = null,
             DateTime? start = null,
             DateTime? end = null,
             LocationModes? locationMode = null,
@@ -73,14 +61,71 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 queryable = res.Data;
                 if (queryable == null)
                 {
-                    return MyResults<List<StationRecordEntity>>.Error(res.Message);
+                    return MyResults<IQueryable<StationRecordEntity>>.Error(res.Message);
                 }
 
                 var resSort = queryable.Sort(nameof(StationRecordEntity.ReportTime));
                 queryable = resSort.Data;
                 if (queryable == null)
                 {
-                    return MyResults<List<StationRecordEntity>>.Error(resSort.Message);
+                    return MyResults<IQueryable<StationRecordEntity>>.Error(resSort.Message);
+                }
+
+                return MyResults<IQueryable<StationRecordEntity>>.Success(null, queryable.GetPage(pageSize, pageNumber));
+            }
+            catch (Exception e)
+            {
+                return MyResults<IQueryable<StationRecordEntity>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+        #endregion [Private]
+
+        #region [查]
+        #region 获取“坐标”总数
+        public async Task<MyActionResult<int>> GetC‌oordCount(
+            long station,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var res = await GetIQueryable(station, null, null, start, end, locationMode, filter);
+                var queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<int>.Error(res.Message);
+                }
+
+                return MyResults<int>.Success(null, await queryable.CountAsync());
+            }
+            catch (Exception e)
+            {
+                return MyResults<int>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“路径”
+        /// <summary>获取“路径”</summary>
+        public async Task<MyActionResult<List<StationRecordEntity>>> GetPath(
+            long station,
+            int? pageSize = GlobalSettings.MaxCoordCount,
+            int? pageNumber = 1,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var res = await GetIQueryable(station, pageSize, pageNumber, start, end, locationMode, filter);
+                var queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<StationRecordEntity>>.Error(res.Message);
                 }
 
                 return MyResults<List<StationRecordEntity>>.Success(null, await queryable.ToListAsync());
@@ -102,9 +147,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
             try
             {
                 #region 判断“是否改变”
-                var lastRecord = await _db.StationRecords.OrderByDescending(i => i.ReportTime).FirstOrDefaultAsync();
-                if (lastRecord != null && entity.Equals(lastRecord) && !IsMoved(lastRecord, entity))
-                    return MyResults<StationRecordEntity>.Success(null, entity);
+                var lastRecord = await _dbSet
+                        .Where(i => i.Station == entity.Station)
+                        .OrderByDescending(i => i.ReportTime)
+                        .FirstOrDefaultAsync();
+                if (entity.NoNeedAdd(lastRecord)) return MyResults<StationRecordEntity>.Success(null, entity);
                 #endregion
 
                 entity.UpdateId();
@@ -130,17 +177,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                #region 判断“是否改变”
                 var changes = new List<StationRecordEntity>();
                 foreach (var entity in entities)
                 {
-                    var lastRecord = await _db.StationRecords.OrderByDescending(i => i.ReportTime).FirstOrDefaultAsync();
-                    if (lastRecord != null && entity.Equals(lastRecord) && !IsMoved(lastRecord, entity)) continue;
+                    #region 判断“是否改变”
+                    var lastRecord = await _dbSet
+                        .Where(i => i.Station == entity.Station)
+                        .OrderByDescending(i => i.ReportTime)
+                        .FirstOrDefaultAsync();
+                    if (entity.NoNeedAdd(lastRecord)) continue;
+                    #endregion
+
+                    entity.UpdateId();
                     changes.Add(entity);
                 }
-                #endregion
 
-                changes.UpdateId();
                 await _dbSet.AddRangeAsync(changes);
 
                 await _db.SaveChangesAsync();

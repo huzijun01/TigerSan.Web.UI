@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.CsvLog;
+using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Helpers;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Helpers;
-using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Packages;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 
 namespace TigerSan.NET8.WebApi.Controllers
@@ -63,17 +64,33 @@ namespace TigerSan.NET8.WebApi.Controllers
             return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
 
+
         [HttpPost]
-        [Route("Path")]
-        /// <summary>获取“路径”</summary>
-        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+        [Route("CoordCount")]
+        /// <summary>获取“坐标”总数</summary>
+        public async Task<MyActionResult<int>> GetCoordCount(
             long asset,
             DateTime? start = null,
             DateTime? end = null,
             LocationModes? locationMode = null,
             [FromBody] FilterDto? filter = null)
         {
-            return await _service.GetPath(asset, start, end, locationMode, filter);
+            return await _service.GetCoordCount(asset, start, end, locationMode, filter);
+        }
+
+        [HttpPost]
+        [Route("Path")]
+        /// <summary>获取“路径”</summary>
+        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+            long asset,
+            int? pageSize = GlobalSettings.MaxCoordCount,
+            int? pageNumber = 1,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            return await _service.GetPath(asset, pageSize, pageNumber, start, end, locationMode, filter);
         }
         #endregion [查]
 

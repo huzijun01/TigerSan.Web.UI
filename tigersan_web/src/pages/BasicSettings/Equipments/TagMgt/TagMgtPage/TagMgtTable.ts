@@ -38,7 +38,7 @@ export function GetTagTable() {
             Type: ItemType.TextBox,
         },
         {
-            _propName: 'stationName',
+            _propName: 'stationId',
             Text: Texts.BaseStation,
             IsReadonly: true,
             IsRequired: false,

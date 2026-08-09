@@ -68,9 +68,11 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static Func<string?, MyActionResult<TData>> DirIsNotEmpty = path => MyResults<TData>.Error($"The directory is not empty!({path})");
         public static Func<string?, MyActionResult<TData>> InvalidPath = path => MyResults<TData>.Error($"The path is invalid!({path})");
         public static Func<string?, MyActionResult<TData>> PathDoesNotExist = path => MyResults<TData>.Error($"The path does not exist!({path})");
+        public static Func<string, MyActionResult<TData>> IsNotTag = tagId => MyResults<TData>.Error($"Is not tag! ({tagId})");
         public static Func<string, MyActionResult<TData>> TagNotFound = tagId => MyResults<TData>.Error($"The tag not found! ({tagId})");
         public static Func<string, MyActionResult<TData>> EqpTypeNotMatch = tagId => MyResults<TData>.Error($"EqpType does not match! ({tagId})");
         public static Func<string, MyActionResult<TData>> StationNotFound = stationId => MyResults<TData>.Error($"The station not found! ({stationId})");
+        public static Func<string, MyActionResult<TData>> StationNotMobile = stationId => MyResults<TData>.Error($"The station is not mobile! ({stationId})");
         public static Func<string, MyActionResult<TData>> AssetNoSite = assetId => MyResults<TData>.Error($"The asset have no site! ({assetId})");
         public static Func<string, MyActionResult<TData>> TargetSameToSite = assetId => MyResults<TData>.Error($"The target cannot be the same as the site! ({assetId})");
         public static Func<string, MyActionResult<TData>> AssetNotFound = assetId => MyResults<TData>.Error($"The asset not found! ({assetId})");

@@ -25,9 +25,9 @@ export class StationPathPageModel {
         this.date._type = DateType.datetimerange
         this.date._onChange = this.Refresh
         this.pagination.IsShowCount.value = false
-        this.pagination.IsShowPageSize.value = false
         this.pagination.IsShowPageTextBox.value = false
-        this.pagination._onChange = this.UpdateStationInfoes
+        this.pagination.SetPageSize([50, 100, 150, 200])
+        this.pagination._onChange = this.Refresh
         this.selectLocationMode._onChange = this.Refresh
 
         watch(this.Positions, this.UpdateStationInfoes)
@@ -39,6 +39,7 @@ export class StationPathPageModel {
         this.map._onInitAsync = async () => {
             try {
                 loading.IsShow.value = true
+                this.Positions.splice(0)
 
                 if (!this._station || this._station == 0n) {
                     console.warn('The _station is undefined!')
@@ -51,9 +52,25 @@ export class StationPathPageModel {
                     return
                 }
 
-                console.log(this.selectLocationMode.Value.value)
+                // 总数:
+                const resCount = await stationRecordHelper.GetCoordCount({
+                    station: this._station,
+                    start: this.date.Start.value,
+                    end: this.date.End.value,
+                    locationMode: this.selectLocationMode.Value.value,
+                })
+                const count = resCount.data
+                if (count === undefined) {
+                    console.warn('The count is undefined!')
+                    return
+                }
+                this.Count.value = count
+
+                // 路径:
                 const res = await stationRecordHelper.GetPath({
                     station: this._station,
+                    pageSize: this.pagination.PageSize.value,
+                    pageNumber: this.pagination.SelectedNum.value,
                     start: this.date.Start.value,
                     end: this.date.End.value,
                     locationMode: this.selectLocationMode.Value.value,
@@ -98,9 +115,6 @@ export class StationPathPageModel {
 
     /** 更新“基站信息”集合 */
     readonly UpdateStationInfoes = () => {
-        // 总数:
-        this.Count.value = this.Positions.length
-
         // 标记:
         const positions = toRaw(this.Positions)
         const points: LnglatData<AssetInfoModel, AssetInfoModel>[] = positions.map(position => {
@@ -115,7 +129,7 @@ export class StationPathPageModel {
 
         // 列表:
         this.StationInfoes.splice(0)
-        this.pagination.GetPage(positions.slice().reverse()).forEach(position => {
+        positions.slice().reverse().forEach(position => {
             const stationInfo = new AssetInfoModel(this.GetStationPosition(position))
             stationInfo._onClick = this.OnItemClick
             this.StationInfoes.push(stationInfo)
@@ -130,7 +144,9 @@ export class StationPathPageModel {
     readonly OnItemClick = (info: AssetInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
-        this.map.ZoomByVector2([position.longitude, position.latitude])
+        const point: AMap.Vector2 = [position.longitude, position.latitude]
+        this.map.SetMarker(point)
+        this.map.ZoomByVector2(point)
     }
 
     /** 获取“资产位置” */

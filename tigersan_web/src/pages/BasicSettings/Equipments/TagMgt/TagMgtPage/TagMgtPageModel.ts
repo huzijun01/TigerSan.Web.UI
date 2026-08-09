@@ -93,6 +93,14 @@ export class TagMgtPageModel {
         Target: ref(),
     }
 
+    /** “基站ID”项目配置 */
+    readonly configStationId: FormItemConfig<TagDto, string> = {
+        _propName: 'stationId',
+        PropText: Texts.StationId,
+        IsEquired: false,
+        Target: ref(),
+    }
+
     /** “RFID”项目配置 */
     readonly configRFID: FormItemConfig<TagDto, string> = {
         _propName: 'rfid',
@@ -147,8 +155,9 @@ export class TagMgtPageModel {
         _itemConfigs: [
             this.configBatch,
             this.configType,
-            this.configAssetId,
             this.configTagId,
+            this.configAssetId,
+            this.configStationId,
             this.configRFID,
             this.configComment,
             this.configImage,

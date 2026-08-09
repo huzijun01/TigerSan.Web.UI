@@ -373,6 +373,18 @@ export class PaginationModel {
 
         return rows.slice(startIndex, endIndex)
     }
+
+    /** 设置“页大小”集合 */
+    readonly SetPageSize = (sizes: number[]) => {
+        if (sizes.length < 1) {
+            console.warn('The sizes are empty!')
+            return
+        }
+
+        this.PageSizes.splice(0)
+        sizes.forEach(size => this.PageSizes.push(new Int(size)))
+        this.PageSizeSelectModel.Value.value = this.PageSize.value = sizes[0] as number
+    }
     //#endregion 【Functions】
 
     //#region 【回调】

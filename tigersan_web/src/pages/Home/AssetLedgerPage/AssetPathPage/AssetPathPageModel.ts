@@ -25,9 +25,9 @@ export class AssetPathPageModel {
         this.date._type = DateType.datetimerange
         this.date._onChange = this.Refresh
         this.pagination.IsShowCount.value = false
-        this.pagination.IsShowPageSize.value = false
         this.pagination.IsShowPageTextBox.value = false
-        this.pagination._onChange = this.UpdateAssetInfoes
+        this.pagination.SetPageSize([50, 100, 150, 200])
+        this.pagination._onChange = this.Refresh
         this.selectLocationMode._onChange = this.Refresh
 
         watch(this.Positions, this.UpdateAssetInfoes)
@@ -39,6 +39,7 @@ export class AssetPathPageModel {
         this.map._onInitAsync = async () => {
             try {
                 loading.IsShow.value = true
+                this.Positions.splice(0)
 
                 if (!this._asset || this._asset == 0n) {
                     console.warn('The _asset is undefined!')
@@ -51,9 +52,25 @@ export class AssetPathPageModel {
                     return
                 }
 
-                console.log(this.selectLocationMode.Value.value)
+                // 总数:
+                const resCount = await assetRecordHelper.GetCoordCount({
+                    asset: this._asset,
+                    start: this.date.Start.value,
+                    end: this.date.End.value,
+                    locationMode: this.selectLocationMode.Value.value,
+                })
+                const count = resCount.data
+                if (count === undefined) {
+                    console.warn('The count is undefined!')
+                    return
+                }
+                this.Count.value = count
+
+                // 路径:
                 const res = await assetRecordHelper.GetPath({
                     asset: this._asset,
+                    pageSize: this.pagination.PageSize.value,
+                    pageNumber: this.pagination.SelectedNum.value,
                     start: this.date.Start.value,
                     end: this.date.End.value,
                     locationMode: this.selectLocationMode.Value.value,
@@ -89,9 +106,6 @@ export class AssetPathPageModel {
 
     /** 更新“物资信息”集合 */
     readonly UpdateAssetInfoes = () => {
-        // 总数:
-        this.Count.value = this.Positions.length
-
         // 标记:
         const positions = toRaw(this.Positions)
         const points: LnglatData<AssetInfoModel, AssetInfoModel>[] = positions.map(position => {
@@ -106,7 +120,7 @@ export class AssetPathPageModel {
 
         // 列表:
         this.AssetInfoes.splice(0)
-        this.pagination.GetPage(positions.slice().reverse()).forEach(position => {
+        positions.slice().reverse().forEach(position => {
             const assetInfo = new AssetInfoModel(this.GetAssetPosition(position))
             assetInfo._onClick = this.OnItemClick
             this.AssetInfoes.push(assetInfo)
@@ -121,7 +135,9 @@ export class AssetPathPageModel {
     readonly OnItemClick = (info: AssetInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
-        this.map.ZoomByVector2([position.longitude, position.latitude])
+        const point: AMap.Vector2 = [position.longitude, position.latitude]
+        this.map.SetMarker(point)
+        this.map.ZoomByVector2(point)
     }
 
     /** 获取“资产位置” */

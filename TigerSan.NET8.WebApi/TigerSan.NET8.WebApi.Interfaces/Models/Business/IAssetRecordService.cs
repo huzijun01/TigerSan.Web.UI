@@ -1,4 +1,5 @@
-﻿using TigerSan.NET8.WebApi.Share.Dtos;
+﻿using TigerSan.NET8.WebApi.Share;
+using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
@@ -16,9 +17,18 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? sort = null,
             bool? ascending = null,
             FilterDto? filter = null);
+        /// <summary>获取“坐标”总数</summary>
+        public Task<MyActionResult<int>> GetC‌oordCount(
+            long asset,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            FilterDto? filter = null);
         /// <summary>获取“路径”</summary>
         public Task<MyActionResult<List<AssetLngLat>>> GetPath(
             long asset,
+            int? pageSize = GlobalSettings.MaxCoordCount,
+            int? pageNumber = 1,
             DateTime? start = null,
             DateTime? end = null,
             LocationModes? locationMode = null,

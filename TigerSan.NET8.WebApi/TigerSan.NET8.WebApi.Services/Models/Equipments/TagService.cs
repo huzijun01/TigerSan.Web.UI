@@ -105,20 +105,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     dto.BatchId = batchId;
                 }
 
-                // 添加“基站名”：
-                if (entity.Station != null)
-                {
-                    var stationName = stationDict.GetValueOrDefault(entity.Station.Value);
-                    if (stationName == null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(stationName));
-                    }
-                    else
-                    {
-                        dto.stationName = stationName;
-                    }
-                }
-
                 // 检查“图片”是否存在：
                 if (!string.IsNullOrEmpty(entity.Image))
                 {
@@ -361,20 +347,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                 }
 
-                // 添加“基站名”：
-                if (entity.Station != null)
-                {
-                    var stationName = await _db.BaseStations.Where(i => i.Id == entity.Station.Value).Select(i => i.Name).FirstOrDefaultAsync();
-                    if (stationName == null)
-                    {
-                        LogHelper.Instance.IsNull(nameof(stationName));
-                    }
-                    else
-                    {
-                        dto.stationName = stationName;
-                    }
-                }
-
                 return MyResults<TagDto>.Success(null, dto);
             }
             catch (Exception e)
@@ -515,6 +487,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             // 清空“资产”：
             entity.Asset = null;
             entity.AssetId = null;
+            entity.StationId = null;
 
             return await base.Add(entity, isBeginTransaction);
         }
@@ -549,6 +522,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 entity.Asset = null;
                 entity.AssetId = null;
+                entity.StationId = null;
             }
 
             return await base.AddRange(entities, isBeginTransaction);
@@ -569,6 +543,25 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (!Verify.IsValidMacAddr(entity.TagId))
                 {
                     return MyResults<object>.InvalidMacAddr;
+                }
+
+                // 检验“基站ID”是否有效:
+                if (!string.IsNullOrEmpty(entity.StationId))
+                {
+                    if (entity.EqpType != EqpTypes.Tag)
+                    {
+                        return MyResults<object>.IsNotTag(entity.TagId);
+                    }
+
+                    var station = await _db.BaseStations.FirstOrDefaultAsync(i => i.MacAddr == entity.StationId);
+                    if (station == null)
+                    {
+                        return MyResults<object>.StationNotFound(entity.StationId);
+                    }
+                    else if (!station.IsMobile)
+                    {
+                        return MyResults<object>.StationNotMobile(entity.StationId);
+                    }
                 }
 
                 var res = await Edit(entity);
@@ -601,10 +594,32 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 if (entities.Count < 1) return MyResults<object>.OperationSuccess;
 
-                // 检验“MacAddr”是否有效:
-                if (entities.Any(i => !Verify.IsValidMacAddr(i.TagId)))
+                foreach (var entity in entities)
                 {
-                    return MyResults<object>.InvalidMacAddr;
+                    // 检验“MacAddr”是否有效:
+                    if (!Verify.IsValidMacAddr(entity.TagId))
+                    {
+                        return MyResults<object>.InvalidMacAddr;
+                    }
+
+                    // 检验“基站ID”是否有效:
+                    if (!string.IsNullOrEmpty(entity.StationId))
+                    {
+                        if (entity.EqpType != EqpTypes.Tag)
+                        {
+                            return MyResults<object>.IsNotTag(entity.TagId);
+                        }
+
+                        var station = await _db.BaseStations.FirstOrDefaultAsync(i => i.MacAddr == entity.StationId);
+                        if (station == null)
+                        {
+                            return MyResults<object>.StationNotFound(entity.StationId);
+                        }
+                        else if (!station.IsMobile)
+                        {
+                            return MyResults<object>.StationNotMobile(entity.StationId);
+                        }
+                    }
                 }
 
                 foreach (var entity in entities)

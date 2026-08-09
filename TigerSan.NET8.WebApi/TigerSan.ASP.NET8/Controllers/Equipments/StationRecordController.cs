@@ -18,16 +18,31 @@ namespace TigerSan.NET8.WebApi.Controllers
         #region 【Functions】
         #region [查]
         [HttpPost]
+        [Route("CoordCount")]
+        /// <summary>获取“坐标”总数</summary>
+        public async Task<MyActionResult<int>> GetC‌oordCount(
+            long station,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            FilterDto? filter = null)
+        {
+            return await _service.GetCoordCount(station, start, end, locationMode, filter);
+        }
+
+        [HttpPost]
         [Route("Path")]
         /// <summary>获取“路径”</summary>
         public async Task<MyActionResult<List<StationRecordEntity>>> GetPath(
             long station,
+            int? pageSize = null,
+            int? pageNumber = 1,
             DateTime? start = null,
             DateTime? end = null,
             LocationModes? locationMode = null,
             [FromBody] FilterDto? filter = null)
         {
-            return await _service.GetPath(station, start, end, locationMode, filter);
+            return await _service.GetPath(station, pageSize, pageNumber, start, end, locationMode, filter);
         }
         #endregion [查]
         #endregion 【Functions】

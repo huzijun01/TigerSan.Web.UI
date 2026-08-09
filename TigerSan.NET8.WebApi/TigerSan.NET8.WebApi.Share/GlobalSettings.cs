@@ -2,6 +2,8 @@
 {
     public static class GlobalSettings
     {
+        /// <summary>最大“坐标”页大小</summary>
+        public const int MaxCoordCount = 200;
         /// <summary>最大“文件”大小（MB）</summary>
         public const long MaxFileSize = 200;
         /// <summary>最大“图片”大小（MB）</summary>

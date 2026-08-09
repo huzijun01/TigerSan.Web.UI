@@ -62,14 +62,31 @@ class StationRecordHelper extends IdHelper<StationRecordEntity> {
         filter: StationRecordFilter.GetFilter(param)
     })
 
+    /** 获取“坐标”总数 */
+    readonly GetCoordCount = async (param: {
+        station: bigint,
+        start?: string,
+        end?: string,
+        locationMode?: LocationModes,
+    }) => await axiosHelper.Post<number>(`${this._action}/CoordCount`, [
+        { key: 'station', value: param.station },
+        { key: 'start', value: param.start },
+        { key: 'end', value: param.end },
+        { key: 'locationMode', value: param.locationMode },
+    ])
+
     /** 获取“路径” */
     readonly GetPath = async (param: {
         station: bigint,
+        pageSize?: number,
+        pageNumber?: number,
         start?: string,
         end?: string,
         locationMode?: LocationModes,
     }) => await axiosHelper.Post<StationRecordEntity[]>(`${this._action}/Path`, [
         { key: 'station', value: param.station },
+        { key: 'pageSize', value: param.pageSize },
+        { key: 'pageNumber', value: param.pageNumber },
         { key: 'start', value: param.start },
         { key: 'end', value: param.end },
         { key: 'locationMode', value: param.locationMode },

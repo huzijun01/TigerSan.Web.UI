@@ -37,7 +37,9 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long Type { get; set; }
         [SnakeColumn]
-        public long? Station { get; set; }
+        public long? Station { get; set; } // 当前连接的基站（不作为绑定标志）
+        [SnakeColumn]
+        public string? StationId { get; set; } // 基站绑定标志
         [SnakeColumn]
         public bool? IsFall { get; set; }
         [SnakeColumn]

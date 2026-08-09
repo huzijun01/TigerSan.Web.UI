@@ -7,7 +7,8 @@ import { axiosHelper, IdEntityBase, IdHelper } from "@/helpers"
 export class TagEntity extends IdEntityBase {
     batch: bigint = 0n
     type: bigint = 0n
-    station?: bigint
+    station?: bigint // 当前连接的基站（不作为绑定标志）
+    stationId?: string // 基站绑定标志
     isFall?: boolean
     isEnable = true
     eqpType = EqpTypes.Tag
@@ -32,7 +33,6 @@ export class TagEntity extends IdEntityBase {
 export class TagDto extends TagEntity {
     batchId = ''
     typeName = ''
-    stationName?: string
     company?: bigint
     companyName?: string
     site?: bigint

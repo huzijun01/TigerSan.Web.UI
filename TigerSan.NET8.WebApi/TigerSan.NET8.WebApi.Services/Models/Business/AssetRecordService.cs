@@ -74,32 +74,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 是否“移动”
-        /// <summary>是否“移动”</summary>
-        private bool IsMoved(TagDto oldRecord, TagDto newRecord)
-        {
-            if (newRecord.Longitude == null || newRecord.Latitude == null) return false;
-            if (oldRecord.Longitude == null || oldRecord.Latitude == null) return true;
-            var p1 = new Point2(oldRecord.Longitude.Value, oldRecord.Latitude.Value);
-            var p2 = new Point2(newRecord.Longitude.Value, newRecord.Latitude.Value);
-            return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
-        }
-        #endregion
-
-        #region 是否“移动”
-        /// <summary>是否“移动”</summary>
-        private bool IsMoved(AssetLngLat oldTag, AssetLngLat newTag)
-        {
-            if (oldTag.Longitude == null
-                || oldTag.Latitude == null
-                || newTag.Longitude == null
-                || newTag.Latitude == null) return false;
-            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
-            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
-            return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
-        }
-        #endregion
-
         #region 获取“在库时长”
         /// <summary>获取“在库时长”</summary>
         private double GetStayDuration(List<AssetRecordEntity> records)
@@ -420,6 +394,58 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“查询条件”
+        /// <summary>获取“查询条件”</summary>
+        private async Task<MyActionResult<IQueryable<AssetRecordEntity>>> GetIQueryable(
+            long asset,
+            int? pageSize = null,
+            int? pageNumber = null,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var queryable = start != null && end != null
+                    ? _dbSet.AsNoTracking().Where(i => i.Asset == asset
+                    && i.OnlineState == OnlineStates.Online
+                    && i.Longitude != null && i.Longitude.Value > 0
+                    && i.Latitude != null && i.Latitude.Value > 0
+                    && i.ReportTime >= start && i.ReportTime <= end)
+                    : _dbSet.AsNoTracking().Where(i => i.Asset == asset
+                    && i.OnlineState == OnlineStates.Online
+                    && i.Longitude != null && i.Longitude.Value > 0
+                    && i.Latitude != null && i.Latitude.Value > 0);
+
+                if (locationMode != null)
+                {
+                    queryable = queryable.Where(i => i.LocationMode == locationMode);
+                }
+
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<IQueryable<AssetRecordEntity>>.Error(res.Message);
+                }
+
+                var resSort = queryable.Sort(nameof(AssetRecordEntity.ReportTime));
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<IQueryable<AssetRecordEntity>>.Error(resSort.Message);
+                }
+
+                return MyResults<IQueryable<AssetRecordEntity>>.Success(null, queryable.GetPage(pageSize, pageNumber));
+            }
+            catch (Exception e)
+            {
+                return MyResults<IQueryable<AssetRecordEntity>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [Private]
 
         #region [查]
@@ -537,9 +563,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“路径”
-        /// <summary>获取“路径”</summary>
-        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+        #region 获取“坐标”总数
+        public async Task<MyActionResult<int>> GetC‌oordCount(
             long asset,
             DateTime? start = null,
             DateTime? end = null,
@@ -548,34 +573,40 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                var queryable = start != null && end != null
-                    ? _dbSet.AsNoTracking().Where(i => i.Asset == asset
-                    && i.OnlineState == OnlineStates.Online
-                    && i.Longitude != null && i.Longitude.Value > 0
-                    && i.Latitude != null && i.Latitude.Value > 0
-                    && i.ReportTime >= start && i.ReportTime <= end)
-                    : _dbSet.AsNoTracking().Where(i => i.Asset == asset
-                    && i.OnlineState == OnlineStates.Online
-                    && i.Longitude != null && i.Longitude.Value > 0
-                    && i.Latitude != null && i.Latitude.Value > 0);
-
-                if (locationMode != null)
+                var res = await GetIQueryable(asset, null, null, start, end, locationMode, filter);
+                var queryable = res.Data;
+                if (queryable == null)
                 {
-                    queryable = queryable.Where(i => i.LocationMode == locationMode);
+                    return MyResults<int>.Error(res.Message);
                 }
 
-                var res = await GetFilter(queryable, filter);
-                queryable = res.Data;
+                return MyResults<int>.Success(null, await queryable.CountAsync());
+            }
+            catch (Exception e)
+            {
+                return MyResults<int>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“路径”
+        /// <summary>获取“路径”</summary>
+        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+            long asset,
+            int? pageSize = GlobalSettings.MaxCoordCount,
+            int? pageNumber = 1,
+            DateTime? start = null,
+            DateTime? end = null,
+            LocationModes? locationMode = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var res = await GetIQueryable(asset, pageSize, pageNumber, start, end, locationMode, filter);
+                var queryable = res.Data;
                 if (queryable == null)
                 {
                     return MyResults<List<AssetLngLat>>.Error(res.Message);
-                }
-
-                var resSort = queryable.Sort(nameof(AssetRecordEntity.ReportTime));
-                queryable = resSort.Data;
-                if (queryable == null)
-                {
-                    return MyResults<List<AssetLngLat>>.Error(resSort.Message);
                 }
 
                 var positions = await queryable
@@ -592,11 +623,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 var useablePositions = new List<AssetLngLat>();
 
-                AssetLngLat? pre = null;
                 foreach (var position in positions)
                 {
-                    //if (pre != null && !IsMoved(pre, position)) continue;
-
                     SiteEntity? site = null;
                     if (string.IsNullOrEmpty(position.Address) && position.Site != null)
                     {
@@ -618,7 +646,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     useablePositions.Add(position);
-                    pre = position;
                 }
 
                 return MyResults<List<AssetLngLat>>.Success(null, useablePositions);
@@ -640,8 +667,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                // 更新“ID”:
-                entity.UpdateId();
+                #region 判断“是否改变”
+                var lastRecord = await _dbSet
+                        .Where(i => i.Asset == entity.Asset)
+                        .OrderByDescending(i => i.ReportTime)
+                        .FirstOrDefaultAsync();
+                if (entity.NoNeedAdd(lastRecord)) return MyResults<AssetRecordEntity>.Success(null);
+                #endregion
 
                 // 初始化“场地”:
                 var resInit = await InitSiteAsync(entity);
@@ -651,6 +683,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return resInit.Convert<AssetRecordEntity>();
                 }
 
+                // 更新“ID”:
+                entity.UpdateId();
                 // 添加数据:
                 _dbSet.Add(entity);
 
@@ -675,10 +709,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
+                var changes = new List<AssetRecordEntity>();
                 foreach (var entity in entities)
                 {
-                    // 更新“ID”:
-                    entity.UpdateId();
+                    #region 判断“是否改变”
+                    var lastRecord = await _dbSet
+                        .Where(i => i.Asset == entity.Asset)
+                        .OrderByDescending(i => i.ReportTime)
+                        .FirstOrDefaultAsync();
+                    if (entity.NoNeedAdd(lastRecord)) continue;
+                    #endregion
 
                     // 初始化“场地”:
                     var resInit = await InitSiteAsync(entity);
@@ -687,10 +727,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                         return resInit;
                     }
+
+                    entity.UpdateId();
+                    changes.Add(entity);
                 }
 
-                // 添加数据:
-                await _dbSet.AddRangeAsync(entities);
+                await _dbSet.AddRangeAsync(changes);
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
@@ -1031,26 +1073,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             newRecord.State = AssetStates.InTransit;
                         }
                         #endregion
-
-                        // 新增记录:
-                        var res = await Add(newRecord, false);
-                        if (res.IsError)
-                        {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(res.Message);
-                            return res.Convert<object>();
-                        }
                     }
-                    else if (IsMoved(oldTag, newTag)) // 移动
+
+                    // 新增记录:
+                    var res = await Add(newRecord, false);
+                    if (res.IsError)
                     {
-                        // 新增记录:
-                        var res = await Add(newRecord, false);
-                        if (res.IsError)
-                        {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(res.Message);
-                            return res.Convert<object>();
-                        }
+                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                        LogHelper.Instance.Error(res.Message);
+                        return res.Convert<object>();
                     }
                 }
 
