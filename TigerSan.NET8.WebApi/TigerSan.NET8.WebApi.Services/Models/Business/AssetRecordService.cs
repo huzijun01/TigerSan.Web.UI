@@ -667,14 +667,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                #region 判断“是否改变”
-                var lastRecord = await _dbSet
-                        .Where(i => i.Asset == entity.Asset)
-                        .OrderByDescending(i => i.ReportTime)
-                        .FirstOrDefaultAsync();
-                if (entity.NoNeedAdd(lastRecord)) return MyResults<AssetRecordEntity>.Success(null);
-                #endregion
-
                 // 初始化“场地”:
                 var resInit = await InitSiteAsync(entity);
                 if (resInit.IsError)
@@ -712,14 +704,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var changes = new List<AssetRecordEntity>();
                 foreach (var entity in entities)
                 {
-                    #region 判断“是否改变”
-                    var lastRecord = await _dbSet
-                        .Where(i => i.Asset == entity.Asset)
-                        .OrderByDescending(i => i.ReportTime)
-                        .FirstOrDefaultAsync();
-                    if (entity.NoNeedAdd(lastRecord)) continue;
-                    #endregion
-
                     // 初始化“场地”:
                     var resInit = await InitSiteAsync(entity);
                     if (resInit.IsError)
@@ -949,10 +933,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 newRecord.ShallowCopy(lastRecord);
                 newRecord.ShallowCopy(newTag, [nameof(AssetRecordEntity.Id)]);
 
-                if (oldStation?.Site != newStation?.Site) // 若“场地”改变，新增“入库记录”
+                if (newStation?.Site != null && oldStation?.Site != newStation.Site) // 若“场地”改变，新增“入库记录”
                 {
                     // 添加“场地”:
-                    newRecord.Site = newStation?.Site;
+                    newRecord.Site = newStation.Site;
 
                     #region 修改“盘点记录”
                     if (oldStation != null)
@@ -1073,15 +1057,26 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             newRecord.State = AssetStates.InTransit;
                         }
                         #endregion
-                    }
 
-                    // 新增记录:
-                    var res = await Add(newRecord, false);
-                    if (res.IsError)
+                        // 新增记录:
+                        var res = await Add(newRecord, false);
+                        if (res.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(res.Message);
+                            return res.Convert<object>();
+                        }
+                    }
+                    else if (TagEntity.IsMoved(oldTag, newTag)) // 移动
                     {
-                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        LogHelper.Instance.Error(res.Message);
-                        return res.Convert<object>();
+                        // 新增记录:
+                        var res = await Add(newRecord, false);
+                        if (res.IsError)
+                        {
+                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                            LogHelper.Instance.Error(res.Message);
+                            return res.Convert<object>();
+                        }
                     }
                 }
 

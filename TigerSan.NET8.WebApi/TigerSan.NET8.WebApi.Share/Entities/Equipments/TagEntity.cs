@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using TigerSan.NET8.WebApi.Share.Attributes;
+using TigerSan.NET8.WebApi.Share.Helpers;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
@@ -78,5 +79,17 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public DateTime? ReportTime { get; set; }
         [SnakeColumn]
         public string? Image { get; set; }
+
+        #region 是否“移动”
+        /// <summary>是否“移动”</summary>
+        public static bool IsMoved(TagEntity oldRecord, TagEntity newRecord)
+        {
+            if (oldRecord.Longitude == null || oldRecord.Latitude == null
+                || newRecord.Longitude == null || newRecord.Latitude == null) return false;
+            var p1 = new Point2(oldRecord.Longitude.Value, oldRecord.Latitude.Value);
+            var p2 = new Point2(newRecord.Longitude.Value, newRecord.Latitude.Value);
+            return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
+        }
+        #endregion
     }
 }

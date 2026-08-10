@@ -43,8 +43,6 @@ export function GetStationTable() {
                 const rowData = itemModel._rowModel._rowData
                 pathPage._station = rowData.id
                 recordPage._station = rowData.id
-                const weekRange = ObjectHelper.GetOneWeekAgoAndTodayString()
-                pathPage.date.Date.value = [weekRange.start, weekRange.end]
                 stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.macAddr}`
                 stationDetail.Show()
             }

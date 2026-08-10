@@ -1,5 +1,6 @@
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { computed, ref } from "vue"
+import { ObjectHelper } from '../../helpers'
 import type { Language } from "element-plus/lib/locales.js"
 
 export enum DateType {
@@ -62,6 +63,11 @@ export class DatePickerModel {
         if (this._onChange) {
             this._onChange(this.Date.value)
         }
+    }
+
+    readonly InitWeekRange = () => {
+        const weekRange = ObjectHelper.GetOneWeekAgoAndTodayString()
+        this.Date.value = [weekRange.start, weekRange.end]
     }
     //#endregion 【Functions】
 }

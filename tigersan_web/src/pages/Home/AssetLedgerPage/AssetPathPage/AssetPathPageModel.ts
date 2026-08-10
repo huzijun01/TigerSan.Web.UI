@@ -23,12 +23,12 @@ export class AssetPathPageModel {
 
     constructor() {
         this.date._type = DateType.datetimerange
-        this.date._onChange = this.Refresh
+        this.date._onChange = () => this.Refresh()
         this.pagination.IsShowCount.value = false
         this.pagination.IsShowPageTextBox.value = false
         this.pagination.SetPageSize([50, 100, 150, 200])
-        this.pagination._onChange = this.Refresh
-        this.selectLocationMode._onChange = this.Refresh
+        this.pagination._onChange = () => this.Refresh()
+        this.selectLocationMode._onChange = () => this.Refresh()
 
         watch(this.Positions, this.UpdateAssetInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
@@ -94,10 +94,11 @@ export class AssetPathPageModel {
     }
 
     /** 查 */
-    readonly Refresh = async () => {
+    readonly Refresh = async (isUpdateDate = false) => {
         try {
             loading.IsShow.value = true
 
+            if (isUpdateDate) this.date.InitWeekRange()
             await this.map.InitAsync()
         } finally {
             loading.IsShow.value = false

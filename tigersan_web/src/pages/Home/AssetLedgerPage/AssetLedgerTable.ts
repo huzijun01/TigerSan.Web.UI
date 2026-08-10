@@ -87,8 +87,6 @@ export const assetLedgerTable = new TableModel<AssetDto>([
             recordPage.Refresh()
 
             pathPage._asset = rowData.id
-            const weekRange = ObjectHelper.GetOneWeekAgoAndTodayString()
-            pathPage.date.Date.value = [weekRange.start, weekRange.end]
             pathPage.Refresh()
 
             bindingRecordPage._asset = rowData.id

@@ -10,7 +10,7 @@
             </div>
             <div class="button-panel">
                 <div class="row-panel">
-                    <button class="bg-success" @click="model.Refresh">
+                    <button class="bg-success" @click="model.Refresh(true)">
                         {{ Texts.Refresh.value }}
                     </button>
                 </div>
@@ -51,7 +51,7 @@ const { model } = defineProps({
 
 // 【过程】:
 onMounted(() => {
-    model.Refresh()
+    model.Refresh(true)
 })
 
 // 【方法】:
