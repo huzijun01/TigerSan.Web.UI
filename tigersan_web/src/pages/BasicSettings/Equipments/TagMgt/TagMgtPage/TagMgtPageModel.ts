@@ -7,6 +7,8 @@ import { TagDto, batchHelper, tagHelper, tagTypeHelper, baseStationHelper, EqpTy
 
 export class TagMgtPageModel {
     //#region 【Props】
+    /** 是否为“编辑” */
+    readonly IsEdit = ref(false)
     /** “在线”总数 */
     readonly OnlineCount = ref(0)
     /** “离线”总数 */
@@ -83,7 +85,7 @@ export class TagMgtPageModel {
         PropText: Texts.TagId,
         IsEquired: true,
         Target: ref(),
-        _isVerifyOk: source => Verify.IsValidMacAddr(source.tagId)
+        _isVerifyOk: source => Verify.IsValidMacAddrs(source.tagId, !this.form._isEdit)
     }
 
     /** “资产ID”项目配置 */
@@ -137,6 +139,7 @@ export class TagMgtPageModel {
     readonly configTagForm: FormConfig<TagDto> = {
         _getSource: this.AddGetSource,
         _beforeInitAsync: async isEdit => {
+            this.IsEdit.value = isEdit
             if (isEdit) {
                 const rowData = this.table.SelectedRowDatas.value[0]
                 if (!rowData) {
@@ -329,7 +332,7 @@ export class TagMgtPageModel {
             const imgs = this.upload.UsedImages.value
             source.image = imgs ? imgs[0]?._config.name : undefined
 
-            const res = await tagHelper.Add(source)
+            const res = await tagHelper.AddBatch(source)
             if (res.code === ActionResultCode.Error
                 && this.form._getSource().image != source.image) {
                 const resDelete = await this.upload.Delete()

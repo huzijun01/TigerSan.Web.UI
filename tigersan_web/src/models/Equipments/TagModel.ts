@@ -82,6 +82,7 @@ class TagHelper extends IdHelper<TagDto> {
         super('Tag')
     }
 
+    // 查:
     /** 根据“TagId”或“RFID”获取“单条数据” */
     readonly GetFull = async (tagId?: string, rfid?: string) => await axiosHelper.Get<TagDto>(`${this._action}/Full`, [
         { key: 'tagId', value: tagId },
@@ -107,6 +108,15 @@ class TagHelper extends IdHelper<TagDto> {
         ascending: param.ascending,
         filter: TagFilter.GetFilter(param)
     })
+
+    /** 批量添加 */
+    readonly GetFullListByStationId = async (stationId: string) =>
+        await axiosHelper.Get<TagDto[]>(`${this._action}/FullListByStationId/${stationId}`)
+
+    // 增:
+    /** 批量添加 */
+    readonly AddBatch = async (source: TagEntity) =>
+        await axiosHelper.Post(`${this._action}/Batch`, undefined, source)
 }
 
 export const tagHelper = new TagHelper()

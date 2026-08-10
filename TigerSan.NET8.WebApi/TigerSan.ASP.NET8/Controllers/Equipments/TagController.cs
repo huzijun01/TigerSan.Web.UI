@@ -62,7 +62,25 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.GetFullList(pageSize, pageNumber, sort, ascending, filter);
         }
+
+        [HttpGet]
+        [Route("FullListByStationId/{stationId}")]
+        /// <summary>获取“完整数据”集合（根据“基站ID”）</summary>
+        public async Task<MyActionResult<List<TagDto>>> GetFullListByStationId(string stationId)
+        {
+            return await _service.GetFullListByStationId(stationId);
+        }
         #endregion [查]
+
+        #region [增]
+        [HttpPost]
+        [Route("Batch")]
+        /// <summary>批量添加</summary>
+        public async Task<MyActionResult<object>> AddBatch([FromBody] TagEntity entity)
+        {
+            return await _service.AddBatch(entity);
+        }
+        #endregion [增]
         #endregion 【Functions】
     }
 }

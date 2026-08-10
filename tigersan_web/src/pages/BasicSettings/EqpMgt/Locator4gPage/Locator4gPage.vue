@@ -59,28 +59,22 @@
             <FormItem :model="model.configBatch.ItemModel">
                 <Select :model="model.selectBatchForm" />
             </FormItem>
-        </FormRow>
-        <FormRow>
             <FormItem :model="model.configType.ItemModel">
                 <Select :model="model.selectTagTypeForm" />
-            </FormItem>
-        </FormRow>
-        <FormRow>
-            <FormItem :model="model.configTagId.ItemModel">
-                <input type="text" v-model="model.configTagId.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="model.configAssetId.ItemModel">
                 <input type="text" v-model="model.configAssetId.Target.value">
             </FormItem>
+            <FormItem :model="model.configStationId.ItemModel">
+                <input type="text" v-model="model.configStationId.Target.value">
+            </FormItem>
         </FormRow>
         <FormRow>
             <FormItem :model="model.configRFID.ItemModel">
                 <input type="text" v-model="model.configRFID.Target.value">
             </FormItem>
-        </FormRow>
-        <FormRow>
             <FormItem :model="model.configComment.ItemModel">
                 <input type="text" v-model="model.configComment.Target.value">
             </FormItem>
@@ -88,6 +82,13 @@
         <FormRow>
             <FormItem :model="model.configImage.ItemModel">
                 <Upload :model="model.upload" />
+            </FormItem>
+            <FormItem :model="model.configTagId.ItemModel" v-if="model.IsEdit.value">
+                <input type="text" v-model="model.configTagId.Target.value">
+            </FormItem>
+            <FormItem :model="model.configTagId.ItemModel" v-if="!model.IsEdit.value">
+                <textarea v-model="model.configTagId.Target.value" :placeholder="Texts.SeparatedByNewlines.value">
+                </textarea>
             </FormItem>
         </FormRow>
     </PopForm>
@@ -115,4 +116,8 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @import '@/assets/page.less';
+
+textarea {
+    height: 150px;
+}
 </style>

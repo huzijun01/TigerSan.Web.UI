@@ -357,7 +357,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“完整数据”
-        /// <summary>获取“完整数据”</summary>
         public async Task<MyActionResult<TagDto>> GetFull(
             List<long> companies,
             string? tagId = null,
@@ -401,7 +400,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“完整数据”集合（根据ID列表）
+        #region 获取“完整数据”集合（根据“ID列表”）
         public async Task<MyActionResult<List<TagDto>>> GetFullList(List<long> ids)
         {
             try
@@ -459,11 +458,34 @@ namespace TigerSan.NET8.WebApi.Services.Models
             });
         }
         #endregion
+
+        #region 获取“完整数据”集合（根据“基站ID”）
+        public async Task<MyActionResult<List<TagDto>>> GetFullListByStationId(string stationId)
+        {
+            try
+            {
+                return await GetFullList(null, null, null, null, new FilterDto()
+                {
+                    Filters = new List<PropFilter>()
+                    {
+                        new PropFilter()
+                        {
+                            PropName = nameof(TagEntity.StationId),
+                            Value = stationId,
+                        }
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                return MyResults<List<TagDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]
         #region 添加“单条数据”
-        /// <summary>添加“单条数据”</summary>
         public override async Task<MyActionResult<TagEntity>> Add(TagEntity entity, bool isBeginTransaction = true)
         {
             // 检验“MacAddr”是否有效:
@@ -494,7 +516,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 添加“多条数据”
-        /// <summary>添加“多条数据”</summary>
         public override async Task<MyActionResult<object>> AddRange(List<TagEntity> entities, bool isBeginTransaction = true)
         {
             // 检验“MacAddr”是否有效:
@@ -526,6 +547,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
 
             return await base.AddRange(entities, isBeginTransaction);
+        }
+        #endregion
+
+        #region 批量添加
+        public async Task<MyActionResult<object>> AddBatch(TagEntity entity, bool isBeginTransaction = true)
+        {
+            var entities = new List<TagEntity>();
+            var tagIds = entity.TagId.ToLines();
+            foreach (string tagId in tagIds)
+            {
+                var newTag = new TagEntity().ShallowCopy(entity);
+                newTag.TagId = tagId;
+                entities.Add(newTag);
+            }
+            return await AddRange(entities, isBeginTransaction);
         }
         #endregion
         #endregion [增]

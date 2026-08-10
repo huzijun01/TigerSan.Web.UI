@@ -5,7 +5,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
     public static class ObjectExtention
     {
         #region 浅复制
-        public static void ShallowCopy<TTarget, TSource>(this TTarget target, TSource source, string[]? excludeProps = null)
+        public static TTarget ShallowCopy<TTarget, TSource>(this TTarget target, TSource source, string[]? excludeProps = null)
             where TTarget : class
             where TSource : class
         {
@@ -34,6 +34,8 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                     targetProp.SetValue(target, value);
                 }
             }
+
+            return target;
         }
         #endregion
     }

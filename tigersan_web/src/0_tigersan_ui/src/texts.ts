@@ -212,6 +212,7 @@ export class Texts {
     static readonly StationDetail = TextModel.Computed('StationDetail', '基站详情')
     static readonly SystemSettings = TextModel.Computed('SystemSettings', '系统设置')
     static readonly SubmittedSuccessfully = TextModel.Computed('Submitted Successfully', '提交成功')
+    static readonly SeparatedByNewlines = TextModel.Computed('Separated by newlines', '以换行符分隔')
     // T:
     static readonly To = TextModel.Computed('To', '到')
     static readonly Tag = TextModel.Computed('Tag', '标签')

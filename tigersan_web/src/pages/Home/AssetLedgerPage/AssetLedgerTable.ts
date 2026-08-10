@@ -155,6 +155,94 @@ export const assetLedgerTable = new TableModel<AssetDto>([
         Type: ItemType.TextBox,
     },
     {
+        _propName: 'name',
+        Text: Texts.Name,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'typeName',
+        Text: Texts.Type,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'tagType',
+        Text: Texts.TagType,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getStringAsync: source => tagTypeHelper.GetNameAsync(source.tagType)
+    },
+    {
+        _propName: 'siteName',
+        Text: Texts.Site,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'fullAddr',
+        Text: Texts.Addr,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+    },
+    {
+        _propName: 'isBound',
+        Text: Texts.BindingState,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
+        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
+    },
+    {
+        _propName: 'state',
+        Text: Texts.State,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: source => AssetState.GetName(source.state)
+    },
+    {
+        _propName: 'onlineState',
+        Text: Texts.OnlineState,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: OnlineState.GetString,
+    },
+    {
+        _propName: 'isAuto',
+        Text: Texts.AllotMode,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: IsAuto.GetString,
+    },
+    {
+        _propName: 'isEnd',
+        Text: Texts.IsEnd,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+        _getSource: source => !source.transfer,
+        _getString: source => IsEnd.ToString(!source.transfer)
+    },
+    {
+        _propName: 'isFall',
+        Text: Texts.IsFall,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: IsFall.GetString,
+    },
+    {
+        _propName: 'errorType',
+        Text: Texts.ErrorType,
+        IsReadonly: true,
+        IsRequired: false,
+        Type: ItemType.TextBox,
+        _getString: source => ErrorType.GetName(source.errorType)
+    },
+    {
         _propName: 'transferCode',
         Text: Texts.Transfer,
         IsReadonly: true,
@@ -197,94 +285,6 @@ export const assetLedgerTable = new TableModel<AssetDto>([
             vehicle.Data.value = res.data
             vehicleDetail.Show()
         }
-    },
-    {
-        _propName: 'isBound',
-        Text: Texts.BindingState,
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-        _getSource: source => StringHelper.IsNotEmpty(source.tagId),
-        _getString: source => BindingState.GetName(StringHelper.IsNotEmpty(source.tagId))
-    },
-    {
-        _propName: 'isEnd',
-        Text: Texts.IsEnd,
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-        _getSource: source => !source.transfer,
-        _getString: source => IsEnd.ToString(!source.transfer)
-    },
-    {
-        _propName: 'tagType',
-        Text: Texts.TagType,
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-        _getStringAsync: source => tagTypeHelper.GetNameAsync(source.tagType)
-    },
-    {
-        _propName: 'siteName',
-        Text: Texts.Site,
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-    },
-    {
-        _propName: 'fullAddr',
-        Text: Texts.Addr,
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-    },
-    {
-        _propName: 'name',
-        Text: Texts.Name,
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-    },
-    {
-        _propName: 'typeName',
-        Text: Texts.Type,
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-    },
-    {
-        _propName: 'state',
-        Text: Texts.State,
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-        _getString: source => AssetState.GetName(source.state)
-    },
-    {
-        _propName: 'onlineState',
-        Text: Texts.OnlineState,
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-        _getString: OnlineState.GetString,
-    },
-    {
-        _propName: 'isAuto',
-        Text: Texts.AllotMode,
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-        _getString: IsAuto.GetString,
-    },
-    {
-        _propName: 'isFall',
-        Text: Texts.IsFall,
-        IsReadonly: true,
-        Type: ItemType.TextBox,
-        _getString: IsFall.GetString,
-    },
-    {
-        _propName: 'errorType',
-        Text: Texts.ErrorType,
-        IsReadonly: true,
-        IsRequired: false,
-        Type: ItemType.TextBox,
-        _getString: source => ErrorType.GetName(source.errorType)
     },
     {
         _propName: 'battery',

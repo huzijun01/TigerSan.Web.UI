@@ -271,7 +271,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             }
             #endregion
 
-            #region 更新“基站”状态：
+            #region 更新“基站”状态
             baseStation.OnlineState = OnlineStates.Online;
             baseStation.ReportTime = GetUtc(package.ReportTime);
             baseStation.LocationMode = position.LocationMode;
@@ -286,21 +286,14 @@ namespace TigerSan.NET8.WebApi.Helpers
             }
             #endregion
 
-            #region 修改“绑定标签”的“资产记录”
-            var bindingTags = (await tagService.GetFullList(null, null, null, null, new FilterDto()
-            {
-                Filters = new List<PropFilter>()
-                {
-                    new PropFilter()
-                    {
-                        PropName = nameof(TagEntity.StationId),
-                        Value = baseStation.MacAddr,
-                    }
-                }
-            })).Data;
+            package.Data.TagDatas0.AddRange(package.Data.TagDatas1);
 
+            #region 修改“未上报”的“绑定标签”的“资产记录”
+            var bindingTags = (await tagService.GetFullListByStationId(baseStation.MacAddr)).Data;
             if (bindingTags != null)
             {
+                var tagIds = package.Data.TagDatas0.Select(i => i.TagId);
+                bindingTags = bindingTags.Where(i => !tagIds.Contains(i.StationId)).ToList();
                 foreach (var bindingTag in bindingTags)
                 {
                     var oldTag = new TagDto();
@@ -318,8 +311,6 @@ namespace TigerSan.NET8.WebApi.Helpers
             }
             #endregion
 
-            package.Data.TagDatas0.AddRange(package.Data.TagDatas1);
-
             foreach (var tagData in package.Data.TagDatas0)
             {
                 var resGetFullByTagId = await tagService.GetFullByTagId(tagData.TagId);
@@ -330,6 +321,9 @@ namespace TigerSan.NET8.WebApi.Helpers
                     LogHelper.Instance.Warning(MyResults<object>.EqpTypeNotMatch(tagData.TagId).Message);
                     continue;
                 }
+
+                // 绑定基站的标签，只能由其绑定的基站更新状态：
+                if (!string.IsNullOrEmpty(oldTag.StationId) && !string.Equals(oldTag.StationId, baseStation.MacAddr)) continue;
 
                 var newTag = new TagDto();
                 newTag.ShallowCopy(oldTag);

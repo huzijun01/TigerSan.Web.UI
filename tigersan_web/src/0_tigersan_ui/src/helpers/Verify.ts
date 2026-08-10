@@ -111,10 +111,32 @@ export class Verify {
 
         const macRegex = /^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$|^[0-9A-Fa-f]{12}$/
         if (!macRegex.test(str)) {
-            return Verify.Error(Texts.IncorrectMacAddr.value)
+            return Verify.Error(Texts.IncorrectMacAddr.value + ` (${str})`)
         }
 
         return Verify.OK()
+    }
+
+    /** 是否“为合法MAC地址”集合（换行符） */
+    static IsValidMacAddrs(str?: string, isArray = true): VerifyResult {
+        if (!str || str.trim() === '') {
+            return Verify.Error(Texts.CannotBeEmpty.value)
+        }
+
+        if (isArray) {
+            const lines = str.split(/\r?\n/)
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i] as string
+                if (line.trim() === '') return Verify.Error(Texts.CannotBeEmpty.value + ` (line:${i + 1})`)
+                const result = this.IsValidMacAddr(line)
+                if (!result.IsOK()) return result
+            }
+
+            return Verify.OK()
+        } else {
+            return this.IsValidMacAddr(str)
+        }
     }
 
     /** 是否“为合法用户名” */

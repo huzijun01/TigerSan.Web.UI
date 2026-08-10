@@ -16,5 +16,10 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
             }
             return sb.ToString();
         }
+
+        public static string[] ToLines(this string input, StringSplitOptions options = StringSplitOptions.RemoveEmptyEntries)
+        {
+            return input.Split(["\r\n", "\r", "\n"], options);
+        }
     }
 }
