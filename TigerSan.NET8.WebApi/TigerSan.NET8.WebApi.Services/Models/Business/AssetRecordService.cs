@@ -431,12 +431,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<IQueryable<AssetRecordEntity>>.Error(res.Message);
                 }
 
-                var resSort = queryable.Sort(nameof(AssetRecordEntity.ReportTime));
-                queryable = resSort.Data;
-                if (queryable == null)
-                {
-                    return MyResults<IQueryable<AssetRecordEntity>>.Error(resSort.Message);
-                }
+                queryable = queryable.OrderByDescending(i => i.ReportTime);
 
                 return MyResults<IQueryable<AssetRecordEntity>>.Success(null, queryable.GetPage(pageSize, pageNumber));
             }

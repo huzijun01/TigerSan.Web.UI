@@ -116,12 +116,12 @@ export class AssetPathPageModel {
         })
 
         this.map.ClearMarkers()
-        this.map.AddMarkers(points)
+        this.map.AddMarkers(points.reverse())
         this.map.InitFlag()
 
         // 列表:
         this.AssetInfoes.splice(0)
-        positions.slice().reverse().forEach(position => {
+        positions.slice().forEach(position => {
             const assetInfo = new AssetInfoModel(this.GetAssetPosition(position))
             assetInfo._onClick = this.OnItemClick
             this.AssetInfoes.push(assetInfo)

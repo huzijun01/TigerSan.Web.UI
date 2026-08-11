@@ -77,6 +77,67 @@ namespace TigerSan.NET8.WebApi.Share.Packages
         /// <summary>是否“脱落”</summary>
         [JsonIgnore]
         public bool? IsFall { get => GSensor == null ? null : GSensor == 1; }
+
+        #region 获取“修正后的BTS”
+        /// <summary>获取“修正后的BTS”</summary>
+        public static string NormalizeBtsParameter(string btsParam)
+        {
+            if (string.IsNullOrWhiteSpace(btsParam))
+            {
+                LogHelper.Instance.Warning("基站参数不能为空");
+                return string.Empty;
+            }
+
+            // 1. 按逗号分割
+            var parts = btsParam.Split(',');
+
+            // 2. 校验基本格式，至少需要5个字段 (MCC, MNC, LAC, CID, Signal)
+            if (parts.Length < 5)
+            {
+                LogHelper.Instance.Warning($"基站参数格式错误，期望至少5段，实际得到: {btsParam}");
+                return string.Empty;
+            }
+
+            // 3. 处理最后一段信号强度
+            // 获取最后一部分（可能是纯信号值，也可能已经包含多余的位）
+            string lastPart = parts[parts.Length - 1].Trim();
+
+            // 尝试解析为整数
+            if (!int.TryParse(lastPart, out int signalValue))
+            {
+                LogHelper.Instance.Warning($"信号强度值无法解析为整数: {lastPart}");
+                return string.Empty;
+            }
+
+            // 4. 执行除以10操作
+            // 注意：C#中整数除法 -690 / 10 = -69，符合预期
+            int normalizedSignal = signalValue / 10;
+
+            // 5. 构建标准的前5段数据 (取前4段固定信息 + 新的信号值)
+            // 无论输入是5段还是6段，我们只保留前4段基础信息，重新组装后两段
+            string mcc = parts[0].Trim();
+            string mnc = parts[1].Trim();
+            string lac = parts[2].Trim();
+            string cid = parts[3].Trim();
+
+            // 6. 组装最终字符串：MCC,MNC,LAC,CID,Signal,Mode
+            // 高德IoT接口要求第6位为定位模式，通常固定为0
+            string result = $"{mcc},{mnc},{lac},{cid},{normalizedSignal},0";
+
+            return result;
+        }
+        #endregion
+
+        #region 修正“BTS”
+        public void NormalizeBts()
+        {
+            SCell = NormalizeBtsParameter(SCell);
+            for (int i = 0; i < NCell.Count; i++)
+            {
+                NCell[i] = NormalizeBtsParameter(NCell[i]);
+            }
+        }
+        #endregion
     }
     #endregion
 

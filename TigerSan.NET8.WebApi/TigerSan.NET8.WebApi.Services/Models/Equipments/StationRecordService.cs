@@ -64,12 +64,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<IQueryable<StationRecordEntity>>.Error(res.Message);
                 }
 
-                var resSort = queryable.Sort(nameof(StationRecordEntity.ReportTime));
-                queryable = resSort.Data;
-                if (queryable == null)
-                {
-                    return MyResults<IQueryable<StationRecordEntity>>.Error(resSort.Message);
-                }
+                queryable = queryable.OrderByDescending(i => i.ReportTime);
 
                 return MyResults<IQueryable<StationRecordEntity>>.Success(null, queryable.GetPage(pageSize, pageNumber));
             }

@@ -379,10 +379,10 @@ namespace TigerSan.NET8.WebApi.Helpers
 
             #region 计算“经纬度”
             Location? location = null;
-            var wifiList = package.Data.WifiScan.Select(i => new WifiInfo(i.MacAddr, i.Signal)).ToArray();
-            if (wifiList.Length > 2)
+            var wifiList = package.Data.WifiScan.Select(i => new WifiInfo(i.MacAddr, i.SignalRaw)).ToList();
+            if (wifiList.Count > 2)
             {
-                var resGetLocationByWiFi = await MapHelper.GetLocationByWifiAsync(GlobalSettings.AMapKey, wifiList);
+                var resGetLocationByWiFi = await MapHelper.GetLocationByWifiAsync2(GlobalSettings.AMapKey, wifiList);
                 location = resGetLocationByWiFi.Data;
                 if (location == null)
                 {
@@ -396,7 +396,8 @@ namespace TigerSan.NET8.WebApi.Helpers
 
             if (location == null)
             {
-                var resGetLocationByCell = await MapHelper.GetLocationByCellTowersAsync(GlobalSettings.AMapKey, package.Data.SCell, package.Data.NCell);
+                package.Data.NormalizeBts();
+                var resGetLocationByCell = await MapHelper.GetLocationByCellTowersAsync2(GlobalSettings.AMapKey, package.Data.SCell, package.Data.NCell);
                 location = resGetLocationByCell.Data;
                 if (location == null)
                 {

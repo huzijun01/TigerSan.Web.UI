@@ -140,7 +140,263 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
 
     public static class MapHelper
     {
-        #region 根据“WiFi”获取“位置”
+        #region 根据“WiFi”获取“位置”（2.0）
+        public static async Task<MyActionResult<Location>> GetLocationByWifiAsync2(
+            string amapKey,
+            List<WifiInfo> wifiList,
+            string? connectedWifiMac = null,
+            int? connectedWifiSignal = null,
+            string? connectedWifiSsid = null)
+        {
+            // 参数校验
+            if (string.IsNullOrWhiteSpace(amapKey))
+                return MyResults<Location>.Warning("高德地图Key不能为空");
+
+            if (wifiList == null || !wifiList.Any())
+                return MyResults<Location>.Warning("WiFi列表不能为空");
+
+            if (wifiList.Count < 2) return MyResults<Location>.Warning("WiFi个数过少");
+
+            wifiList = wifiList.OrderByDescending(i => i.Signal).ToList();
+
+            HttpClient? httpClient = null;
+            try
+            {// 2. 构建 mmac 参数（可选）：当前连接的WiFi，格式同 macs 中的单项
+                string mmacParam;
+                if (!string.IsNullOrEmpty(connectedWifiMac))
+                {
+                    // 处理连接WiFi的MAC格式
+                    string formattedMac = connectedWifiMac;
+                    if (formattedMac.Length == 12)
+                    {
+                        formattedMac = string.Join(":", Enumerable.Range(0, 6).Select(i => formattedMac.Substring(i * 2, 2)));
+                    }
+                    // 如果没有提供信号强度，尝试从列表中查找或默认
+                    int signal = connectedWifiSignal ?? -70;
+                    mmacParam = $"{formattedMac},{signal},,0";
+                }
+                else
+                {
+                    var best = wifiList.First();
+                    wifiList.Remove(best);
+                    mmacParam = $"{best.ToApiString()},,0";
+                }
+
+                // 1. 构建 macs 参数：格式为 mac,signal,,0，多个WiFi用 | 分隔
+                var macsParts = wifiList.Select(w => $"{w.ToApiString()},,0");
+                string macsParam = string.Join("|", macsParts);
+
+                // 3. 构建查询字符串
+                var queryParams = new List<string>
+                {
+                    $"key={Uri.EscapeDataString(amapKey)}",
+                    "accesstype=2", // 固定值，表示通过WiFi定位
+                    "show_fields=formatted_address,addressComponent", // 固定值，WiFi网络
+                    $"mmac={Uri.EscapeDataString(mmacParam)}",
+                    $"macs={Uri.EscapeDataString(macsParam)}",
+                };
+
+                string queryString = string.Join("&", queryParams);
+                string url = $"https://restapi.amap.com/v5/position/IoT?{queryString}";
+
+                // 4. 创建 HttpClient 并发送请求
+                httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
+                // 设置超时时间，避免长时间等待
+
+                var response = await httpClient.PostAsync(url, null);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"HTTP请求失败: {response.StatusCode}"));
+                }
+
+                string content = await response.Content.ReadAsStringAsync();
+
+                // 5. 解析响应
+                // 使用简单的JSON解析，避免引入额外重型库依赖，这里假设使用 System.Text.Json
+                using var doc = JsonDocument.Parse(content);
+                var root = doc.RootElement;
+
+                // 检查业务状态码
+                string status = root.GetProperty("status").GetString() ?? "0";
+                string info = root.GetProperty("info").GetString() ?? "";
+
+                if (status != "1")
+                {
+                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"高德API返回错误: {info} (Infocode: {root.GetProperty("infocode").GetString()})"));
+                }
+
+                // 提取位置信息
+                double? longitude = null;
+                double? latitude = null;
+                string? address = null;
+
+                if (root.TryGetProperty("position", out JsonElement positionElement) &&
+                    positionElement.TryGetProperty("location", out JsonElement locationElement))
+                {
+                    string locStr = locationElement.GetString() ?? "";
+                    var coords = locStr.Split(',');
+                    if (coords.Length == 2 &&
+                        double.TryParse(coords[0], out var lng) &&
+                        double.TryParse(coords[1], out var lat))
+                    {
+                        longitude = lng;
+                        latitude = lat;
+                    }
+                }
+
+                // 提取地址信息
+                if (root.TryGetProperty("formatted_address", out JsonElement addrElement))
+                {
+                    address = addrElement.GetString();
+                }
+
+                // 如果经纬度无效，返回警告
+                if (longitude <= 0 || latitude <= 0)
+                {
+                    return MyResults<Location>.Warning("未能获取有效的经纬度信息");
+                }
+
+                var locationResult = new Location(longitude, latitude, address);
+                return MyResults<Location>.Success(null, locationResult);
+            }
+            catch (Exception ex)
+            {
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning($"定位请求异常: {ex.Message}"));
+            }
+            finally
+            {
+                // 确保释放 HttpClient 资源
+                httpClient?.Dispose();
+            }
+        }
+        #endregion
+
+        #region 根据“移动基站”获取“位置”（2.0）
+        public static async Task<MyActionResult<Location>> GetLocationByCellTowersAsync2(
+            string amapKey,
+            string bts,
+            List<string>? ncells = null,
+            string? imei = null)
+        {
+            // 前置参数校验
+            if (string.IsNullOrWhiteSpace(amapKey))
+                return MyResults<Location>.Warning("高德地图Key不能为空");
+
+            if (string.IsNullOrWhiteSpace(bts))
+                return MyResults<Location>.Warning("主基站bts参数不能为空");
+
+            // 复用静态HttpClient避免频繁创建销毁导致的端口占用问题，统一设置10秒超时
+            using var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
+            try
+            {
+                // 构造全量合规请求参数，完全匹配示例代码的参数结构
+                var parameters = new Dictionary<string, string>
+                {
+                    {"key", amapKey},
+                    {"accesstype", "1"}, // 固定值，指定基站定位模式
+                    {"cdma", "0"}, // 固定值，标记为非CDMA网络，避免触发参数校验不通过
+                    {"network", "GSM"}, // 固定值，兼容国内主流移动网络类型
+                    {"bts", bts}, // 主基站参数，格式遵循 [MCC,MNC,LAC,CID,信号强度,定位模式] 规范
+                    {"show_fields", "formatted_address,addressComponent"} // 返回格式化地址与地址组件
+                };
+
+                // 非空时追加可选参数
+                if (!string.IsNullOrWhiteSpace(imei))
+                {
+                    parameters.Add("diu", imei); // 设备唯一标识，规避20001必填参数缺失错误
+                }
+
+                if (ncells != null && ncells.Any())
+                {
+                    // 多个邻区基站用 | 拼接为标准格式
+                    parameters.Add("ncells", string.Join("|", ncells));
+                }
+
+                // 安全编码拼接查询字符串，彻底避免特殊字符导致的ILLEGAL_REQUEST非法请求错误
+                var queryList = new List<string>();
+                foreach (var kv in parameters)
+                {
+                    queryList.Add($"{kv.Key}={kv.Value}");
+                }
+                string fullUrl = $"https://restapi.amap.com/v5/position/IoT?{string.Join("&", queryList)}";
+
+                // 发送空Body的POST请求，完全对齐示例的请求逻辑
+                var response = await httpClient.PostAsync(fullUrl, new StringContent(""));
+                if (!response.IsSuccessStatusCode)
+                {
+                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"HTTP请求失败: {response.StatusCode}"));
+                }
+
+                string content = await response.Content.ReadAsStringAsync();
+
+                // 结构化解析响应内容
+                using var doc = JsonDocument.Parse(content);
+                var root = doc.RootElement;
+
+                string status = root.GetProperty("status").GetString() ?? "0";
+                string info = root.GetProperty("info").GetString() ?? "";
+                string infocode = root.GetProperty("infocode").GetString() ?? "";
+
+                if (status != "1")
+                {
+                    // 针对历史出现过的错误码做分类提示，快速定位问题
+                    switch (infocode)
+                    {
+                        case "10001":
+                            return MyResults<Location>.Warning(LogHelper.Instance.Warning($"高德API返回密钥无效: {info} (Infocode: {infocode})"));
+                        case "20002":
+                            return MyResults<Location>.Warning(LogHelper.Instance.Warning($"高德API返回非法请求: 请检查基站参数格式是否合规，信号强度单位是否为dBm的合理区间"));
+                        default:
+                            return MyResults<Location>.Warning(LogHelper.Instance.Warning($"高德API返回错误: {info} (Infocode: {infocode})"));
+                    }
+                }
+
+                // 提取经纬度信息
+                double? longitude = null;
+                double? latitude = null;
+                string? address = null;
+
+                if (root.TryGetProperty("position", out JsonElement positionElement) &&
+                    positionElement.TryGetProperty("location", out JsonElement locationElement))
+                {
+                    string locStr = locationElement.GetString() ?? "";
+                    var coords = locStr.Split(',');
+                    if (coords.Length == 2 &&
+                        double.TryParse(coords[0], out var lng) &&
+                        double.TryParse(coords[1], out var lat))
+                    {
+                        longitude = lng;
+                        latitude = lat;
+                    }
+                }
+
+                // 提取格式化地址
+                if (root.TryGetProperty("formatted_address", out JsonElement addrElement))
+                {
+                    address = addrElement.GetString();
+                }
+
+                if (longitude <= 0 || latitude <= 0)
+                {
+                    return MyResults<Location>.Warning("未能获取有效的经纬度信息");
+                }
+
+                var locationResult = new Location(longitude, latitude, address);
+                return MyResults<Location>.Success(null, locationResult);
+            }
+            catch (Exception ex)
+            {
+                return MyResults<Location>.Warning(LogHelper.Instance.Warning($"定位请求异常: {ex.Message}"));
+            }
+            finally
+            {
+                httpClient.Dispose();
+            }
+        }
+        #endregion
+
+        #region 根据“WiFi”获取“位置”（1.0）
         /// <summary>
         /// 通过 WiFi 列表获取地理位置（高德智能硬件定位接口）
         /// </summary>
@@ -149,7 +405,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         /// <param name="connectedWifiSignal">当前连接热点的信号强度（可选）</param>
         /// <param name="connectedWifiSsid">当前连接热点的 SSID（可选）</param>
         /// <param name="amapKey">高德 Web 服务 Key</param>
-        public static async Task<MyActionResult<Location>> GetLocationByWifiAsync(
+        public static async Task<MyActionResult<Location>> GetLocationByWifiAsync1(
             string amapKey,
             IList<WifiInfo> wifiList,
             string? connectedWifiMac = null,
@@ -173,7 +429,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
                 return MyResults<Location>.Warning(LogHelper.Instance.Warning("WiFi 数量不足2个，无法精准定位"));
 
             // 3. 构建请求 URL
-            var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(15) };
+            var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
             const string apiUrl = "https://apilocate.amap.com/position";
 
             var urlBuilder = new StringBuilder();
@@ -259,9 +515,9 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         }
         #endregion
 
-        #region 根据“移动基站”获取“位置”
-        /// <summary>根据“移动基站”获取“位置”</summary>
-        public static async Task<MyActionResult<Location>> GetLocationByCellTowersAsync(
+        #region 根据“移动基站”获取“位置”（1.0）
+        /// <summary>根据“移动基站”获取“位置”（1.0）</summary>
+        public static async Task<MyActionResult<Location>> GetLocationByCellTowersAsync1(
             string amapKey,
             string? scell,
             List<string>? ncells,
@@ -425,7 +681,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             var locationParam = $"{formatLng},{formatLat}";
             #endregion
 
-            var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(15) };
+            var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
             const string apiUrl = "https://restapi.amap.com/v3/assistant/coordinate/convert?";
 
             try
