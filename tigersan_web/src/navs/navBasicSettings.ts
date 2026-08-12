@@ -92,14 +92,14 @@ export const navBasicSettings: NavFolderConfig = {
         {
             Key: "基站管理",
             Title: TextModel.Computed('Station Mgt', "基站管理"),
-            Icon: Icons.Router,
+            Icon: Icons.Router_Linear,
             IsOpen: false,
             _authority: Authorities.BaseStationMgtFolder,
             Buttons: [
                 {
                     Key: "基站管理",
                     Title: TextModel.Computed('Station Mgt', "基站管理"),
-                    Icon: Icons.Router,
+                    Icon: Icons.Router_Linear,
                     IsSelected: false,
                     _component: BaseStationMgtPage,
                     _authority: Authorities.BaseStationMgtPage,
@@ -109,14 +109,14 @@ export const navBasicSettings: NavFolderConfig = {
         {
             Key: "标签管理",
             Title: TextModel.Computed('Tag Mgt', "标签管理"),
-            Icon: Icons.Label_2,
+            Icon: Icons.Tag_Linear_2,
             IsOpen: false,
             _authority: Authorities.TagMgtFolder,
             Buttons: [
                 {
                     Key: "标签管理",
                     Title: TextModel.Computed('Tag Mgt', "标签管理"),
-                    Icon: Icons.Label_2,
+                    Icon: Icons.Tag_Linear_2,
                     _component: TagMgtPage,
                     _authority: Authorities.TagMgtPage,
                 },
@@ -208,7 +208,7 @@ export const navBasicSettings: NavFolderConfig = {
                 {
                     Key: "基站类型",
                     Title: Texts.StationType,
-                    Icon: Icons.Router,
+                    Icon: Icons.Router_Linear,
                     IsSelected: false,
                     _component: StationTypeMgtPage,
                     _authority: Authorities.StationType,
@@ -224,7 +224,7 @@ export const navBasicSettings: NavFolderConfig = {
                 {
                     Key: "标签类型",
                     Title: Texts.TagType,
-                    Icon: Icons.Label_2,
+                    Icon: Icons.Tag_Linear_2,
                     IsSelected: false,
                     _component: TagTypeMgtPage,
                     _authority: Authorities.TagType,

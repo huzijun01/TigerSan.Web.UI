@@ -1,6 +1,6 @@
 import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
-import { loading, MapModel, PaginationModel, LnglatData, DrawerModel } from "@/0_tigersan_ui/tigerui"
+import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, Icons, Colors } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
 import { AssetStateModel } from "../AssetLedgerPage/AssetStatePage/AssetStateModel"
@@ -38,6 +38,8 @@ export class AssetMapPageModel {
         watch(this.Positions, this.UpdateAssetInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
+        this.map._icon = Icons.Tag_Planar_2
+        this.map._iconStyle = { color: Colors.Brand }
         this.map.IsShowButton.value = false
         this.map._onInitAsync = async () => {
             const filter = this.filter

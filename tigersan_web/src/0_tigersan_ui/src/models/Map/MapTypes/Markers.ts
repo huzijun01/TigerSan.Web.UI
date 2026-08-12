@@ -233,7 +233,7 @@ declare global {
             /** 获取“地图对象” */
             getMap(): Map
             /** 设置“地图对象” */
-            setMap(Map: Map): void
+            setMap(Map: Map | null): void
 
             /** 获取“是否以中心点聚合” */
             isAverageCenter(): boolean

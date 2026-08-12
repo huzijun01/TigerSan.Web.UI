@@ -7,9 +7,9 @@
         <div class="dashboard-panel flex-stretch">
             <CountCard class="bg-info" :icon="Icons.Building_1" :title="Texts.Site.value"
                 :count="model.SiteCount.value" />
-            <CountCard class="bg-warning" :icon="Icons.Router" :title="Texts.BaseStation.value"
+            <CountCard class="bg-warning" :icon="Icons.Router_Linear" :title="Texts.BaseStation.value"
                 :count="model.BaseStationCount.value" />
-            <CountCard class="bg-brand" :icon="Icons.Label_2" :title="Texts.Tag.value" :count="model.TagCount.value" />
+            <CountCard class="bg-brand" :icon="Icons.Tag_Linear_2" :title="Texts.Tag.value" :count="model.TagCount.value" />
             <CountCard class="bg-success" :icon="Icons.Asset" :title="Texts.Asset.value"
                 :count="model.AssetCount.value" />
         </div>

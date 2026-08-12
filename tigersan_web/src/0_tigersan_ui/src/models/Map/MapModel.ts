@@ -2,7 +2,7 @@ import "./MapTypes"
 import AMapLoader from "@amap/amap-jsapi-loader"
 import Marker from '../../components/Map/Marker.vue'
 import ClusterMarker from '../../components/Map/ClusterMarker.vue'
-import { computed, ref, shallowRef, type Component } from "vue"
+import { computed, ref, shallowRef, type Component, type StyleValue } from "vue"
 import { Texts } from "../../texts"
 import type { ActionAsync } from "../../types"
 import { MapPlugins } from "./MapTypes/MapPlugins"
@@ -36,6 +36,10 @@ export class MapModel<TData, TInfoModel> {
     //#region 【Fields】
     /** 标记 */
     private _marker?: AMap.Marker
+    /** 图标（标记聚合） */
+    _icon?: string
+    /** “图标”样式（标记聚合） */
+    _iconStyle?: StyleValue
     /** 是否“自动初始化” */
     _isAutoInit = true
     /** 是否“显示地图类型” */
@@ -212,12 +216,14 @@ export class MapModel<TData, TInfoModel> {
     }
 
     /** 渲染“标记” */
-    static RenderMarker(context: AMap.RenderMarkerObject, map: MapModel<any, any>) {
+    readonly RenderMarker = (context: AMap.RenderMarkerObject, map: MapModel<any, any>) => {
         const model = new MarkerModel()
         const cd = context.data[0]
         if (cd) {
             const opts = map._markerDataMap.get(cd)
             if (opts) {
+                model.icon = this._icon
+                model.iconStyle = this._iconStyle
                 model.data = opts
                 model.info = opts.info
                 model.infoModel = opts.infoModel
@@ -387,6 +393,7 @@ export class MapModel<TData, TInfoModel> {
         // 清空所有覆盖物与图层
         this.RemoveMarker()
         this.ClearMarkers()
+        this.ClearCluster()
         this.ClearOverlays(ClassNames.Polygon)
         this.ClearOverlays(ClassNames.Polyline)
 
@@ -573,6 +580,8 @@ export class MapModel<TData, TInfoModel> {
             return
         }
 
+        this.ClearCluster()
+
         const arrOpts: DataOptions[] = []
         this._markerDataMap.clear()
 
@@ -583,7 +592,7 @@ export class MapModel<TData, TInfoModel> {
         })
 
         this._cluster = new AMap.MarkerCluster(this._map, arrOpts, {
-            renderMarker: m => MapModel.RenderMarker(m, this),
+            renderMarker: m => this.RenderMarker(m, this),
             renderClusterMarker: c => MapModel.RenderClusterMarker(c, arrOpts.length),
             ...opts
         })
@@ -592,10 +601,18 @@ export class MapModel<TData, TInfoModel> {
         })
     }
 
+    /** 清空“标记聚合” */
+    readonly ClearCluster = () => {
+        if (this._cluster) {
+            this._cluster.setMap(null)
+            this._cluster = undefined
+        }
+    }
+
     /** 添加“标记”集合 */
     readonly AddMarkers = (
         lnglatDatas: LnglatData<TData, TInfoModel>[],
-        opts?: AMap.MarkerOptions,
+        opts?: AMap.MarkerOptions & { icon?: string, style?: StyleValue },
         callback?: AMap.MapCallback) => {
         if (!this._map) {
             console.warn('The _map is undefined!')
@@ -604,6 +621,8 @@ export class MapModel<TData, TInfoModel> {
 
         for (const lnglatData of lnglatDatas) {
             const model = new MarkerModel({
+                icon: opts?.icon,
+                iconStyle: opts?.style,
                 data: lnglatData,
                 info: lnglatData.info,
                 infoModel: lnglatData.infoModel,

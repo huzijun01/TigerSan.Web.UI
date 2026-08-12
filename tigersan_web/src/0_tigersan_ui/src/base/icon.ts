@@ -103,8 +103,6 @@ export class Icons {
     static Loop = ""
     static Layer = ""
     static Letter = ""
-    static Label_1 = ""
-    static Label_2 = ""
     static Lightning = ""
     static Love_Linea = ""
     static Love_Planar = ""
@@ -154,9 +152,11 @@ export class Icons {
     // R:
     static Role = ""
     static Radar = ""
-    static Router = ""
     static Review = ""
     static Refresh = ""
+    static Router_Linear = ""
+    static Router_Planar_1 = ""
+    static Router_Planar_2 = ""
 
     // S:
     static Sub = ""
@@ -188,6 +188,10 @@ export class Icons {
     static TextBox_A = ""
     static TextBox_T = ""
     static Time_Small = ""
+    static Tag_Linear_1 = ""
+    static Tag_Linear_2 = ""
+    static Tag_Planar_1 = ""
+    static Tag_Planar_2 = ""
     static TuningButton = ""
     static Topmost_Cancel = ""
 

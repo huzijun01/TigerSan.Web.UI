@@ -1,12 +1,13 @@
 <template>
-    <div class="marker" :style="markerStyle" @mouseover="InitInfo" @click="OnClick">
+    <div class="marker" :class="rootClass" :style="markerStyle" @mouseover="InitInfo" @click="OnClick">
+        <span class="icon iconfont" :style="model.iconStyle">{{ model.icon }}</span>
         <div class="info" ref="refInfo" :style="infoStyle"></div>
         <div class="flag iconfont" :class="model.FlagClass.value">{{ Icons.Flag_Planar }}</div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, shallowRef, type App, type PropType } from 'vue'
+import { onBeforeUnmount, shallowRef, type App, type PropType, type StyleValue } from 'vue'
 import { Icons } from '../../base'
 import { ComponentHelper } from '../../helpers'
 import { MarkerModel } from '../../models/Map/MarkerModel'
@@ -21,15 +22,17 @@ const { model } = defineProps({
 
 const refInfo = shallowRef<HTMLElement | undefined>()
 
-const markerStyle: any = {
-    width: `${MarkerModel.size}px`,
-    height: `${MarkerModel.size}px`,
-    borderRadius: `${MarkerModel.size / 2}px`,
+const markerStyle: StyleValue = {
+    '--size': MarkerModel.size + 'px',
 }
 
 const infoStyle: any = {
     top: `${MarkerModel.size}px`,
     left: `${MarkerModel.size}px`,
+}
+
+const rootClass = {
+    default: !model.icon
 }
 
 let app: App | undefined
@@ -58,12 +61,21 @@ onBeforeUnmount(() => {
 <style scoped lang="less">
 .marker {
     position: relative;
-    width: 18px;
-    height: 18px;
-    border-radius: 12px;
-    border: 1px solid hsl(180, 100%, 40%);
-    box-shadow: hsl(180, 100%, 50%) 0px 0px 3px;
-    background-color: hsla(180, 100%, 50%, 0.3);
+    color: var(--theme-color);
+
+    .icon {
+        font-size: var(--size);
+        text-shadow: 2px 2px 4px var(--theme-mask-hover);
+    }
+
+    &.default {
+        width: var(--size);
+        height: var(--size);
+        border-radius: calc(var(--size) / 2);
+        border: 1px solid hsl(180, 100%, 40%);
+        box-shadow: hsl(180, 100%, 50%) 0px 0px 3px;
+        background-color: hsla(180, 100%, 50%, 0.3);
+    }
 
     &:hover .info {
         display: block;

@@ -1,6 +1,6 @@
 import AssetInfo from "@/components/AssetInfo.vue"
 import { ref, shallowReactive, toRaw, watch } from 'vue'
-import { DatePickerModel, DateType, LnglatData, loading, MapModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
+import { Colors, DatePickerModel, DateType, Icons, LnglatData, loading, MapModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
 import { stationRecordHelper, LocationMode, AssetInfoModel, AssetLngLat, AssetPosition } from '@/models'
 
 export class StationPathPageModel {
@@ -125,7 +125,7 @@ export class StationPathPageModel {
         })
 
         this.map.ClearMarkers()
-        this.map.AddMarkers(points.reverse())
+        this.map.AddMarkers(points.reverse(), { icon: Icons.Router_Planar_2, style: { color: Colors.Warning } })
         this.map.InitFlag()
 
         // 列表:

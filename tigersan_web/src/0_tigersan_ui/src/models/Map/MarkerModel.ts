@@ -1,4 +1,4 @@
-import { computed, ref, type Component } from "vue"
+import { computed, ref, type Component, type StyleValue } from "vue"
 
 /** “标记”模式 */
 export enum MarkerModes {
@@ -11,6 +11,10 @@ export class MarkerModel<TData, TInfoModel> {
     //#region 【Fields】
     static readonly size: number = 18
     static readonly offset: number = -this.size / 2
+    /** 图标 */
+    icon?: string
+    /** “图标”样式 */
+    iconStyle?: StyleValue
     /** 数据 */
     data?: TData
     /** “信息”组件 */
@@ -43,6 +47,8 @@ export class MarkerModel<TData, TInfoModel> {
     //#region 【Ctor】
     constructor(opts?: MarkerModelOptions<TData, TInfoModel>) {
         if (!opts) return
+        this.icon = opts.icon
+        this.iconStyle = opts.iconStyle
         this.data = opts.data
         this.info = opts.info
         this.infoModel = opts.infoModel
@@ -52,6 +58,10 @@ export class MarkerModel<TData, TInfoModel> {
 }
 
 export type MarkerModelOptions<TData, TInfoModel> = {
+    /** 图标 */
+    icon?: string
+    /** “图标”样式 */
+    iconStyle?: StyleValue
     /** 数据 */
     data?: TData
     /** “信息”组件 */
