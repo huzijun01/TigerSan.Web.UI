@@ -49,7 +49,8 @@
 
     <!-- 抽屉 -->
     <Drawer :model="model.drawerState">
-        <AssetState :asset="model.assetState.Asset.value" :tag="model.assetState.Tag.value" />
+        <AssetState :asset="model.assetState.Asset.value" :tag="model.assetState.Tag.value"
+            :station="model.assetState.Station.value" />
     </Drawer>
 </template>
 

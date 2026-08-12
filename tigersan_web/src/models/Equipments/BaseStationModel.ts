@@ -62,9 +62,7 @@ export class BaseStationFilter {
     }
 }
 
-
-
-class BaseStationHelper extends IdNameHelper<BaseStationDto> {
+class BaseStationHelper extends IdNameHelper<BaseStationEntity> {
     constructor() {
         super('BaseStation')
     }
@@ -74,6 +72,12 @@ class BaseStationHelper extends IdNameHelper<BaseStationDto> {
     GetIdNameSelectModel(): SelectModel<IdName> {
         return super.GetIdNameSelectModel(Texts.BaseStation)
     }
+
+    /** 根据“TagId”或“RFID”获取“单条数据” */
+    readonly GetFull = async (id?: bigint, macAddr?: string) => await axiosHelper.Get<BaseStationDto>(`${this._action}/Full`, [
+        { key: 'id', value: id },
+        { key: 'macAddr', value: macAddr }
+    ], false)
 
     /** 筛选“总数” */
     readonly GetCount = async (param: BaseStationFilter) => await axiosHelper.GetCount(this._action, {

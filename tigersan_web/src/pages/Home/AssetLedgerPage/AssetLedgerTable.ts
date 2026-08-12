@@ -78,9 +78,9 @@ export const assetLedgerTable = new TableModel<AssetDto>([
         IsFreeze: true,
         IsReadonly: true,
         Type: ItemType.Link,
-        _onItemClick: itemModel => {
+        _onItemClickAsync: async itemModel => {
             const rowData = itemModel._rowModel._rowData
-            statePage.Asset.value = itemModel._rowModel._rowData
+            await statePage.assetState.Init(itemModel._rowModel._rowData.assetId)
             statePage.Refresh()
 
             recordPage._asset = rowData.id
@@ -133,7 +133,7 @@ export const assetLedgerTable = new TableModel<AssetDto>([
                 return
             }
             stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.assetId}`
-            const res = await baseStationHelper.Get(rowData.station)
+            const res = await baseStationHelper.GetFull(rowData.station, rowData.assetId)
             if (!res.data) {
                 MyActionResult.ShowResult(res)
                 return

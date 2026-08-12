@@ -25,6 +25,15 @@ namespace TigerSan.NET8.WebApi.Controllers
             return await _service.GetByMacAddr(macAddr);
         }
 
+        [HttpGet]
+        [Route("Full")]
+        /// <summary>根据“ID”或“MAC地址”获取“单条完整数据”</summary>
+        public async Task<MyActionResult<BaseStationDto>> GetFull(long? id = null, string? macAddr = null)
+        {
+            if (AccessibleCompanyIds == null) return MyResults<BaseStationDto>.AccessibleCompaniesCannotBeNull;
+            return await _service.GetFull(AccessibleCompanyIds, id, macAddr);
+        }
+
         [HttpPost]
         [Route("FullList")]
         /// <summary>获取“完整数据”集合</summary>

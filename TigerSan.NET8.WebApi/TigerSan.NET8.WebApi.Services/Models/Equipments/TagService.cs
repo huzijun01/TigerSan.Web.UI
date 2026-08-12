@@ -439,8 +439,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 filters.Add(new PropFilter(nameof(TagEntity.TagId), tagId));
             }
-
-            if (rfid != null)
+            else if (rfid != null)
             {
                 filters.Add(new PropFilter(nameof(TagEntity.Rfid), rfid));
             }

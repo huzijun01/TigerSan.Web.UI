@@ -7,12 +7,13 @@
             </div>
         </div>
         <div class="right-panel">
-            <AssetState :asset="model.Asset.value" :tag="model.Tag.value" />
+            <AssetState :asset="assetState.Asset.value" :tag="assetState.Tag.value"
+                :station="assetState.Station.value" />
         </div>
         <div class="bottom-panel flex-left">
             <div class="addr-panel flex-left">
                 <div class="location-mode" v-if="model.IsShowLocationMode.value">{{ model.LocationMode.value }}</div>
-                <div class="addr">{{ model.Asset.value?.fullAddr }}</div>
+                <div class="addr">{{ assetState.Asset.value?.fullAddr }}</div>
             </div>
             <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
         </div>
@@ -32,6 +33,8 @@ const { model } = defineProps({
         default: () => new AssetStatePageModel()
     }
 })
+
+const { assetState } = model
 
 // 【过程】:
 onMounted(() => {

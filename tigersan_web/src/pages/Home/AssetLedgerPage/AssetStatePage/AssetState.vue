@@ -5,7 +5,6 @@
         <KeyValue :isAutoHidden="true" :propName="Texts.Name.value" :propValue="asset?.name" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Company.value" :propValue="asset?.companyName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Department.value" :propValue="asset?.departmentName" />
-        <KeyValue :isAutoHidden="true" :propName="Texts.Tag.value" :propValue="asset?.tagId" />
         <KeyValue :isAutoHidden="true" :propName="Texts.AllotMode.value" :propValue="IsAuto.ToString(asset?.isAuto)" />
         <KeyValue :isAutoHidden="true" :propName="Texts.IsFall.value"
             :propValue="IsFall.ToString(asset?.isFall ?? false)" />
@@ -14,31 +13,45 @@
             :propValue="ErrorType.GetName(asset?.errorType)" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Vehicle.value" :propValue="asset?.plate" />
         <!-- 标签详情： -->
-        <div class="title">{{ Texts.TagDetail.value }}</div>
-        <KeyValue :isAutoHidden="true" :propName="Texts.TagType.value"
-            :propValue="tagTypeHelper.GetName(asset?.tagType)" />
+        <div class="title" v-if="tag">{{ Texts.TagDetail.value }}</div>
+        <KeyValue :isAutoHidden="true" :propName="Texts.TagId.value" :propValue="tag?.tagId" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.TagType.value" :propValue="tag?.typeName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.OnlineState.value"
             :propValue="OnlineState.ToString(tag?.onlineState)" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Battery.value" :propValue="tag?.battery" />
-        <KeyValue :isAutoHidden="true" :propName="Texts.Site.value" :propValue="asset?.siteName" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.Site.value" :propValue="tag?.siteName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.ReportTime.value"
             :propValue="ObjectHelper.GetDateString(tag?.reportTime)" />
+        <!-- 基站详情： -->
+        <div class="title" v-if="station">{{ Texts.StationDetail.value }}</div>
+        <KeyValue :isAutoHidden="true" :propName="Texts.MacAddr.value" :propValue="station?.macAddr" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.StationType.value" :propValue="station?.typeName" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.InstallMode.value"
+            :propValue="IsMobile.ToString(station?.isMobile)" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.OnlineState.value"
+            :propValue="OnlineState.ToString(station?.onlineState)" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.ReportTime.value"
+            :propValue="ObjectHelper.GetDateString(station?.reportTime)" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { type PropType } from 'vue'
-import { Texts, KeyValue, IsFall, ObjectHelper, OnlineState, IsAuto } from '@/0_tigersan_ui/tigerui'
-import { AssetDto, ErrorType, TagDto, tagTypeHelper } from '@/models'
+import { Texts, KeyValue, IsFall, ObjectHelper, OnlineState, IsAuto, IsMobile } from '@/0_tigersan_ui/tigerui'
+import { AssetDto, BaseStationDto, ErrorType, TagDto } from '@/models'
 
 // 【字段】:
-const { asset, tag } = defineProps({
+const { asset, tag, station } = defineProps({
     asset: {
         type: Object as PropType<AssetDto | undefined>,
         default: undefined
     },
     tag: {
         type: Object as PropType<TagDto | undefined>,
+        default: undefined
+    },
+    station: {
+        type: Object as PropType<BaseStationDto | undefined>,
         default: undefined
     }
 })

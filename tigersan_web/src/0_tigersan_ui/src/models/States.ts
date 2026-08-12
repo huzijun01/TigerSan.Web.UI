@@ -186,6 +186,7 @@ export class IsEnd {
 /** 是否移动 */
 export class IsMobile {
     static ToString(value?: boolean) {
+        if (value === undefined) return ''
         return value ? Texts.Mobile.value : Texts.Fixed.value
     }
 

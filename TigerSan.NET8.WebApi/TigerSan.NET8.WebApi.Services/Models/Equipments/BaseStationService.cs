@@ -36,7 +36,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #region 【Functions】
         #region [查]
         #region 根据“MAC地址”获取“单条数据”
-        /// <summary>根据“MAC地址”获取“单条数据”</summary>
         public async Task<MyActionResult<BaseStationEntity>> GetByMacAddr(string macAddr)
         {
             try
@@ -55,8 +54,24 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
+        #region 获取“完整数据”
+        public async Task<MyActionResult<BaseStationDto>> GetFull(
+            List<long> companies,
+            long? id = null,
+            string? macAddr = null)
+        {
+            if (id == null && macAddr == null) return MyResults<BaseStationDto>.Success();
+
+            var res = await GetFullList1(companies, 1, 1, null, null, id, macAddr);
+            if (res.Data == null)
+            {
+                return MyResults<BaseStationDto>.Error(res.Message);
+            }
+            return MyResults<BaseStationDto>.Success(null, res.Data.FirstOrDefault());
+        }
+        #endregion
+
         #region 获取“完整数据”集合
-        /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult<List<BaseStationDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
@@ -153,8 +168,41 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
+        #region 获取“完整数据”集合（id、macAddr）
+        public async Task<MyActionResult<List<BaseStationDto>>> GetFullList1(
+            List<long> companies,
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            long? id = null,
+            string? macAddr = null)
+        {
+            var filters = new List<PropFilter>();
+            if (id != null)
+            {
+                filters.Add(new PropFilter(nameof(BaseStationEntity.Id), id));
+            }
+            else if (macAddr != null)
+            {
+                filters.Add(new PropFilter(nameof(BaseStationEntity.MacAddr), macAddr));
+            }
+
+            return await GetFullList(pageSize, pageNumber, sort, ascending, new FilterDto()
+            {
+                Parent = new ParentFilter()
+                {
+                    Parent = new ParentFilter()
+                    {
+                        Ids = companies,
+                    }
+                },
+                Filters = filters,
+            });
+        }
+        #endregion
+
         #region 获取“所属公司”集合
-        /// <summary>获取“所属公司”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongCompanyList(List<CompanyEntity>? accessibleCompanies)
         {
             try
@@ -199,7 +247,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“所属场地”集合
-        /// <summary>获取“所属场地”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongSiteList(long? company = null)
         {
             try
@@ -235,7 +282,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“所属基站类型”集合
-        /// <summary>获取“所属基站类型”集合</summary>
         public async Task<MyActionResult<List<IdName>>> GetBelongStationTypeList(long? company = null, long? site = null)
         {
             try
@@ -274,7 +320,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“场地”
-        /// <summary>获取“场地”</summary>
         public async Task<MyActionResult<SiteEntity>> GetSite(long id)
         {
             try
@@ -303,7 +348,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“场地”字典
-        /// <summary>获取“场地”字典</summary>
         public async Task<MyActionResult<Dictionary<long, SiteEntity>>> GetSiteDict(List<long> ids)
         {
             var dict = new Dictionary<long, SiteEntity>();
@@ -561,7 +605,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [Others]
         #region 更新“在线状态”
-        /// <summary>更新“在线状态”</summary>
         public async Task<MyActionResult<object>> UpdateOnlineState()
         {
             try

@@ -1,6 +1,7 @@
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 import { loading, MapModel, MyActionResult, StringHelper } from '@/0_tigersan_ui/tigerui'
-import { TagDto, AssetInfoModel, AssetDto, assetHelper, tagHelper, LocationMode } from '@/models'
+import { AssetStateModel } from './AssetStateModel'
+import { AssetInfoModel, assetHelper, LocationMode } from '@/models'
 
 export class AssetStatePageModel {
     //#region 【Fields】
@@ -9,12 +10,10 @@ export class AssetStatePageModel {
     //#endregion 【Fields】
 
     //#region 【Props】
-    /** 资产 */
-    readonly Asset = shallowRef<AssetDto | undefined>()
-    /** 标签 */
-    readonly Tag = shallowRef<TagDto | undefined>()
+    /** 资产状态 */
+    readonly assetState = new AssetStateModel()
     /** 定位方式 */
-    readonly LocationMode = computed(() => LocationMode.GetName(this.Tag.value?.locationMode))
+    readonly LocationMode = computed(() => LocationMode.GetName(this.assetState.Tag.value?.locationMode))
     /** 是否显示“定位方式” */
     readonly IsShowLocationMode = computed(() => StringHelper.IsNotEmpty(this.LocationMode.value))
     //#endregion 【Props】
@@ -28,7 +27,7 @@ export class AssetStatePageModel {
             try {
                 loading.IsShow.value = true
 
-                const asset = this.Asset.value
+                const asset = this.assetState.Asset.value
                 if (!asset) {
                     console.warn('The asset is undefined!')
                     return
@@ -61,16 +60,6 @@ export class AssetStatePageModel {
             loading.IsShow.value = true
 
             await this.map.InitAsync()
-
-            const tagId = this.Asset.value?.tagId
-            if (tagId) {
-                const res = await tagHelper.GetFull(tagId)
-                if (!res.data) {
-                    MyActionResult.ShowResult(res)
-                    return
-                }
-                this.Tag.value = res.data
-            }
         } finally {
             loading.IsShow.value = false
         }

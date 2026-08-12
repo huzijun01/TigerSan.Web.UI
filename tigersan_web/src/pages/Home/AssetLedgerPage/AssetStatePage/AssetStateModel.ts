@@ -1,6 +1,6 @@
 import { shallowRef } from "vue"
 import { loading, MyActionResult } from "@/0_tigersan_ui/tigerui"
-import { AssetDto, TagDto, assetHelper, tagHelper } from "@/models"
+import { AssetDto, TagDto, assetHelper, tagHelper, baseStationHelper, BaseStationDto } from "@/models"
 
 /** “资产状态”模型 */
 export class AssetStateModel {
@@ -9,6 +9,8 @@ export class AssetStateModel {
     readonly Asset = shallowRef<AssetDto | undefined>()
     /** 标签 */
     readonly Tag = shallowRef<TagDto | undefined>()
+    /** 基站 */
+    readonly Station = shallowRef<BaseStationDto | undefined>()
     //#endregion 【Props】
 
     //#region 【Functions】
@@ -23,6 +25,8 @@ export class AssetStateModel {
                 return false
             }
 
+            this.Asset.value = resAsset.data
+
             if (resAsset.data.tagId) {
                 const resTag = await tagHelper.GetFull(resAsset.data.tagId)
                 if (!resTag.data) {
@@ -34,7 +38,17 @@ export class AssetStateModel {
                 this.Tag.value = undefined
             }
 
-            this.Asset.value = resAsset.data
+            if (resAsset.data.station) {
+                const resStation = await baseStationHelper.GetFull(resAsset.data.station, resAsset.data.stationId)
+                if (!resStation.data) {
+                    MyActionResult.ShowResult(resStation, undefined, false)
+                    return false
+                }
+                this.Station.value = resStation.data
+            } else {
+                this.Station.value = undefined
+            }
+
             return true
         } finally {
             loading.IsShow.value = false
