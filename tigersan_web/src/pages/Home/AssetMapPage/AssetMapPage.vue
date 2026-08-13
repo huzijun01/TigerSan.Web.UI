@@ -34,7 +34,7 @@
                         <KeyValue :propName="Texts.Count.value" :propValue="model.Count" />
                     </div>
                     <div class="list-panel">
-                        <AssetInfo v-for="a in model.AssetInfoes" :key="a._id" :model="a" />
+                        <PositionInfo v-for="a in model.PositionInfoes" :key="a._id" :model="a" />
                     </div>
                     <div class="pagination-panel">
                         <Pagination :model="model.pagination" />
@@ -49,16 +49,17 @@
 
     <!-- 抽屉 -->
     <Drawer :model="model.drawerState">
-        <AssetState :asset="model.assetState.Asset.value" :tag="model.assetState.Tag.value"
-            :station="model.assetState.Station.value" />
+        <AssetState v-if="!model.IsStation.value" :asset="model.assetState.Asset.value"
+            :tag="model.assetState.Tag.value" :station="model.assetState.Station.value" />
+        <RowData :model="model.station" />
     </Drawer>
 </template>
 
 <script lang="ts" setup>
-import AssetInfo from '@/components/AssetInfo.vue'
+import PositionInfo from '@/components/PositionInfo.vue'
 import AssetState from '../AssetLedgerPage/AssetStatePage/AssetState.vue'
 import { onMounted, onBeforeUnmount } from 'vue'
-import { Drawer, PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
+import { Drawer, RowData, PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
 import { AssetMapPageModel } from './AssetMapPageModel'
 // 【字段】:
 const model = new AssetMapPageModel()

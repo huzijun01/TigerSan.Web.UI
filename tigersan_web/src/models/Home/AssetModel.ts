@@ -1,6 +1,7 @@
 import { ArrayHelper, OnlineStates, FilterDto } from "@/0_tigersan_ui/tigerui"
+import { PositionDto } from "./PositionInfoModel"
+import { AssetStates, ErrorTypes } from "../base/AssetStates"
 import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
-import { AssetStates, ErrorTypes, LocationModes } from "../base/AssetStates"
 
 /** "资产"实体 */
 export class AssetEntity extends IdEntityBase {
@@ -47,16 +48,6 @@ export class AssetDto extends AssetEntity {
     battery?: number
     fullAddr?: string
     transferCode?: string
-}
-
-/** 资产位置 */
-export class AssetPosition extends IdEntityBase {
-    assetId = ''
-    lastRecord?: bigint
-    longitude = 0
-    latitude = 0
-    reportTime?: Date
-    locationMode?: LocationModes
 }
 
 /** “资产”过滤器 */
@@ -151,16 +142,16 @@ export class AssetHelper extends IdHelper<AssetDto> {
 
     /** 筛选“位置” */
     readonly GetPosition = async (asset: bigint) => {
-        return await axiosHelper.Get<AssetPosition>(`${this._action}/Position/${asset}`)
+        return await axiosHelper.Get<PositionDto>(`${this._action}/Position/${asset}`)
     }
 
     /** 筛选“位置”集合 */
     readonly GetPositionList = async (param: {
         pageSize?: number,
         pageNumber?: number,
-    } & AssetFilter): Promise<AssetPosition[]> => {
+    } & AssetFilter): Promise<PositionDto[]> => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
-        return await axiosHelper.GetList<AssetPosition>(this._action, {
+        return await axiosHelper.GetList<PositionDto>(this._action, {
             strList: 'PositionList',
             pageSize: param.pageSize,
             pageNumber: param.pageNumber,

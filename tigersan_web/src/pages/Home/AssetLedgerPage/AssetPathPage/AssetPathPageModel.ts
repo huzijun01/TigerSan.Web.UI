@@ -1,14 +1,14 @@
-import AssetInfo from "@/components/AssetInfo.vue"
+import PositionInfo from "@/components/PositionInfo.vue"
 import { ref, shallowReactive, toRaw, watch } from 'vue'
 import { DatePickerModel, DateType, LnglatData, loading, MapModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
-import { assetRecordHelper, AssetLngLat, AssetInfoModel, AssetPosition, LocationMode } from '@/models'
+import { assetRecordHelper, LocationRecord, PositionInfoModel, PositionDto, LocationMode } from '@/models'
 
 export class AssetPathPageModel {
     _asset?: bigint
     /** “定位方式”选择器 */
     readonly selectLocationMode = LocationMode.GetSelectModel()
     /** 地图 */
-    readonly map = new MapModel<any, AssetInfoModel>({ animateEnable: false })
+    readonly map = new MapModel<any, PositionInfoModel>({ animateEnable: false })
 
     /** 日期 */
     readonly date = new DatePickerModel()
@@ -17,9 +17,9 @@ export class AssetPathPageModel {
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** “位置”集合 */
-    readonly Positions = shallowReactive<AssetLngLat[]>([])
-    /** “物资信息”集合 */
-    readonly AssetInfoes = shallowReactive<AssetInfoModel[]>([])
+    readonly Positions = shallowReactive<LocationRecord[]>([])
+    /** “位置信息”集合 */
+    readonly PositionInfoes = shallowReactive<PositionInfoModel[]>([])
 
     constructor() {
         this.date._type = DateType.datetimerange
@@ -30,7 +30,7 @@ export class AssetPathPageModel {
         this.pagination._onChange = () => this.Refresh()
         this.selectLocationMode._onChange = () => this.Refresh()
 
-        watch(this.Positions, this.UpdateAssetInfoes)
+        watch(this.Positions, this.UpdatePositionInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
         this.map._isAutoInit = false
@@ -105,14 +105,14 @@ export class AssetPathPageModel {
         }
     }
 
-    /** 更新“物资信息”集合 */
-    readonly UpdateAssetInfoes = () => {
+    /** 更新“位置信息”集合 */
+    readonly UpdatePositionInfoes = () => {
         // 标记:
         const positions = toRaw(this.Positions)
-        const points: LnglatData<AssetInfoModel, AssetInfoModel>[] = positions.map(position => {
-            const infoModel = new AssetInfoModel(this.GetAssetPosition(position))
+        const points: LnglatData<PositionInfoModel, PositionInfoModel>[] = positions.map(position => {
+            const infoModel = new PositionInfoModel(this.GetPositionInfo(position))
             infoModel.Background.value = 'var(--theme-input-background)'
-            return new LnglatData([position.longitude, position.latitude], infoModel, AssetInfo, infoModel)
+            return new LnglatData([position.longitude, position.latitude], infoModel, PositionInfo, infoModel)
         })
 
         this.map.ClearMarkers()
@@ -120,20 +120,20 @@ export class AssetPathPageModel {
         this.map.InitFlag()
 
         // 列表:
-        this.AssetInfoes.splice(0)
+        this.PositionInfoes.splice(0)
         positions.slice().forEach(position => {
-            const assetInfo = new AssetInfoModel(this.GetAssetPosition(position))
+            const assetInfo = new PositionInfoModel(this.GetPositionInfo(position))
             assetInfo._onClick = this.OnItemClick
-            this.AssetInfoes.push(assetInfo)
+            this.PositionInfoes.push(assetInfo)
         })
     }
 
     /** 点击“标记”时 */
-    readonly OnMarkerClick = (data?: AssetInfoModel) => {
+    readonly OnMarkerClick = (data?: PositionInfoModel) => {
     }
 
     /** 点击“项目”时 */
-    readonly OnItemClick = (info: AssetInfoModel) => {
+    readonly OnItemClick = (info: PositionInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
         const point: AMap.Vector2 = [position.longitude, position.latitude]
@@ -142,9 +142,9 @@ export class AssetPathPageModel {
     }
 
     /** 获取“资产位置” */
-    readonly GetAssetPosition = (position: AssetLngLat) => {
-        const ap = new AssetPosition()
-        if (position.address) ap.assetId = position.address
+    readonly GetPositionInfo = (position: LocationRecord) => {
+        const ap = new PositionDto()
+        if (position.address) ap.info = position.address
         ap.longitude = position.longitude
         ap.latitude = position.latitude
         ap.reportTime = position.reportTime

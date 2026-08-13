@@ -81,7 +81,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("Path")]
         /// <summary>获取“路径”</summary>
-        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+        public async Task<MyActionResult<List<LocationRecord>>> GetPath(
             long asset,
             int? pageSize = GlobalSettings.MaxCoordCount,
             int? pageNumber = 1,

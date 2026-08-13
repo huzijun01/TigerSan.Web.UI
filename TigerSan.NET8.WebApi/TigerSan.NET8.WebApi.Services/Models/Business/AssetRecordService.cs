@@ -410,12 +410,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var queryable = start != null && end != null
                     ? _dbSet.AsNoTracking().Where(i => i.Asset == asset
-                    && i.OnlineState == OnlineStates.Online
                     && i.Longitude != null && i.Longitude.Value > 0
                     && i.Latitude != null && i.Latitude.Value > 0
                     && i.ReportTime >= start && i.ReportTime <= end)
                     : _dbSet.AsNoTracking().Where(i => i.Asset == asset
-                    && i.OnlineState == OnlineStates.Online
                     && i.Longitude != null && i.Longitude.Value > 0
                     && i.Latitude != null && i.Latitude.Value > 0);
 
@@ -586,7 +584,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region 获取“路径”
         /// <summary>获取“路径”</summary>
-        public async Task<MyActionResult<List<AssetLngLat>>> GetPath(
+        public async Task<MyActionResult<List<LocationRecord>>> GetPath(
             long asset,
             int? pageSize = GlobalSettings.MaxCoordCount,
             int? pageNumber = 1,
@@ -601,11 +599,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var queryable = res.Data;
                 if (queryable == null)
                 {
-                    return MyResults<List<AssetLngLat>>.Error(res.Message);
+                    return MyResults<List<LocationRecord>>.Error(res.Message);
                 }
 
                 var positions = await queryable
-                    .Select(i => new AssetLngLat()
+                    .Select(i => new LocationRecord()
                     {
                         Site = i.Site,
                         Longitude = i.Longitude,
@@ -616,38 +614,37 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     })
                     .ToListAsync();
 
-                var useablePositions = new List<AssetLngLat>();
-
+                // 补充“位置信息”:
                 foreach (var position in positions)
                 {
-                    SiteEntity? site = null;
-                    if (string.IsNullOrEmpty(position.Address) && position.Site != null)
+                    if (position.Site != null)
                     {
-                        site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
-                        if (site != null)
+                        var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
+                        if (site == null)
                         {
-                            position.Address = site.FullAddr;
+                            LogHelper.Instance.IsNull(nameof(site));
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(position.Address))
+                            {
+                                position.Address = site.FullAddr;
+                            }
+
+                            if ((position.Longitude == null || position.Latitude == null))
+                            {
+                                position.Longitude = site.Longitude;
+                                position.Latitude = site.Latitude;
+                            }
                         }
                     }
-
-                    if ((position.Longitude == null || position.Latitude == null) && position.Site != null)
-                    {
-                        if (site == null) site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Site.Value);
-                        if (site != null)
-                        {
-                            position.Longitude = site.Longitude;
-                            position.Latitude = site.Latitude;
-                        }
-                    }
-
-                    useablePositions.Add(position);
                 }
 
-                return MyResults<List<AssetLngLat>>.Success(null, useablePositions);
+                return MyResults<List<LocationRecord>>.Success(null, positions);
             }
             catch (Exception e)
             {
-                return MyResults<List<AssetLngLat>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<List<LocationRecord>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion

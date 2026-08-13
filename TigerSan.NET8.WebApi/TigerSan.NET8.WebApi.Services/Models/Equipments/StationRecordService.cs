@@ -43,12 +43,10 @@ namespace TigerSan.NET8.WebApi.Services.Models
             {
                 var queryable = start != null && end != null
                     ? _dbSet.AsNoTracking().Where(i => i.Station == station
-                    && i.OnlineState == OnlineStates.Online
                     && i.Longitude != null && i.Longitude.Value > 0
                     && i.Latitude != null && i.Latitude.Value > 0
                     && i.ReportTime >= start && i.ReportTime <= end)
                     : _dbSet.AsNoTracking().Where(i => i.Station == station
-                    && i.OnlineState == OnlineStates.Online
                     && i.Longitude != null && i.Longitude.Value > 0
                     && i.Latitude != null && i.Latitude.Value > 0);
 

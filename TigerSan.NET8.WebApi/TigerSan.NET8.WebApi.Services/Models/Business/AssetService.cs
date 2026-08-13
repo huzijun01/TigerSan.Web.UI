@@ -174,7 +174,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [查]
         #region 根据“RFID”获取“单条数据”
-        /// <summary>根据“RFID”获取“单条数据”</summary>
         public async Task<MyActionResult<AssetEntity>> GetByRFID(string rfid)
         {
             try
@@ -255,7 +254,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“完整数据”集合
-        /// <summary>获取“完整数据”集合</summary>
         public async Task<MyActionResult<List<AssetDto>>> GetFullList(
             int? pageSize = null,
             int? pageNumber = null,
@@ -461,43 +459,40 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 获取“位置”
-        /// <summary>获取“位置”</summary>
-        public async Task<MyActionResult<AssetPosition>> GetPosition(long asset)
+        public async Task<MyActionResult<PositionDto>> GetPosition(long asset)
         {
             try
             {
                 var find = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == asset);
                 if (find == null)
                 {
-                    return MyResults<AssetPosition>.AssetNotExist;
+                    return MyResults<PositionDto>.AssetNotExist;
                 }
 
                 var lastRecord = await _db.AssetRecords.AsNoTracking()
                     .OrderByDescending(i => i.ReportTime)
                     .FirstOrDefaultAsync(i => i.Asset == asset && i.Longitude > 0 && i.Latitude > 0);
-                if (lastRecord == null) return MyResults<AssetPosition>.Success();
+                if (lastRecord == null) return MyResults<PositionDto>.Success();
 
-                return MyResults<AssetPosition>.Success(null, new AssetPosition()
+                return MyResults<PositionDto>.Success(null, new PositionDto()
                 {
                     Id = find.Id,
-                    AssetId = find.AssetId,
-                    LastRecord = find.LastRecord,
-                    Longitude = lastRecord.Longitude,
-                    Latitude = lastRecord.Latitude,
+                    Info = find.AssetId,
                     ReportTime = lastRecord.ReportTime,
                     LocationMode = lastRecord.LocationMode,
+                    Longitude = lastRecord.Longitude,
+                    Latitude = lastRecord.Latitude,
                 });
             }
             catch (Exception e)
             {
-                return MyResults<AssetPosition>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<PositionDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
 
         #region 获取“位置”集合
-        /// <summary>获取“位置”集合</summary>
-        public async Task<MyActionResult<List<AssetPosition>>> GetPositionList(
+        public async Task<MyActionResult<List<PositionDto>>> GetPositionList(
             string? rfid = null,
             int? pageSize = null,
             int? pageNumber = null,
@@ -514,7 +509,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     var tag = await _db.Tags.AsNoTracking().FirstOrDefaultAsync(i => i.Rfid == rfid);
                     if (tag == null || tag.Asset == null)
                     {
-                        return MyResults<List<AssetPosition>>.Success(null, []);
+                        return MyResults<List<PositionDto>>.Success(null, []);
                     }
 
                     queryable.Where(i => i.Id == tag.Asset);
@@ -526,14 +521,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 queryable = res.Data;
                 if (queryable == null)
                 {
-                    return MyResults<List<AssetPosition>>.Error(res.Message);
+                    return MyResults<List<PositionDto>>.Error(res.Message);
                 }
 
                 var resSort = queryable.Sort(sort, ascending);
                 queryable = resSort.Data;
                 if (queryable == null)
                 {
-                    return MyResults<List<AssetPosition>>.Error(resSort.Message);
+                    return MyResults<List<PositionDto>>.Error(resSort.Message);
                 }
 
                 var assets = await queryable
@@ -541,7 +536,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Select(i => i.Id)
                     .ToListAsync();
 
-                var positions = new List<AssetPosition>();
+                var positions = new List<PositionDto>();
 
                 foreach (var asset in assets)
                 {
@@ -551,11 +546,11 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     positions.Add(position);
                 }
 
-                return MyResults<List<AssetPosition>>.Success(null, positions);
+                return MyResults<List<PositionDto>>.Success(null, positions);
             }
             catch (Exception e)
             {
-                return MyResults<List<AssetPosition>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+                return MyResults<List<PositionDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
@@ -817,7 +812,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         #region [Other]
         #region 入库
-        /// <summary>入库</summary>
         public async Task<MyActionResult<object>> Inbound(List<long> ids, bool isBeginTransaction = true)
         {
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
@@ -896,7 +890,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         #endregion
 
         #region 出库
-        /// <summary>出库</summary>
         public async Task<MyActionResult<object>> Outbound(long site, List<long> ids, bool isBeginTransaction = true)
         {
             using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务

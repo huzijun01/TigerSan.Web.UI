@@ -1,10 +1,11 @@
-import AssetInfo from "@/components/AssetInfo.vue"
+import PositionInfo from "@/components/PositionInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
-import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, Icons, Colors } from "@/0_tigersan_ui/tigerui"
+import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, RowDataModel, MyActionResult } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
-import { assetHelper, AssetPosition, AssetInfoModel } from "@/models"
+import { assetHelper, baseStationHelper, PositionDto, PositionInfoModel, PositionTypes } from "@/models"
 import { AssetStateModel } from "../AssetLedgerPage/AssetStatePage/AssetStateModel"
 import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
+import { GetStationTable } from "@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable"
 
 export class AssetMapPageModel {
     //#region 【Fields】
@@ -15,16 +16,22 @@ export class AssetMapPageModel {
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** “位置”集合 */
-    readonly Positions = shallowReactive<AssetPosition[]>([])
-    /** “物资信息”集合 */
-    readonly AssetInfoes = shallowReactive<AssetInfoModel[]>([])
+    readonly Positions = shallowReactive<PositionDto[]>([])
+    /** “位置信息”集合 */
+    readonly PositionInfoes = shallowReactive<PositionInfoModel[]>([])
     /** 地图 */
-    readonly map = new MapModel<AssetPosition, AssetInfoModel>({ animateEnable: false })
+    readonly map = new MapModel<PositionDto, PositionInfoModel>({ animateEnable: false })
     /** “资产状态”抽屉 */
     readonly drawerState = new DrawerModel()
     /** 资产状态 */
     readonly assetState = new AssetStateModel()
+    /** 基站详情 */
+    readonly station = new RowDataModel(GetStationTable())
     //#endregion 【Fields】
+
+    //#region 【Props】
+    readonly IsStation = ref(false)
+    //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {
@@ -33,17 +40,16 @@ export class AssetMapPageModel {
         this.pagination.IsShowCount.value = false
         this.pagination.IsShowPageSize.value = false
         this.pagination.IsShowPageTextBox.value = false
-        this.pagination._onChange = this.UpdateAssetInfoes
+        this.pagination._onChange = this.UpdatePositionInfoes
 
-        watch(this.Positions, this.UpdateAssetInfoes)
+        watch(this.Positions, this.UpdatePositionInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
-        this.map._icon = Icons.Tag_Planar_2
-        this.map._iconStyle = { color: Colors.Brand }
         this.map.IsShowButton.value = false
+        this.map._getIcon = PositionDto.GetIcon
         this.map._onInitAsync = async () => {
             const filter = this.filter
-            const positions = await assetHelper.GetPositionList({
+            const assetPositions = await assetHelper.GetPositionList({
                 companies: CompanyMgtForm.AccessibleCompanies.value,
                 department: filter.selectDepartment.Value.value?.id,
                 type: filter.selectAssetType.Value.value?.id,
@@ -61,15 +67,34 @@ export class AssetMapPageModel {
                 stationId: filter.searchStationId.Value.value,
             })
             this.Positions.splice(0)
-            this.Positions.push(...positions)
+            this.Positions.push(...assetPositions)
+            const stationPositions = await baseStationHelper.GetPositionList({
+                companies: CompanyMgtForm.AccessibleCompanies.value,
+            })
+            stationPositions.forEach(i => i.type = PositionTypes.Station)
+            this.Positions.push(...stationPositions)
         }
         this.map._onMarkerClick = data => {
             if (!data?.data) return
             this.map.SetMarker(data.lnglat)
-            this.drawerState.Title.value = data.data.assetId
-            this.assetState.Init(data.data.assetId).then(res => {
-                if (res) this.drawerState.Show()
-            })
+            this.drawerState.Title.value = data.data.info
+
+            if (data.data.type === PositionTypes.Station) {
+                baseStationHelper.GetFull(undefined, data.data.info).then(res => {
+                    if (res) {
+                        this.IsStation.value = true
+                        this.station.Data.value = res.data
+                        this.drawerState.Show()
+                    }
+                })
+            } else {
+                this.assetState.Init(data.data.info).then(res => {
+                    if (res) {
+                        this.IsStation.value = false
+                        this.drawerState.Show()
+                    }
+                })
+            }
         }
     }
     //#endregion 【Ctor】
@@ -79,49 +104,63 @@ export class AssetMapPageModel {
     readonly Refresh = async () => {
         loading.IsShow.value = true
         await this.filter.UpdateIdNames()
-        await AssetInfoModel.UpdateTypeAsync()
+        await PositionInfoModel.UpdateTypeAsync()
         await this.map.InitAsync()
         loading.IsShow.value = false
     }
 
-    /** 更新“物资信息”集合 */
-    readonly UpdateAssetInfoes = () => {
+    /** 更新“位置信息”集合 */
+    readonly UpdatePositionInfoes = () => {
         // 总数:
         this.Count.value = this.Positions.length
 
         // 标记:
-        const points: LnglatData<AssetPosition, AssetInfoModel>[] = []
+        const points: LnglatData<PositionDto, PositionInfoModel>[] = []
         const positions = toRaw(this.Positions)
         positions.forEach(position => {
             if (position.longitude != undefined && position.latitude != undefined) {
-                const infoModel = new AssetInfoModel(position)
+                const infoModel = new PositionInfoModel(position)
                 infoModel.Background.value = 'var(--theme-input-background)'
-                const ld = new LnglatData([position.longitude, position.latitude], position, AssetInfo, infoModel)
+                const ld = new LnglatData([position.longitude, position.latitude], position, PositionInfo, infoModel)
                 points.push(ld)
             }
         })
         this.map.InitClusterAsync(points)
 
         // 列表:
-        this.AssetInfoes.splice(0)
+        this.PositionInfoes.splice(0)
         this.pagination.GetPage(positions).forEach(position => {
-            const assetInfo = new AssetInfoModel(position)
+            const assetInfo = new PositionInfoModel(position)
             assetInfo._onClick = this.OnItemClick
-            this.AssetInfoes.push(assetInfo)
+            this.PositionInfoes.push(assetInfo)
         })
     }
 
     /** 点击“项目”时 */
-    readonly OnItemClick = (info: AssetInfoModel) => {
+    readonly OnItemClick = (info: PositionInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
         const point: AMap.Vector2 = [position.longitude, position.latitude]
         this.map.SetMarker(point)
         this.map.ZoomByVector2(point)
-        this.drawerState.Title.value = position.assetId
-        this.assetState.Init(position.assetId).then(res => {
-            if (res) this.drawerState.Show()
-        })
+        this.drawerState.Title.value = position.info
+
+        if (info.Position.type === PositionTypes.Station) {
+            baseStationHelper.GetFull(undefined, position.info).then(res => {
+                if (res) {
+                    this.IsStation.value = true
+                    this.station.Data.value = res.data
+                    this.drawerState.Show()
+                }
+            })
+        } else {
+            this.assetState.Init(position.info).then(res => {
+                if (res) {
+                    this.IsStation.value = false
+                    this.drawerState.Show()
+                }
+            })
+        }
     }
     //#endregion 【Functions】
 }

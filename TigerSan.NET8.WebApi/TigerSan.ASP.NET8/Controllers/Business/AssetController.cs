@@ -61,7 +61,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpGet]
         [Route("Position/{asset}")]
         /// <summary>获取“位置”</summary>
-        public async Task<MyActionResult<AssetPosition>> GetPosition(long asset)
+        public async Task<MyActionResult<PositionDto>> GetPosition(long asset)
         {
             return await _service.GetPosition(asset);
         }
@@ -69,7 +69,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         [HttpPost]
         [Route("PositionList")]
         /// <summary>获取“位置”集合</summary>
-        public async Task<MyActionResult<List<AssetPosition>>> GetPositionList(
+        public async Task<MyActionResult<List<PositionDto>>> GetPositionList(
             string? rfid = null,
             int? pageSize = null,
             int? pageNumber = null,

@@ -25,7 +25,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             LocationModes? locationMode = null,
             FilterDto? filter = null);
         /// <summary>获取“路径”</summary>
-        public Task<MyActionResult<List<AssetLngLat>>> GetPath(
+        public Task<MyActionResult<List<LocationRecord>>> GetPath(
             long asset,
             int? pageSize = GlobalSettings.MaxCoordCount,
             int? pageNumber = 1,

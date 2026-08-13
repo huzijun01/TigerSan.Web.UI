@@ -86,15 +86,15 @@ namespace TigerSan.NET8.WebApi.Helpers
         #endregion
 
         #region 获取“基站位置”
-        private async Task<StationLngLat?> GetStationPosion(BaseStationData data, BaseStationEntity baseStation)
+        private async Task<LocationRecord?> GetStationPosion(BaseStationData data, BaseStationEntity baseStation)
         {
             try
             {
-                var position = new StationLngLat();
+                var position = new LocationRecord();
 
                 if (baseStation.IsMobile)
                 {
-                    position = new StationLngLat();
+                    position = new LocationRecord();
 
                     switch (data.LocationMode)
                     {
@@ -264,7 +264,7 @@ namespace TigerSan.NET8.WebApi.Helpers
             #endregion
 
             #region 获取“基站位置”
-            StationLngLat? position = await GetStationPosion(package.Data, baseStation);
+            LocationRecord? position = await GetStationPosion(package.Data, baseStation);
             if (position == null)
             {
                 return MyResults<object>.Warning($"The position is null! ({package.Data.CollectorId})");

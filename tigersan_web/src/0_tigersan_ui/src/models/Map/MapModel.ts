@@ -2,13 +2,13 @@ import "./MapTypes"
 import AMapLoader from "@amap/amap-jsapi-loader"
 import Marker from '../../components/Map/Marker.vue'
 import ClusterMarker from '../../components/Map/ClusterMarker.vue'
-import { computed, ref, shallowRef, type Component, type StyleValue } from "vue"
+import { computed, ref, shallowRef, type Component } from "vue"
 import { Texts } from "../../texts"
 import type { ActionAsync } from "../../types"
 import { MapPlugins } from "./MapTypes/MapPlugins"
 import { SelectModel } from "../Inputs/SelectModel"
 import { ClusterMarkerModel } from "./ClusterMarkerModel"
-import { MarkerModel, MarkerModes } from "./MarkerModel"
+import { MarkerModel, MarkerModes, MarkerIconOptions } from "./MarkerModel"
 import { MapEvents, DataOptions, MapStyle, PolygonEditorEvent, ClassNames } from "./MapTypes"
 import { ArrayHelper, ComponentHelper, MathHelper, Point2, ThemeHelper, WatchBehavior } from "../../helpers"
 
@@ -37,9 +37,9 @@ export class MapModel<TData, TInfoModel> {
     /** 标记 */
     private _marker?: AMap.Marker
     /** 图标（标记聚合） */
-    _icon?: string
-    /** “图标”样式（标记聚合） */
-    _iconStyle?: StyleValue
+    _icon?: MarkerIconOptions
+    /** 获取图标（标记聚合，优先使用方法） */
+    _getIcon?: (data: LnglatData<TData, TInfoModel>) => MarkerIconOptions
     /** 是否“自动初始化” */
     _isAutoInit = true
     /** 是否“显示地图类型” */
@@ -48,10 +48,10 @@ export class MapModel<TData, TInfoModel> {
     static _appKey: string = ''
     /** “插件”集合 */
     static _plugins?: string[]
-    /** “标记数据”映射 */
-    readonly _markerDataMap = new Map<DataOptions, LnglatData<TData, TInfoModel>>()
     /** “标记”集合 */
     readonly _markers: AMap.Marker[] = []
+    /** “标记数据”映射 */
+    readonly _markerDataMap = new Map<DataOptions, LnglatData<TData, TInfoModel>>()
     /** “标记模型”集合 */
     readonly _markerModels: MarkerModel<LnglatData<TData, TInfoModel>, TInfoModel>[] = []
     /** “主题”监听器 */
@@ -217,16 +217,17 @@ export class MapModel<TData, TInfoModel> {
 
     /** 渲染“标记” */
     readonly RenderMarker = (context: AMap.RenderMarkerObject, map: MapModel<any, any>) => {
-        const model = new MarkerModel()
+        const model = new MarkerModel<LnglatData<TData, TInfoModel>, TInfoModel>()
         const cd = context.data[0]
         if (cd) {
-            const opts = map._markerDataMap.get(cd)
-            if (opts) {
-                model.icon = this._icon
-                model.iconStyle = this._iconStyle
-                model.data = opts
-                model.info = opts.info
-                model.infoModel = opts.infoModel
+            const data = map._markerDataMap.get(cd)
+            if (data) {
+                const icon = this._getIcon ? this._getIcon(data) : this._icon
+                model.icon = icon?.icon
+                model.iconStyle = icon?.iconStyle
+                model.data = data
+                model.info = data.info
+                model.infoModel = data.infoModel
                 model.onClick = map._onMarkerClick
             }
         }
@@ -612,7 +613,8 @@ export class MapModel<TData, TInfoModel> {
     /** 添加“标记”集合 */
     readonly AddMarkers = (
         lnglatDatas: LnglatData<TData, TInfoModel>[],
-        opts?: AMap.MarkerOptions & { icon?: string, style?: StyleValue },
+        icon?: MarkerIconOptions,
+        opts?: AMap.MarkerOptions,
         callback?: AMap.MapCallback) => {
         if (!this._map) {
             console.warn('The _map is undefined!')
@@ -621,8 +623,8 @@ export class MapModel<TData, TInfoModel> {
 
         for (const lnglatData of lnglatDatas) {
             const model = new MarkerModel({
-                icon: opts?.icon,
-                iconStyle: opts?.style,
+                icon: icon?.icon,
+                iconStyle: icon?.iconStyle,
                 data: lnglatData,
                 info: lnglatData.info,
                 infoModel: lnglatData.infoModel,

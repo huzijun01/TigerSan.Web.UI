@@ -2,31 +2,24 @@
 
 namespace TigerSan.NET8.WebApi.Share.Dtos
 {
-    public class StationLngLat
+    /// <summary>位置信息</summary>
+    public class PositionDto : IdEntityBase
     {
+        public string Info { get; set; } = string.Empty;
+        public DateTime? ReportTime { get; set; }
         public LocationModes? LocationMode { get; set; }
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
-        public string? Address { get; set; }
     }
 
-    public class AssetLngLat
+    /// <summary>定位记录</summary>
+    public class LocationRecord
     {
         public DateTime ReportTime { get; set; }
         public LocationModes? LocationMode { get; set; }
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
-        public long? Site { get; set; }
         public string? Address { get; set; }
-    }
-
-    public class AssetPosition : IdEntityBase
-    {
-        public string AssetId { get; set; } = string.Empty;
-        public long? LastRecord { get; set; }
-        public double? Longitude { get; set; }
-        public double? Latitude { get; set; }
-        public DateTime? ReportTime { get; set; }
-        public LocationModes? LocationMode { get; set; }
+        public long? Site { get; set; }
     }
 }

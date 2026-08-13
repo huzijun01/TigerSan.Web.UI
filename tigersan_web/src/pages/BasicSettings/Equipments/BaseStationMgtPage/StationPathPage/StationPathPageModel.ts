@@ -1,14 +1,14 @@
-import AssetInfo from "@/components/AssetInfo.vue"
+import PositionInfo from "@/components/PositionInfo.vue"
 import { ref, shallowReactive, toRaw, watch } from 'vue'
-import { Colors, DatePickerModel, DateType, Icons, LnglatData, loading, MapModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
-import { stationRecordHelper, LocationMode, AssetInfoModel, AssetLngLat, AssetPosition } from '@/models'
+import { DatePickerModel, DateType, LnglatData, loading, MapModel, PaginationModel } from '@/0_tigersan_ui/tigerui'
+import { stationRecordHelper, LocationMode, PositionInfoModel, LocationRecord, PositionDto } from '@/models'
 
 export class StationPathPageModel {
     _station?: bigint
     /** “定位方式”选择器 */
     readonly selectLocationMode = LocationMode.GetSelectModel()
     /** 地图 */
-    readonly map = new MapModel<any, AssetInfoModel>({ animateEnable: false })
+    readonly map = new MapModel<any, PositionInfoModel>({ animateEnable: false })
 
     /** 日期 */
     readonly date = new DatePickerModel()
@@ -17,9 +17,9 @@ export class StationPathPageModel {
     /** 分页器 */
     readonly pagination = new PaginationModel()
     /** “位置”集合 */
-    readonly Positions = shallowReactive<AssetLngLat[]>([])
+    readonly Positions = shallowReactive<LocationRecord[]>([])
     /** “基站信息”集合 */
-    readonly StationInfoes = shallowReactive<AssetInfoModel[]>([])
+    readonly StationInfoes = shallowReactive<PositionInfoModel[]>([])
 
     constructor() {
         this.date._type = DateType.datetimerange
@@ -84,7 +84,7 @@ export class StationPathPageModel {
                 this.Positions.splice(0)
                 stationLngLats.forEach(i => {
                     if (!i.longitude || !i.latitude) return
-                    const lngLat = new AssetLngLat()
+                    const lngLat = new LocationRecord()
                     lngLat.longitude = i.longitude
                     lngLat.latitude = i.latitude
                     lngLat.address = i.address
@@ -118,31 +118,31 @@ export class StationPathPageModel {
     readonly UpdateStationInfoes = () => {
         // 标记:
         const positions = toRaw(this.Positions)
-        const points: LnglatData<AssetInfoModel, AssetInfoModel>[] = positions.map(position => {
-            const infoModel = new AssetInfoModel(this.GetStationPosition(position))
+        const points: LnglatData<PositionInfoModel, PositionInfoModel>[] = positions.map(position => {
+            const infoModel = new PositionInfoModel(this.GetStationPosition(position))
             infoModel.Background.value = 'var(--theme-input-background)'
-            return new LnglatData([position.longitude, position.latitude], infoModel, AssetInfo, infoModel)
+            return new LnglatData([position.longitude, position.latitude], infoModel, PositionInfo, infoModel)
         })
 
         this.map.ClearMarkers()
-        this.map.AddMarkers(points.reverse(), { icon: Icons.Router_Planar_2, style: { color: Colors.Warning } })
+        this.map.AddMarkers(points.reverse())
         this.map.InitFlag()
 
         // 列表:
         this.StationInfoes.splice(0)
         positions.slice().forEach(position => {
-            const stationInfo = new AssetInfoModel(this.GetStationPosition(position))
+            const stationInfo = new PositionInfoModel(this.GetStationPosition(position))
             stationInfo._onClick = this.OnItemClick
             this.StationInfoes.push(stationInfo)
         })
     }
 
     /** 点击“标记”时 */
-    readonly OnMarkerClick = (data?: AssetInfoModel) => {
+    readonly OnMarkerClick = (data?: PositionInfoModel) => {
     }
 
     /** 点击“项目”时 */
-    readonly OnItemClick = (info: AssetInfoModel) => {
+    readonly OnItemClick = (info: PositionInfoModel) => {
         const position = toRaw(info.Position)
         if (!position.longitude || !position.latitude) return
         const point: AMap.Vector2 = [position.longitude, position.latitude]
@@ -151,9 +151,9 @@ export class StationPathPageModel {
     }
 
     /** 获取“资产位置” */
-    readonly GetStationPosition = (position: AssetLngLat) => {
-        const ap = new AssetPosition()
-        if (position.address) ap.assetId = position.address
+    readonly GetStationPosition = (position: LocationRecord) => {
+        const ap = new PositionDto()
+        if (position.address) ap.info = position.address
         ap.longitude = position.longitude
         ap.latitude = position.latitude
         ap.reportTime = position.reportTime

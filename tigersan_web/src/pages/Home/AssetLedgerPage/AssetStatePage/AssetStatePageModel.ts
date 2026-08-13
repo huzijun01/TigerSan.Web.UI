@@ -1,12 +1,12 @@
 import { computed } from 'vue'
 import { loading, MapModel, MyActionResult, StringHelper } from '@/0_tigersan_ui/tigerui'
 import { AssetStateModel } from './AssetStateModel'
-import { AssetInfoModel, assetHelper, LocationMode } from '@/models'
+import { PositionInfoModel, assetHelper, LocationMode } from '@/models'
 
 export class AssetStatePageModel {
     //#region 【Fields】
     /** 地图 */
-    readonly map = new MapModel<any, AssetInfoModel>({ animateEnable: false })
+    readonly map = new MapModel<any, PositionInfoModel>({ animateEnable: false })
     //#endregion 【Fields】
 
     //#region 【Props】

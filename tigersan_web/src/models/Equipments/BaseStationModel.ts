@@ -1,6 +1,7 @@
-import { FilterDto, IdName, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
+import { ArrayHelper, FilterDto, IdName, OnlineStates, SelectModel, StringHelper, Texts } from "@/0_tigersan_ui/tigerui"
 import { LocationModes } from "../base/AssetStates"
 import { axiosHelper, IdNameHelper } from "@/helpers"
+import { PositionDto } from "@/models"
 
 /** “基站”实体 */
 export class BaseStationEntity extends IdName {
@@ -36,6 +37,7 @@ export class BaseStationDto extends BaseStationEntity {
 /** “基站”过滤器 */
 export class BaseStationFilter {
     company?: bigint
+    companies?: bigint[]
     site?: bigint
     isEnable?: boolean
     isMobile?: boolean
@@ -45,19 +47,20 @@ export class BaseStationFilter {
 
     static GetFilter(param: BaseStationFilter): FilterDto {
         return {
+            parent: {
+                id: param.site,
+                parent: {
+                    id: param.company,
+                    ids: param.companies,
+                }
+            },
             filters: [
                 { propName: 'IsEnable', value: param.isEnable },
                 { propName: 'IsMobile', value: param.isMobile },
                 { propName: 'OnlineState', value: param.state },
                 { propName: 'Type', value: param.type },
                 { propName: 'MacAddr', value: StringHelper.IsNotEmpty(param.macAddr) ? param.macAddr : undefined, isFuzzy: true },
-            ],
-            parent: {
-                id: param.site,
-                parent: {
-                    id: param.company,
-                }
-            }
+            ]
         }
     }
 }
@@ -107,6 +110,25 @@ class BaseStationHelper extends IdNameHelper<BaseStationEntity> {
     /** 获取“所属基站类型”集合 */
     readonly GetBelongStationTypeListAsync = async (company?: bigint, site?: bigint) => await axiosHelper.GetData<IdName[]>(`${this._action}/BelongStationTypeList`,
         [{ key: 'company', value: company }, { key: 'site', value: site }])
+
+    /** 筛选“位置” */
+    readonly GetPosition = async (station: bigint) => {
+        return await axiosHelper.Get<PositionDto>(`${this._action}/Position/${station}`)
+    }
+
+    /** 筛选“位置”集合 */
+    readonly GetPositionList = async (param: {
+        pageSize?: number,
+        pageNumber?: number,
+    } & BaseStationFilter): Promise<PositionDto[]> => {
+        if (!param.company && ArrayHelper.IsEmpty(param.companies)) return []
+        return await axiosHelper.GetList<PositionDto>(this._action, {
+            strList: 'PositionList',
+            pageSize: param.pageSize,
+            pageNumber: param.pageNumber,
+            filter: BaseStationFilter.GetFilter(param),
+        })
+    }
 }
 
 export const baseStationHelper = new BaseStationHelper()

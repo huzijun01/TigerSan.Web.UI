@@ -57,11 +57,14 @@ export class MarkerModel<TData, TInfoModel> {
     //#endregion 【Ctor】
 }
 
-export type MarkerModelOptions<TData, TInfoModel> = {
+export class MarkerIconOptions {
     /** 图标 */
     icon?: string
     /** “图标”样式 */
     iconStyle?: StyleValue
+}
+
+export type MarkerModelOptions<TData, TInfoModel> = {
     /** 数据 */
     data?: TData
     /** “信息”组件 */
@@ -70,4 +73,4 @@ export type MarkerModelOptions<TData, TInfoModel> = {
     infoModel?: TInfoModel
     /** 点击时 */
     onClick?: (data?: TData) => any
-}
+} & MarkerIconOptions

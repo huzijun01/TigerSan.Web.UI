@@ -132,12 +132,12 @@ export const assetLedgerTable = new TableModel<AssetDto>([
                 console.warn('The station is undefined!')
                 return
             }
-            stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.assetId}`
-            const res = await baseStationHelper.GetFull(rowData.station, rowData.assetId)
+            const res = await baseStationHelper.GetFull(rowData.station, rowData.stationId)
             if (!res.data) {
                 MyActionResult.ShowResult(res)
                 return
             }
+            stationDetail.Title.value = `${Texts.StationDetail.value} - ${res.data.macAddr}`
             station.Data.value = res.data
             stationDetail.Show()
         }

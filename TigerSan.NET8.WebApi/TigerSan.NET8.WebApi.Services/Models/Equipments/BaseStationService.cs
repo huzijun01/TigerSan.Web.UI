@@ -380,6 +380,110 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“位置”
+        public async Task<MyActionResult<PositionDto>> GetPosition(long station)
+        {
+            try
+            {
+                var find = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == station);
+                if (find == null)
+                {
+                    return MyResults<PositionDto>.StationNotFound(station.ToString());
+                }
+
+                if (find.IsMobile)
+                {
+                    var lastRecord = await _db.StationRecords.AsNoTracking()
+                        .OrderByDescending(i => i.ReportTime)
+                        .FirstOrDefaultAsync(i => i.Station == station && i.Longitude > 0 && i.Latitude > 0);
+                    if (lastRecord == null) return MyResults<PositionDto>.Success();
+
+                    return MyResults<PositionDto>.Success(null, new PositionDto()
+                    {
+                        Id = find.Id,
+                        Info = find.MacAddr,
+                        ReportTime = lastRecord.ReportTime,
+                        LocationMode = lastRecord.LocationMode,
+                        Longitude = lastRecord.Longitude,
+                        Latitude = lastRecord.Latitude,
+                    });
+                }
+                else
+                {
+                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Site);
+                    if (site == null)
+                    {
+                        return MyResults<PositionDto>.SiteNotExist;
+                    }
+
+                    return MyResults<PositionDto>.Success(null, new PositionDto()
+                    {
+                        Id = find.Id,
+                        Info = find.MacAddr,
+                        ReportTime = null,
+                        LocationMode = LocationModes.BaseStation,
+                        Longitude = site.Longitude,
+                        Latitude = site.Latitude,
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                return MyResults<PositionDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“位置”集合
+        public async Task<MyActionResult<List<PositionDto>>> GetPositionList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                var queryable = _dbSet.AsNoTracking();
+
+                var res = await GetFilter(queryable, filter);
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<PositionDto>>.Error(res.Message);
+                }
+
+                var resSort = queryable.Sort(sort, ascending);
+                queryable = resSort.Data;
+                if (queryable == null)
+                {
+                    return MyResults<List<PositionDto>>.Error(resSort.Message);
+                }
+
+                var stations = await queryable
+                    .GetPage(pageSize, pageNumber)
+                    .Select(i => i.Id)
+                    .ToListAsync();
+
+                var positions = new List<PositionDto>();
+
+                foreach (var station in stations)
+                {
+                    var resPosition = await GetPosition(station);
+                    var position = resPosition.Data;
+                    if (position == null) continue;
+                    positions.Add(position);
+                }
+
+                return MyResults<List<PositionDto>>.Success(null, positions);
+            }
+            catch (Exception e)
+            {
+                return MyResults<List<PositionDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]

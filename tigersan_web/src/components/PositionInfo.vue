@@ -1,5 +1,5 @@
 <template>
-    <div class="asset-info" @click="model.OnClick" :style="model.Style.value">
+    <div class="position-info" @click="model.OnClick" :style="model.Style.value">
         <div class="icon-panel flex-center iconfont">{{ model.Icon.value }}</div>
         <div class="info-panel">
             <div class="title ellipsis">
@@ -20,20 +20,20 @@
 <script lang="ts" setup>
 import { type PropType } from 'vue'
 import { Texts } from '@/0_tigersan_ui/tigerui'
-import { AssetInfoModel, AssetPosition } from '@/models'
+import { PositionInfoModel, PositionDto } from '@/models'
 
 //字段:
 const { model } = defineProps({
     model: {
-        type: Object as PropType<AssetInfoModel>,
-        default: () => new AssetInfoModel(new AssetPosition())
+        type: Object as PropType<PositionInfoModel>,
+        default: () => new PositionInfoModel(new PositionDto())
     },
 })
 
 </script>
 
 <style lang="less" scoped>
-.asset-info {
+.position-info {
     display: grid;
     grid-template-columns: auto 1fr;
     padding: 10px;

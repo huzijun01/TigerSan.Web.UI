@@ -70,6 +70,27 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.GetBelongStationTypeList(company, site);
         }
+
+        [HttpGet]
+        [Route("Position/{station}")]
+        /// <summary>获取“位置”</summary>
+        public async Task<MyActionResult<PositionDto>> GetPosition(long station)
+        {
+            return await _service.GetPosition(station);
+        }
+
+        [HttpPost]
+        [Route("PositionList")]
+        /// <summary>获取“位置”集合</summary>
+        public async Task<MyActionResult<List<PositionDto>>> GetPositionList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            return await _service.GetPositionList(pageSize, pageNumber, sort, ascending, filter);
+        }
         #endregion [查]
         #endregion 【Functions】
     }

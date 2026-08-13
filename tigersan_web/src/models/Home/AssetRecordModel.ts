@@ -1,16 +1,7 @@
 import { OnlineStates } from "@/0_tigersan_ui/tigerui"
+import { LocationRecord } from "./PositionInfoModel"
 import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 import { AssetStates, LocationModes } from "../base/AssetStates"
-
-/** 资产经纬度 */
-export class AssetLngLat {
-    longitude = 0
-    latitude = 0
-    site?: bigint
-    address?: string
-    reportTime = new Date()
-    locationMode?: LocationModes
-}
 
 /** "资产记录"实体 */
 export class AssetRecordEntity extends IdEntityBase {
@@ -149,7 +140,7 @@ class AssetRecordHelper extends IdHelper<AssetRecordDto> {
         company?: bigint,
         department?: bigint,
         locationMode?: LocationModes,
-    }) => await axiosHelper.Post<AssetLngLat[]>(`${this._action}/Path`, [
+    }) => await axiosHelper.Post<LocationRecord[]>(`${this._action}/Path`, [
         { key: 'asset', value: param.asset },
         { key: 'pageSize', value: param.pageSize },
         { key: 'pageNumber', value: param.pageNumber },

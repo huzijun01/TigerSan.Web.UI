@@ -38,6 +38,16 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<SiteEntity>> GetSite(long id);
         /// <summary>获取“场地”字典</summary>
         public Task<MyActionResult<Dictionary<long, SiteEntity>>> GetSiteDict(List<long> ids);
+        /// <summary>获取“位置”</summary>
+        public Task<MyActionResult<PositionDto>> GetPosition(long asset);
+        /// <summary>获取“位置”集合</summary>
+        public Task<MyActionResult<List<PositionDto>>> GetPositionList(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null);
+
         /// <summary>更新“在线状态”</summary>
         public Task<MyActionResult<object>> UpdateOnlineState();
     }
