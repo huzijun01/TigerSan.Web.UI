@@ -881,19 +881,20 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 var lastRecord = resLast.Data;
                 #endregion
 
-                #region 若“无记录”，新增“入库记录”
-                if (lastRecord == null)
+                AssetRecordEntity newRecord;
+
+                if (lastRecord == null) // 若“无记录”，新增“入库记录”
                 {
-                    lastRecord = new AssetRecordEntity()
+                    newRecord = new AssetRecordEntity()
                     {
                         Asset = newTag.Asset.Value,
                         Tag = newTag.Id,
                         State = AssetStates.Inbound,
                     };
-                    lastRecord.ShallowCopy(newTag);
-                    lastRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+                    newRecord.ShallowCopy(newTag);
+                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
 
-                    var res = await Add(lastRecord, false);
+                    var res = await Add(newRecord, false);
                     if (res.IsError)
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
@@ -902,91 +903,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
 
                     if (asset.IsAuto)
-                    {
-                        // 新增“在库记录”：
-                        lastRecord.State = AssetStates.InStore;
-                        lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
-                        var resInStore = await Add(lastRecord, false);
-                        if (resInStore.IsError)
-                        {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(resInStore.Message);
-                            return resInStore.Convert<object>();
-                        }
-                    }
-
-                    await _db.SaveChangesAsync();
-                    if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
-                    return MyResults<object>.OperationSuccess;
-                }
-                #endregion
-
-                var newRecord = new AssetRecordEntity();
-                newRecord.ShallowCopy(lastRecord);
-                newRecord.ShallowCopy(newTag, [nameof(AssetRecordEntity.Id)]);
-
-                if (newStation?.Site != null && oldStation?.Site != newStation.Site) // 若“场地”改变，新增“入库记录”
-                {
-                    // 添加“场地”:
-                    newRecord.Site = newStation.Site;
-
-                    #region 修改“盘点记录”
-                    if (oldStation != null)
-                    {
-                        await _inventoryRecordService.ReduceAsset(oldStation.Site);
-                    }
-
-                    if (newStation != null)
-                    {
-                        await _inventoryRecordService.AddAsset(newStation.Site);
-                    }
-                    #endregion
-
-                    #region 补“出库记录”
-                    if (lastRecord.State != AssetStates.Outbound
-                        && lastRecord.State != AssetStates.InTransit) // 无“出库记录”
-                    {
-                        MyActionResult<object> resOutbound;
-                        lastRecord.State = AssetStates.Outbound;
-                        lastRecord.TargetSite = newRecord.Site;
-
-                        if ((lastRecord.State == AssetStates.InStore || lastRecord.State == AssetStates.Stolid)
-                            && lastRecord.OnlineState == OnlineStates.Offline) // 若“在库”且“离线”
-                        {
-                            // 将“最新记录”改为“出库记录”：
-                            resOutbound = await Edit(lastRecord, false);
-                        }
-                        else
-                        {
-                            // 新增“出库记录”：
-                            lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
-                            resOutbound = (await Add(lastRecord, false)).Convert<object>();
-                        }
-
-                        if (resOutbound.IsError)
-                        {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(resOutbound.Message);
-                            return resOutbound;
-                        }
-                    }
-                    #endregion
-
-                    #region 新增“在途记录”或“入库记录”
-                    newRecord.TargetSite = null;
-                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
-                    newRecord.State = newTag.Station == null ? AssetStates.InTransit : AssetStates.Inbound;
-                    var res = await Add(newRecord, false);
-                    if (res.IsError)
-                    {
-                        if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                        LogHelper.Instance.Error(res.Message);
-                        return res.Convert<object>();
-                    }
-                    #endregion
-
-                    #region 自动新增“在库记录”，并完成“调拨”
-                    if (asset.IsAuto && newRecord.State == AssetStates.Inbound)
                     {
                         // 新增“在库记录”：
                         newRecord.State = AssetStates.InStore;
@@ -998,59 +914,65 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             LogHelper.Instance.Error(resInStore.Message);
                             return resInStore.Convert<object>();
                         }
-
-                        // 完成“调拨”：
-                        if (asset.Transfer != null)
-                        {
-                            var transfer = await _db.Transfers.FirstOrDefaultAsync(i => i.Id == asset.Transfer);
-                            if (transfer == null)
-                            {
-                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                                return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(transfer)));
-                            }
-
-                            if (transfer.Target == newRecord.Site)
-                            {
-                                asset.Transfer = null;
-                                transfer.EndTime = DateTimeHelper.GetUtcNow();
-                            }
-                        }
                     }
-                    #endregion
                 }
-                else // 同一场地
+                else
                 {
-                    #region 若“在库”，判断是否“滞留”
-                    if (asset.Transfer != null && lastRecord.State == AssetStates.InStore)
+                    newRecord = new AssetRecordEntity();
+                    newRecord.ShallowCopy(lastRecord);
+                    newRecord.ShallowCopy(newTag, [nameof(AssetRecordEntity.Id)]);
+
+                    if (newStation?.Site != null && oldStation?.Site != newStation.Site) // 若“场地”改变，新增“入库记录”
                     {
-                        var resLastInbound = await GetLastInbound(newTag.Asset.Value);
-                        var lastInboundRecord = resLastInbound.Data;
-                        if (lastInboundRecord == null)
+                        // 添加“场地”:
+                        newRecord.Site = newStation.Site;
+
+                        #region 修改“盘点记录”
+                        if (oldStation != null)
                         {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(resLastInbound.Message);
-                            return resLastInbound.Convert<object>();
+                            await _inventoryRecordService.ReduceAsset(oldStation.Site);
                         }
 
-                        newRecord.State = (DateTimeHelper.GetUtcNow() - lastInboundRecord.ReportTime).TotalHours
-                            > GlobalSettings.StolidThresholdHours
-                            ? AssetStates.Stolid : AssetStates.InStore;
-                    }
-                    #endregion
-
-                    newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
-
-                    if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变
-                    {
-                        #region 若“出库”且“离线”，改为“在途记录”
-                        if (lastRecord.State == AssetStates.Outbound
-                            && newTag.OnlineState == OnlineStates.Offline)
+                        if (newStation != null)
                         {
-                            newRecord.State = AssetStates.InTransit;
+                            await _inventoryRecordService.AddAsset(newStation.Site);
                         }
                         #endregion
 
-                        // 新增记录:
+                        #region 补“出库记录”
+                        if (lastRecord.State != AssetStates.Outbound
+                            && lastRecord.State != AssetStates.InTransit) // 无“出库记录”
+                        {
+                            MyActionResult<object> resOutbound;
+                            lastRecord.State = AssetStates.Outbound;
+                            lastRecord.TargetSite = newRecord.Site;
+
+                            if ((lastRecord.State == AssetStates.InStore || lastRecord.State == AssetStates.Stolid)
+                                && lastRecord.OnlineState == OnlineStates.Offline) // 若“在库”且“离线”
+                            {
+                                // 将“最新记录”改为“出库记录”：
+                                resOutbound = await Edit(lastRecord, false);
+                            }
+                            else
+                            {
+                                // 新增“出库记录”：
+                                lastRecord.ReportTime = lastRecord.ReportTime.AddSeconds(1);
+                                resOutbound = (await Add(lastRecord, false)).Convert<object>();
+                            }
+
+                            if (resOutbound.IsError)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                LogHelper.Instance.Error(resOutbound.Message);
+                                return resOutbound;
+                            }
+                        }
+                        #endregion
+
+                        #region 新增“在途记录”或“入库记录”
+                        newRecord.TargetSite = null;
+                        newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+                        newRecord.State = newTag.Station == null ? AssetStates.InTransit : AssetStates.Inbound;
                         var res = await Add(newRecord, false);
                         if (res.IsError)
                         {
@@ -1058,16 +980,92 @@ namespace TigerSan.NET8.WebApi.Services.Models
                             LogHelper.Instance.Error(res.Message);
                             return res.Convert<object>();
                         }
-                    }
-                    else if (TagEntity.IsMoved(oldTag, newTag)) // 移动
-                    {
-                        // 新增记录:
-                        var res = await Add(newRecord, false);
-                        if (res.IsError)
+                        #endregion
+
+                        #region 自动新增“在库记录”，并完成“调拨”
+                        if (asset.IsAuto && newRecord.State == AssetStates.Inbound)
                         {
-                            if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                            LogHelper.Instance.Error(res.Message);
-                            return res.Convert<object>();
+                            // 新增“在库记录”：
+                            newRecord.State = AssetStates.InStore;
+                            newRecord.ReportTime = newRecord.ReportTime.AddSeconds(1);
+                            var resInStore = await Add(newRecord, false);
+                            if (resInStore.IsError)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                LogHelper.Instance.Error(resInStore.Message);
+                                return resInStore.Convert<object>();
+                            }
+
+                            // 完成“调拨”：
+                            if (asset.Transfer != null)
+                            {
+                                var transfer = await _db.Transfers.FirstOrDefaultAsync(i => i.Id == asset.Transfer);
+                                if (transfer == null)
+                                {
+                                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                    return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(transfer)));
+                                }
+
+                                if (transfer.Target == newRecord.Site)
+                                {
+                                    asset.Transfer = null;
+                                    transfer.EndTime = DateTimeHelper.GetUtcNow();
+                                }
+                            }
+                        }
+                        #endregion
+                    }
+                    else // 同一场地
+                    {
+                        #region 若“在库”，判断是否“滞留”
+                        if (asset.Transfer != null && lastRecord.State == AssetStates.InStore)
+                        {
+                            var resLastInbound = await GetLastInbound(newTag.Asset.Value);
+                            var lastInboundRecord = resLastInbound.Data;
+                            if (lastInboundRecord == null)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                LogHelper.Instance.Error(resLastInbound.Message);
+                                return resLastInbound.Convert<object>();
+                            }
+
+                            newRecord.State = (DateTimeHelper.GetUtcNow() - lastInboundRecord.ReportTime).TotalHours
+                                > GlobalSettings.StolidThresholdHours
+                                ? AssetStates.Stolid : AssetStates.InStore;
+                        }
+                        #endregion
+
+                        newRecord.ReportTime = newTag.ReportTime ?? DateTimeHelper.GetUtcNow();
+
+                        if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变
+                        {
+                            #region 若“出库”且“离线”，改为“在途记录”
+                            if (lastRecord.State == AssetStates.Outbound
+                                && newTag.OnlineState == OnlineStates.Offline)
+                            {
+                                newRecord.State = AssetStates.InTransit;
+                            }
+                            #endregion
+
+                            // 新增记录:
+                            var res = await Add(newRecord, false);
+                            if (res.IsError)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                LogHelper.Instance.Error(res.Message);
+                                return res.Convert<object>();
+                            }
+                        }
+                        else if (TagEntity.IsMoved(oldTag, newTag)) // 移动
+                        {
+                            // 新增记录:
+                            var res = await Add(newRecord, false);
+                            if (res.IsError)
+                            {
+                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                LogHelper.Instance.Error(res.Message);
+                                return res.Convert<object>();
+                            }
                         }
                     }
                 }
