@@ -1,14 +1,18 @@
 import StationPathPage from './StationPathPage/StationPathPage.vue'
 import StationRecordPage from './StationRecordPage/StationRecordPage.vue'
+import StationBindingPage from './StationBindingPage/StationBindingPage.vue'
 import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel, IsMobile, PopWindowModel, MyActionResult, TabViewModel } from '@/0_tigersan_ui/tigerui'
 import { BaseStationDto, LocationMode } from '@/models'
 import { StationPathPageModel } from './StationPathPage/StationPathPageModel'
 import { StationRecordPageModel } from './StationRecordPage/StationRecordPageModel'
+import { StationBindingPageModel } from './StationBindingPage/StationBindingPageModel'
 
-/** 轨迹页 */
+/** 轨迹 */
 export const pathPage = new StationPathPageModel()
-/** 记录页 */
+/** 记录 */
 export const recordPage = new StationRecordPageModel()
+/** 绑定记录 */
+export const stationBindingPage = new StationBindingPageModel()
 /** 标签视图 */
 export const tabView = new TabViewModel([
     {
@@ -20,6 +24,11 @@ export const tabView = new TabViewModel([
         Title: '记录',
         _component: StationRecordPage,
         _rootProps: { model: recordPage },
+    },
+    {
+        Title: '绑定记录',
+        _component: StationBindingPage,
+        _rootProps: { model: stationBindingPage },
     },
 ])
 
@@ -41,8 +50,11 @@ export function GetStationTable() {
             Type: ItemType.Link,
             _onItemClickAsync: async itemModel => {
                 const rowData = itemModel._rowModel._rowData
+
                 pathPage._station = rowData.id
                 recordPage._station = rowData.id
+                stationBindingPage._station = rowData.id
+
                 stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.macAddr}`
                 stationDetail.Show()
             }

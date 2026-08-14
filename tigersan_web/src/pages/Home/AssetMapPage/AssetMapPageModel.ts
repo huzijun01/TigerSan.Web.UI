@@ -1,6 +1,6 @@
 import PositionInfo from "@/components/PositionInfo.vue"
 import { ref, watch, shallowReactive, toRaw } from "vue"
-import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, RowDataModel, MyActionResult } from "@/0_tigersan_ui/tigerui"
+import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, RowDataModel } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, baseStationHelper, PositionDto, PositionInfoModel, PositionTypes } from "@/models"
 import { AssetStateModel } from "../AssetLedgerPage/AssetStatePage/AssetStateModel"

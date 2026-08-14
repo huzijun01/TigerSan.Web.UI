@@ -4,39 +4,39 @@ using TigerSan.NET8.WebApi.Share.Attributes;
 
 namespace TigerSan.NET8.WebApi.Share.Entities
 {
-    [Table("binding_record")]
-    public class BindingRecordEntity : IdEntityBase
+    [Table("station_binding")]
+    public class StationBindingEntity : IdEntityBase
     {
         [SnakeColumn]
         public bool IsBinding { get; set; }
         [SnakeColumn]
-        public long Asset { get; set; }
+        public long Station { get; set; }
         [SnakeColumn]
         public long Tag { get; set; }
         [SnakeColumn]
         public DateTime Time { get; set; } = DateTimeHelper.GetUtcNow();
 
         #region 【Ctor】
-        public BindingRecordEntity() { }
+        public StationBindingEntity() { }
 
-        public BindingRecordEntity(
+        public StationBindingEntity(
             bool isBinding,
-            long asset,
+            long station,
             long tag,
             DateTime? time = null)
         {
             IsBinding = isBinding;
-            Asset = asset;
+            Station = station;
             Tag = tag;
             if (time != null) Time = time.Value;
         }
         #endregion 【Ctor】
 
         #region 【Functions】
-        public bool Equals(BindingRecordEntity entity)
+        public bool Equals(StationBindingEntity entity)
         {
             return IsBinding == entity.IsBinding
-                && Asset == entity.Asset
+                && Station == entity.Station
                 && Tag == entity.Tag;
         }
         #endregion 【Functions】

@@ -85,7 +85,7 @@ export class AssetPathPageModel {
                 this.Positions.push(...assetLngLats)
 
                 const lngLats = assetLngLats.map(p => new AMap.LngLat(p.longitude, p.latitude))
-                this.map.SetPath(lngLats)
+                this.map.SetPath(lngLats.reverse())
                 this.map.ZoomByLngLats(lngLats)
             } finally {
                 loading.IsShow.value = false

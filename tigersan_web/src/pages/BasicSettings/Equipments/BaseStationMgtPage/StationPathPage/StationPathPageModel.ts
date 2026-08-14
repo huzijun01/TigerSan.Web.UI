@@ -94,7 +94,7 @@ export class StationPathPageModel {
                 })
 
                 const lngLats = stationLngLats.map(p => new AMap.LngLat(p.longitude ?? 0, p.latitude ?? 0))
-                this.map.SetPath(lngLats)
+                this.map.SetPath(lngLats.reverse())
                 this.map.ZoomByLngLats(lngLats)
             } finally {
                 loading.IsShow.value = false

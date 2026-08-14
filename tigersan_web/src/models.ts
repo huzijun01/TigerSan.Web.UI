@@ -20,6 +20,7 @@ export * from '@/models/Dictionaries/DictionaryModels'
 // Equipments:
 export * from '@/models/Equipments/BaseStationModel'
 export * from '@/models/Equipments/BindingRecordModel'
+export * from '@/models/Equipments/StationBindingModel'
 export * from '@/models/Equipments/StationRecordModel'
 export * from '@/models/Equipments/TagModel'
 // Home:

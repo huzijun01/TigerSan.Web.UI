@@ -641,6 +641,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
+                // 删除“图片”：
                 if (!string.IsNullOrEmpty(entity.Image))
                 {
                     var imagePath = Path.Combine(GlobalSettings.DirImages, entity.Image);
@@ -649,6 +650,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         File.Delete(imagePath);
                     }
                 }
+
+                // 删除“绑定记录”：
+                await _db.StationBindings.Where(i => i.Station == id).ExecuteDeleteAsync();
 
                 _dbSet.Remove(entity);
                 await _db.SaveChangesAsync();
@@ -679,6 +683,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (count < 1) return MyResults<object>.ResourceNotExist;
                 else if (count < ids.Count) return MyResults<object>.SomeResourceNotExist;
 
+                // 删除“图片”：
                 var entities = await finds.ToListAsync();
                 foreach (var entity in entities)
                 {
@@ -691,6 +696,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
                     }
                 }
+
+                // 删除“绑定记录”：
+                await _db.StationBindings.Where(i => ids.Contains(i.Station)).ExecuteDeleteAsync();
 
                 await finds.ExecuteDeleteAsync();
                 await _db.SaveChangesAsync();

@@ -85,6 +85,7 @@ export class BindingRecordPageModel {
                 pageSize: this.pagination.PageSize.value,
                 pageNumber: this.pagination.SelectedNum.value,
                 sort: this.table.SlotHeader.value?._propName,
+                ascending: this.table.IsAscending.value,
                 tag: this._tag,
                 asset: this._asset,
             }).then(arr => {

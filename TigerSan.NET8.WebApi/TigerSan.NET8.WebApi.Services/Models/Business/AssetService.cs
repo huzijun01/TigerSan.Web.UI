@@ -724,9 +724,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
-                // 资产记录：
+                // 删除“资产记录”：
                 await _db.AssetRecords.Where(i => i.Asset == id).ExecuteDeleteAsync();
-                // 绑定记录：
+                // 删除“绑定记录”：
                 await _db.BindingRecords.Where(i => i.Asset == id).ExecuteDeleteAsync();
 
                 // 解绑标签：
@@ -774,9 +774,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 else if (count < ids.Count)
                     return MyResults<object>.SomeResourceNotExist;
 
-                // 资产记录：
+                // 删除“资产记录”：
                 await _db.AssetRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
-                // 绑定记录：
+                // 删除“绑定记录”：
                 await _db.BindingRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
 
                 foreach (var entity in entities)

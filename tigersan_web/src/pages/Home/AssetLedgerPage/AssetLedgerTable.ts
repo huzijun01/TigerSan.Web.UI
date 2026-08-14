@@ -1,7 +1,7 @@
 import AssetPathPage from './AssetPathPage/AssetPathPage.vue'
 import AssetStatePage from './AssetStatePage/AssetStatePage.vue'
 import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
-import BindingRecordPage from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPage.vue'
+import BindingRecordPage from './BindingRecordPage/BindingRecordPage.vue'
 import { computed } from 'vue'
 import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd, TextModel } from '@/0_tigersan_ui/tigerui'
 import { VehiclePageModel } from '../VehiclePage/VehiclePageModel'
@@ -9,19 +9,19 @@ import { TransferPageModel } from '../TransferPage/TransferPageModel'
 import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
 import { AssetStatePageModel } from './AssetStatePage/AssetStatePageModel'
 import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
+import { BindingRecordPageModel } from './BindingRecordPage/BindingRecordPageModel'
 import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
 import { AssetDto, AssetState, AssetStates, baseStationHelper, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
 import { GetStationTable } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable'
-import { BindingRecordPageModel } from '@/pages/BasicSettings/Equipments/BindingRecordPage/BindingRecordPageModel'
 
 // 字段:
-/** 状态页 */
+/** 状态 */
 export const statePage = new AssetStatePageModel()
-/** 记录页 */
+/** 记录 */
 export const recordPage = new AssetRecordPageModel()
-/** 轨迹页 */
+/** 轨迹 */
 export const pathPage = new AssetPathPageModel()
-/** 轨迹页 */
+/** 绑定记录 */
 export const bindingRecordPage = new BindingRecordPageModel()
 /** 标签视图 */
 export const tabView = new TabViewModel([
@@ -84,13 +84,8 @@ export const assetLedgerTable = new TableModel<AssetDto>([
             statePage.Refresh()
 
             recordPage._asset = rowData.id
-            recordPage.Refresh()
-
             pathPage._asset = rowData.id
-            pathPage.Refresh()
-
             bindingRecordPage._asset = rowData.id
-            bindingRecordPage.Refresh()
 
             assetDetail.Title.value = `${Texts.AssetDetail.value} - ${rowData.assetId}`
             assetDetail.Show()

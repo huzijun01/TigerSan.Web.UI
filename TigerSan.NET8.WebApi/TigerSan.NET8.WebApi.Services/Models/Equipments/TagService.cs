@@ -16,6 +16,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         private readonly IBatchService _batchService;
         private readonly IBaseStationService _baseStationService;
         private readonly IBindingRecordService _bindingRecordService;
+        private readonly IStationBindingService _stationBindingService;
         #endregion 【Fields】
 
         #region 【Ctor】
@@ -30,11 +31,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
             AppDbContext db,
             IBatchService batchService,
             IBaseStationService baseStationService,
-            IBindingRecordService bindingRecordService) : base(db, db.Tags)
+            IBindingRecordService bindingRecordService,
+            IStationBindingService stationBindingService) : base(db, db.Tags)
         {
             _batchService = batchService;
             _baseStationService = baseStationService;
             _bindingRecordService = bindingRecordService;
+            _stationBindingService = stationBindingService;
         }
         #endregion 【Ctor】
 
@@ -225,6 +228,42 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     asset.Tag = entity.Id;
                     asset.TagId = entity.TagId;
                     asset.TagType = entity.Type;
+                }
+
+                // 绑定基站：
+                if (!string.Equals(find.StationId, entity.StationId))
+                {
+                    // 添加“解绑记录”：
+                    if (!string.IsNullOrEmpty(find.StationId))
+                    {
+                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.MacAddr == find.StationId);
+                        if (station == null)
+                        {
+                            return MyResults<object>.StationNotFound(find.StationId);
+                        }
+
+                        var resAdd = await _stationBindingService.Add(new StationBindingEntity(false, station.Id, find.Id), false);
+                        if (resAdd.IsError)
+                        {
+                            return MyResults<object>.Error(resAdd.Message);
+                        }
+                    }
+
+                    // 添加“绑定记录”
+                    if (!string.IsNullOrEmpty(entity.StationId))
+                    {
+                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(i => i.MacAddr == entity.StationId);
+                        if (station == null)
+                        {
+                            return MyResults<object>.StationNotFound(entity.StationId);
+                        }
+
+                        var resAdd = await _stationBindingService.Add(new StationBindingEntity(true, station.Id, entity.Id), false);
+                        if (resAdd.IsError)
+                        {
+                            return MyResults<object>.Error(resAdd.Message);
+                        }
+                    }
                 }
 
                 // 修改“数据”:

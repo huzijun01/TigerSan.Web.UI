@@ -9,11 +9,11 @@
             <div class="button-panel">
                 <div class="row-panel">
                     <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
-                    <button v-if="!Authorities.BindingRecordPage.IsReadonly.value" @click="model.Add">
+                    <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="model.Add">
                         {{ Texts.Add.value }}</button>
-                    <button v-if="!Authorities.BindingRecordPage.IsReadonly.value" class="bg-warning"
+                    <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-warning"
                         :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
-                    <button v-if="!Authorities.BindingRecordPage.IsReadonly.value" class="bg-danger"
+                    <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
                         :disabled="!IsSelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
                 </div>
             </div>

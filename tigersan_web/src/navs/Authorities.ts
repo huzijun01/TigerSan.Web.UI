@@ -21,7 +21,6 @@ export class Authorities {
     /** 设备管理 */
     static EqpMgtFolder = authorityHelper.GetAuthority()
     static Locator4gPage = authorityHelper.GetAuthority()
-    static BindingRecordPage = authorityHelper.GetAuthority()
     /** 操作管理 */
     static OperationMgtFolder = authorityHelper.GetAuthority()
     static OperationRecordPage = authorityHelper.GetAuthority()

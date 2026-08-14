@@ -611,11 +611,11 @@ export class MapModel<TData, TInfoModel> {
     }
 
     /** 添加“标记”集合 */
-    readonly AddMarkers = (
-        lnglatDatas: LnglatData<TData, TInfoModel>[],
+    readonly AddMarkers = (lnglatDatas: LnglatData<TData, TInfoModel>[], params?: {
         icon?: MarkerIconOptions,
         opts?: AMap.MarkerOptions,
-        callback?: AMap.MapCallback) => {
+        callback?: AMap.MapCallback,
+    }) => {
         if (!this._map) {
             console.warn('The _map is undefined!')
             return
@@ -623,8 +623,8 @@ export class MapModel<TData, TInfoModel> {
 
         for (const lnglatData of lnglatDatas) {
             const model = new MarkerModel({
-                icon: icon?.icon,
-                iconStyle: icon?.iconStyle,
+                icon: params?.icon?.icon,
+                iconStyle: params?.icon?.iconStyle,
                 data: lnglatData,
                 info: lnglatData.info,
                 infoModel: lnglatData.infoModel,
@@ -641,7 +641,7 @@ export class MapModel<TData, TInfoModel> {
                 extData: lnglatData.data,
                 content: markerElement as HTMLElement,
                 offset: [MarkerModel.offset, MarkerModel.offset],
-                ...opts
+                ...params?.opts
             })
             this._map.add(marker)
             this._markers.push(marker)
@@ -649,8 +649,8 @@ export class MapModel<TData, TInfoModel> {
 
             MapModel.AddEvent(marker)
 
-            if (callback) {
-                MapModel.AddEvent(marker, callback)
+            if (params?.callback) {
+                MapModel.AddEvent(marker, params.callback)
             }
         }
     }
