@@ -6,6 +6,7 @@ import { TransferPageModel } from '../TransferPage/TransferPageModel'
 import { AssetDetail } from '@/pages/0_Other/AssetDetail/AssetDetail'
 import { StationDetail } from '@/pages/0_Other/StationDetail/StationDetail'
 import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
+import { GetStationTable } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable'
 import { AssetDto, AssetState, AssetStates, baseStationHelper, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
 
 // 字段:
@@ -15,7 +16,7 @@ export const assetDetail = new AssetDetail()
 export const tagDetail = new PopWindowModel()
 export const tag = new RowDataModel(GetTagTable())
 /** 基站详情 */
-export const stationDetail = new StationDetail()
+export const stationDetail = new StationDetail(GetStationTable())
 /** 调拨详情 */
 export const transferDetail = new PopWindowModel()
 export const transfer = new RowDataModel(new TransferPageModel().table)
@@ -81,7 +82,7 @@ export const assetLedgerTable = new TableModel<AssetDto>([
                 MyActionResult.ShowResult(res)
                 return
             }
-            stationDetail.Show(res.data.id, res.data.macAddr)
+            stationDetail.Show(res.data)
         }
     },
     {

@@ -3,7 +3,7 @@ import { BaseStationDto, LocationMode } from '@/models'
 import { StationDetail } from '@/pages/0_Other/StationDetail/StationDetail'
 
 /** 基站详情 */
-export const stationDetail = new StationDetail()
+export const stationDetail = new StationDetail(GetStationTable())
 
 export function GetStationTable() {
     // 列头:
@@ -16,7 +16,7 @@ export function GetStationTable() {
             Type: ItemType.Link,
             _onItemClickAsync: async itemModel => {
                 const rowData = itemModel._rowModel._rowData
-                stationDetail.Show(rowData.id, rowData.macAddr)
+                stationDetail.Show(rowData)
             }
         },
         {

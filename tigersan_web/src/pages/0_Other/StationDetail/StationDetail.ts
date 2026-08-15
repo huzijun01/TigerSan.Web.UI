@@ -1,14 +1,19 @@
 import StationPathPage from './StationPathPage/StationPathPage.vue'
+import StationStatePage from './StationStatePage/StationStatePage.vue'
 import StationRecordPage from './StationRecordPage/StationRecordPage.vue'
 import StationBindingPage from './StationBindingPage/StationBindingPage.vue'
-import { TabViewModel, PopWindowModel, Texts } from '@/0_tigersan_ui/tigerui'
+import { TabViewModel, PopWindowModel, Texts, TableModel } from '@/0_tigersan_ui/tigerui'
+import { BaseStationDto } from '@/models'
 import { StationPathPageModel } from './StationPathPage/StationPathPageModel'
+import { StationStatePageModel } from './StationStatePage/StationStatePageModel'
 import { StationRecordPageModel } from './StationRecordPage/StationRecordPageModel'
 import { StationBindingPageModel } from './StationBindingPage/StationBindingPageModel'
 
 /** 基站详情 */
 export class StationDetail {
     //#region 【Fields】
+    /** 状态 */
+    readonly statePage
     /** 轨迹 */
     readonly pathPage = new StationPathPageModel()
     /** 记录 */
@@ -17,43 +22,52 @@ export class StationDetail {
     readonly stationBindingPage = new StationBindingPageModel()
 
     /** 标签视图 */
-    readonly tabView = new TabViewModel([
-        {
-            Title: '轨迹',
-            _component: StationPathPage,
-            _rootProps: { model: this.pathPage },
-        },
-        {
-            Title: '记录',
-            _component: StationRecordPage,
-            _rootProps: { model: this.recordPage },
-        },
-        {
-            Title: '绑定记录',
-            _component: StationBindingPage,
-            _rootProps: { model: this.stationBindingPage },
-        },
-    ])
+    readonly tabView
 
     /** 弹窗 */
     readonly pop = new PopWindowModel()
     //#endregion 【Fields】
 
     //#region 【Ctor】
-    constructor() {
+    constructor(table: TableModel<BaseStationDto>) {
         this.pop.MinWidth.value = '80vw'
         this.pop.MinHeight.value = '70vh'
         this.pop._onShow = () => this.tabView.SelectedPage.value = this.tabView.Pages[0]
+
+        this.statePage = new StationStatePageModel(table)
+        this.tabView = new TabViewModel([
+            {
+                Title: '状态',
+                _component: StationStatePage,
+                _rootProps: { model: this.statePage },
+            },
+            {
+                Title: '轨迹',
+                _component: StationPathPage,
+                _rootProps: { model: this.pathPage },
+            },
+            {
+                Title: '记录',
+                _component: StationRecordPage,
+                _rootProps: { model: this.recordPage },
+            },
+            {
+                Title: '绑定记录',
+                _component: StationBindingPage,
+                _rootProps: { model: this.stationBindingPage },
+            },
+        ])
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
-    readonly Show = (station: bigint, macAddr: string) => {
-        this.pathPage._station = station
-        this.recordPage._station = station
-        this.stationBindingPage._station = station
+    readonly Show = (station: BaseStationDto) => {
+        this.statePage.station.Data.value = station
+        this.pathPage._station = station.id
+        this.recordPage._station = station.id
+        this.stationBindingPage._station = station.id
 
-        this.pop.Title.value = `${Texts.StationDetail.value} - ${macAddr}`
+        this.pop.Title.value = `${Texts.StationDetail.value} - ${station.macAddr}`
         this.pop.Show()
     }
     //#endregion 【Functions】

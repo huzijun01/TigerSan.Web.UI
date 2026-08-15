@@ -7,13 +7,11 @@
             </div>
         </div>
         <div class="right-panel">
-            <AssetState :asset="assetState.Asset.value" :tag="assetState.Tag.value"
-                :station="assetState.Station.value" />
+            <RowData :model="model.station" />
         </div>
         <div class="bottom-panel flex-left">
             <div class="addr-panel flex-left">
                 <div class="location-mode" v-if="model.IsShowLocationMode.value">{{ model.LocationMode.value }}</div>
-                <div class="addr">{{ assetState.Asset.value?.fullAddr }}</div>
             </div>
             <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
         </div>
@@ -21,20 +19,20 @@
 </template>
 
 <script lang="ts" setup>
-import AssetState from './AssetState.vue'
 import { onMounted } from 'vue'
-import { Map, Texts } from '@/0_tigersan_ui/tigerui'
-import { AssetStatePageModel } from './AssetStatePageModel'
+import { Map, Texts, RowData, TableModel } from '@/0_tigersan_ui/tigerui'
+import { BaseStationDto } from '@/models'
+import { StationStatePageModel } from './StationStatePageModel'
 
 // 【字段】:
 const { model } = defineProps({
     model: {
-        type: AssetStatePageModel,
-        default: () => new AssetStatePageModel()
+        type: StationStatePageModel,
+        default: () => new StationStatePageModel(new TableModel<BaseStationDto>([]))
     }
 })
 
-const { assetState } = model
+const { station: stationState } = model
 
 // 【过程】:
 onMounted(() => {
