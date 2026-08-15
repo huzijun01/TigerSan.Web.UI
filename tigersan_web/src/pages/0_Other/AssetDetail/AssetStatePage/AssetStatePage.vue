@@ -24,7 +24,7 @@
 import AssetState from './AssetState.vue'
 import { onMounted } from 'vue'
 import { Map, Texts } from '@/0_tigersan_ui/tigerui'
-import { AssetStatePageModel } from './AssetStatePageModel'
+import { AssetStatePageModel } from './AssetStatePageModel.js'
 
 // 【字段】:
 const { model } = defineProps({

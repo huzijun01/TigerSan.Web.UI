@@ -75,14 +75,14 @@
     </PopForm>
 
     <!-- 弹窗 -->
-    <PopWindow :model="assetDetail">
-        <TabView :model="tabView" />
+    <PopWindow :model="assetDetail.pop">
+        <TabView :model="assetDetail.tabView" />
     </PopWindow>
     <PopWindow :model="tagDetail">
         <RowData :model="tag" />
     </PopWindow>
-    <PopWindow :model="stationDetail">
-        <RowData :model="station" />
+    <PopWindow :model="stationDetail.pop">
+        <TabView :model="stationDetail.tabView" />
     </PopWindow>
     <PopWindow :model="transferDetail">
         <RowData :model="transfer" />
@@ -99,7 +99,7 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, PopWindow, Texts, TabView, RowData } from '@/0_tigersan_ui/tigerui'
 import { Authorities } from '@/navs/Authorities'
 import { AssetLedgerPageModel } from './AssetLedgerPageModel'
-import { tag, vehicle, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, station, stationDetail, vehicleDetail, IsAllowTransfer, IsAllowInbound, IsAllowOutbound, tabView, transferDetail, transfer } from './AssetLedgerTable'
+import { tag, vehicle, assetLedgerTable, selectColumnFilter, pagination, assetDetail, tagDetail, stationDetail, vehicleDetail, IsAllowTransfer, IsAllowInbound, IsAllowOutbound, transferDetail, transfer } from './AssetLedgerTable'
 // 【字段】:
 const model = new AssetLedgerPageModel()
 const { IsOnlySelected, IsSelected } = assetLedgerTable

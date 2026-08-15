@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import PositionInfo from '@/components/PositionInfo.vue'
-import AssetState from '../AssetLedgerPage/AssetStatePage/AssetState.vue'
+import AssetState from '../../0_Other/AssetDetail/AssetStatePage/AssetState.vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import { Drawer, RowData, PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
 import { AssetMapPageModel } from './AssetMapPageModel'

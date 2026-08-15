@@ -1,64 +1,21 @@
-import AssetPathPage from './AssetPathPage/AssetPathPage.vue'
-import AssetStatePage from './AssetStatePage/AssetStatePage.vue'
-import AssetRecordPage from './AssetRecordPage/AssetRecordPage.vue'
-import BindingRecordPage from './BindingRecordPage/BindingRecordPage.vue'
+
 import { computed } from 'vue'
-import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, TabViewModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd, TextModel } from '@/0_tigersan_ui/tigerui'
 import { VehiclePageModel } from '../VehiclePage/VehiclePageModel'
 import { TransferPageModel } from '../TransferPage/TransferPageModel'
-import { AssetPathPageModel } from './AssetPathPage/AssetPathPageModel'
-import { AssetStatePageModel } from './AssetStatePage/AssetStatePageModel'
-import { AssetRecordPageModel } from './AssetRecordPage/AssetRecordPageModel'
-import { BindingRecordPageModel } from './BindingRecordPage/BindingRecordPageModel'
+import { AssetDetail } from '@/pages/0_Other/AssetDetail/AssetDetail'
+import { StationDetail } from '@/pages/0_Other/StationDetail/StationDetail'
 import { GetTagTable } from '@/pages/BasicSettings/Equipments/TagMgt/TagMgtPage/TagMgtTable'
 import { AssetDto, AssetState, AssetStates, baseStationHelper, BindingState, ErrorType, tagHelper, tagTypeHelper, transferHelper, vehicleHelper } from '@/models'
-import { GetStationTable } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable'
 
 // 字段:
-/** 状态 */
-export const statePage = new AssetStatePageModel()
-/** 记录 */
-export const recordPage = new AssetRecordPageModel()
-/** 轨迹 */
-export const pathPage = new AssetPathPageModel()
-/** 绑定记录 */
-export const bindingRecordPage = new BindingRecordPageModel()
-/** 标签视图 */
-export const tabView = new TabViewModel([
-    {
-        Title: '状态',
-        _component: AssetStatePage,
-        _rootProps: { model: statePage },
-    },
-    {
-        Title: '轨迹',
-        _component: AssetPathPage,
-        _rootProps: { model: pathPage },
-    },
-    {
-        Title: '记录',
-        _component: AssetRecordPage,
-        _rootProps: { model: recordPage },
-    },
-    {
-        Title: '绑定记录',
-        _component: BindingRecordPage,
-        _rootProps: { model: bindingRecordPage },
-    },
-])
-
-// 弹窗:
 /** 资产详情 */
-export const assetDetail = new PopWindowModel()
-assetDetail.MinWidth.value = '80vw'
-assetDetail.MinHeight.value = '70vh'
-assetDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
+export const assetDetail = new AssetDetail()
 /** 标签详情 */
 export const tagDetail = new PopWindowModel()
 export const tag = new RowDataModel(GetTagTable())
 /** 基站详情 */
-export const stationDetail = new PopWindowModel()
-export const station = new RowDataModel(GetStationTable())
+export const stationDetail = new StationDetail()
 /** 调拨详情 */
 export const transferDetail = new PopWindowModel()
 export const transfer = new RowDataModel(new TransferPageModel().table)
@@ -80,15 +37,7 @@ export const assetLedgerTable = new TableModel<AssetDto>([
         Type: ItemType.Link,
         _onItemClickAsync: async itemModel => {
             const rowData = itemModel._rowModel._rowData
-            await statePage.assetState.Init(itemModel._rowModel._rowData.assetId)
-            statePage.Refresh()
-
-            recordPage._asset = rowData.id
-            pathPage._asset = rowData.id
-            bindingRecordPage._asset = rowData.id
-
-            assetDetail.Title.value = `${Texts.AssetDetail.value} - ${rowData.assetId}`
-            assetDetail.Show()
+            assetDetail.Show(rowData.id, rowData.assetId)
         }
     },
     {
@@ -132,9 +81,7 @@ export const assetLedgerTable = new TableModel<AssetDto>([
                 MyActionResult.ShowResult(res)
                 return
             }
-            stationDetail.Title.value = `${Texts.StationDetail.value} - ${res.data.macAddr}`
-            station.Data.value = res.data
-            stationDetail.Show()
+            stationDetail.Show(res.data.id, res.data.macAddr)
         }
     },
     {

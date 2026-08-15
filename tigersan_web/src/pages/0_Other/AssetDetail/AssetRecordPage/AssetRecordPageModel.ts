@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, ArrayHelper, BigintHelper, GetSubmitResult, IdName, MyActionResult, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
-import { AssetFilter } from '../AssetFilter'
+import { AssetFilter } from '../../../Home/AssetLedgerPage/AssetFilter'
 import { assetRecordTable, pagination } from './AssetRecordTable'
 import { assetRecordHelper, AssetRecordDto, baseStationHelper, LocationMode } from '@/models'
 

@@ -3,7 +3,7 @@ import { ref, watch, shallowReactive, toRaw } from "vue"
 import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, RowDataModel } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { assetHelper, baseStationHelper, PositionDto, PositionInfoModel, PositionTypes } from "@/models"
-import { AssetStateModel } from "../AssetLedgerPage/AssetStatePage/AssetStateModel"
+import { AssetStateModel } from "../../0_Other/AssetDetail/AssetStatePage/AssetStateModel"
 import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
 import { GetStationTable } from "@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable"
 

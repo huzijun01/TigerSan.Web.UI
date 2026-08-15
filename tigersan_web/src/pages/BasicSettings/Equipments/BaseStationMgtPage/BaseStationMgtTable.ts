@@ -1,43 +1,9 @@
-import StationPathPage from './StationPathPage/StationPathPage.vue'
-import StationRecordPage from './StationRecordPage/StationRecordPage.vue'
-import StationBindingPage from './StationBindingPage/StationBindingPage.vue'
-import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel, IsMobile, PopWindowModel, MyActionResult, TabViewModel } from '@/0_tigersan_ui/tigerui'
+import { OnlineState, ItemType, ObjectHelper, TableModel, IsEnable, Battery, Texts, TextModel, IsMobile } from '@/0_tigersan_ui/tigerui'
 import { BaseStationDto, LocationMode } from '@/models'
-import { StationPathPageModel } from './StationPathPage/StationPathPageModel'
-import { StationRecordPageModel } from './StationRecordPage/StationRecordPageModel'
-import { StationBindingPageModel } from './StationBindingPage/StationBindingPageModel'
+import { StationDetail } from '@/pages/0_Other/StationDetail/StationDetail'
 
-/** 轨迹 */
-export const pathPage = new StationPathPageModel()
-/** 记录 */
-export const recordPage = new StationRecordPageModel()
-/** 绑定记录 */
-export const stationBindingPage = new StationBindingPageModel()
-/** 标签视图 */
-export const tabView = new TabViewModel([
-    {
-        Title: '轨迹',
-        _component: StationPathPage,
-        _rootProps: { model: pathPage },
-    },
-    {
-        Title: '记录',
-        _component: StationRecordPage,
-        _rootProps: { model: recordPage },
-    },
-    {
-        Title: '绑定记录',
-        _component: StationBindingPage,
-        _rootProps: { model: stationBindingPage },
-    },
-])
-
-// 弹窗:
-/** 资产详情 */
-export const stationDetail = new PopWindowModel()
-stationDetail.MinWidth.value = '80vw'
-stationDetail.MinHeight.value = '70vh'
-stationDetail._onShow = () => tabView.SelectedPage.value = tabView.Pages[0]
+/** 基站详情 */
+export const stationDetail = new StationDetail()
 
 export function GetStationTable() {
     // 列头:
@@ -50,13 +16,7 @@ export function GetStationTable() {
             Type: ItemType.Link,
             _onItemClickAsync: async itemModel => {
                 const rowData = itemModel._rowModel._rowData
-
-                pathPage._station = rowData.id
-                recordPage._station = rowData.id
-                stationBindingPage._station = rowData.id
-
-                stationDetail.Title.value = `${Texts.StationDetail.value} - ${rowData.macAddr}`
-                stationDetail.Show()
+                stationDetail.Show(rowData.id, rowData.macAddr)
             }
         },
         {
