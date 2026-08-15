@@ -37,22 +37,22 @@ export class StationDetail {
         this.statePage = new StationStatePageModel(table)
         this.tabView = new TabViewModel([
             {
-                Title: '状态',
+                Title: Texts.State,
                 _component: StationStatePage,
                 _rootProps: { model: this.statePage },
             },
             {
-                Title: '轨迹',
+                Title: Texts.Path,
                 _component: StationPathPage,
                 _rootProps: { model: this.pathPage },
             },
             {
-                Title: '记录',
+                Title: Texts.Record,
                 _component: StationRecordPage,
                 _rootProps: { model: this.recordPage },
             },
             {
-                Title: '绑定记录',
+                Title: Texts.BindingRecord,
                 _component: StationBindingPage,
                 _rootProps: { model: this.stationBindingPage },
             },

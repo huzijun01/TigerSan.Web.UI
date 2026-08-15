@@ -2,7 +2,7 @@
     <div class="tab-view-panel">
         <div class="tab-panel flex-left">
             <div class="tab" :class="p.SelectedClass.value" v-for="p in model.Pages" :key="p._id" @click="p.OnClick">
-                <span>{{ p.Title.value }}</span>
+                <span>{{ p.ShowTitle.value }}</span>
             </div>
         </div>
         <div class="content-panel" :style="model.ContentStyle.value">

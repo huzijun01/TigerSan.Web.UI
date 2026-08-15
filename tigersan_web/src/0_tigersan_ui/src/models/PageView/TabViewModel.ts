@@ -1,12 +1,13 @@
 import { nanoid } from "nanoid"
-import { ref, watch, computed, shallowRef, shallowReactive, type Component, type StyleValue } from "vue"
-import { type Data } from "../../helpers"
+import { ref, watch, computed, shallowRef, shallowReactive, type Component, type StyleValue, type ComputedRef } from "vue"
+import { Texts } from "../../texts"
+import { LanguageBehavior, type Data } from "../../helpers"
 
 export type TabPageHandler = (pageModel: TabPageModel) => any
 
 export class TabPageConfig {
     /** 标题 */
-    Title?: string
+    Title?: string | ComputedRef<string>
     /** 是否选中 */
     IsSelected?: boolean
     /** 组件 */
@@ -28,8 +29,10 @@ export class TabPageModel {
     //#endregion 【Fields】
 
     //#region 【Props】
-    /** 标题 */
-    readonly Title = ref('title')
+    /** “标题”文本 */
+    readonly Title
+    /** “标题”显示文本 */
+    readonly ShowTitle
 
     //#region [computed]
     /** 是否选中 */
@@ -50,14 +53,17 @@ export class TabPageModel {
     //#region 【Ctor】
     constructor(
         tabView: TabViewModel,
-        title?: string,
+        title?: string | ComputedRef<string>,
         component?: Component,
         rootProps?: Data | null
     ) {
         this._tabView = tabView
-        if (title) this.Title.value = title
         this._component = component
         this._rootProps = rootProps
+
+        const lbTitle = new LanguageBehavior(title ?? Texts.Title.value)
+        this.Title = lbTitle.Text
+        this.ShowTitle = lbTitle.ShowText
     }
     //#endregion 【Ctor】
 

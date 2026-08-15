@@ -33,6 +33,7 @@ export class Texts {
     static readonly BasicDetail = TextModel.Computed('BasicDetail', '基础详情')
     static readonly BindingTime = TextModel.Computed('BindingTime', '绑定时间')
     static readonly BindingState = TextModel.Computed('BindingState', '绑定状态')
+    static readonly BindingRecord = TextModel.Computed('BindingRecord', '绑定记录')
     static readonly BasicSettings = TextModel.Computed('BasicSettings', '基础设置')
     // C:
     static readonly Colon = TextModel.Computed(': ', '：')
@@ -171,6 +172,7 @@ export class Texts {
     // P:
     static readonly Pie = TextModel.Computed('Pie', '饼图')
     static readonly page = TextModel.Computed('page', '页')
+    static readonly Path = TextModel.Computed('Path', '轨迹')
     static readonly Phone = TextModel.Computed('Phone', '电话')
     static readonly Plate = TextModel.Computed('Plate', '车牌号')
     static readonly Parent = TextModel.Computed('Parent', '父级')
@@ -183,6 +185,7 @@ export class Texts {
     static readonly PleaseEnterANumber = TextModel.Computed('Please enter a number', '请输入数字')
     // R:
     static readonly Role = TextModel.Computed('Role', '角色')
+    static readonly Record = TextModel.Computed('Record', '记录')
     static readonly Reduce = TextModel.Computed('Reduce', '减少')
     static readonly Repair = TextModel.Computed('Repair', '维修')
     static readonly Rename = TextModel.Computed('Rename', '重命名')

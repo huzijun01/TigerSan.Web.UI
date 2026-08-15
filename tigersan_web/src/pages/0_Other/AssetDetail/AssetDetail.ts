@@ -22,22 +22,22 @@ export class AssetDetail {
     /** 标签视图 */
     readonly tabView = new TabViewModel([
         {
-            Title: '状态',
+            Title: Texts.State,
             _component: AssetStatePage,
             _rootProps: { model: this.statePage },
         },
         {
-            Title: '轨迹',
+            Title: Texts.Path,
             _component: AssetPathPage,
             _rootProps: { model: this.pathPage },
         },
         {
-            Title: '记录',
+            Title: Texts.Record,
             _component: AssetRecordPage,
             _rootProps: { model: this.recordPage },
         },
         {
-            Title: '绑定记录',
+            Title: Texts.BindingRecord,
             _component: BindingRecordPage,
             _rootProps: { model: this.bindingRecordPage },
         },
