@@ -66,7 +66,6 @@ const model = new AssetMapPageModel()
 
 // 【过程】:
 onMounted(async () => {
-    await model.Refresh()
     model.filter.StartWatch()
 })
 

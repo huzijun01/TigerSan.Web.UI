@@ -41,38 +41,46 @@ export class AssetMapPageModel {
         this.pagination.IsShowPageSize.value = false
         this.pagination.IsShowPageTextBox.value = false
         this.pagination._onChange = this.UpdatePositionInfoes
-
-        watch(this.Positions, this.UpdatePositionInfoes)
         watch(this.Count, count => this.pagination.Count.value = count)
 
         this.map.IsShowButton.value = false
         this.map._getIcon = PositionDto.GetIcon
         this.map._onInitAsync = async () => {
-            const filter = this.filter
-            const assetPositions = await assetHelper.GetPositionList({
-                companies: CompanyMgtForm.AccessibleCompanies.value,
-                department: filter.selectDepartment.Value.value?.id,
-                type: filter.selectAssetType.Value.value?.id,
-                tagType: filter.selectTagType.Value.value?.id,
-                state: filter.selectAssetState.Value.value,
-                states: filter.selectAssetState.NotCheckAllCheckedValues.value,
-                onlineState: filter.selectOnlineState.Value.value,
-                isAuto: filter.selectIsAuto.Value.value,
-                isFall: filter.selectIsFall.Value.value,
-                errorType: filter.selectErrorType.Value.value,
-                name: filter.searchName.Value.value,
-                rfid: filter.searchRfid.Value.value,
-                assetId: filter.searchAssetId.Value.value,
-                tagId: filter.searchTagId.Value.value,
-                stationId: filter.searchStationId.Value.value,
-            })
-            this.Positions.splice(0)
-            this.Positions.push(...assetPositions)
-            const stationPositions = await baseStationHelper.GetPositionList({
-                companies: CompanyMgtForm.AccessibleCompanies.value,
-            })
-            stationPositions.forEach(i => i.type = PositionTypes.Station)
-            this.Positions.push(...stationPositions)
+            const positions: PositionDto[] = []
+
+            try {
+                // 资产：
+                const filter = this.filter
+                const assetPositions = await assetHelper.GetPositionList({
+                    companies: CompanyMgtForm.AccessibleCompanies.value,
+                    department: filter.selectDepartment.Value.value?.id,
+                    type: filter.selectAssetType.Value.value?.id,
+                    tagType: filter.selectTagType.Value.value?.id,
+                    state: filter.selectAssetState.Value.value,
+                    states: filter.selectAssetState.NotCheckAllCheckedValues.value,
+                    onlineState: filter.selectOnlineState.Value.value,
+                    isAuto: filter.selectIsAuto.Value.value,
+                    isFall: filter.selectIsFall.Value.value,
+                    errorType: filter.selectErrorType.Value.value,
+                    name: filter.searchName.Value.value,
+                    rfid: filter.searchRfid.Value.value,
+                    assetId: filter.searchAssetId.Value.value,
+                    tagId: filter.searchTagId.Value.value,
+                    stationId: filter.searchStationId.Value.value,
+                })
+                positions.push(...assetPositions)
+
+                // 基站：
+                const stationPositions = await baseStationHelper.GetPositionList({
+                    companies: CompanyMgtForm.AccessibleCompanies.value,
+                })
+                stationPositions.forEach(i => i.type = PositionTypes.Station)
+                positions.push(...stationPositions)
+            } finally {
+                this.Positions.splice(0)
+                this.Positions.push(...positions)
+                this.UpdatePositionInfoes()
+            }
         }
         this.map._onMarkerClick = data => {
             if (!data?.data) return
