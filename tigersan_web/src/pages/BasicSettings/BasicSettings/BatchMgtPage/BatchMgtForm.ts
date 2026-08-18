@@ -67,7 +67,7 @@ export class BatchMgtForm {
     /** “电话”项目配置 */
     readonly configPhone: FormItemConfig<BatchEntity, string> = {
         _propName: 'phone',
-        PropText: Texts.PleaseEnter,
+        PropText: Texts.Phone,
         IsEquired: false,
         Target: ref(),
         _isVerifyOk: source => Verify.IsValidPhoneNumber(source.phone)
