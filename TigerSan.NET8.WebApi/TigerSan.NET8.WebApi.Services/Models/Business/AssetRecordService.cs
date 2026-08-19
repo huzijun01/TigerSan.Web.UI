@@ -1070,6 +1070,23 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     }
                 }
 
+                #region 是否在围栏内
+                if (newTag.Longitude != null && newTag.Latitude != null)
+                {
+                    var fences = await _db.Sites.AsNoTracking()
+                        .Where(i => i.Company == newTag.Company && i.FencePath != null)
+                        .Select(i => i.FencePoints).ToListAsync();
+                    bool isInFence = false;
+                    foreach (var fence in fences)
+                    {
+                        if (fence == null) continue;
+                        isInFence = MathHelper.IsInFence(new Point2(newTag.Longitude.Value, newTag.Latitude.Value), fence);
+                        if (isInFence) break;
+                    }
+                    asset.IsInFence = isInFence;
+                }
+                #endregion
+
                 // 更新“资产状态”：
                 asset.Copy(newTag, newStation?.MacAddr);
                 asset.Copy(newRecord);

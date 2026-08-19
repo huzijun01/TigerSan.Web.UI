@@ -150,6 +150,39 @@ export class IsAuto {
     }
 }
 
+export class IsInFence {
+    static ToString(value?: boolean) {
+        return value ? Texts.Enter.value : Texts.Leave.value
+    }
+
+    static GetString(obj: object, propName: string = 'isInFence'): string {
+        return IsInFence.ToString(ObjectHelper.DefaultTGetter(obj, propName, true))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.Placeholder.value = Texts.Fence
+        select.SetItems([true, false])
+        select._converter = IsInFence.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isInFence') {
+        if (itemModel._headerModel._propName === propName) {
+            if (itemModel.GetSource()) {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            } else {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            }
+        }
+    }
+}
+
 export class IsEnd {
     static ToString(value?: boolean) {
         return value ? Texts.Done.value : Texts.Undone.value

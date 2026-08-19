@@ -1,6 +1,6 @@
 
 import { computed } from 'vue'
-import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Battery, PopWindowModel, ItemType, ObjectHelper, OnlineState, PaginationModel, TableModel, ColumnSelectModel, StringHelper, Texts, IsAuto, IsFall, RowDataModel, MyActionResult, IsEnd, TextModel, IsInFence } from '@/0_tigersan_ui/tigerui'
 import { VehiclePageModel } from '../VehiclePage/VehiclePageModel'
 import { TransferPageModel } from '../TransferPage/TransferPageModel'
 import { AssetDetail } from '@/pages/0_Other/AssetDetail/AssetDetail'
@@ -162,6 +162,13 @@ export const assetLedgerTable = new TableModel<AssetDto>([
         _getString: IsAuto.GetString,
     },
     {
+        _propName: 'isInFence',
+        Text: Texts.Fence,
+        IsReadonly: true,
+        Type: ItemType.TextBox,
+        _getString: IsInFence.GetString,
+    },
+    {
         _propName: 'isEnd',
         Text: Texts.IsEnd,
         IsReadonly: true,
@@ -317,6 +324,7 @@ assetLedgerTable._initItem = itemModel => {
     IsEnd.InitItemModel(itemModel)
     IsAuto.InitItemModel(itemModel)
     IsFall.InitItemModel(itemModel)
+    IsInFence.InitItemModel(itemModel)
     Battery.InitItemModel(itemModel)
     AssetState.InitItemModel(itemModel)
     OnlineState.InitItemModel(itemModel)

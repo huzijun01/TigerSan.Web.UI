@@ -23,6 +23,7 @@ namespace TigerSan.NET8.WebApi.Share
     {
         #region 【Fields】
         static readonly string _urlGongBei = "https://connector.gongbeiyun.com/connector/api/webhook/test/b6978bf3c90d4ab4b1d2740fe88cefb0";
+        static readonly string _testUrlGongBei = "https://test-asset.gongbeiyun.com/connector/api/webhook/test/b6978bf3c90d4ab4b1d2740fe88cefb0";
         #endregion 【Fields】
 
         #region 【Functions】
@@ -33,9 +34,10 @@ namespace TigerSan.NET8.WebApi.Share
             {
                 if (tag.EqpType == EqpTypes.Locator)
                 {
-                    var gongBeiData = new GongBeiData(tag);
-                    await HttpHelper.PostAsync<GongBeiData, object>(_urlGongBei, gongBeiData);
                 }
+
+                var gongBeiData = new GongBeiData(tag);
+                await HttpHelper.PostAsync<GongBeiData, object>(_testUrlGongBei, gongBeiData);
 
                 return MyResults<object>.OperationSuccess;
             }

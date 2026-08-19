@@ -108,5 +108,55 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             return string.Join(';', strPoints);
         }
         #endregion
+
+        #region 是否“在围栏内”
+        /// <summary>是否“在围栏内”</summary>
+        public static bool IsInFence(Point2 point, List<Point2> fence)
+        {
+            // 边界检查：围栏至少需要3个点才能构成多边形
+            if (fence == null || fence.Count < 3)
+                return false;
+
+            int intersectCount = 0;
+            int n = fence.Count;
+
+            for (int i = 0; i < n; i++)
+            {
+                Point2 p1 = fence[i];
+                Point2 p2 = fence[(i + 1) % n]; // 下一个点，循环闭合
+
+                // 检查点是否正好在边上（包含端点）
+                if (IsPointOnLineSegment(point, p1, p2))
+                    return true;
+
+                // 判断射线是否与边相交（仅考虑从左到右的向上或向下穿越）
+                if (((p1.Y > point.Y) != (p2.Y > point.Y)) &&
+                    (point.X < (p2.X - p1.X) * (point.Y - p1.Y) / (p2.Y - p1.Y) + p1.X))
+                {
+                    intersectCount++;
+                }
+            }
+
+            // 奇数个交点表示点在多边形内
+            return intersectCount % 2 == 1;
+        }
+
+        private static bool IsPointOnLineSegment(Point2 p, Point2 a, Point2 b)
+        {
+            // 检查点p是否在线段ab上（含端点）
+            // 首先检查p是否在直线ab上（叉积为0）
+            double crossProduct = (p.Y - a.Y) * (b.X - a.X) - (p.X - a.X) * (b.Y - a.Y);
+            if (Math.Abs(crossProduct) > 1e-9)
+                return false;
+
+            // 然后检查p是否在a和b的矩形范围内
+            if (p.X < Math.Min(a.X, b.X) - 1e-9 || p.X > Math.Max(a.X, b.X) + 1e-9)
+                return false;
+            if (p.Y < Math.Min(a.Y, b.Y) - 1e-9 || p.Y > Math.Max(a.Y, b.Y) + 1e-9)
+                return false;
+
+            return true;
+        }
+        #endregion
     }
 }

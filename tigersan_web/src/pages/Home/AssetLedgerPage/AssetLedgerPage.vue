@@ -8,6 +8,7 @@
                         <Select :model="model.filter.selectDepartment" />
                         <Select :model="model.filter.selectAssetType" />
                         <Select :model="model.filter.selectTagType" />
+                        <Select :model="model.filter.selectIsInFence" />
                         <Select :model="selectColumnFilter" />
                     </div>
                     <div class="row-panel">

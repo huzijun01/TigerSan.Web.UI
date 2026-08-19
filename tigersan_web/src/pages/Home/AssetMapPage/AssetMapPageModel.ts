@@ -61,6 +61,7 @@ export class AssetMapPageModel {
                     onlineState: filter.selectOnlineState.Value.value,
                     isAuto: filter.selectIsAuto.Value.value,
                     isFall: filter.selectIsFall.Value.value,
+                    isInFence: filter.selectIsInFence.Value.value,
                     errorType: filter.selectErrorType.Value.value,
                     name: filter.searchName.Value.value,
                     rfid: filter.searchRfid.Value.value,

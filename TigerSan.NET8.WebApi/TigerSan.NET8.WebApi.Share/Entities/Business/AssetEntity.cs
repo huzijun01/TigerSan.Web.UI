@@ -23,6 +23,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public bool IsAuto { get; set; } = true;
         [SnakeColumn]
+        public bool IsInFence { get; set; } = true;
+        [SnakeColumn]
         public string? Name { get; set; } = string.Empty;
         [SnakeColumn]
         public string? Comment { get; set; } = string.Empty;

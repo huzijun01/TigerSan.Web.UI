@@ -10,27 +10,31 @@ export class AssetEntity extends IdEntityBase {
     type: bigint = 0n
     tag?: bigint
     tagId?: string
-    tagType?: bigint
-    station?: bigint
     vehicle?: bigint
     transfer?: bigint
+    isAuto: boolean = true
+    isInFence: boolean = true
     name?: string
     comment?: string
-    // 计算:
-    lastRecord?: bigint // 计算时才更新，建议使用GetLast获取最新记录
-    state: AssetStates = AssetStates.NoRecord
-    onlineState: OnlineStates = OnlineStates.Offline
-    isAuto: boolean = true
-    isFall?: boolean
     errorType?: ErrorTypes
     bindingTime?: Date
+    // Tag:
+    onlineState: OnlineStates = OnlineStates.Offline
+    isFall?: boolean
+    tagType?: bigint
+    station?: bigint
+    stationId?: string
+    // 记录:
+    lastRecord?: bigint // 计算时才更新，建议使用GetLast获取最新记录
+    state: AssetStates = AssetStates.NoRecord
+    // 计算:
     calculationTime?: Date
     dailyMove?: number
     monthlyMove?: number
     totalMove?: number
     stayDuration?: number
-    offlineDuration?: number
     travelDuration?: number
+    offlineDuration?: number
 }
 
 /** "资产"对象 */
@@ -40,7 +44,6 @@ export class AssetDto extends AssetEntity {
     departmentName = ''
     typeName = ''
     stateName = ''
-    stationId?: string
     // 记录:
     rfid?: string
     plate?: string
@@ -62,6 +65,7 @@ export class AssetFilter {
     onlineState?: OnlineStates
     isAuto?: boolean
     isFall?: boolean
+    isInFence?: boolean
     errorType?: ErrorTypes
     name?: string
     rfid?: string
@@ -85,6 +89,7 @@ export class AssetFilter {
                 { propName: 'OnlineState', value: param.onlineState },
                 { propName: 'IsAuto', value: param.isAuto },
                 { propName: 'IsFall', value: param.isFall },
+                { propName: 'IsInFence', value: param.isInFence },
                 { propName: 'ErrorType', value: param.errorType },
                 { propName: 'Name', value: param.name === '' ? undefined : param.name, isFuzzy: true },
                 { propName: 'AssetId', value: param.assetId === '' ? undefined : param.assetId, isFuzzy: true },

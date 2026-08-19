@@ -1,4 +1,4 @@
-import { IsAuto, IsFall, OnlineState, SearchModel, Texts, WatchBehavior } from "@/0_tigersan_ui/tigerui"
+import { IsAuto, IsFall, IsInFence, OnlineState, SearchModel, Texts, WatchBehavior } from "@/0_tigersan_ui/tigerui"
 import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
 import { companyHelper, departmentHelper, assetTypeHelper, AssetState, ErrorType, tagTypeHelper } from "@/models"
 
@@ -17,6 +17,7 @@ export class AssetFilter {
     readonly selectOnlineState = OnlineState.GetSelectModel()
     readonly selectIsAuto = IsAuto.GetSelectModel()
     readonly selectIsFall = IsFall.GetSelectModel()
+    readonly selectIsInFence = IsInFence.GetSelectModel()
     readonly selectDepartment = departmentHelper.GetIdNameSelectModel()
     readonly selectAssetType = assetTypeHelper.GetIdNameSelectModel()
     readonly selectTagType = tagTypeHelper.GetIdNameSelectModel()
@@ -59,6 +60,7 @@ export class AssetFilter {
         this.selectOnlineState._onChange = this._refresh
         this.selectIsAuto._onChange = this._refresh
         this.selectIsFall._onChange = this._refresh
+        this.selectIsInFence._onChange = this._refresh
         this.selectErrorType._onChange = this._refresh
 
         this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtForm.AccessibleCompanies, this._refresh)

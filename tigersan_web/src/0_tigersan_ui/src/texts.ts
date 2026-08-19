@@ -73,6 +73,7 @@ export class Texts {
     static readonly End = TextModel.Computed('End', '结束')
     static readonly Edit = TextModel.Computed('Edit', '修改')
     static readonly Error = TextModel.Computed('Error', '错误')
+    static readonly Enter = TextModel.Computed('Enter', '进入')
     static readonly Enable = TextModel.Computed('Enable', '启用')
     static readonly EndTime = TextModel.Computed('EndTime', '结束时间')
     static readonly EqpName = TextModel.Computed('EqpName', '设备名称')
@@ -120,6 +121,7 @@ export class Texts {
     // L:
     static readonly Lose = TextModel.Computed('Lose', '丢失')
     static readonly Login = TextModel.Computed('Login', '登录')
+    static readonly Leave = TextModel.Computed('Leave', '离开')
     static readonly Loading = TextModel.Computed('Loading', '加载')
     static readonly Language = TextModel.Computed('Language', '语言')
     static readonly Locator = TextModel.Computed('Locator', '定位器')
