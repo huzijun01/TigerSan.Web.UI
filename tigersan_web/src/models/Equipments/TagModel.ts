@@ -5,38 +5,67 @@ import { axiosHelper, IdEntityBase, IdHelper } from "@/helpers"
 
 /** “标签”实体 */
 export class TagEntity extends IdEntityBase {
+    /** 批次 */
     batch: bigint = 0n
+    /** 类型 */
     type: bigint = 0n
+    /** 基站 */
     station?: bigint // 当前连接的基站（不作为绑定标志）
+    /** 基站ID */
     stationId?: string // 基站绑定标志
+    /** 是否脱落 */
     isFall?: boolean
+    /** 是否启用 */
     isEnable = true
+    /** 设备类型（0：标签，1：定位器） */
     eqpType = EqpTypes.Tag
+    /** 是否在线（0：离线，1：在线） */
     onlineState = OnlineStates.Offline
+    /** 定位方式 */
     locationMode?: LocationModes
+    /** 标签ID */
     tagId = ''
+    /** 资产ID */
     assetId?: string
+    /** RFID */
     rfid?: string
+    /** IMEI */
     imei?: string
+    /** ICCID */
     iccid?: string
+    /** 电量 */
     battery?: number
+    /** 信号 */
     signal?: number
+    /** 温度 */
     temperature?: number
+    /** 经度 */
     longitude?: number
+    /** 维度 */
     latitude?: number
+    /** 备注 */
     comment?: string
+    /** 上报时间 */
     reportTime?: Date
+    /** 图片 */
     image?: string
 }
 
 /** “标签”对象 */
 export class TagDto extends TagEntity {
+    /** 批次ID */
     batchId = ''
+    /** 类型名称 */
     typeName = ''
+    /** 公司 */
     company?: bigint
+    /** 公司名称 */
     companyName?: string
+    /** 场地 */
     site?: bigint
+    /** 场地名称 */
     siteName?: string
+    /** 地址 */
     address?: string
 }
 

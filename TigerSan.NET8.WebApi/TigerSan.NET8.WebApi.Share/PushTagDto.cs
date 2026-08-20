@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Helpers;
-using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Share.Extensions;
 
 namespace TigerSan.NET8.WebApi.Share
@@ -19,11 +18,26 @@ namespace TigerSan.NET8.WebApi.Share
     }
     #endregion
 
+    #region “公贝”响应
+    public class GongBeiResult
+    {
+        [JsonPropertyName("code")]
+        public string Code { get; set; } = string.Empty;
+        [JsonPropertyName("msg")]
+        public string Msg { get; set; } = string.Empty;
+        [JsonPropertyName("requestId")]
+        public string RequestId { get; set; } = string.Empty;
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+    }
+    #endregion
+
     public static class PushTagDto
     {
         #region 【Fields】
-        static readonly string _urlGongBei = "https://connector.gongbeiyun.com/connector/api/webhook/test/b6978bf3c90d4ab4b1d2740fe88cefb0";
-        static readonly string _testUrlGongBei = "https://test-asset.gongbeiyun.com/connector/api/webhook/test/b6978bf3c90d4ab4b1d2740fe88cefb0";
+        static readonly string _subUrlGongBei = "/system/iot/unauth/daye/report";
+        static readonly string _urlGongBei = "https://asset.gongbeiyun.com" + _subUrlGongBei;
+        static readonly string _testUrlGongBei = "https://test-asset.gongbeiyun.com" + _subUrlGongBei;
         #endregion 【Fields】
 
         #region 【Functions】
@@ -32,12 +46,19 @@ namespace TigerSan.NET8.WebApi.Share
         {
             try
             {
-                if (tag.EqpType == EqpTypes.Locator)
+                if (tag.Company == 117075679404752940)
                 {
+                    var gongBeiData = new GongBeiData(tag);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var res = await HttpHelper.PostAsync<GongBeiData, GongBeiResult>(_testUrlGongBei, gongBeiData);
+                        if (res.Data != null)
+                        {
+                            if (res.Data.Success) break;
+                            LogHelper.Instance.Warning(res.Data.Msg);
+                        }
+                    }
                 }
-
-                var gongBeiData = new GongBeiData(tag);
-                await HttpHelper.PostAsync<GongBeiData, object>(_testUrlGongBei, gongBeiData);
 
                 return MyResults<object>.OperationSuccess;
             }

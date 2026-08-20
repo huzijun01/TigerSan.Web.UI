@@ -5,6 +5,23 @@ using TigerSan.NET8.WebApi.Share.Dtos;
 
 namespace TigerSan.NET8.WebApi.Share.Helpers
 {
+    #region 经纬度
+    /// <summary>经纬度</summary>
+    public class LngLat
+    {
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        /// <summary>经纬度是否可用</summary>
+        public bool IsValidLngLat { get => Longitude > 0 && Latitude > 0; }
+
+        public LngLat(double longitude, double latitude)
+        {
+            Longitude = longitude;
+            Latitude = latitude;
+        }
+    }
+    #endregion
+
     #region 位置
     /// <summary>位置</summary>
     public class Location
@@ -20,9 +37,9 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             double? latitude,
             string? address)
         {
-            this.Longitude = longitude;
-            this.Latitude = latitude;
-            this.Address = address;
+            Longitude = longitude;
+            Latitude = latitude;
+            Address = address;
         }
     }
     #endregion
@@ -735,6 +752,58 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
             {
                 httpClient.Dispose();
             }
+        }
+        #endregion
+
+        #region 是否“在围栏内”
+        /// <summary>是否“在围栏内”</summary>
+        public static bool IsInFence(LngLat point, List<LngLat> fence)
+        {
+            if (!point.IsValidLngLat || fence == null || fence.Count < 3)
+                return false;
+
+            // 将围栏顶点标准化为闭合多边形（自动补全首尾）
+            var closedFence = new List<LngLat>(fence);
+            if (closedFence[0].Longitude != closedFence[^1].Longitude || closedFence[0].Latitude != closedFence[^1].Latitude)
+                closedFence.Add(new LngLat(closedFence[0].Longitude, closedFence[0].Latitude));
+
+            int windingNumber = 0;
+
+            for (int i = 0; i < closedFence.Count - 1; i++)
+            {
+                var p1 = closedFence[i];
+                var p2 = closedFence[i + 1];
+
+                // 跳过无效点
+                if (!p1.IsValidLngLat || !p2.IsValidLngLat)
+                    continue;
+
+                // 计算从点到边的球面方位角变化
+                double lat1 = p1.Latitude * Math.PI / 180.0;
+                double lon1 = p1.Longitude * Math.PI / 180.0;
+                double lat2 = p2.Latitude * Math.PI / 180.0;
+                double lon2 = p2.Longitude * Math.PI / 180.0;
+                double latP = point.Latitude * Math.PI / 180.0;
+                double lonP = point.Longitude * Math.PI / 180.0;
+
+                // 计算边的经度差（处理跨180度）
+                double dLon = lon2 - lon1;
+                if (dLon > Math.PI) dLon -= 2 * Math.PI;
+                if (dLon < -Math.PI) dLon += 2 * Math.PI;
+
+                // 判断边是否跨越点的经线（向右射线）
+                if ((lon1 <= lonP && lon2 > lonP) || (lon2 <= lonP && lon1 > lonP))
+                {
+                    // 计算边与点所在经线的交点纬度
+                    double latIntersect = lat1 + (lat2 - lat1) * (lonP - lon1) / dLon;
+
+                    // 如果交点在点的北方，则绕数+1
+                    if (latIntersect > latP)
+                        windingNumber += (dLon > 0) ? 1 : -1;
+                }
+            }
+
+            return windingNumber != 0;
         }
         #endregion
     }
