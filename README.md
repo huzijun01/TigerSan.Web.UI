@@ -18,14 +18,14 @@ https://github.com/huzijun01/TigerSan.Web.UI
 
 ## NPM:
 
-https://www.npmjs.com/package/tigersan-vue3-ui
+https://www.npmjs.com/package/tigersan-ui
 
 # How To Use:
 
 1\. Import CSS in the `main.ts`:
 
 ```typescript
-import 'tigersan-vue3-ui/dist/tigersan-vue3-ui.css'
+import 'tigersan-ui/dist/tigersan-ui.css'
 ```
 
 2\. Create `theme.css` in the `public` folder:
