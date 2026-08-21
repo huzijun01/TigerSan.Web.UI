@@ -16,6 +16,10 @@ bilibili: https://space.bilibili.com/34323512
 
 https://github.com/huzijun01/TigerSan.Web.UI
 
+## NPM:
+
+https://www.npmjs.com/package/tigersan-vue3-ui
+
 # How To Use:
 
 1\. Import CSS in the `main.ts`:
