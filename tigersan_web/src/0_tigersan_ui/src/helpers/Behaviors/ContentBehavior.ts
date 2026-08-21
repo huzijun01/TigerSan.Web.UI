@@ -1,5 +1,5 @@
 import { type App, type Component } from "vue"
-import { ComponentHelper } from "../ComponentHelper"
+import { ComponentHelper } from "../ComponentHelper/ComponentHelper"
 
 /** “内容”行为 */
 export class ContentBehavior {

@@ -1,7 +1,7 @@
 import { shallowReactive } from "vue"
 import { Toasts } from "../../components"
 import { ToastModel, MsgTypes } from './ToastModel'
-import { ComponentHelper } from "../../helpers/ComponentHelper"
+import { ComponentHelper } from "../../helpers/ComponentHelper/ComponentHelper"
 
 export class ToastHelper {
     //#region 【Fields】
