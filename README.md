@@ -4,7 +4,7 @@ A Vue 3 UI library.
 
 Supports theme switching and language switching.
 
-<img src="https://github.com/huzijun01/TigerSan.Web.UI/blob/main/preview.webp?raw=true" alt="preview" style="max-height: 500px;" />
+![preview](https://github.com/huzijun01/TigerSan.Web.UI/blob/main/preview.webp?raw=true)
 
 # About:
 
