@@ -14,6 +14,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
     {
         #region 【Fields】
         private readonly IBatchService _batchService;
+        private readonly IAssetRecordService _assetRecordService;
         private readonly IBaseStationService _baseStationService;
         private readonly IBindingRecordService _bindingRecordService;
         private readonly IStationBindingService _stationBindingService;
@@ -30,11 +31,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
         public TagService(
             AppDbContext db,
             IBatchService batchService,
+            IAssetRecordService assetRecordService,
             IBaseStationService baseStationService,
             IBindingRecordService bindingRecordService,
             IStationBindingService stationBindingService) : base(db, db.Tags)
         {
             _batchService = batchService;
+            _assetRecordService = assetRecordService;
             _baseStationService = baseStationService;
             _bindingRecordService = bindingRecordService;
             _stationBindingService = stationBindingService;
@@ -826,14 +829,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     && i.ReportTime.Value.AddSeconds(GlobalSettings.LocatorReportIntervalSeconds) < now)
                     .ToListAsync();
 
+                var tagDtos = (await GetFullList(tagTimeOuts)).Data;
+                var locatorDtos = (await GetFullList(locatorTimeOuts)).Data;
+
                 foreach (var timeOut in tagTimeOuts)
                 {
                     timeOut.OnlineState = OnlineStates.Offline;
+
+                    var tagDto = tagDtos?.FirstOrDefault(i => i.Id == timeOut.Id);
+                    if (tagDto != null)
+                    {
+                        var newTagDto = new TagDto().ShallowCopy(tagDto);
+                        newTagDto.OnlineState = OnlineStates.Offline;
+                        await _assetRecordService.EditAssetRecordAsync(tagDto, newTagDto, false);
+                    }
                 }
 
                 foreach (var locatorTimeOut in locatorTimeOuts)
                 {
                     locatorTimeOut.OnlineState = OnlineStates.Offline;
+
+                    var locatorDto = locatorDtos?.FirstOrDefault(i => i.Id == locatorTimeOut.Id);
+                    if (locatorDto != null)
+                    {
+                        var newLocatorDto = new TagDto().ShallowCopy(locatorDto);
+                        newLocatorDto.OnlineState = OnlineStates.Offline;
+                        await _assetRecordService.EditAssetRecordAsync(locatorDto, newLocatorDto, false);
+                    }
                 }
 
                 await _db.SaveChangesAsync();

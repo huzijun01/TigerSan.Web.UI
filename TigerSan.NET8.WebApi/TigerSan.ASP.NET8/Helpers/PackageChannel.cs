@@ -247,8 +247,8 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
-        #region 修改“基站”和“标签”（蓝牙）
-        /// <summary>修改“基站”和“标签”（蓝牙）</summary>
+        #region 修改“基站”和“蓝牙标签”
+        /// <summary>修改“基站”和“蓝牙标签”</summary>
         public async Task<MyActionResult<object>> EditBaseStationAndTagAsync(BaseStationPackage package)
         {
             var tagService = TagService;
@@ -350,8 +350,8 @@ namespace TigerSan.NET8.WebApi.Helpers
         }
         #endregion
 
-        #region 修改“标签”（4G）
-        /// <summary>修改“标签”（4G）</summary>
+        #region 修改“4G定位器”
+        /// <summary>修改“4G定位器”</summary>
         public async Task<MyActionResult<object>> EditLocator4gAsync(Locator4gPackage package)
         {
             var tagService = TagService;
