@@ -74,6 +74,11 @@ input[type="checkbox"] {
     /* 其它: */
     cursor: pointer;
 
+    &::before {
+        content: "" !important;
+        display: none !important;
+    }
+
     &::after {
         /* 文本: */
         content: "✔";

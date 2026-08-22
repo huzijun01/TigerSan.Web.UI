@@ -95,6 +95,66 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
         #endregion [查]
+
+        #region [删]
+        #region 删除“单条数据”
+        public new async Task<MyActionResult<object>> Remove(long id, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                var entity = await _dbSet.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+                if (entity == null)
+                {
+                    return MyResults<object>.ResourceNotExist;
+                }
+
+                await _db.InventoryRecords.Where(i => i.Site == id).ExecuteDeleteAsync();
+                _dbSet.Remove(entity);
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+
+        #region 删除“多条数据”
+        public new async Task<MyActionResult<object>> RemoveRange(List<long> ids, bool isBeginTransaction = true)
+        {
+            using var transaction = isBeginTransaction ? _db.Database.BeginTransaction() : null; // 显式开启事务
+
+            try
+            {
+                if (ids.Count < 1) return MyResults<object>.OperationSuccess;
+
+                var finds = _dbSet.Where(i => ids.Contains(i.Id));
+
+                var count = await finds.CountAsync();
+                if (count < 1) return MyResults<object>.ResourceNotExist;
+                else if (count < ids.Count) return MyResults<object>.SomeResourceNotExist;
+
+                await _db.InventoryRecords.Where(i => ids.Contains(i.Site)).ExecuteDeleteAsync();
+                await finds.ExecuteDeleteAsync();
+                await _db.SaveChangesAsync();
+                if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
+            }
+            catch (Exception e)
+            {
+                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                return MyResults<object>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+
+            return MyResults<object>.OperationSuccess;
+        }
+        #endregion
+        #endregion [删]
         #endregion 【Functions】
     }
 }

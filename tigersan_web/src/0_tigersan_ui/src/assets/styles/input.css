@@ -193,6 +193,10 @@ input[type="checkbox"] > * {
   flex-grow: 0;
   flex-shrink: 0;
 }
+input[type="checkbox"]::before {
+  content: "" !important;
+  display: none !important;
+}
 input[type="checkbox"]::after {
   /* 文本: */
   content: "✔";
