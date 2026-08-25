@@ -42,7 +42,7 @@
     <Drawer :model="model.drawerState">
         <AssetState v-if="!model.IsStation.value" :asset="model.assetState.Asset.value"
             :tag="model.assetState.Tag.value" :station="model.assetState.Station.value" />
-        <RowData :model="model.station" />
+        <RowData v-if="model.IsStation.value" :model="model.station" />
     </Drawer>
 
     <!-- 弹窗 -->
