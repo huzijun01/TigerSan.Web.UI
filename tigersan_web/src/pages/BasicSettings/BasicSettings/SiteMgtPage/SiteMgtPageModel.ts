@@ -3,7 +3,7 @@ import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, Fo
 import { siteMgtTable } from './SiteMgtTable'
 import { companyHelper, siteHelper, siteTypeHelper, SiteEntity } from '@/models'
 
-export class SiteMgtForm {
+export class SiteMgtPageModel {
     //#region 【Fields】
     /** 地图 */
     readonly map = new MapModel<any, any>({ animateEnable: false })
@@ -101,7 +101,7 @@ export class SiteMgtForm {
         PropText: Texts.Longitude,
         IsEquired: true,
         Target: this.Longitude,
-        _isVerifyOk: source => Verify.IsGreaterThan(source.longitude)
+        _isVerifyOk: source => Verify.IsValidLongitude(source.longitude)
     }
 
     /** “纬度”项目配置 */
@@ -110,7 +110,7 @@ export class SiteMgtForm {
         PropText: Texts.Latitude,
         IsEquired: true,
         Target: this.Latitude,
-        _isVerifyOk: source => Verify.IsGreaterThan(source.latitude)
+        _isVerifyOk: source => Verify.IsValidLatitude(source.latitude)
     }
 
     /** “联系人”项目配置 */
@@ -149,7 +149,7 @@ export class SiteMgtForm {
 
     /** 更新“围栏” */
     readonly UpdateFence = () => {
-        const site = this.siteForm._source
+        const site = this.form._source
         if (!site) {
             console.warn('The site is undefined!')
             return
@@ -165,7 +165,7 @@ export class SiteMgtForm {
     }
 
     /** “场地”表单配置 */
-    readonly configSiteMgtForm: FormConfig<SiteEntity> = {
+    readonly configSiteMgtPageModel: FormConfig<SiteEntity> = {
         _getSource: this.AddGetSource,
         _onInit: this.UpdateFence,
         _beforeInitAsync: async isEdit => {
@@ -202,8 +202,8 @@ export class SiteMgtForm {
         ]
     }
 
-    /** “场地”表单模型 */
-    readonly siteForm = new FormModel(this.configSiteMgtForm)
+    /** 表单模型 */
+    readonly form = new FormModel(this.configSiteMgtPageModel)
     //#endregion 【Fields】
 
     //#region 【Ctor】
@@ -214,9 +214,9 @@ export class SiteMgtForm {
             await this.map.InitPolygonEditorAsync({ end: this.SaveFence })
         }
 
-        this.siteForm.MinWidth.value = '80vw'
-        this.siteForm.MinHeight.value = '80vh'
-        this.siteForm.FillOpts.value = { right: true }
+        this.form.MinWidth.value = '80vw'
+        this.form.MinHeight.value = '80vh'
+        this.form.FillOpts.value = { right: true }
 
         this.selectCompany._getItemsAsync = async () => await siteHelper.GetBelongCompanyListAsync()
         this.selectType._getItemsAsync = async () => await siteHelper.GetBelongSiteTypeListAsync(this.selectCompany.Value.value?.id)
@@ -281,25 +281,25 @@ export class SiteMgtForm {
 
     /** 增 */
     readonly Add = () => {
-        this.siteForm.Title.value = TextModel.GetText('Add Site', '新增场地')
+        this.form.Title.value = TextModel.GetText('Add Site', '新增场地')
 
-        this.siteForm._getSource = this.AddGetSource
+        this.form._getSource = this.AddGetSource
 
-        this.siteForm._onSubmitAsync = async source => {
+        this.form._onSubmitAsync = async source => {
             const res = await siteHelper.Add(source as SiteEntity)
 
             await this.Refresh()
             return GetSubmitResult(res, Texts.AddedSuccessfully.value)
         }
 
-        this.siteForm.Show()
+        this.form.Show()
     }
 
     /** 改 */
     readonly Edit = () => {
-        this.siteForm.Title.value = TextModel.GetText('Edit Site', '修改场地')
+        this.form.Title.value = TextModel.GetText('Edit Site', '修改场地')
 
-        this.siteForm._getSource = () => {
+        this.form._getSource = () => {
             const rowData = siteMgtTable.SelectedRowDatas.value[0]
 
             if (!rowData) {
@@ -310,7 +310,7 @@ export class SiteMgtForm {
             return ObjectHelper.ShallowCopy(rowData)
         }
 
-        this.siteForm._onSubmitAsync = async source => {
+        this.form._onSubmitAsync = async source => {
             const res = await siteHelper.Edit(source as SiteEntity)
 
             this.map._polygonEditor?.close()
@@ -318,7 +318,7 @@ export class SiteMgtForm {
             return GetSubmitResult(res, Texts.EditedSuccessfully.value)
         }
 
-        this.siteForm.Show(true)
+        this.form.Show(true)
     }
 
     /** 删 */

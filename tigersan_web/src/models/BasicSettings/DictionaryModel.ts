@@ -80,7 +80,7 @@ export class DictionaryModel {
         this._name = name
         this._helper = helper
         this._isShowCompany = isShowCompany
-        this.table.IsAllowMultiSelect.value = false
+        this.table.IsAllowMultiSelect.value = true
         this.pagination.IsShowSelectedRowCount.value = true
         this.pagination._onChange = this.Refresh
         this.selectCompany._onChange = this.Refresh
@@ -177,13 +177,13 @@ export class DictionaryModel {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const model = this.table.SelectedRowDatas.value[0]
-        if (!model) {
+        const models = this.table.SelectedRowDatas.value
+        if (!models) {
             console.warn('The model is undefined!')
             return
         }
 
-        this._helper.Delete(model.id).then(res => {
+        this._helper.DeleteRange(models.map(i => i.id)).then(res => {
             this.Refresh()
             MyActionResult.ShowResult(res, Texts.DeletedSuccessfully.value)
         })

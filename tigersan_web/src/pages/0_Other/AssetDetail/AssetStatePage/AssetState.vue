@@ -2,6 +2,8 @@
     <div class="state-panel">
         <!-- 基础详情： -->
         <div class="title">{{ Texts.BasicDetail.value }}</div>
+        <KeyValue :isAutoHidden="true" :propName="Texts.AssetId.value" :propValue="asset?.assetId" :isLink="true"
+            :click="ShowAssetDetail" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Name.value" :propValue="asset?.name" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Company.value" :propValue="asset?.companyName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.Department.value" :propValue="asset?.departmentName" />
@@ -39,6 +41,7 @@
 import { type PropType } from 'vue'
 import { Texts, KeyValue, IsFall, ObjectHelper, OnlineState, IsAuto, IsMobile } from '@/0_tigersan_ui/tigerui'
 import { AssetDto, BaseStationDto, ErrorType, TagDto } from '@/models'
+import { assetDetail } from '@/pages/Home/AssetLedgerPage/AssetLedgerTable'
 
 // 【字段】:
 const { asset, tag, station } = defineProps({
@@ -57,6 +60,10 @@ const { asset, tag, station } = defineProps({
 })
 
 // 【方法】:
+function ShowAssetDetail() {
+    if (!asset) return
+    assetDetail.Show(asset.id, asset.assetId)
+}
 </script>
 
 <style lang="less" scoped>

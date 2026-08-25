@@ -14,7 +14,7 @@
                         <button @click="model.Add">{{ Texts.Add.value }}</button>
                         <button class="bg-warning" :disabled="!IsOnlySelected" @click="model.Edit">
                             {{ Texts.Edit.value }}</button>
-                        <button class="bg-danger" :disabled="!IsOnlySelected" @click="model.Delete">
+                        <button class="bg-danger" :disabled="!IsSelected" @click="model.Delete">
                             {{ Texts.Delete.value }}</button>
                     </div>
                 </div>
@@ -60,7 +60,7 @@ const { model } = defineProps({
 
 // 【字段】:
 // 表格:
-const { IsOnlySelected } = model.table
+const { IsSelected, IsOnlySelected } = model.table
 
 // 【过程】:
 onMounted(() => {

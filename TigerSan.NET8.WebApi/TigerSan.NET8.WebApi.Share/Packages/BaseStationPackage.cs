@@ -64,7 +64,7 @@ namespace TigerSan.NET8.WebApi.Share.Packages
 
         /// <summary>经纬度是否可用</summary>
         [JsonIgnore]
-        public bool IsValidLngLat { get => Longitude > 0 && Latitude > 0; }
+        public bool IsValidLngLat { get => Longitude != 0 && Latitude != 0; }
     }
     #endregion
 

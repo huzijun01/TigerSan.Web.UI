@@ -471,7 +471,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 var lastRecord = await _db.AssetRecords.AsNoTracking()
                     .OrderByDescending(i => i.ReportTime)
-                    .FirstOrDefaultAsync(i => i.Asset == asset && i.Longitude > 0 && i.Latitude > 0);
+                    .FirstOrDefaultAsync(i => i.Asset == asset && i.Longitude != null && i.Latitude != null && i.Longitude != 0 && i.Latitude != 0);
                 if (lastRecord == null) return MyResults<PositionDto>.Success();
 
                 return MyResults<PositionDto>.Success(null, new PositionDto()
@@ -724,6 +724,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
+                // 删除“调拨记录”：
+                await _db.Transfers.Where(i => i.Asset == id).ExecuteDeleteAsync();
                 // 删除“资产记录”：
                 await _db.AssetRecords.Where(i => i.Asset == id).ExecuteDeleteAsync();
                 // 删除“绑定记录”：
@@ -774,6 +776,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 else if (count < ids.Count)
                     return MyResults<object>.SomeResourceNotExist;
 
+                // 删除“调拨记录”：
+                await _db.Transfers.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
                 // 删除“资产记录”：
                 await _db.AssetRecords.Where(i => ids.Contains(i.Asset)).ExecuteDeleteAsync();
                 // 删除“绑定记录”：

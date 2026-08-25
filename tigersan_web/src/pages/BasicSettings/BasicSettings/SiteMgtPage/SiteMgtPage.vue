@@ -34,7 +34,7 @@
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.siteForm">
+    <PopForm :model="form.form">
         <FormRow>
             <FormItem :model="form.configCompany.ItemModel">
                 <Select :model="form.selectCompanyForm" />
@@ -105,11 +105,11 @@
 import { onMounted } from 'vue'
 import { siteMgtTable } from './SiteMgtTable'
 import { Authorities } from '@/navs/Authorities'
-import { SiteMgtForm } from './SiteMgtForm'
+import { SiteMgtPageModel } from './SiteMgtPageModel'
 import { Select, Search, Table, PageCard, Pagination, PopForm, FormRow, FormItem, Texts, Map } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-const form = new SiteMgtForm()
+const form = new SiteMgtPageModel()
 const { IsOnlySelected } = siteMgtTable
 
 // 【过程】:

@@ -31,13 +31,14 @@ class SiteHelper extends IdNameHelper<SiteEntity> {
     /** 筛选“总数” */
     readonly GetCount = async (param: {
         company?: bigint,
+        companies?: bigint[],
         type?: bigint
         code?: string,
     }) => {
         return await axiosHelper.GetCount(this._action, {
             filter: {
                 filters: [
-                    { propName: 'Company', value: param.company },
+                    { propName: 'Company', value: param.company, values: param.companies },
                     { propName: 'Type', value: param.type },
                     { propName: 'Code', value: StringHelper.IsNotEmpty(param.code) ? param.code : undefined },
                 ],
@@ -50,6 +51,7 @@ class SiteHelper extends IdNameHelper<SiteEntity> {
         pageSize?: number,
         pageNumber?: number
         company?: bigint,
+        companies?: bigint[],
         type?: bigint,
         code?: string,
     }) => {
@@ -59,7 +61,7 @@ class SiteHelper extends IdNameHelper<SiteEntity> {
             pageNumber: param.pageNumber,
             filter: {
                 filters: [
-                    { propName: 'Company', value: param.company },
+                    { propName: 'Company', value: param.company, values: param.companies },
                     { propName: 'Type', value: param.type },
                     { propName: 'Code', value: StringHelper.IsNotEmpty(param.code) ? param.code : undefined },
                 ],

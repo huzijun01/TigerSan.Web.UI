@@ -34,6 +34,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public static MyActionResult<TData> TagRepeated { get => MyResults<TData>.Error("The Tag cannot be repeated!"); }
         public static MyActionResult<TData> MacAddrRepeated { get => MyResults<TData>.Error("The MacAddr cannot be repeated!"); }
         public static MyActionResult<TData> InvalidMacAddr { get => MyResults<TData>.Error("The MacAddr is invalid!"); }
+        public static MyActionResult<TData> InvalidLocation { get => MyResults<TData>.Error("The location is invalid!"); }
         public static MyActionResult<TData> UserNotExist { get => MyResults<TData>.Error("User does not exist!"); }
         public static MyActionResult<TData> PasswordIncorrect { get => MyResults<TData>.Error("The password is incorrect!"); }
         public static MyActionResult<TData> TraceIdentifierIsNullOrEmpty { get => MyResults<TData>.Error("The id is null or empty!"); }

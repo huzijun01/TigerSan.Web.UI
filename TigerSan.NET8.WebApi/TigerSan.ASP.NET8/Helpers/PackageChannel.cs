@@ -145,20 +145,9 @@ namespace TigerSan.NET8.WebApi.Helpers
                 }
                 else
                 {
+                    position.Longitude = baseStation.Longitude;
+                    position.Latitude = baseStation.Latitude;
                     position.LocationMode = LocationModes.BaseStation;
-                    var resGetSite = await SiteService.Get(baseStation.Site);
-                    var site = resGetSite.Data;
-                    if (site == null)
-                    {
-                        position.Longitude = null;
-                        position.Latitude = null;
-                        LogHelper.Instance.Warning(MyResults<object>.SiteNotExist.Message);
-                    }
-                    else
-                    {
-                        position.Longitude = site.Longitude;
-                        position.Latitude = site.Latitude;
-                    }
                 }
 
                 return position;

@@ -1,24 +1,17 @@
 import PositionInfo from "@/components/PositionInfo.vue"
-import { ref, watch, shallowReactive, toRaw } from "vue"
-import { loading, MapModel, PaginationModel, LnglatData, DrawerModel, RowDataModel } from "@/0_tigersan_ui/tigerui"
+import { ref, toRaw } from "vue"
+import { loading, MapModel, LnglatData, DrawerModel, RowDataModel } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
-import { assetHelper, baseStationHelper, PositionDto, PositionInfoModel, PositionTypes } from "@/models"
+import { PositionListModel } from "./PositionList/PositionListModel"
 import { AssetStateModel } from "../../0_Other/AssetDetail/AssetStatePage/AssetStateModel"
 import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
 import { GetStationTable } from "@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable"
+import { assetHelper, baseStationHelper, PositionDto, PositionInfoModel, PositionTypes, siteHelper } from "@/models"
 
 export class AssetMapPageModel {
     //#region 【Fields】
     /** 筛选 */
     readonly filter: AssetFilter
-    /** 总数 */
-    readonly Count = ref<number>(0)
-    /** 分页器 */
-    readonly pagination = new PaginationModel()
-    /** “位置”集合 */
-    readonly Positions = shallowReactive<PositionDto[]>([])
-    /** “位置信息”集合 */
-    readonly PositionInfoes = shallowReactive<PositionInfoModel[]>([])
     /** 地图 */
     readonly map = new MapModel<PositionDto, PositionInfoModel>({ animateEnable: false })
     /** “资产状态”抽屉 */
@@ -27,6 +20,10 @@ export class AssetMapPageModel {
     readonly assetState = new AssetStateModel()
     /** 基站详情 */
     readonly station = new RowDataModel(GetStationTable())
+    /** “资产”列表 */
+    readonly assetList = new PositionListModel()
+    /** “基站”列表 */
+    readonly stationList = new PositionListModel()
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -36,19 +33,26 @@ export class AssetMapPageModel {
     //#region 【Ctor】
     constructor() {
         this.filter = new AssetFilter(this.Refresh)
-
-        this.pagination.IsShowCount.value = false
-        this.pagination.IsShowPageSize.value = false
-        this.pagination.IsShowPageTextBox.value = false
-        this.pagination._onChange = this.UpdatePositionInfoes
-        watch(this.Count, count => this.pagination.Count.value = count)
+        this.assetList._onClick = this.OnItemClick
+        this.stationList._onClick = this.OnItemClick
 
         this.map.IsShowButton.value = false
         this.map._getIcon = PositionDto.GetIcon
         this.map._onInitAsync = async () => {
-            const positions: PositionDto[] = []
+            const assets: PositionDto[] = []
+            const stations: PositionDto[] = []
 
             try {
+                // 场地：
+                const sites = await siteHelper.GetList({
+                    companies: CompanyMgtForm.AccessibleCompanies.value,
+                })
+                sites.forEach(site => {
+                    if (!site.fencePoints) return
+                    const points = MapModel.GetPathByPoints(site.fencePoints)
+                    this.map.AddPolygonByPoints(points, { fillOpacity: 0.05 })
+                })
+
                 // 资产：
                 const filter = this.filter
                 const assetPositions = await assetHelper.GetPositionList({
@@ -69,18 +73,18 @@ export class AssetMapPageModel {
                     tagId: filter.searchTagId.Value.value,
                     stationId: filter.searchStationId.Value.value,
                 })
-                positions.push(...assetPositions)
+                assets.push(...assetPositions)
 
                 // 基站：
                 const stationPositions = await baseStationHelper.GetPositionList({
                     companies: CompanyMgtForm.AccessibleCompanies.value,
                 })
                 stationPositions.forEach(i => i.type = PositionTypes.Station)
-                positions.push(...stationPositions)
+                stations.push(...stationPositions)
             } finally {
-                this.Positions.splice(0)
-                this.Positions.push(...positions)
-                this.UpdatePositionInfoes()
+                this.assetList.SetPositions(assets)
+                this.stationList.SetPositions(stations)
+                this.InitCluster()
             }
         }
         this.map._onMarkerClick = data => {
@@ -118,15 +122,12 @@ export class AssetMapPageModel {
         loading.IsShow.value = false
     }
 
-    /** 更新“位置信息”集合 */
-    readonly UpdatePositionInfoes = () => {
-        // 总数:
-        this.Count.value = this.Positions.length
-
-        // 标记:
+    /** 初始化“标记聚合” */
+    readonly InitCluster = () => {
         const points: LnglatData<PositionDto, PositionInfoModel>[] = []
-        const positions = toRaw(this.Positions)
-        positions.forEach(position => {
+        const list = this.assetList.rawPositions.value
+        list.push(...this.stationList.rawPositions.value)
+        list.forEach(position => {
             if (position.longitude != undefined && position.latitude != undefined) {
                 const infoModel = new PositionInfoModel(position)
                 infoModel.Background.value = 'var(--theme-input-background)'
@@ -135,14 +136,6 @@ export class AssetMapPageModel {
             }
         })
         this.map.InitClusterAsync(points)
-
-        // 列表:
-        this.PositionInfoes.splice(0)
-        this.pagination.GetPage(positions).forEach(position => {
-            const assetInfo = new PositionInfoModel(position)
-            assetInfo._onClick = this.OnItemClick
-            this.PositionInfoes.push(assetInfo)
-        })
     }
 
     /** 点击“项目”时 */

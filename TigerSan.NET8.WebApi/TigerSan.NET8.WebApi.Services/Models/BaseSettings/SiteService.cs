@@ -110,6 +110,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
+                await _db.Transfers.Where(i => i.Site == id).ExecuteDeleteAsync();
                 await _db.InventoryRecords.Where(i => i.Site == id).ExecuteDeleteAsync();
                 _dbSet.Remove(entity);
                 await _db.SaveChangesAsync();
@@ -140,6 +141,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (count < 1) return MyResults<object>.ResourceNotExist;
                 else if (count < ids.Count) return MyResults<object>.SomeResourceNotExist;
 
+                await _db.Transfers.Where(i => ids.Contains(i.Site)).ExecuteDeleteAsync();
                 await _db.InventoryRecords.Where(i => ids.Contains(i.Site)).ExecuteDeleteAsync();
                 await finds.ExecuteDeleteAsync();
                 await _db.SaveChangesAsync();

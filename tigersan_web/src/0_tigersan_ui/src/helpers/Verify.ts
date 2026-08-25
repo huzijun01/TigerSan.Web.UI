@@ -94,6 +94,45 @@ export class Verify {
         return Verify.OK()
     }
 
+    /** 验证经度是否可用。有效范围: [-180, 180] */
+    static IsValidLongitude(longitude?: number, isAllowUndefined: boolean = false): VerifyResult {
+        if (isAllowUndefined && (longitude === null || longitude === undefined)) return new VerifyResult('', FormResult.OK)
+
+        if (longitude === null || longitude === undefined) {
+            return Verify.Error(Texts.CannotBeEmpty.value)
+        }
+
+        if (isNaN(longitude)) {
+            return Verify.Error(Texts.PleaseEnterANumber.value)
+        }
+
+        if (longitude >= -180 && longitude <= 180) {
+            return new VerifyResult('', FormResult.OK)
+        } else {
+            return new VerifyResult('-180 ~ 180', FormResult.Error)
+        }
+    }
+
+    /** 验证纬度是否可用。有效范围: [-90, 90] */
+    static IsValidLatitude(latitude?: number, isAllowUndefined: boolean = false): VerifyResult {
+        if (isAllowUndefined && (latitude === null || latitude === undefined)) return new VerifyResult('', FormResult.OK)
+
+        if (latitude === null || latitude === undefined) {
+            return Verify.Error(Texts.CannotBeEmpty.value)
+        }
+
+        if (isNaN(latitude)) {
+            return Verify.Error(Texts.PleaseEnterANumber.value)
+        }
+
+        if (latitude >= -90 && latitude <= 90) {
+            return new VerifyResult('', FormResult.OK)
+        } else {
+            return new VerifyResult('-90 ~ 90', FormResult.Error)
+        }
+    }
+
+
     /** 是否“数组不为空” */
     static IsArrayNotEmpty(arr: Array<unknown>): VerifyResult {
         if (arr.length < 1) {

@@ -154,6 +154,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         {
                             dto.CompanyName = companyName;
                         }
+
+                        // 补“经纬度”:
+                        if (!entity.IsMobile && !entity.IsValidLngLat)
+                        {
+                            dto.Longitude = siteEntity.Longitude;
+                            dto.Latitude = siteEntity.Latitude;
+                            await Edit(dto, false);
+                        }
                     }
 
                     list.Add(dto);
@@ -396,7 +404,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 {
                     var lastRecord = await _db.StationRecords.AsNoTracking()
                         .OrderByDescending(i => i.ReportTime)
-                        .FirstOrDefaultAsync(i => i.Station == station && i.Longitude > 0 && i.Latitude > 0);
+                        .FirstOrDefaultAsync(i => i.Station == station && i.Longitude != null && i.Latitude != null && i.Longitude != 0 && i.Latitude != 0);
                     if (lastRecord == null) return MyResults<PositionDto>.Success();
 
                     return MyResults<PositionDto>.Success(null, new PositionDto()
@@ -411,20 +419,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 else
                 {
-                    var site = await _db.Sites.AsNoTracking().FirstOrDefaultAsync(i => i.Id == find.Site);
-                    if (site == null)
-                    {
-                        return MyResults<PositionDto>.SiteNotExist;
-                    }
-
                     return MyResults<PositionDto>.Success(null, new PositionDto()
                     {
                         Id = find.Id,
                         Info = find.MacAddr,
                         ReportTime = null,
                         LocationMode = LocationModes.BaseStation,
-                        Longitude = site.Longitude,
-                        Latitude = site.Latitude,
+                        Longitude = find.Longitude,
+                        Latitude = find.Latitude,
                     });
                 }
             }
@@ -507,6 +509,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<BaseStationEntity>.MacAddrRepeated;
                 }
 
+                // 检验“经纬度”是否有效:
+                if (!entity.IsMobile && !entity.IsValidLngLat)
+                {
+                    return MyResults<BaseStationEntity>.InvalidLocation;
+                }
+
                 entity.UpdateId();
                 entity.ReportTime = null;
                 entity.CreateTime = DateTimeHelper.GetUtcNow();
@@ -544,6 +552,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (await _dbSet.AnyAsync(i => macAddrs.Contains(i.MacAddr)))
                 {
                     return MyResults<object>.MacAddrRepeated;
+                }
+
+                // 检验“经纬度”是否有效:
+                if (entities.Any(i => !i.IsMobile && !i.IsValidLngLat))
+                {
+                    return MyResults<object>.InvalidLocation;
                 }
 
                 entities.UpdateId(i =>
@@ -586,6 +600,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.MacAddrRepeated;
                 }
 
+                // 检验“经纬度”是否有效:
+                if (!entity.IsMobile && !entity.IsValidLngLat)
+                {
+                    return MyResults<object>.InvalidLocation;
+                }
+
                 return await base.Edit(entity, isBeginTransaction);
             }
             catch (Exception e)
@@ -615,6 +635,12 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     {
                         return MyResults<object>.MacAddrRepeated;
                     }
+                }
+
+                // 检验“经纬度”是否有效:
+                if (entities.Any(i => !i.IsMobile && !i.IsValidLngLat))
+                {
+                    return MyResults<object>.InvalidLocation;
                 }
 
                 return await base.EditRange(entities, isBeginTransaction);

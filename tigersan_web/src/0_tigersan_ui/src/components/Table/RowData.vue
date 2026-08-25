@@ -1,7 +1,7 @@
 <template>
     <div class="row-data-panel" v-for="r in RowModels" :key="r._id">
         <KeyValue v-for="i in r.ItemModels" :key="i._id" :isAutoHidden="true" :prop-name="i._headerModel.ShowText.value"
-            :prop-value="i.Text.value" />
+            :prop-value="i.Text.value" :isLink="i.IsLink.value" :click="i.OnClick" />
     </div>
 </template>
 

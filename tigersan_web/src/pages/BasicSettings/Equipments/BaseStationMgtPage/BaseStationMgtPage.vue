@@ -24,7 +24,7 @@
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsOnlySelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!IsSelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                     <div class="row-panel">
                         <Switch v-if="!Authorities.BaseStationMgtPage.IsReadonly.value" :model="model.switchIsEnable" />
@@ -55,6 +55,8 @@
             <FormItem :model="model.configCompany.ItemModel">
                 <Select :model="model.selectCompanyForm" />
             </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="model.configSite.ItemModel">
                 <Select :model="model.selectSiteForm" />
             </FormItem>
@@ -63,6 +65,8 @@
             <FormItem :model="model.configIsMobile.ItemModel">
                 <Select :model="model.selectIsMobileForm" />
             </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="model.configType.ItemModel">
                 <Select :model="model.selectTypeForm" />
             </FormItem>
@@ -71,6 +75,8 @@
             <FormItem :model="model.configName.ItemModel">
                 <input type="text" v-model="model.configName.Target.value">
             </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="model.configMacAddr.ItemModel">
                 <input type="text" v-model="model.configMacAddr.Target.value">
             </FormItem>
@@ -80,8 +86,20 @@
                 <input type="text" :placeholder="Texts.Seconds.value"
                     v-model="model.configHeartbeatInterval.Target.value">
             </FormItem>
+        </FormRow>
+        <FormRow>
             <FormItem :model="model.configReportInterval.ItemModel">
                 <input type="text" :placeholder="Texts.Seconds.value" v-model="model.configReportInterval.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="model.configLongitude.ItemModel">
+                <input type="text" disabled v-model="model.configLongitude.Target.value">
+            </FormItem>
+        </FormRow>
+        <FormRow>
+            <FormItem :model="model.configLatitude.ItemModel">
+                <input type="text" disabled v-model="model.configLatitude.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
@@ -89,6 +107,9 @@
                 <Upload :model="model.upload" />
             </FormItem>
         </FormRow>
+        <template v-slot:right>
+            <Map :model="model.map" style="margin-left: 15px;" />
+        </template>
     </PopForm>
 
     <AssetForm :form="model.assetForm" />
@@ -105,11 +126,11 @@ import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
 import { stationDetail } from './BaseStationMgtTable'
 import { BaseStationMgtPageModel } from './BaseStationMgtPageModel'
-import { Texts, Table, Select, Switch, Search, TabView, PageCard, Pagination, PopWindow, PopForm, FormRow, FormItem, KeyValue, Colors, Upload } from '@/0_tigersan_ui/tigerui'
+import { Map, Texts, Table, Select, Switch, Search, TabView, PageCard, Pagination, PopWindow, PopForm, FormRow, FormItem, KeyValue, Colors, Upload } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
 const model = new BaseStationMgtPageModel()
-const { IsOnlySelected } = model.table
+const { IsSelected, IsOnlySelected } = model.table
 
 // 【过程】:
 onMounted(() => {

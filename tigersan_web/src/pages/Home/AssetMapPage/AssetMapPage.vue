@@ -30,17 +30,7 @@
                 </div>
             </div>
             <div class="bottom-panel">
-                <div class="table-panel flex-column">
-                    <div class="count-panel">
-                        <KeyValue :propName="Texts.Count.value" :propValue="model.Count" />
-                    </div>
-                    <div class="list-panel">
-                        <PositionInfo v-for="a in model.PositionInfoes" :key="a._id" :model="a" />
-                    </div>
-                    <div class="pagination-panel">
-                        <Pagination :model="model.pagination" />
-                    </div>
-                </div>
+                <TabView :model="tabList" />
                 <div class="map-panel">
                     <Map :model="model.map" />
                 </div>
@@ -54,16 +44,41 @@
             :tag="model.assetState.Tag.value" :station="model.assetState.Station.value" />
         <RowData :model="model.station" />
     </Drawer>
+
+    <!-- 弹窗 -->
+    <PopWindow :model="assetDetail.pop">
+        <TabView :model="assetDetail.tabView" />
+    </PopWindow>
+
+    <!-- 弹窗 -->
+    <PopWindow :model="stationDetail.pop">
+        <TabView :model="stationDetail.tabView" />
+    </PopWindow>
 </template>
 
 <script lang="ts" setup>
-import PositionInfo from '@/components/PositionInfo.vue'
+import PositionList from './PositionList/PositionList.vue'
 import AssetState from '../../0_Other/AssetDetail/AssetStatePage/AssetState.vue'
 import { onMounted, onBeforeUnmount } from 'vue'
-import { Drawer, RowData, PageCard, Select, Search, Texts, Map, Pagination, KeyValue } from '@/0_tigersan_ui/tigerui'
+import { Drawer, RowData, PageCard, Select, Search, Texts, Map, PopWindow, TabView, TabViewModel } from '@/0_tigersan_ui/tigerui'
 import { AssetMapPageModel } from './AssetMapPageModel'
+import { assetDetail } from '../AssetLedgerPage/AssetLedgerTable'
+import { stationDetail } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable'
 // 【字段】:
 const model = new AssetMapPageModel()
+
+const tabList = new TabViewModel([
+    {
+        Title: Texts.Tag,
+        _component: PositionList,
+        _rootProps: { model: model.assetList },
+    },
+    {
+        Title: Texts.BaseStation,
+        _component: PositionList,
+        _rootProps: { model: model.stationList },
+    }
+])
 
 // 【过程】:
 onMounted(async () => {
@@ -73,6 +88,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
     model.filter.StopWatch()
     model.drawerState.Close()
+    model.assetList.watchCount.stop()
 })
 
 // 【方法】:

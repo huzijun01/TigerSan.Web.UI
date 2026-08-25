@@ -1,5 +1,5 @@
 import { computed, ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode, StringHelper, IsMobile } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IsEnable, MyActionResult, OnlineStates, OnlineState, loading, Texts, TextModel, ActionResultCode, StringHelper, IsMobile, MapModel } from '@/0_tigersan_ui/tigerui'
 import { GetStationTable } from './BaseStationMgtTable'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
 import { companyHelper, baseStationHelper, siteHelper, stationTypeHelper, BaseStationDto, imageModelHelper } from '@/models'
@@ -10,6 +10,10 @@ export class BaseStationMgtPageModel {
     readonly OnlineCount = ref(0)
     /** “离线”总数 */
     readonly OfflineCount = ref(0)
+    /** 经度 */
+    readonly Longitude = ref<number | undefined>()
+    /** 纬度 */
+    readonly Latitude = ref<number | undefined>()
 
     //#region [computed]
     /** 是否“允许绑定” */
@@ -31,6 +35,8 @@ export class BaseStationMgtPageModel {
     readonly searchMacAddr = new SearchModel()
     /** 上传器 */
     readonly upload = imageModelHelper.GetUploadModel()
+    /** 地图 */
+    readonly map = new MapModel<any, any>({ animateEnable: false })
 
     // 选择框:
     /** 筛选 */
@@ -65,7 +71,10 @@ export class BaseStationMgtPageModel {
         Target: this.selectSiteForm.Value,
         _getValue: source => this.selectSiteForm.Items.find(i => BigintHelper.IsEqualAndNotUndefined(i.id, source.site)),
         _setValue: (source, propName, value) => source.site = value && value.id != undefined ? value.id : 0n,
-        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, Texts.CannotBeEmpty.value)
+        _isVerifyOk: source => Verify.IsBigintGreaterThan(source.site, 0n, Texts.CannotBeEmpty.value),
+        _onChange: value => {
+            this.UpdateFence()
+        }
     }
 
     /** “是否移动”项目配置 */
@@ -74,7 +83,7 @@ export class BaseStationMgtPageModel {
         PropText: Texts.InstallMode,
         IsEquired: true,
         Target: this.selectIsMobileForm.Value,
-        _isVerifyOk: source => Verify.IsNotUndefined(source.isMobile)
+        _isVerifyOk: source => Verify.IsNotUndefined(source.isMobile),
     }
 
     /** “类型”项目配置 */
@@ -124,6 +133,24 @@ export class BaseStationMgtPageModel {
         _isVerifyOk: source => Verify.IsGreaterThan(source.reportInterval)
     }
 
+    /** “经度”项目配置 */
+    readonly configLongitude: FormItemConfig<BaseStationDto, number> = {
+        _propName: 'longitude',
+        PropText: Texts.Longitude,
+        IsEquired: true,
+        Target: this.Longitude,
+        _isVerifyOk: source => Verify.IsValidLongitude(source.longitude, source.isMobile)
+    }
+
+    /** “纬度”项目配置 */
+    readonly configLatitude: FormItemConfig<BaseStationDto, number> = {
+        _propName: 'latitude',
+        PropText: Texts.Latitude,
+        IsEquired: true,
+        Target: this.Latitude,
+        _isVerifyOk: source => Verify.IsValidLatitude(source.latitude, source.isMobile)
+    }
+
     /** “图片”项目配置 */
     readonly configImage: FormItemConfig<BaseStationDto, string> = {
         _propName: 'image',
@@ -156,6 +183,7 @@ export class BaseStationMgtPageModel {
         },
         _onInitAsync: async isEdit => {
             await this.upload.Load()
+            this.UpdateFence()
         },
         _itemConfigs: [
             this.configCompany,
@@ -166,6 +194,8 @@ export class BaseStationMgtPageModel {
             this.configMacAddr,
             this.configHeartbeatInterval,
             this.configReportInterval,
+            this.configLongitude,
+            this.configLatitude,
             this.configImage,
         ]
     }
@@ -181,6 +211,14 @@ export class BaseStationMgtPageModel {
     constructor() {
         this.table._onSelectStateChange = this.InitSelectIsEnableState
         watch(this.table.IsSelected, isSelected => this.switchIsEnable.IsEnable.value = isSelected)
+
+        this.form.MinWidth.value = '80vw'
+        this.form.MinHeight.value = '80vh'
+        this.form.FillOpts.value = { right: true }
+
+        this.map.IsShowSelect.value = false
+        this.map.IsShowButton.value = false
+        this.map.IsAllowMultiPolygon.value = false
 
         this.pagination.IsShowSelectedRowCount.value = true
         this.switchIsEnable.IsEnable.value = false
@@ -407,6 +445,51 @@ export class BaseStationMgtPageModel {
         this.switchIsEnable.Value.value = this.table.IsSelected.value && this.table.SelectedRowDatas.value.every(r => r.isEnable)
     }
 
+    /** 更新“围栏” */
+    readonly UpdateFence = async () => {
+        try {
+            this.map.InitAsync()
+
+            const siteId = this.form._source.site
+            if (!BigintHelper.IsNotEmpty(siteId)) return
+
+            const res = await siteHelper.Get(siteId)
+            const site = res.data
+            if (!site) return
+
+            if (site.fencePoints) {
+                const points = MapModel.GetPathByPoints(site.fencePoints)
+                this.map.AddPolygonByPoints(points)
+                this.map.ZoomByVector2s(points)
+            } else if (site.latitude > 0 && site.longitude > 0) {
+                this.map.ZoomByVector2([site.latitude, site.longitude])
+            }
+
+            const source = this.form._source
+            const lng = source.longitude
+            const lat = source.latitude
+            if (lng && lat) {
+                this.map.SetMarker(new AMap.LngLat(lng, lat))
+            }
+
+            if (!source.isMobile) {
+                const polygons = this.map.GetPolygons()
+                if (polygons) {
+                    polygons.forEach(i => MapModel.AddEvent(i, {
+                        click: args => {
+                            if (this.form._source.isMobile) return
+                            this.Longitude.value = args.lnglat.lng
+                            this.Latitude.value = args.lnglat.lat
+                            this.map.SetMarker(args.lnglat)
+                        }
+                    }))
+                }
+            }
+        } finally {
+            loading.IsShow.value = false
+        }
+    }
+
     /** 删 */
     readonly Delete = () => {
         DialogHelper.Show(
@@ -421,16 +504,13 @@ export class BaseStationMgtPageModel {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const rowData = this.table.SelectedRowDatas.value[0]
-        if (!rowData) {
-            console.warn('The rowData is undefined!')
-            return
-        }
+        const rowData = this.table.SelectedRowDatas.value
+        if (rowData.length < 1) return
 
         try {
             loading.IsShow.value = true
 
-            await baseStationHelper.Delete(rowData.id).then(res => {
+            await baseStationHelper.DeleteRange(rowData.map(i => i.id)).then(res => {
                 this.Refresh()
                 MyActionResult.ShowResult(res, Texts.DeletedSuccessfully.value)
             })
