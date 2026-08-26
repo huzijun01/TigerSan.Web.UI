@@ -58,7 +58,7 @@ const marginRightStyle: StyleValue = {
 const isShow = computed(() => { return !(isAutoHidden && !StringHelper.IsNotEmpty(propValue)) })
 
 function Copy(event: MouseEvent) {
-    CopyBehavior.Copy(event, propValue)
+    CopyBehavior.Copy(propValue, event)
 }
 </script>
 

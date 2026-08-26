@@ -69,7 +69,7 @@ function TextXSS() {
 }
 
 function Copy(event: MouseEvent) {
-    CopyBehavior.Copy(event, model.Text.value)
+    CopyBehavior.Copy(model.Text.value, event)
 }
 </script>
 
