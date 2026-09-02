@@ -86,7 +86,7 @@ namespace TigerSan.NET8.WebApi.Helpers
         #endregion
 
         #region 获取“基站位置”
-        private async Task<LocationRecord?> GetStationPosion(BaseStationData data, BaseStationEntity baseStation)
+        private async Task<LocationRecord?> GetStationLocation(BaseStationData data, BaseStationEntity baseStation)
         {
             try
             {
@@ -204,28 +204,28 @@ namespace TigerSan.NET8.WebApi.Helpers
                     return;
                 }
 
-                if (Equals(pkgBase.Type, PackageType.BluetoothTag))
+                if (Equals(pkgBase.Type, PackageType.BaseStation))
                 {
-                    var pkgBluetoothTag = BaseStationPackage.Deserialize(data);
-                    if (pkgBluetoothTag == null)
+                    var package = BaseStationPackage.Deserialize(data);
+                    if (package == null)
                     {
-                        LogHelper.Instance.IsNull(nameof(pkgBluetoothTag));
+                        LogHelper.Instance.IsNull(nameof(package));
                         return;
                     }
 
-                    await EditBaseStationAndTagAsync(pkgBluetoothTag);
+                    await EditBaseStationAndTagAsync(package);
                     //Console.WriteLine(pkgBluetoothTag.Serialize());
                 }
                 else if (Equals(pkgBase.Type, PackageType.Locator4g))
                 {
-                    var pkgLocator4g = Locator4gPackage.Deserialize(data);
-                    if (pkgLocator4g == null)
+                    var package = Locator4gPackage.Deserialize(data);
+                    if (package == null)
                     {
-                        LogHelper.Instance.IsNull(nameof(pkgLocator4g));
+                        LogHelper.Instance.IsNull(nameof(package));
                         return;
                     }
 
-                    await EditLocator4gAsync(pkgLocator4g);
+                    await EditLocator4gAsync(package);
                     //Console.WriteLine(pkgLocator4g.Serialize());
                 }
                 else
@@ -253,8 +253,8 @@ namespace TigerSan.NET8.WebApi.Helpers
             #endregion
 
             #region 获取“基站位置”
-            LocationRecord? position = await GetStationPosion(package.Data, baseStation);
-            if (position == null)
+            var location = await GetStationLocation(package.Data, baseStation);
+            if (location == null)
             {
                 return MyResults<object>.Warning($"The position is null! ({package.Data.CollectorId})");
             }
@@ -263,15 +263,15 @@ namespace TigerSan.NET8.WebApi.Helpers
             #region 更新“基站”状态
             baseStation.OnlineState = OnlineStates.Online;
             baseStation.ReportTime = GetUtc(package.ReportTime);
-            baseStation.LocationMode = position.LocationMode;
-            baseStation.Longitude = position.Longitude;
-            baseStation.Latitude = position.Latitude;
+            baseStation.LocationMode = location.LocationMode;
+            baseStation.Longitude = location.Longitude;
+            baseStation.Latitude = location.Latitude;
             await baseStationService.Edit(baseStation);
 
             // 添加“基站记录”
             if (baseStation.IsMobile && baseStation.IsValidLngLat)
             {
-                await StationRecordService.Add(new StationRecordEntity().Copy(baseStation, position.Address));
+                await StationRecordService.Add(new StationRecordEntity().Copy(baseStation, location.Address));
             }
             #endregion
 
@@ -290,10 +290,10 @@ namespace TigerSan.NET8.WebApi.Helpers
                     // 基站：
                     bindingTag.ReportTime = baseStation.ReportTime;
                     // 位置：
-                    bindingTag.LocationMode = position.LocationMode;
-                    bindingTag.Longitude = position.Longitude;
-                    bindingTag.Latitude = position.Latitude;
-                    bindingTag.Address = position.Address;
+                    bindingTag.LocationMode = location.LocationMode;
+                    bindingTag.Longitude = location.Longitude;
+                    bindingTag.Latitude = location.Latitude;
+                    bindingTag.Address = location.Address;
 
                     await AssetRecordService.EditAssetRecordAsync(oldTag, bindingTag);
                 }
@@ -320,10 +320,10 @@ namespace TigerSan.NET8.WebApi.Helpers
                 newTag.ReportTime = baseStation.ReportTime;
                 newTag.OnlineState = OnlineStates.Online;
                 // 位置：
-                newTag.LocationMode = position.LocationMode;
-                newTag.Longitude = position.Longitude;
-                newTag.Latitude = position.Latitude;
-                newTag.Address = position.Address;
+                newTag.LocationMode = location.LocationMode;
+                newTag.Longitude = location.Longitude;
+                newTag.Latitude = location.Latitude;
+                newTag.Address = location.Address;
                 // 数据包：
                 newTag.IsFall = tagData.IsFall;
                 newTag.Station = baseStation.Id;

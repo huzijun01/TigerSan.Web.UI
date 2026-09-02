@@ -157,7 +157,7 @@ export class SiteMgtPageModel {
 
         if (site.fencePoints) {
             const points = MapModel.GetPathByPoints(site.fencePoints)
-            this.map.AddPolygonByPoints(points)
+            this.map.AddPolygonByPoints(points, { fillOpacity: 0.05 })
             this.map.ZoomByVector2s(points)
         } else if (site.latitude > 0 && site.longitude > 0) {
             this.map.ZoomByVector2([site.latitude, site.longitude])

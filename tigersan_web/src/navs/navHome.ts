@@ -16,21 +16,21 @@ export const navHome: NavFolderConfig = {
             _authority: Authorities.AssetMgtFolder,
             Buttons: [
                 {
-                    Key: "资产地图",
-                    Title: TextModel.Computed('Asset Map', "资产地图"),
-                    Icon: Icons.Global_Linear,
-                    IsSelected: true,
-                    IsShowCloseButton: false,
-                    _component: AssetMapPage,
-                    _authority: Authorities.AssetMapPage,
-                },
-                {
                     Key: "资产台账",
                     Title: TextModel.Computed('Asset Ledger', "资产台账"),
                     Icon: Icons.Asset,
-                    IsSelected: false,
+                    IsSelected: true,
+                    IsShowCloseButton: false,
                     _component: AssetLedgerPage,
                     _authority: Authorities.AssetLedgerPage,
+                },
+                {
+                    Key: "资产地图",
+                    Title: TextModel.Computed('Asset Map', "资产地图"),
+                    Icon: Icons.Global_Linear,
+                    IsSelected: false,
+                    _component: AssetMapPage,
+                    _authority: Authorities.AssetMapPage,
                 },
                 {
                     Key: "资产盘点",

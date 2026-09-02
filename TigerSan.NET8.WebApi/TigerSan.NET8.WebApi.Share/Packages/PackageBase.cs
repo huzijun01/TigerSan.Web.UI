@@ -6,10 +6,10 @@ namespace TigerSan.NET8.WebApi.Share.Packages
 {
     public static class PackageType
     {
+        /// <summary>基站</summary>
+        public static string BaseStation = "bluetooth_tag_data";
         /// <summary>4G定位器</summary>
         public static string Locator4g = "locator4g_position_data";
-        /// <summary>蓝牙标签</summary>
-        public static string BluetoothTag = "bluetooth_tag_data";
     }
 
     public class PackageBase

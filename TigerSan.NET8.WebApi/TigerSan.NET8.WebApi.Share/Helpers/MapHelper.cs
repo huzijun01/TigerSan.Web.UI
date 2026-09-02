@@ -35,7 +35,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         public Location(
             double? longitude,
             double? latitude,
-            string? address)
+            string? address = null)
         {
             Longitude = longitude;
             Latitude = latitude;
@@ -675,27 +675,49 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
         }
         #endregion
 
-        #region 坐标转换
-        public static async Task<MyActionResult<Location>> ConvertCoordinatesAsync(
+        #region 坐标转换（单个）
+        public static async Task<MyActionResult<LngLat>> ConvertCoordinatesAsync(
             string amapKey,
             double? longitude,
             double? latitude,
             CoordSysType coordSys = CoordSysType.gps)
         {
+            if (longitude == null || latitude == null) return MyResults<LngLat>.Warning(LogHelper.Instance.Warning("经纬度参数不能为空"));
+
+            var res = await ConvertCoordinatesAsync(amapKey, [new LngLat(longitude.Value, latitude.Value)], coordSys);
+            if (res.Data == null || res.Data.Count < 1) return MyResults<LngLat>.Warning(res.Message);
+            
+            return MyResults<LngLat>.Success(null, res.Data[0]);
+        }
+        #endregion
+
+        #region 坐标转换（多个）
+        public static async Task<MyActionResult<List<LngLat>>> ConvertCoordinatesAsync(
+            string amapKey,
+            IList<LngLat> lngLats,
+            CoordSysType coordSys = CoordSysType.gps)
+        {
             #region 前置参数合法性校验
             if (string.IsNullOrWhiteSpace(amapKey))
-                return MyResults<Location>.Warning(LogHelper.Instance.Warning("高德Web服务API密钥不能为空"));
+                return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning("高德Web服务API密钥不能为空"));
 
             // 校验经纬度数值范围合规
-            if (!longitude.HasValue || longitude.Value is < -180 or > 180)
-                return MyResults<Location>.Warning(LogHelper.Instance.Warning("经度参数非法，合法范围为-180到180"));
-            if (!latitude.HasValue || latitude.Value is < -90 or > 90)
-                return MyResults<Location>.Warning(LogHelper.Instance.Warning("纬度参数非法，合法范围为-90到90"));
+            if (lngLats.Count < 1 || lngLats.Count > 40)
+                return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning("经纬度数量超出限制，合法范围为1到40"));
+            var inputLocations = new List<string>();
+            foreach (var lngLat in lngLats)
+            {
+                if (lngLat.Longitude is < -180 or > 180)
+                    return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning("经度参数非法，合法范围为-180到180"));
+                if (lngLat.Latitude is < -90 or > 90)
+                    return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning("纬度参数非法，合法范围为-90到90"));
+                // 按照高德接口要求，经纬度小数点后最多保留6位，避免接口校验不通过
+                var formatLng = Math.Round(lngLat.Longitude, 6);
+                var formatLat = Math.Round(lngLat.Latitude, 6);
+                inputLocations.Add($"{formatLng},{formatLat}");
+            }
 
-            // 按照高德接口要求，经纬度小数点后最多保留6位，避免接口校验不通过
-            var formatLng = Math.Round(longitude.Value, 6);
-            var formatLat = Math.Round(latitude.Value, 6);
-            var locationParam = $"{formatLng},{formatLat}";
+            var locationParam = string.Join('|', inputLocations);
             #endregion
 
             var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
@@ -718,7 +740,7 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
                 // 发送请求调用高德坐标转换接口
                 var response = await httpClient.GetAsync(fullRequestUrl);
                 if (!response.IsSuccessStatusCode)
-                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"HTTP请求失败: {response.StatusCode}"));
+                    return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning($"HTTP请求失败: {response.StatusCode}"));
 
                 // 解析接口返回的JSON结果
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -726,27 +748,29 @@ namespace TigerSan.NET8.WebApi.Share.Helpers
 
                 // 兼容当前附件中返回的10001无效密钥等错误场景
                 if (amapResponse == null)
-                    return MyResults<Location>.Warning(LogHelper.Instance.Warning("高德接口返回结果解析失败"));
+                    return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning("高德接口返回结果解析失败"));
                 if (amapResponse.status != "1")
                 {
-                    return MyResults<Location>.Warning(LogHelper.Instance.Warning($"坐标转换失败，错误信息：{amapResponse.info}，错误码：{amapResponse.infocode}"));
+                    return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning($"坐标转换失败，错误信息：{amapResponse.info}，错误码：{amapResponse.infocode}"));
                 }
 
-                // 解析转换后的高德坐标
-                var locStr = amapResponse.locations.Split(',');
-                if (locStr?.Length == 2)
+                var outputLocations = amapResponse.locations.Split(';');
+                var locations = new List<LngLat>();
+                foreach (var location in outputLocations)
                 {
+                    // 解析转换后的高德坐标
+                    var locStr = location.Split(',');
+                    if (locStr.Length != 2) return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning("高德返回坐标格式非法"));
                     double.TryParse(locStr[0], out var parsedLng);
                     double.TryParse(locStr[1], out var parsedLat);
-                    var convertResult = new Location(parsedLng, parsedLat, null);
-                    return MyResults<Location>.Success(null, convertResult);
+                    locations.Add(new LngLat(parsedLng, parsedLat));
                 }
 
-                return MyResults<Location>.Warning(LogHelper.Instance.Warning("高德返回坐标格式非法"));
+                return MyResults<List<LngLat>>.Success(null, locations);
             }
             catch (Exception ex)
             {
-                return MyResults<Location>.Warning(LogHelper.Instance.Warning($"坐标转换请求异常: {ex.Message}"));
+                return MyResults<List<LngLat>>.Warning(LogHelper.Instance.Warning($"坐标转换请求异常: {ex.Message}"));
             }
             finally
             {
