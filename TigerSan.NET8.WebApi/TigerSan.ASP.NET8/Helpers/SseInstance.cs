@@ -57,10 +57,10 @@ namespace TigerSan.NET8.WebApi.Helpers
 
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
-            _packageChannel.StartProcessingAsync(_cts.Token).ContinueWith(task =>
+            _packageChannel.StartProcessingAsync(_cts.Token).ContinueWith(async task =>
             {
                 if (!task.IsFaulted) return;
-                Stop();
+                await Stop();
                 var ex = task.Exception?.GetBaseException();
                 LogHelper.Instance.Error(ex?.GetMessage());
             });
@@ -72,10 +72,10 @@ namespace TigerSan.NET8.WebApi.Helpers
 
         #region 停止监听
         /// <summary>停止监听</summary>
-        public void Stop()
+        public async Task Stop()
         {
             _watchDog.Stop();
-            _sseHelper.Stop();
+            await _sseHelper.StopAsync();
             _cts?.Cancel();
             _cts = null;
             _packageChannel._onlineStateUpdater.Stop();

@@ -469,10 +469,21 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<PositionDto>.AssetNotExist;
                 }
 
+                // 获取“最新记录”:
                 var lastRecord = await _db.AssetRecords.AsNoTracking()
                     .OrderByDescending(i => i.ReportTime)
                     .FirstOrDefaultAsync(i => i.Asset == asset && i.Longitude != null && i.Latitude != null && i.Longitude != 0 && i.Latitude != 0);
                 if (lastRecord == null) return MyResults<PositionDto>.Success();
+
+                // 优先使用“基站定位”：
+                if (lastRecord.LocationMode != LocationModes.BaseStation)
+                {
+                    var thresholdTime = lastRecord.ReportTime.AddSeconds(-GlobalSettings.TagReportIntervalSeconds);
+                    var lastRecord1 = await _db.AssetRecords.AsNoTracking()
+                        .OrderByDescending(i => i.ReportTime)
+                        .FirstOrDefaultAsync(i => i.Asset == asset && i.LocationMode == LocationModes.BaseStation && i.ReportTime >= thresholdTime);
+                    if (lastRecord1 != null) lastRecord = lastRecord1;
+                }
 
                 return MyResults<PositionDto>.Success(null, new PositionDto()
                 {

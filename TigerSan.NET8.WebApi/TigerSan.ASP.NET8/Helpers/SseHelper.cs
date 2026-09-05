@@ -9,9 +9,17 @@ namespace TigerSan.NET8.WebApi.Helpers
         #region 【Fields】
         private readonly HttpClient _httpClient;
         private readonly ConnectInfo _connectInfo;
-        private Stream? _responseStream;
-        private Task? _listenTask;
-        private CancellationTokenSource? _cts;
+
+        // 加 volatile 保证多线程下的字段读取可见性，避免读到寄存器缓存的旧值(null)
+        private volatile Stream? _responseStream;
+        private volatile Task? _listenTask;
+        private volatile CancellationTokenSource? _cts;
+
+        // 状态锁：保护 _cts / _listenTask / _responseStream 的读写一致性
+        private readonly object _stateLock = new object();
+
+        // 标记是否已释放，防止 Dispose 后重复操作
+        private volatile bool _disposed;
         #endregion 【Fields】
 
         #region 【Ctor】
@@ -25,15 +33,21 @@ namespace TigerSan.NET8.WebApi.Helpers
 
         #region 【Functions】
         #region 销毁
+        /// <summary>销毁</summary>
         public void Dispose()
         {
-            Stop();
+            if (_disposed) return;
+            _disposed = true;
+
+            // 同步等待 Stop 完成，确保资源完全释放后再 Dispose HttpClient
+            // 用 .ConfigureAwait(false).GetAwaiter().GetResult() 避免死锁
+            StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             _httpClient?.Dispose();
         }
         #endregion
 
-        #region 初始化“HTTP客户端”
-        /// <summary>初始化“HTTP客户端”</summary>
+        #region 初始化"HTTP客户端"
+        /// <summary>初始化"HTTP客户端"</summary>
         private void InitHttpClient(HttpClient httpClient)
         {
             // 设置超时，避免无限等待:
@@ -49,21 +63,27 @@ namespace TigerSan.NET8.WebApi.Helpers
 
         #region 开始监听（多线程异步版本）
         /// <summary>开始监听（异步，后台线程执行不阻塞调用方）</summary>
-        public Task StartAsync(Func<string, Task> onDataReceived)
+        public async Task StartAsync(Func<string, Task> onDataReceived)
         {
-            Stop();
+            if (_disposed) throw new ObjectDisposedException(nameof(SseHelper));
+
+            // 先 await Stop 确保上一次监听完全停止，避免状态混乱
+            await StopAsync().ConfigureAwait(false);
 
             Console.WriteLine("Connected to SSE stream. Listening for events...");
-            _cts = new CancellationTokenSource();
 
-            // 将监听循环放入Task.Run，使用后台线程池线程执行，立即返回不阻塞调用方
+            // 在锁内创建 CTS 并赋值给字段，保证原子性
+            CancellationTokenSource localCts;
+            lock (_stateLock)
+            {
+                localCts = new CancellationTokenSource();
+                _cts = localCts;
+            }
+            var cancellationToken = localCts.Token;
+
+            // 将监听循环放入Task.Run，使用后台线程池线程执行
             _listenTask = Task.Run(async () =>
             {
-                // 关键修复：入口处捕获本地变量，避免后续访问被置为null的字段_cts
-                var localCts = _cts;
-                if (localCts == null) return;
-                var cancellationToken = localCts.Token;
-
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     try
@@ -76,7 +96,7 @@ namespace TigerSan.NET8.WebApi.Helpers
                             _connectInfo.SseUrl,
                             HttpCompletionOption.ResponseHeadersRead,
                             linkedCts.Token
-                        );
+                        ).ConfigureAwait(false);
                         response.EnsureSuccessStatusCode();
 
                         // 验证Content-Type
@@ -85,12 +105,20 @@ namespace TigerSan.NET8.WebApi.Helpers
                             throw new Exception("Invalid content type. Expected 'text/event-stream'");
                         }
 
-                        _responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                        using var reader = new StreamReader(_responseStream, leaveOpen: true);
+                        // 用局部变量接收流，再在锁内赋值给字段，避免读取时读到中间态
+                        var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                        lock (_stateLock)
+                        {
+                            _responseStream = responseStream;
+                        }
+
+                        using var reader = new StreamReader(responseStream, leaveOpen: true);
 
                         string? line;
                         while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
                         {
+                            if (cancellationToken.IsCancellationRequested) break;
+
                             // 跳过注释行
                             if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
                                 continue;
@@ -105,7 +133,6 @@ namespace TigerSan.NET8.WebApi.Helpers
                             else if (line.StartsWith("event:"))
                             {
                                 var eventName = line.Substring(6).Trim();
-                                // 根据事件类型处理逻辑
                             }
                             else if (line.StartsWith("retry:"))
                             {
@@ -156,52 +183,74 @@ namespace TigerSan.NET8.WebApi.Helpers
                     }
                     finally
                     {
-                        _responseStream?.Dispose();
-                        _responseStream = null;
+                        // 锁内取出流再释放，保证线程安全
+                        Stream? streamToDispose;
+                        lock (_stateLock)
+                        {
+                            streamToDispose = _responseStream;
+                            _responseStream = null;
+                        }
+                        try { streamToDispose?.Dispose(); } catch { /* 忽略 */ }
                     }
 
                     // 仅在需要重试且服务运行时等待
                     if (!cancellationToken.IsCancellationRequested)
                     {
                         Console.WriteLine($"Reconnecting in {_connectInfo.RetryIntervalMs / 1000}s...");
-                        await Task.Delay(_connectInfo.RetryIntervalMs, cancellationToken);
+                        await Task.Delay(_connectInfo.RetryIntervalMs, cancellationToken).ConfigureAwait(false);
                         Console.WriteLine($"Try to reconnect...");
                     }
                 }
 
                 LogHelper.Instance.Log("SSE listener stopped!");
-            }, _cts.Token);
-
-            return Task.CompletedTask;
+            }, cancellationToken);
         }
         #endregion
 
         #region 停止
         /// <summary>停止</summary>
-        public async void Stop()
+        public async Task StopAsync()
         {
-            if (_cts == null) return;
+            // ★ 核心修复：在锁内一次性把所有字段快照到局部变量，
+            //   后续操作全部基于局部变量，彻底避免 await 期间字段被其他线程改 null
+            CancellationTokenSource? ctsToDispose;
+            Stream? streamToClose;
+            Task? taskToAwait;
+
+            lock (_stateLock)
+            {
+                ctsToDispose = _cts;
+                streamToClose = _responseStream;
+                taskToAwait = _listenTask;
+
+                // 立即把字段置空，让后续并发调用 Stop 直接返回 null，
+                // 保证 CTS 只被 Dispose 一次
+                _cts = null;
+                _responseStream = null;
+                _listenTask = null;
+            }
+
+            if (ctsToDispose == null) return;
 
             // 1. 先发出取消信号
-            _cts.Cancel();
+            ctsToDispose.Cancel();
             _httpClient.CancelPendingRequests();
 
-            // 2. 主动关闭响应流，打断阻塞的ReadLineAsync，让监听线程快速退出
+            // 2. 主动关闭响应流，打断阻塞的 ReadLineAsync，让监听线程快速退出
             try
             {
-                _responseStream?.Close();
-                _responseStream?.Dispose();
-                _responseStream = null;
+                streamToClose?.Close();
+                streamToClose?.Dispose();
             }
             catch { /* 忽略关闭流时的异常 */ }
 
             // 3. 异步等待监听任务退出，最多等3秒避免永久阻塞
-            if (_listenTask != null)
+            if (taskToAwait != null)
             {
                 try
                 {
                     using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-                    await _listenTask.WaitAsync(timeoutCts.Token).ConfigureAwait(false);
+                    await taskToAwait.WaitAsync(timeoutCts.Token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -213,19 +262,23 @@ namespace TigerSan.NET8.WebApi.Helpers
                 }
             }
 
-            // 4. 清理资源
-            _cts.Dispose();
-            _cts = null;
-            _listenTask = null;
+            // 4. 清理资源 —— 用的是局部变量 ctsToDispose，绝不会空引用
+            ctsToDispose.Dispose();
             LogHelper.Instance.Log("Listener stopped successfully!");
         }
         #endregion
 
-        #region 是否“正在监听”
-        /// <summary>是否“正在监听”</summary>
+        #region 是否"正在监听"
+        /// <summary>是否"正在监听"</summary>
         public bool IsListening()
         {
-            return _cts != null && !_cts.Token.IsCancellationRequested && _listenTask is { IsCompleted: false };
+            // 锁内读取，保证原子性，避免读取到中间状态
+            lock (_stateLock)
+            {
+                return _cts != null
+                    && !_cts.Token.IsCancellationRequested
+                    && _listenTask is { IsCompleted: false };
+            }
         }
         #endregion
         #endregion 【Functions】

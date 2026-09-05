@@ -1071,7 +1071,16 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
 
                 #region 是否在围栏内
-                if (newTag.Longitude != null && newTag.Latitude != null)
+                var thresholdTime = DateTimeHelper.GetUtcNow().AddSeconds(-GlobalSettings.TagReportIntervalSeconds);
+
+                // 若未绑定“基站”，且存在“基站定位”，则认为“在围栏内”
+                if (string.IsNullOrEmpty(newTag.StationId)
+                    && (newTag.LocationMode == LocationModes.BaseStation || await _db.AssetRecords.AsNoTracking()
+                    .AnyAsync(i => i.Asset == asset.Id && i.LocationMode == LocationModes.BaseStation && i.ReportTime >= thresholdTime)))
+                {
+                    asset.IsInFence = true;
+                }
+                else if (newTag.Longitude != null && newTag.Latitude != null)
                 {
                     var fences = await _db.Sites.AsNoTracking()
                         .Where(i => i.Company == newTag.Company && i.FencePath != null)

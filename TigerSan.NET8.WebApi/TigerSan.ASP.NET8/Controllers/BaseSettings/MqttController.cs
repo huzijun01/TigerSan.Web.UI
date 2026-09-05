@@ -38,7 +38,7 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             if (SseInstance._instance == null)
                 return MyResults<object>.Warning(LogHelper.Instance.IsNull(nameof(SseInstance._instance)));
-            SseInstance._instance.Stop();
+            await SseInstance._instance.Stop();
             return MyResults<object>.Success();
         }
 
