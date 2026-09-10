@@ -50,6 +50,7 @@ export class Texts {
     static readonly CreateTime = TextModel.Computed('CreateTime', '创建时间')
     static readonly CalculateTime = TextModel.Computed('CalculateTime', '计算时间')
     static readonly CannotBeEmpty = TextModel.Computed('Cannot be empty!', '不可为空')
+    static readonly CopySuccessful = TextModel.Computed('Copy successful', '复制成功')
     static readonly ChangePassword = TextModel.Computed('Change password ', '修改密码')
     static readonly ConfirmPassword = TextModel.Computed('ConfirmPassword ', '确认密码')
     static readonly CannotBeLessThan = TextModel.Computed('Cannot be less than ', '不可小于')
