@@ -3,7 +3,7 @@ import { AssetFilter } from './AssetFilter'
 import { AssetFormModel } from './AssetFormModel'
 import { assetLedgerTable, pagination } from './AssetLedgerTable'
 import { TransferPageModel } from '../TransferPage/TransferPageModel'
-import { CompanyMgtForm } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm'
+import { CompanyMgtPageModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel'
 import { companyHelper, assetHelper, departmentHelper, assetTypeHelper, AssetDto, siteHelper, tagTypeHelper, TransferModel, transferHelper } from '@/models'
 
 export class OutboundModel {
@@ -29,7 +29,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
         this.transferPage.IsAssetIdReadonly.value = true
         this.selectSiteOutboundForm._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(this.selectCompanyForm.Value.value?.id)
         this.selectCompanyForm._getItemsAsync = undefined
-        this.selectCompanyForm._getItems = () => CompanyMgtForm.selectCompanyGlobal.CheckedValues.value as []
+        this.selectCompanyForm._getItems = () => CompanyMgtPageModel.selectCompanyGlobal.CheckedValues.value as []
         // 更新:
         pagination._onChange = this.Refresh
         this.selectCompanyOutboundForm._onChange = this.selectSiteOutboundForm.UpdateItemsAsync
@@ -47,7 +47,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
             await tagTypeHelper.UpdateIdNames()
 
             pagination.Count.value = await assetHelper.GetCount({
-                companies: CompanyMgtForm.AccessibleCompanies.value,
+                companies: CompanyMgtPageModel.AccessibleCompanies.value,
                 department: filter.selectDepartment.Value.value?.id,
                 type: filter.selectAssetType.Value.value?.id,
                 tagType: filter.selectTagType.Value.value?.id,
@@ -68,7 +68,7 @@ export class AssetLedgerPageModel extends AssetFormModel {
             await assetHelper.GetList({
                 pageSize: pagination.PageSize.value,
                 pageNumber: pagination.SelectedNum.value,
-                companies: CompanyMgtForm.AccessibleCompanies.value,
+                companies: CompanyMgtPageModel.AccessibleCompanies.value,
                 department: filter.selectDepartment.Value.value?.id,
                 type: filter.selectAssetType.Value.value?.id,
                 tagType: filter.selectTagType.Value.value?.id,

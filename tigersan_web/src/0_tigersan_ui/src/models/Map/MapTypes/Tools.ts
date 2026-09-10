@@ -1,5 +1,3 @@
-import { MapEvents } from "./Events"
-
 export class PolygonEditorEvent {
     /** 添加节点 */
     static readonly addnode = 'addnode'

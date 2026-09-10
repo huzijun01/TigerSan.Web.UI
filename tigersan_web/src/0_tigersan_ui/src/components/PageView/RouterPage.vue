@@ -5,13 +5,11 @@
 <script lang="ts" setup>
 import DefaultPage from './DefaultPage.vue'
 import { shallowRef, onMounted, type App, onBeforeMount } from 'vue'
-import { useRouter } from '../../stores'
-import { RouterPageModel } from '../../models'
 import { ComponentHelper } from '../../helpers'
+import { router, RouterPageModel } from '../../models'
 
 // 字段:
 let appCache: App | undefined
-const router = useRouter()
 const refRoot = shallowRef<HTMLElement | undefined>()
 
 RouterPageModel._onPageChange = page => {

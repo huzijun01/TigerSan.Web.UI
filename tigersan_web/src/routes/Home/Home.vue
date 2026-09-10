@@ -26,9 +26,9 @@
         <button class="nav-button square-button" @click="navModel.btnNavSwitch_Click">{{ Icons.Menu }}</button>
 
         <div class="info-panel flex-right">
-          <Select :model="CompanyMgtForm.selectCompanyGlobal" />
+          <Select :model="CompanyMgtPageModel.selectCompanyGlobal" />
           <KeyValue :isAutoHidden="true" propName="公司" :propValue="userInfo.companyIdName.name" />
-          <IconButton v-if="!navData.IsAtHome.value && CompanyMgtForm.tree.IsActive.value" :icon="Icons.Building_2"
+          <IconButton v-if="!navData.IsAtHome.value && CompanyMgtPageModel.tree.IsActive.value" :icon="Icons.Building_2"
             :text="Texts.Business.value" :click="navData.InitHome" />
           <IconButton v-if="navData.IsAtHome.value" :icon="Icons.Setting_Linear" :text="Texts.BasicSettings.value"
             :click="navData.InitBasicSettings" />
@@ -117,13 +117,13 @@
 import AppConfig from '@/AppConfig'
 import { PasswordForm } from './PasswordForm'
 import { onBeforeMount, onMounted } from 'vue'
-import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, useRouter, ThemeHelper, config, Select, KeyValue, MyActionResult, TokenHelper } from '@/0_tigersan_ui/tigerui'
+import { PopForm, FormRow, Password, FormItem, Texts, Icons, IconButton, NavBar, PageBar, PageView, router, ThemeHelper, config, Select, KeyValue, MyActionResult, TokenHelper } from '@/0_tigersan_ui/tigerui'
 import { UserHelper } from '@/models'
 import { useUserInfo } from '@/stores'
 import { UserInfoForm } from './UserInfoForm'
 import { navModel, navData } from '@/navs/navModel'
 import { loginFormModel } from '@/routes/Login/LoginFormModel'
-import { CompanyMgtForm } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm'
+import { CompanyMgtPageModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel'
 
 // 字段:
 const form = new UserInfoForm()
@@ -134,7 +134,7 @@ const userInfo = useUserInfo()
 // 过程:
 onBeforeMount(() => {
   if (!UserHelper.IsUserInfoVerifyOk(userInfo)) {
-    useRouter().GoTo('/')
+    router.GoTo('/')
     return
   }
 })
@@ -142,7 +142,7 @@ onBeforeMount(() => {
 onMounted(() => {
   MyActionResult._logout = () => {
     TokenHelper.Save()
-    useRouter().GoTo('/')
+    router.GoTo('/')
   }
 })
 </script>

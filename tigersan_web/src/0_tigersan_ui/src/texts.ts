@@ -50,7 +50,6 @@ export class Texts {
     static readonly CreateTime = TextModel.Computed('CreateTime', '创建时间')
     static readonly CalculateTime = TextModel.Computed('CalculateTime', '计算时间')
     static readonly CannotBeEmpty = TextModel.Computed('Cannot be empty!', '不可为空')
-    static readonly CopySuccessful = TextModel.Computed('Copy successful', '复制成功')
     static readonly ChangePassword = TextModel.Computed('Change password ', '修改密码')
     static readonly ConfirmPassword = TextModel.Computed('ConfirmPassword ', '确认密码')
     static readonly CannotBeLessThan = TextModel.Computed('Cannot be less than ', '不可小于')
@@ -135,6 +134,7 @@ export class Texts {
     static readonly LengthCannotBeLessThan = TextModel.Computed('The length cannot be less than ', '长度不可小于')
     static readonly LengthCannotBeGreaterThan = TextModel.Computed('The length cannot be greater than ', '长度不可大于')
     // M:
+    static readonly Map = TextModel.Computed('Map', '地图')
     static readonly Male = TextModel.Computed('Male', '男')
     static readonly Mail = TextModel.Computed('Mail', '邮箱')
     static readonly Mobile = TextModel.Computed('Mobile', '移动')
@@ -178,6 +178,7 @@ export class Texts {
     static readonly Path = TextModel.Computed('Path', '轨迹')
     static readonly Phone = TextModel.Computed('Phone', '电话')
     static readonly Plate = TextModel.Computed('Plate', '车牌号')
+    static readonly Person = TextModel.Computed('Person', '人员')
     static readonly Parent = TextModel.Computed('Parent', '父级')
     static readonly Preview = TextModel.Computed('Preview', '预览')
     static readonly Percent = TextModel.Computed('Percent', '百分比')

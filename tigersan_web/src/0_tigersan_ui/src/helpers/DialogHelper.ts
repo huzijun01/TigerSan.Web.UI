@@ -1,17 +1,9 @@
 import Dialog from '../components/Dialog/Dialog.vue'
-import { defineStore, getActivePinia } from 'pinia'
-import { shallowReactive, type ComputedRef } from 'vue'
+import { type ComputedRef } from 'vue'
 import { Texts } from '../texts'
 import { Colors } from '../base'
-import { StoreIDs } from './base/StoreIDs'
-import { ComponentHelper } from '../helpers'
-import { DialogMode, DialogModel, type DialogCallback } from '../models'
-
-/* 仓库 */
-export const useDialogStore = defineStore(StoreIDs.dialog, () => {
-  let dialogModels = shallowReactive<DialogModel[]>([])
-  return { dialogModels }
-})
+import { ComponentHelper } from './ComponentHelper/ComponentHelper'
+import { DialogMode, DialogModel, dialogModels, type DialogCallback } from '../models/Dialog/DialogModel'
 
 export class DialogHelper {
   private static Init() {
@@ -20,18 +12,15 @@ export class DialogHelper {
     ComponentHelper.AppendApp(Dialog)
   }
 
-  static Show(
+  static Show<T>(
     title: string | ComputedRef<string>,
     msg: string,
-    data?: any,
-    callback?: DialogCallback,
+    data?: T,
+    callback?: DialogCallback<T>,
     mode: DialogMode = DialogMode.NoButton,
     background: string = Colors.Brand) {
-    if (!getActivePinia()) return
 
     DialogHelper.Init()
-
-    let { dialogModels } = useDialogStore()
 
     var strMsg = msg.toString().trim()
 

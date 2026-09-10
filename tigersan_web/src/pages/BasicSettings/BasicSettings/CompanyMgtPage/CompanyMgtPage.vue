@@ -5,18 +5,18 @@
             <div class="top-panel flex-between">
                 <div class="filter-panel">
                     <div class="row-panel">
-                        <Select :model="CompanyMgtForm.selectCompany" />
+                        <Select :model="CompanyMgtPageModel.selectCompany" />
                     </div>
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button class="bg-success" @click="form.Refresh">{{ Texts.Refresh.value }}</button>
-                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="form.Add">
+                        <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
+                        <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" @click="model.Add">
                             {{ Texts.Add.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-warning"
-                            :disabled="!tree.IsActive.value" @click="form.Edit">{{ Texts.Edit.value }}</button>
+                            :disabled="!tree.IsActive.value" @click="model.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.CompanyMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!tree.IsActive.value" @click="form.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!tree.IsActive.value" @click="model.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                 </div>
             </div>
@@ -27,27 +27,27 @@
                     <Tree :model="tree" />
                 </div>
                 <div class="right-panel">
-                    <CompanyInfo v-if="tree.IsActive.value" :model="form.companyInfo" />
+                    <CompanyInfo v-if="tree.IsActive.value" :model="model.companyInfo" />
                 </div>
             </div>
         </div>
     </PageCard>
 
     <!-- 表单: -->
-    <PopForm :model="form.companyForm">
+    <PopForm :model="model.companyForm">
         <FormRow>
-            <FormItem :model="form.configName.ItemModel">
-                <input type="text" v-model="form.configName.Target.value">
+            <FormItem :model="model.configName.ItemModel">
+                <input type="text" v-model="model.configName.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configAddr.ItemModel">
-                <input type="text" v-model="form.configAddr.Target.value">
+            <FormItem :model="model.configAddr.ItemModel">
+                <input type="text" v-model="model.configAddr.Target.value">
             </FormItem>
         </FormRow>
         <FormRow>
-            <FormItem :model="form.configParent.ItemModel">
-                <Select :model="form.selectParentCompany" />
+            <FormItem :model="model.configParent.ItemModel">
+                <Select :model="model.selectParentCompany" />
             </FormItem>
         </FormRow>
     </PopForm>
@@ -57,16 +57,16 @@
 import CompanyInfo from './CompanyInfo.vue'
 import { onMounted } from 'vue'
 import { Authorities } from '@/navs/Authorities'
-import { CompanyMgtForm } from './CompanyMgtForm'
+import { CompanyMgtPageModel } from './CompanyMgtPageModel'
 import { PageCard, PopForm, FormRow, FormItem, Tree, Select, Texts } from '@/0_tigersan_ui/tigerui'
 
 // 【字段】:
-const form = new CompanyMgtForm()
-const tree = CompanyMgtForm.tree
+const model = new CompanyMgtPageModel()
+const tree = CompanyMgtPageModel.tree
 // 【过程】:
 // 表格:
 onMounted(() => {
-    form.Refresh()
+    model.Refresh()
 })
 
 </script>

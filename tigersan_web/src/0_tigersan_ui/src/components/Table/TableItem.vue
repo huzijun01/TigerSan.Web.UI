@@ -1,5 +1,5 @@
 <template>
-    <div class="table-item" ref="refRoot" :class="model.SelectClass.value" @contextmenu.prevent="Copy">
+    <div class="table-item" ref="refRoot" :class="model.SelectClass.value">
         <div class="size-panel">
             <div class="size" :class="model.EllipsisClass.value" v-html="FormattedText"></div>
             <span class="placeholder">*</span>
@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { onMounted, computed, type StyleValue } from 'vue'
-import { CopyBehavior, SizeBehavior, StringHelper } from '../../helpers';
+import { SizeBehavior, StringHelper } from '../../helpers';
 import { TableHeaderModel, TableItemModel, TableModel, TableRowModel } from '../../models'
 
 // 字段:
@@ -66,10 +66,6 @@ function OnChange() {
 
 function TextXSS() {
     model.Text.value = StringHelper.StringXSS(model.Text.value)
-}
-
-function Copy(event: MouseEvent) {
-    CopyBehavior.Copy(model.Text.value, event)
 }
 </script>
 

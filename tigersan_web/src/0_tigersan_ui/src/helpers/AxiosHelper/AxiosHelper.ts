@@ -1,7 +1,7 @@
 
 import { AxiosBase } from "./AxiosBase"
 import { KeyValueModel } from "../ParamHelper"
-import { DialogHelper } from "../../stores/dialog"
+import { DialogHelper } from "../DialogHelper"
 import { FilterDto } from "../../models/FilterModel"
 import { MyActionResult } from "../../models/MyActionResult"
 import { IdName, IdValue } from "../../models/SelectModel"

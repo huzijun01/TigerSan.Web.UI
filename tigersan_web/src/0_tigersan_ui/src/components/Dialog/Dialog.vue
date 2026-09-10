@@ -21,15 +21,11 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, onMounted } from 'vue'
 import { Icons } from '../../base'
-import { useDialogStore } from '../../stores/dialog'
-import { DialogState, DialogModel } from '../../models'
-import { ref, computed, onMounted, type ShallowReactive } from 'vue'
+import { DialogState, dialogModels } from '../../models'
 
 // 全局数据：
-const store = useDialogStore()
-
-const dialogModels: ShallowReactive<DialogModel[]> = store.dialogModels as any
 
 // 数据：
 const isMounted = ref(false)

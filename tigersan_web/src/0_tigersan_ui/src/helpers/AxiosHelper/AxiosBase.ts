@@ -2,9 +2,9 @@ import JSONBig from 'json-bigint'
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios"
 import { Texts } from "../../texts"
 import { type AxiosInstance } from "axios"
-import { DialogHelper } from "../../stores"
 import { KeyValueModel, ParamHelper } from "../ParamHelper"
 import { MyActionResult } from "../../models/MyActionResult"
+import { DialogHelper } from '../DialogHelper'
 
 /** 请求方法 */
 export enum Methods {

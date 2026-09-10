@@ -1,10 +1,14 @@
 import { nanoid } from 'nanoid'
-import { computed, ref, type ComputedRef } from 'vue'
+import { computed, ref, shallowReactive, type ComputedRef } from 'vue'
 import { Texts } from '../../texts'
 import { Colors } from '../../base'
 import { LanguageBehavior } from '../../helpers'
 
-export type DialogCallback = (state: DialogState, data?: any) => any
+/** 全局“弹窗模型”集合 */
+export const dialogModels = shallowReactive<DialogModel<any>[]>([])
+
+/** “弹窗”回调 */
+export type DialogCallback<T> = (state: DialogState, data: T) => any
 
 /** “弹窗”模式 */
 export enum DialogMode {
@@ -21,11 +25,11 @@ export enum DialogState {
 }
 
 /** “弹窗”模型 */
-export class DialogModel {
+export class DialogModel<T> {
     //#region 【Fields】
     readonly id: string = nanoid()
-    _data?: any
-    callback?: DialogCallback
+    _data?: T
+    callback?: DialogCallback<T>
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -58,8 +62,8 @@ export class DialogModel {
     constructor(
         title: string | ComputedRef<string>,
         msg: string,
-        data?: any,
-        callback?: DialogCallback,
+        data?: T,
+        callback?: DialogCallback<T>,
         mode: DialogMode = DialogMode.NoButton,
         background: string = Colors.Brand) {
         this._data = data

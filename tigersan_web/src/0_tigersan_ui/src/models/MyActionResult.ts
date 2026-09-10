@@ -1,6 +1,6 @@
-import { DialogHelper } from "../stores"
 import { Texts } from "../texts"
 import { ToastHelper } from './Dialog/ToastHelper'
+import { DialogHelper } from '../helpers/DialogHelper'
 import { FormResult, SubmitResult } from "./Form/FormModel"
 
 export enum ActionResultCode {

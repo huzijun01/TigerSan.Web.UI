@@ -4,7 +4,7 @@ import { loading, MapModel, LnglatData, DrawerModel, RowDataModel } from "@/0_ti
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { PositionListModel } from "./PositionList/PositionListModel"
 import { AssetStateModel } from "../../0_Other/AssetDetail/AssetStatePage/AssetStateModel"
-import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
+import { CompanyMgtPageModel } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel"
 import { GetStationTable } from "@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable"
 import { assetHelper, baseStationHelper, PositionDto, PositionInfoModel, PositionTypes, siteHelper } from "@/models"
 
@@ -45,7 +45,7 @@ export class AssetMapPageModel {
             try {
                 // 场地：
                 const sites = await siteHelper.GetList({
-                    companies: CompanyMgtForm.AccessibleCompanies.value,
+                    companies: CompanyMgtPageModel.AccessibleCompanies.value,
                 })
                 sites.forEach(site => {
                     if (!site.fencePoints) return
@@ -56,7 +56,7 @@ export class AssetMapPageModel {
                 // 资产：
                 const filter = this.filter
                 const assetPositions = await assetHelper.GetPositionList({
-                    companies: CompanyMgtForm.AccessibleCompanies.value,
+                    companies: CompanyMgtPageModel.AccessibleCompanies.value,
                     department: filter.selectDepartment.Value.value?.id,
                     type: filter.selectAssetType.Value.value?.id,
                     tagType: filter.selectTagType.Value.value?.id,
@@ -77,7 +77,7 @@ export class AssetMapPageModel {
 
                 // 基站：
                 const stationPositions = await baseStationHelper.GetPositionList({
-                    companies: CompanyMgtForm.AccessibleCompanies.value,
+                    companies: CompanyMgtPageModel.AccessibleCompanies.value,
                 })
                 stationPositions.forEach(i => i.type = PositionTypes.Station)
                 stations.push(...stationPositions)

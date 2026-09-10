@@ -58,6 +58,19 @@
     }
 }
 
+// 均匀排列
+.flex-around {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+
+    &>* {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
 // 左对齐
 .flex-left {
     display: flex;

@@ -1,10 +1,10 @@
 import { ref, computed, watch, type Ref, type StyleValue } from "vue"
 import { Texts } from "../../texts"
 import { Colors } from "../../base"
-import { DialogHelper } from '../../stores'
 import { loading } from "../Dialog/LoadingModel"
 import { ToastHelper } from '../Dialog/ToastHelper'
 import { FormConfig, SetFormModel } from './FormConfig'
+import { DialogHelper } from "../../helpers/DialogHelper"
 import { LanguageBehavior, ObjectHelper, StringHelper } from "../../helpers"
 import type { TObjectAction, TGetter, TSetter, UnknownChange } from "../../types"
 

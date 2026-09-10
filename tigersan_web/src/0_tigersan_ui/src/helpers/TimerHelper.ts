@@ -29,6 +29,11 @@ export class TimerHelper {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    /** 睡眠 */
+    static Sleep(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
+
     /** 开始 */
     readonly Start = () => {
         this.Stop()

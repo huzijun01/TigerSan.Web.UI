@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, useRouter, FormConfig, FormModel, DialogState, DialogHelper, DialogMode, Colors, TokenHelper, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
+import { TextBoxModel, PasswordModel, FormItemConfig, Verify, ActionResultCode, SubmitResult, FormResult, ObjectHelper, authorityHelper, router, FormConfig, FormModel, DialogState, DialogHelper, DialogMode, Colors, TokenHelper, loading, Texts, TextModel } from '@/0_tigersan_ui/tigerui'
 import { useUserInfo } from '@/stores'
 import { axiosHelper } from "@/helpers"
 import { navData } from '@/navs/navModel'
@@ -162,7 +162,7 @@ export class LoginFormModel {
 
             TokenHelper.Save()
             ObjectHelper.ShallowSet(new UserInfo(), userInfo)
-            useRouter().GoTo('/')
+            router.GoTo('/')
         } finally {
             loading.IsShow.value = false
         }
@@ -211,7 +211,7 @@ export class LoginFormModel {
         // 初始化“导航栏”:
         navData.InitBasicSettings()
         // 跳转到“主页”:
-        useRouter().GoTo('Home')
+        router.GoTo('Home')
     }
     //#endregion 【Functions】
 }

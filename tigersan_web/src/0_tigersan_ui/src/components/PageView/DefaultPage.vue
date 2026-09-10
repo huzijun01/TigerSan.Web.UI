@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Texts } from '../../texts';
+import { Texts } from '../../texts'
 
 </script>
 

@@ -2,6 +2,7 @@ import { Icons, NavFolderConfig, TextModel, Texts } from '@/0_tigersan_ui/tigeru
 import { Authorities } from './Authorities'
 import AssetLedgerPage from '@/pages/Home/AssetLedgerPage/AssetLedgerPage.vue'
 import AssetMapPage from '@/pages/Home/AssetMapPage/AssetMapPage.vue'
+import AssetReportPage from '@/pages/Home/AssetReportPage/AssetReportPage.vue'
 import TransferPage from '@/pages/Home/TransferPage/TransferPage.vue'
 import VehiclePage from '@/pages/Home/VehiclePage/VehiclePage.vue'
 import InventoryRecordPage from '@/pages/Home/InventoryRecordPage/InventoryRecordPage.vue'
@@ -69,7 +70,7 @@ export const navHome: NavFolderConfig = {
                     Title: TextModel.Computed('Asset Report', "资产报表"),
                     Icon: Icons.Chart_Pie,
                     IsSelected: false,
-                    _component: undefined,
+                    _component: AssetReportPage,
                     _authority: Authorities.AssetReportPage,
                 },
             ]

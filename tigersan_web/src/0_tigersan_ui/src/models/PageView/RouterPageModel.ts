@@ -1,5 +1,5 @@
 import { type Component } from "vue"
-import { DefaultPage } from "../../components"
+import DefaultPage from "../../components/PageView/DefaultPage.vue"
 
 /** 页面模型 */
 export class PageModel {
@@ -7,7 +7,7 @@ export class PageModel {
     component: Component = DefaultPage
 }
 
-/** 路由页面模型 */
+/** “路由页面”模型 */
 export class RouterPageModel {
     //#region 【Fields】
     /** 页面改变时
@@ -55,4 +55,12 @@ export class RouterPageModel {
         }
     }
     //#endregion 【Functions】
+}
+
+/** 全局“路由页面”模型 */
+export const router = new RouterPageModel([])
+
+/** 创建路由 */
+export function createRouter(pages: PageModel[]) {
+    router.SetPages(pages)
 }

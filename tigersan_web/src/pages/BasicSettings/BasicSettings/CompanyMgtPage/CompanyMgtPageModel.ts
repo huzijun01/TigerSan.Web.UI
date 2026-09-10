@@ -41,7 +41,7 @@ selectCompanyGlobal._getItemsAsync = undefined
 selectCompanyGlobal._getItems = () => tree.GetCheckedNodeArray().map(i => new IdName(i._data?.id, i._data?.name))
 selectCompanyGlobal._onInit = select => select.SelectAll()
 
-export class CompanyMgtForm {
+export class CompanyMgtPageModel {
     //#region [static]
     /** “激活数据”监听 */
     private static watchActiveData?: WatchHandle
@@ -120,12 +120,12 @@ export class CompanyMgtForm {
     //#region 【Ctor】
     constructor() {
         // 监听:
-        CompanyMgtForm.watchActiveData?.stop()
-        CompanyMgtForm.watchActiveData = watch(CompanyMgtForm.tree.ActiveData, data => {
+        CompanyMgtPageModel.watchActiveData?.stop()
+        CompanyMgtPageModel.watchActiveData = watch(CompanyMgtPageModel.tree.ActiveData, data => {
             this.companyInfo.Id.value = data?.id
             this.companyInfo.Name.value = data?.name
             this.companyInfo.Addr.value = data?.addr
-            CompanyMgtForm.selectCompanyGlobal.UpdateItemsAsync()
+            CompanyMgtPageModel.selectCompanyGlobal.UpdateItemsAsync()
         })
     }
     //#endregion 【Ctor】
@@ -137,8 +137,8 @@ export class CompanyMgtForm {
             loading.IsShow.value = true
 
             await companyHelper.GetList({}).then(arr => {
-                CompanyMgtForm.tree.Clear()
-                CompanyMgtForm.tree.Init(CompanyHelper.Companies2Tree(arr))
+                CompanyMgtPageModel.tree.Clear()
+                CompanyMgtPageModel.tree.Init(CompanyHelper.Companies2Tree(arr))
             })
 
             await this.companyInfo.Refresh()
@@ -164,7 +164,7 @@ export class CompanyMgtForm {
 
     /** 改 */
     readonly Edit = async () => {
-        const model = CompanyMgtForm.tree.ActiveData.value
+        const model = CompanyMgtPageModel.tree.ActiveData.value
         if (!model) {
             console.warn('The model is undefined!')
             return
@@ -201,7 +201,7 @@ export class CompanyMgtForm {
     readonly DeleteRowData = async (state: DialogState) => {
         if (state != DialogState.Yes) return
 
-        const model = CompanyMgtForm.tree.ActiveData.value
+        const model = CompanyMgtPageModel.tree.ActiveData.value
         if (!model) {
             console.warn('The model is undefined!')
             return
@@ -223,7 +223,7 @@ export class CompanyMgtForm {
     readonly EditGetItemsAsync = async () => {
         const arr = await companyHelper.GetIdNames()
 
-        const active = CompanyMgtForm.tree.ActiveNode.value
+        const active = CompanyMgtPageModel.tree.ActiveNode.value
         if (!active) {
             console.warn('The node is undefined!')
             return arr

@@ -1,6 +1,6 @@
 import { PaginationModel, TableModel, ItemType, loading, ArrayHelper, ObjectHelper, DialogHelper, DialogMode, Colors, DialogState, MyActionResult, Texts, WatchBehavior } from '@/0_tigersan_ui/tigerui'
 import { companyHelper, siteHelper, inventoryRecordHelper, InventoryRecordModel } from '@/models'
-import { CompanyMgtForm } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm'
+import { CompanyMgtPageModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel'
 
 export class InventoryRecordPageModel {
     //#region 【Fields】
@@ -63,7 +63,7 @@ export class InventoryRecordPageModel {
 
     //#region 【Ctor】
     constructor() {
-        this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtForm.AccessibleCompanies, this.Refresh)
+        this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtPageModel.AccessibleCompanies, this.Refresh)
 
         this.table.IsAllowMultiSelect.value = false
         this.table._onInitHeaderModels = () => {
@@ -73,7 +73,7 @@ export class InventoryRecordPageModel {
         this.table._onSlotChange = this.Refresh
         this.pagination._onChange = this.Refresh
         this.selectSite._onChange = this.Refresh
-        this.selectSite._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(undefined, CompanyMgtForm.AccessibleCompanies.value)
+        this.selectSite._getItemsAsync = async () => await siteHelper.GetIdNamesByCompany(undefined, CompanyMgtPageModel.AccessibleCompanies.value)
     }
     //#endregion 【Ctor】
 
@@ -87,7 +87,7 @@ export class InventoryRecordPageModel {
             await this.selectSite.UpdateItemsAsync()
 
             this.pagination.Count.value = await inventoryRecordHelper.GetCount({
-                companies: CompanyMgtForm.AccessibleCompanies.value,
+                companies: CompanyMgtPageModel.AccessibleCompanies.value,
                 site: this.selectSite.Value.value?.id,
             })
             await inventoryRecordHelper.GetList({
@@ -95,7 +95,7 @@ export class InventoryRecordPageModel {
                 pageNumber: this.pagination.SelectedNum.value,
                 sort: this.table.SlotHeader.value?._propName,
                 ascending: this.table.IsAscending.value,
-                companies: CompanyMgtForm.AccessibleCompanies.value,
+                companies: CompanyMgtPageModel.AccessibleCompanies.value,
                 site: this.selectSite.Value.value?.id,
             }).then(arr => {
                 ArrayHelper.Set(this.table.RowDatas, arr)

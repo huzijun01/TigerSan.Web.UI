@@ -1,7 +1,12 @@
-export * from './MapTypes/Map'
+export * from './MapTypes/BaseClass'
 export * from './MapTypes/Events'
-export * from './MapTypes/Markers'
+export * from './MapTypes/Layers'
+export * from './MapTypes/Map'
+export * from './MapTypes/MapResults'
 export * from './MapTypes/MapPlugins'
+export * from './MapTypes/Markers'
+export * from './MapTypes/Search'
+export * from './MapTypes/Shapes'
 export * from './MapTypes/Tools'
 
 declare global {

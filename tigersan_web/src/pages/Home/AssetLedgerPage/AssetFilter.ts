@@ -1,5 +1,5 @@
 import { IsAuto, IsFall, IsInFence, OnlineState, SearchModel, Texts, WatchBehavior } from "@/0_tigersan_ui/tigerui"
-import { CompanyMgtForm } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtForm"
+import { CompanyMgtPageModel } from "@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel"
 import { companyHelper, departmentHelper, assetTypeHelper, AssetState, ErrorType, tagTypeHelper } from "@/models"
 
 export class AssetFilter {
@@ -51,8 +51,8 @@ export class AssetFilter {
 
         this.selectAssetState.IsSelectAll.value = true
         this.selectAssetState.IsAllowMultiSelect.value = true
-        this.selectAssetType._getItemsAsync = async () => await assetTypeHelper.GetIdNamesByCompany(undefined, CompanyMgtForm.AccessibleCompanies.value)
-        this.selectDepartment._getItemsAsync = async () => await departmentHelper.GetIdNamesByCompany(undefined, CompanyMgtForm.AccessibleCompanies.value)
+        this.selectAssetType._getItemsAsync = async () => await assetTypeHelper.GetIdNamesByCompany(undefined, CompanyMgtPageModel.AccessibleCompanies.value)
+        this.selectDepartment._getItemsAsync = async () => await departmentHelper.GetIdNamesByCompany(undefined, CompanyMgtPageModel.AccessibleCompanies.value)
         this.selectDepartment._onChange = this._refresh
         this.selectAssetType._onChange = this._refresh
         this.selectTagType._onChange = this._refresh
@@ -63,7 +63,7 @@ export class AssetFilter {
         this.selectIsInFence._onChange = this._refresh
         this.selectErrorType._onChange = this._refresh
 
-        this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtForm.AccessibleCompanies, this._refresh)
+        this.watchAccessibleCompanies = new WatchBehavior(CompanyMgtPageModel.AccessibleCompanies, this._refresh)
     }
     //#endregion 【Ctor】
 
