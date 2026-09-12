@@ -17,7 +17,7 @@ export const navHome: NavFolderConfig = {
             _authority: Authorities.AssetMgtFolder,
             Buttons: [
                 {
-                    Key: "资产看板",
+                    Key: "资产报表",
                     Title: TextModel.Computed('Asset Report', "资产看板"),
                     Icon: Icons.Chart_Pie,
                     IsSelected: true,
