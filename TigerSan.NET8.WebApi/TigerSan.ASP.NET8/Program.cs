@@ -35,6 +35,8 @@ new DailyTask(null, async () =>
 {
     // 盘点：
     await app.Services.CreateScope().ServiceProvider.GetRequiredService<IInventoryRecordService>().InventoryAll();
+    // 资产状态：
+    await app.Services.CreateScope().ServiceProvider.GetRequiredService<IAssetStateRecordService>().InventoryAll();
     // 清理“过期数据”：
     await app.Services.CreateScope().ServiceProvider.GetRequiredService<IAssetRecordService>().ClearExpiredRecord();
     await app.Services.CreateScope().ServiceProvider.GetRequiredService<IStationRecordService>().ClearExpiredRecord();

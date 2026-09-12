@@ -26,6 +26,7 @@ export * from '@/models/Equipments/TagModel'
 // Home:
 export * from '@/models/Home/AssetModel'
 export * from '@/models/Home/AssetRecordModel'
+export * from '@/models/Home/AssetStateRecordModel'
 export * from '@/models/Home/InventoryRecordModel'
 export * from '@/models/Home/PositionInfoModel'
 export * from '@/models/Home/TransferModel'

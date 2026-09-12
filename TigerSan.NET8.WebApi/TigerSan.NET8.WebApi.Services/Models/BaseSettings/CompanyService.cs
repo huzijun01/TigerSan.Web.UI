@@ -199,6 +199,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 // 删除“后代公司”:
                 _dbSet.RemoveRange(_dbSet.Where(i => subIds.Contains(i.Id)));
 
+                // 删除“资产状态记录”：
+                await _db.AssetStateRecords.Where(i => i.Company == id).ExecuteDeleteAsync();
+
                 // 删除“公司”：
                 _dbSet.Remove(entity);
 
@@ -250,6 +253,9 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return resSub;
                     }
                 }
+
+                // 删除“资产状态记录”：
+                await _db.AssetStateRecords.Where(i => ids.Contains(i.Company)).ExecuteDeleteAsync();
 
                 // 删除“多条数据”：
                 _dbSet.RemoveRange(finds);

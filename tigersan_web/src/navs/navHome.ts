@@ -17,11 +17,19 @@ export const navHome: NavFolderConfig = {
             _authority: Authorities.AssetMgtFolder,
             Buttons: [
                 {
+                    Key: "资产看板",
+                    Title: TextModel.Computed('Asset Report', "资产看板"),
+                    Icon: Icons.Chart_Pie,
+                    IsSelected: true,
+                    IsShowCloseButton: false,
+                    _component: AssetReportPage,
+                    _authority: Authorities.AssetReportPage,
+                },
+                {
                     Key: "资产台账",
                     Title: TextModel.Computed('Asset Ledger', "资产台账"),
                     Icon: Icons.Asset,
-                    IsSelected: true,
-                    IsShowCloseButton: false,
+                    IsSelected: false,
                     _component: AssetLedgerPage,
                     _authority: Authorities.AssetLedgerPage,
                 },
@@ -64,14 +72,6 @@ export const navHome: NavFolderConfig = {
                     IsSelected: false,
                     _component: undefined,
                     _authority: Authorities.AssetMaintainPage,
-                },
-                {
-                    Key: "资产报表",
-                    Title: TextModel.Computed('Asset Report', "资产报表"),
-                    Icon: Icons.Chart_Pie,
-                    IsSelected: false,
-                    _component: AssetReportPage,
-                    _authority: Authorities.AssetReportPage,
                 },
             ]
         },
