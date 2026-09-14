@@ -5,6 +5,7 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
 {
     public interface IAssetService : IIdServiceBase<AssetEntity>
     {
+        // 查:
         /// <summary>获取“完整数据”</summary>
         public Task<MyActionResult<AssetDto>> GetFull(
             List<long> companies,
@@ -30,6 +31,12 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? sort = null,
             bool? ascending = null,
             FilterDto? filter = null);
+        /// <summary>获取“流转”时长分布</summary>
+        public Task<MyActionResult<AssetCountDto>> GetTravelCounts(List<long> companies);
+        /// <summary>获取“停留”时长分布</summary>
+        public Task<MyActionResult<AssetCountDto>> GetStayCounts(List<long> companies);
+
+        // Other:
         /// <summary>入库</summary>
         public Task<MyActionResult<object>> Inbound(List<long> ids, bool isBeginTransaction = true);
         /// <summary>出库</summary>

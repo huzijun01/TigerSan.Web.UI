@@ -565,6 +565,88 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“流转”时长分布
+        public async Task<MyActionResult<AssetCountDto>> GetTravelCounts(List<long> companies)
+        {
+            try
+            {
+                if (companies.Count < 1) return MyResults<AssetCountDto>.Success(null, new AssetCountDto());
+
+                var queryable = _dbSet.AsNoTracking();
+
+                var res = await GetFilter(queryable, new FilterDto
+                {
+                    Parent = new ParentFilter()
+                    {
+                        Parent = new ParentFilter()
+                        {
+                            Ids = companies,
+                        }
+                    }
+                });
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<AssetCountDto>.Error(res.Message);
+                }
+
+                return MyResults<AssetCountDto>.Success(null, new AssetCountDto
+                {
+                    CountLessThan12h = await queryable.Where(i => i.TravelDuration <= 12).CountAsync(),
+                    Count12hTo24h = await queryable.Where(i => i.TravelDuration > 12 && i.TravelDuration <= 24).CountAsync(),
+                    Count24hTo36h = await queryable.Where(i => i.TravelDuration > 24 && i.TravelDuration <= 36).CountAsync(),
+                    Count36hTo48h = await queryable.Where(i => i.TravelDuration > 36 && i.TravelDuration <= 48).CountAsync(),
+                    CountGreaterThan48h = await queryable.Where(i => i.TravelDuration > 48).CountAsync(),
+                });
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetCountDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“停留”时长分布
+        public async Task<MyActionResult<AssetCountDto>> GetStayCounts(List<long> companies)
+        {
+            try
+            {
+                if(companies.Count < 1) return MyResults<AssetCountDto>.Success(null, new AssetCountDto());
+
+                var queryable = _dbSet.AsNoTracking();
+
+                var res = await GetFilter(queryable, new FilterDto
+                {
+                    Parent = new ParentFilter()
+                    {
+                        Parent = new ParentFilter()
+                        {
+                            Ids = companies,
+                        }
+                    }
+                });
+                queryable = res.Data;
+                if (queryable == null)
+                {
+                    return MyResults<AssetCountDto>.Error(res.Message);
+                }
+
+                return MyResults<AssetCountDto>.Success(null, new AssetCountDto
+                {
+                    CountLessThan12h = await queryable.Where(i => i.StayDuration <= 12).CountAsync(),
+                    Count12hTo24h = await queryable.Where(i => i.StayDuration > 12 && i.StayDuration <= 24).CountAsync(),
+                    Count24hTo36h = await queryable.Where(i => i.StayDuration > 24 && i.StayDuration <= 36).CountAsync(),
+                    Count36hTo48h = await queryable.Where(i => i.StayDuration > 36 && i.StayDuration <= 48).CountAsync(),
+                    CountGreaterThan48h = await queryable.Where(i => i.StayDuration > 48).CountAsync(),
+                });
+            }
+            catch (Exception e)
+            {
+                return MyResults<AssetCountDto>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]

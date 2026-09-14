@@ -160,7 +160,7 @@ function renderChart(records: AssetStateRecordDto[]) {
     // 构建百分比数据Map，用于tooltip中快速查找精确百分比
     const percDataMap = new Map<string, number[]>() // time -> [各状态百分比]
     sortedRecords.forEach((r, idx) => {
-        percDataMap.set(xAxisData[idx], STATE_CONFIGS.value.map(cfg => (r[cfg.percField as keyof AssetStateRecordDto] as number) ?? 0))
+        percDataMap.set(xAxisData[idx] as string, STATE_CONFIGS.value.map(cfg => (r[cfg.percField as keyof AssetStateRecordDto] as number) ?? 0))
     })
 
     const option: EChartsOption = {

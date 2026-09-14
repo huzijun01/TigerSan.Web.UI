@@ -3,6 +3,20 @@ import { PositionDto } from "./PositionInfoModel"
 import { AssetStates, ErrorTypes } from "../base/AssetStates"
 import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
 
+/** "资产数量"对象 */
+export class AssetCountDto {
+    /** T ≤ 12h */
+    countLessThan12h = 0
+    /** 12h ＜ T ≤ 24h */
+    count12hTo24h = 0
+    /** 24h ＜ T ≤ 36h */
+    count24hTo36h = 0
+    /** 36h ＜ T ≤ 48h */
+    count36hTo48h = 0
+    /** T ＞ 48h */
+    countGreaterThan48h = 0
+}
+
 /** "资产"实体 */
 export class AssetEntity extends IdEntityBase {
     assetId = ''
@@ -112,6 +126,7 @@ export class AssetHelper extends IdHelper<AssetDto> {
         { key: 'rfid', value: rfid },
     ], false)
 
+    // 查:
     /** 筛选“总数” */
     readonly GetCount = async (param: AssetFilter) => {
         if (!param.company && ArrayHelper.IsEmpty(param.companies)) return 0
@@ -165,6 +180,17 @@ export class AssetHelper extends IdHelper<AssetDto> {
         })
     }
 
+    /** 获取“流转”时长分布 */
+    readonly GetTravelCounts = async (companies: bigint[]) => {
+        return await axiosHelper.Post<AssetCountDto>(`${this._action}/TravelCounts`, undefined, companies)
+    }
+
+    /** 获取“停留”时长分布 */
+    readonly GetStayCounts = async (companies: bigint[]) => {
+        return await axiosHelper.Post<AssetCountDto>(`${this._action}/StayCounts`, undefined, companies)
+    }
+
+    // Other:
     /** 入库 */
     readonly Inbound = async (ids: number[] | bigint[]) =>
         await axiosHelper.Put(`${this._action}/Inbound`, undefined, ids)

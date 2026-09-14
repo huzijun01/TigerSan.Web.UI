@@ -79,6 +79,22 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.GetPositionList(rfid, pageSize, pageNumber, sort, ascending, filter);
         }
+
+        [HttpPost]
+        [Route("TravelCounts")]
+        /// <summary>获取“流转”时长分布</summary>
+        public async Task<MyActionResult<AssetCountDto>> GetTravelCounts([FromBody] List<long> companies)
+        {
+            return await _service.GetTravelCounts(companies);
+        }
+
+        [HttpPost]
+        [Route("StayCounts")]
+        /// <summary>获取“停留”时长分布</summary>
+        public async Task<MyActionResult<AssetCountDto>> GetStayCounts([FromBody] List<long> companies)
+        {
+            return await _service.GetStayCounts(companies);
+        }
         #endregion [查]
 
         #region [Other]

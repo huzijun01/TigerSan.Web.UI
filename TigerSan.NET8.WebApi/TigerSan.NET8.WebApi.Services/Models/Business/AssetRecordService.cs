@@ -74,229 +74,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
         }
         #endregion
 
-        #region 获取“在库时长”
-        /// <summary>获取“在库时长”</summary>
-        private double GetStayDuration(List<AssetRecordEntity> records)
-        {
-            double duration = 0;
-
-            // 过滤掉“重复记录”和“无关记录”:
-            var sortedRecords = records.OrderBy(r => r.ReportTime).ToList();
-            var filteredRecords = new List<AssetRecordEntity>();
-            AssetRecordEntity? preRecord = null;
-            foreach (var record in sortedRecords)
-            {
-                if (preRecord == null)
-                {
-                    if (record.State != AssetStates.Inbound)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        preRecord = record;
-                        filteredRecords.Add(record);
-                    }
-                }
-                else
-                {
-                    if (preRecord.State == record.State
-                        || record.State != AssetStates.Inbound && record.State != AssetStates.Outbound)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        preRecord = record;
-                        filteredRecords.Add(record);
-                    }
-                }
-            }
-
-            // 计算:
-            AssetRecordEntity? inbound = null;
-
-            foreach (var record in filteredRecords)
-            {
-                if (record.State == AssetStates.Inbound)
-                {
-                    if (inbound != null)
-                    {
-                        LogHelper.Instance.Warning("Repeated inbound records!");
-                        return -1;
-                    }
-                    inbound = record;
-                }
-                else
-                {
-                    if (inbound == null)
-                    {
-                        LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
-                        return -1;
-                    }
-                    duration += (record.ReportTime - inbound.ReportTime).TotalHours;
-                    inbound = null;
-                }
-            }
-
-            if (inbound != null)
-            {
-                duration += (DateTimeHelper.GetUtcNow() - inbound.ReportTime).TotalHours;
-            }
-
-            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
-        }
-        #endregion
-
-        #region 获取“在途时长”
-        /// <summary>获取“在途时长”</summary>
-        private double GetTravelDuration(List<AssetRecordEntity> records)
-        {
-            double duration = 0;
-
-            // 过滤掉“重复记录”和“无关记录”:
-            var sortedRecords = records.OrderBy(r => r.ReportTime).ToList();
-            var filteredRecords = new List<AssetRecordEntity>();
-            AssetRecordEntity? preRecord = null;
-            foreach (var record in sortedRecords)
-            {
-                if (preRecord == null)
-                {
-                    if (record.State != AssetStates.Outbound)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        preRecord = record;
-                        filteredRecords.Add(record);
-                    }
-                }
-                else
-                {
-                    if (preRecord.State == record.State
-                        || record.State != AssetStates.Inbound && record.State != AssetStates.Outbound)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        preRecord = record;
-                        filteredRecords.Add(record);
-                    }
-                }
-            }
-
-            // 计算:
-            AssetRecordEntity? outbound = null;
-
-            foreach (var record in filteredRecords)
-            {
-                if (record.State == AssetStates.Outbound)
-                {
-                    if (outbound != null)
-                    {
-                        LogHelper.Instance.Warning("Repeated outbound records!");
-                        return -1;
-                    }
-                    outbound = record;
-                }
-                else
-                {
-                    if (outbound == null)
-                    {
-                        LogHelper.Instance.Warning("Inbound record without corresponding outbound!");
-                        return -1;
-                    }
-                    duration += (record.ReportTime - outbound.ReportTime).TotalHours;
-                    outbound = null;
-                }
-            }
-
-            if (outbound != null)
-            {
-                duration += (DateTimeHelper.GetUtcNow() - outbound.ReportTime).TotalHours;
-            }
-
-            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
-        }
-        #endregion
-
-        #region 获取“离线时长”
-        /// <summary>获取“离线时长”</summary>
-        private double GetOfflineDuration(List<AssetRecordEntity> records)
-        {
-            double duration = 0;
-
-            // 过滤掉“重复记录”:
-            var sortedRecords = records.OrderBy(r => r.ReportTime).ToList();
-            var filteredRecords = new List<AssetRecordEntity>();
-            AssetRecordEntity? preRecord = null;
-            foreach (var record in sortedRecords)
-            {
-                if (preRecord == null)
-                {
-                    if (record.OnlineState != OnlineStates.Offline)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        preRecord = record;
-                        filteredRecords.Add(record);
-                    }
-                }
-                else
-                {
-                    if (preRecord.OnlineState == record.OnlineState)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        preRecord = record;
-                        filteredRecords.Add(record);
-                    }
-                }
-            }
-
-            // 计算:
-            AssetRecordEntity? offline = null;
-
-            foreach (var record in filteredRecords)
-            {
-                if (record.OnlineState == OnlineStates.Offline)
-                {
-                    if (offline != null)
-                    {
-                        LogHelper.Instance.Warning("Repeated offline records!");
-                        return -1;
-                    }
-
-                    offline = record;
-                }
-                else
-                {
-                    if (offline == null)
-                    {
-                        LogHelper.Instance.Warning("Online record without corresponding offline!");
-                        return -1;
-                    }
-
-                    duration += (record.ReportTime - offline.ReportTime).TotalHours;
-                    offline = null;
-                }
-            }
-
-            if (offline != null)
-            {
-                duration += (DateTimeHelper.GetUtcNow() - offline.ReportTime).TotalHours;
-            }
-
-            return Math.Round(duration, 2, MidpointRounding.AwayFromZero);
-        }
-        #endregion
-
         #region 获取“周转次数”
         /// <summary>获取“周转次数”</summary>
         private int GetMoves(List<AssetRecordEntity> records, DateTime? start = null)
@@ -1132,61 +909,131 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     return MyResults<object>.ResourceNotExist;
                 }
 
-                var records = await _db.AssetRecords.Where(r => r.Asset == id).OrderByDescending(r => r.ReportTime).ToListAsync();
-                var lastRecord = records.FirstOrDefault();
+                var lastRecord = await _db.AssetRecords.Where(r => r.Asset == id).OrderByDescending(r => r.ReportTime).FirstOrDefaultAsync();
                 asset.LastRecord = lastRecord?.Id;
-
-                // 是否滞留:
-                if (asset.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InStore)
-                {
-                    var lastInbound = records.LastOrDefault(r => r.State == AssetStates.Inbound);
-                    if (lastInbound == null)
-                    {
-                        LogHelper.Instance.Warning("Inbound record not found for asset in store!");
-                    }
-                    else if ((DateTimeHelper.GetUtcNow() - lastInbound.ReportTime).TotalHours > GlobalSettings.StolidThresholdHours)
-                    {
-                        var stolid = new AssetRecordEntity();
-                        stolid.ShallowCopy(lastRecord);
-                        stolid.UpdateId();
-                        stolid.ReportTime = DateTimeHelper.GetUtcNow();
-                        asset.State = stolid.State = AssetStates.Stolid;
-                        await _db.AssetRecords.AddAsync(stolid);
-                    }
-                }
-
-                // 是否超时:
-                if (asset.Transfer != null && lastRecord != null && lastRecord.State == AssetStates.InTransit)
-                {
-                    var lastOutbound = records.LastOrDefault(r => r.State == AssetStates.Outbound);
-                    if (lastOutbound == null)
-                    {
-                        LogHelper.Instance.Warning("Outbound record not found for asset in transit!");
-                    }
-                    else if ((DateTimeHelper.GetUtcNow() - lastOutbound.ReportTime).TotalHours > GlobalSettings.TimeoutThresholdHours)
-                    {
-                        var timeout = new AssetRecordEntity();
-                        timeout.ShallowCopy(lastRecord);
-                        timeout.UpdateId();
-                        timeout.ReportTime = DateTimeHelper.GetUtcNow();
-                        asset.State = timeout.State = AssetStates.Timeout;
-                        await _db.AssetRecords.AddAsync(timeout);
-                    }
-                }
 
                 // 计算“周转”:
                 var now = DateTimeHelper.GetUtcNow();
-                asset.DailyMove = GetMoves(records, now.Date); // 当日0点
-                asset.MonthlyMove = GetMoves(records, new DateTime(now.Year, now.Month, 1)); // 当月1日0点
-                asset.TotalMove = GetMoves(records);
+                var monthlyStartDate = new DateTime(now.Year, now.Month, 1);
+                asset.DailyMove = await _db.AssetRecords.Where(r => r.Asset == id && r.ReportTime >= now.Date && (r.State == AssetStates.Inbound || r.State == AssetStates.Outbound)).CountAsync(); // 当日0点
+                asset.MonthlyMove = await _db.AssetRecords.Where(r => r.Asset == id && r.ReportTime >= monthlyStartDate && (r.State == AssetStates.Inbound || r.State == AssetStates.Outbound)).CountAsync(); // 当月1日0点
+                asset.TotalMove = await _db.AssetRecords.Where(r => r.Asset == id && (r.State == AssetStates.Inbound || r.State == AssetStates.Outbound)).CountAsync();
 
-                // 计算“时长”:
-                asset.StayDuration = GetStayDuration(records);
-                asset.TravelDuration = GetTravelDuration(records);
-                asset.OfflineDuration = GetOfflineDuration(records);
+                if (lastRecord == null)
+                {
+                    // 计算“时长”:
+                    asset.StayDuration = 0;
+                    asset.TravelDuration = 0;
+                    asset.OfflineDuration = 0;
+                }
+                else
+                {
+                    // 是否滞留:
+                    if (asset.Transfer != null && lastRecord.State == AssetStates.InStore)
+                    {
+                        var lastInbound = await _db.AssetRecords.Where(r => r.Asset == id && r.State == AssetStates.Inbound).OrderByDescending(r => r.ReportTime).FirstOrDefaultAsync();
+                        if (lastInbound == null)
+                        {
+                            LogHelper.Instance.Warning("Inbound record not found for asset in store!");
+                        }
+                        else if ((now - lastInbound.ReportTime).TotalHours > GlobalSettings.StolidThresholdHours)
+                        {
+                            var stolid = new AssetRecordEntity();
+                            stolid.ShallowCopy(lastRecord);
+                            stolid.UpdateId();
+                            stolid.ReportTime = now;
+                            asset.State = stolid.State = AssetStates.Stolid;
+                            await _db.AssetRecords.AddAsync(stolid);
+                        }
+                    }
+
+                    // 是否超时:
+                    if (asset.Transfer != null && lastRecord.State == AssetStates.InTransit)
+                    {
+                        var lastOutbound = await _db.AssetRecords.Where(r => r.Asset == id && r.State == AssetStates.Outbound).OrderByDescending(r => r.ReportTime).FirstOrDefaultAsync();
+                        if (lastOutbound == null)
+                        {
+                            LogHelper.Instance.Warning("Outbound record not found for asset in transit!");
+                        }
+                        else if ((now - lastOutbound.ReportTime).TotalHours > GlobalSettings.TimeoutThresholdHours)
+                        {
+                            var timeout = new AssetRecordEntity();
+                            timeout.ShallowCopy(lastRecord);
+                            timeout.UpdateId();
+                            timeout.ReportTime = now;
+                            asset.State = timeout.State = AssetStates.Timeout;
+                            await _db.AssetRecords.AddAsync(timeout);
+                        }
+                    }
+
+                    // “停留”时长:
+                    if (lastRecord.State != AssetStates.InStore && lastRecord.State != AssetStates.Stolid)
+                    {
+                        asset.StayDuration = 0;
+                    }
+                    else
+                    {
+                        var lastInbound = await _db.AssetRecords.Where(r => r.Asset == id && r.State == AssetStates.Inbound).OrderByDescending(r => r.ReportTime).FirstOrDefaultAsync();
+                        if (lastInbound == null)
+                        {
+                            asset.StayDuration = 0;
+                            LogHelper.Instance.Warning("Inbound record not found for asset in store!");
+                        }
+                        else
+                        {
+                            asset.StayDuration = (now - lastInbound.ReportTime).TotalHours;
+                        }
+                    }
+
+                    // “在途”时长:
+                    if (lastRecord.State != AssetStates.InTransit)
+                    {
+                        asset.TravelDuration = 0;
+                    }
+                    else
+                    {
+                        var lastOutbound = await _db.AssetRecords.Where(r => r.Asset == id && r.State == AssetStates.Outbound).OrderByDescending(r => r.ReportTime).FirstOrDefaultAsync();
+                        if (lastOutbound == null)
+                        {
+                            asset.TravelDuration = 0;
+                            LogHelper.Instance.Warning("Outbound record not found for asset in transit!");
+                        }
+                        else
+                        {
+                            asset.TravelDuration = (now - lastOutbound.ReportTime).TotalHours;
+                        }
+                    }
+
+                    // “离线”时长:
+                    if (lastRecord.OnlineState != OnlineStates.Offline)
+                    {
+                        asset.OfflineDuration = 0;
+                    }
+                    else
+                    {
+                        var lastOnline = await _db.AssetRecords.Where(r => r.Asset == id && r.OnlineState == OnlineStates.Online).OrderByDescending(r => r.ReportTime).FirstOrDefaultAsync();
+                        if (lastOnline != null)
+                        {
+                            asset.OfflineDuration = (now - lastOnline.ReportTime).TotalHours;
+                        }
+                        else
+                        {
+                            var firstOffline = await _db.AssetRecords.Where(r => r.Asset == id && r.OnlineState == OnlineStates.Offline).OrderBy(r => r.ReportTime).FirstOrDefaultAsync();
+                            if (firstOffline == null)
+                            {
+                                asset.OfflineDuration = 0;
+                                LogHelper.Instance.Warning("Offline record not found for asset!");
+                            }
+                            else
+                            {
+                                asset.OfflineDuration = (now - firstOffline.ReportTime).TotalHours;
+                            }
+                        }
+                    }
+                }
 
                 // 计算时间:
-                asset.CalculationTime = DateTimeHelper.GetUtcNow();
+                asset.CalculationTime = now;
 
                 await _db.SaveChangesAsync();
                 if (transaction != null) await transaction.CommitAsync(); // 显式提交事务
