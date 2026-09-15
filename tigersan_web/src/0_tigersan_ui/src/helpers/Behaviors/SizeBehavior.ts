@@ -5,6 +5,8 @@ export class SizeBehavior {
     //#region 【Fields】
     /** “尺寸”监听器 */
     private _observer?: ResizeObserver
+    /** 尺寸改变后 */
+    _onResize?: (width: number, height: number) => any
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -31,6 +33,9 @@ export class SizeBehavior {
     readonly UpdateSize = () => {
         this.ActualWidth.value = this.GetWidth()
         this.ActualHeight.value = this.GetHeight()
+        if (this._onResize) {
+            this._onResize(this.ActualWidth.value, this.ActualHeight.value)
+        }
     }
 
     /** 开始监听“尺寸变化”（需手动调用） */

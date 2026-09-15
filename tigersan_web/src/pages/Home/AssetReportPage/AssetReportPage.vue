@@ -72,10 +72,11 @@ function Refresh() {
         border-radius: 10px;
         background-color: var(--theme-panel-background);
     }
+}
 
-    .row-panel {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
+.row-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: auto;
 }
 </style>

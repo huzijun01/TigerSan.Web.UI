@@ -1,12 +1,12 @@
 <template>
-    <div class="bar-panel flex-center" ref="containerRef" :style="{ width, height, minWidth, minHeight }"></div>
+    <div class="bar-panel flex-center" ref="refRoot" :style="{ width, height, minWidth, minHeight }"></div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
+import { onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import type { ECharts, EChartsOption } from 'echarts'
-import { Texts, Colors, ThemeHelper, loading, OnlineStates, TextModel } from '@/0_tigersan_ui/tigerui'
+import { Texts, Colors, ThemeHelper, loading, OnlineStates, TextModel, SizeBehavior } from '@/0_tigersan_ui/tigerui'
 import { assetHelper } from '@/models'
 import { CompanyMgtPageModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel'
 
@@ -24,11 +24,12 @@ const props = withDefaults(defineProps<{
 })
 
 /* ===================== 实例引用 ===================== */
-const containerRef = ref<HTMLDivElement>()
 let chartInstance: ECharts | null = null
-
 /** 缓存上一次查询结果，切换主题时无需重新请求 */
 let cachedData: Array<{ name: string; count: number }> = []
+const behavior = new SizeBehavior()
+behavior._onResize = () => chartInstance?.resize()
+const { refRoot } = behavior
 
 /* ===================== 主题颜色 ===================== */
 function getThemeColors() {
@@ -59,18 +60,14 @@ function getThemeColors() {
 
 /* ===================== 图表生命周期 ===================== */
 function initChart() {
-    if (!containerRef.value) return
-    chartInstance = echarts.init(containerRef.value, undefined, { renderer: 'canvas' })
+    if (!refRoot.value) return
+    chartInstance = echarts.init(refRoot.value, undefined, { renderer: 'canvas' })
     renderChart(cachedData)
 }
 
 function disposeChart() {
     chartInstance?.dispose()
     chartInstance = null
-}
-
-function handleResize() {
-    chartInstance?.resize()
 }
 
 /* ===================== 数据查询 ===================== */
@@ -196,6 +193,7 @@ function renderChart(data: Array<{ name: string; count: number }>) {
             : [],
     }
 
+    chartInstance.resize()
     chartInstance.setOption(option, true)
 }
 
@@ -219,14 +217,14 @@ defineExpose({ Refresh })
 
 /* ===================== 生命周期 ===================== */
 onMounted(async () => {
+    behavior.Observe()
     await nextTick()
     initChart()
-    window.addEventListener('resize', handleResize)
     await Refresh()
 })
 
 onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize)
+    behavior.Unobserver()
     disposeChart()
 })
 

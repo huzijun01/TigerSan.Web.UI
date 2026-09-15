@@ -1,14 +1,14 @@
 <template>
-    <div class="asset-state-trend-panel flex-center" ref="containerRef" :style="{ width, height, minWidth, minHeight }">
+    <div class="asset-state-trend-panel flex-center" ref="refRoot" :style="{ width, height, minWidth, minHeight }">
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 import * as echarts from 'echarts'
+import { onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import { assetStateRecordHelper, AssetStates, AssetStateRecordDto } from '@/models'
-import { Texts, Colors, ThemeHelper, loading, TextModel, ObjectHelper } from '@/0_tigersan_ui/tigerui'
+import { Texts, Colors, ThemeHelper, loading, TextModel, ObjectHelper, SizeBehavior } from '@/0_tigersan_ui/tigerui'
 import { CompanyMgtPageModel } from '@/pages/BasicSettings/BasicSettings/CompanyMgtPage/CompanyMgtPageModel'
 
 /* ===================== Props（与饼图接口完全对齐） ===================== */
@@ -25,11 +25,12 @@ const props = withDefaults(defineProps<{
 })
 
 /* ===================== 实例引用 ===================== */
-const containerRef = ref<HTMLDivElement | null>(null)
 let chartInstance: ECharts | null = null
-
 /** 缓存查询结果，主题切换时无需重复请求 */
 let cachedRecords: AssetStateRecordDto[] = []
+const behavior = new SizeBehavior()
+behavior._onResize = () => chartInstance?.resize()
+const { refRoot } = behavior
 
 /* ===================== 状态配置（与饼图完全一致，保持颜色和名称统一） ===================== */
 const STATE_CONFIGS = computed(() => [
@@ -75,24 +76,16 @@ function getThemeColors() {
 
 /* ===================== 图表生命周期 ===================== */
 function initChart() {
-    if (!containerRef.value) return
+    if (!refRoot.value) return
     // 修复初始化时容器宽高为0的问题，初始化前先强制重排
-    containerRef.value.style.display = 'block'
-    chartInstance = echarts.init(containerRef.value, undefined, { renderer: 'canvas' })
+    refRoot.value.style.display = 'block'
+    chartInstance = echarts.init(refRoot.value, undefined, { renderer: 'canvas' })
     renderChart(cachedRecords)
 }
 
 function disposeChart() {
     chartInstance?.dispose()
     chartInstance = null
-}
-
-function handleResize() {
-    chartInstance?.resize({
-        animation: {
-            duration: 150
-        }
-    })
 }
 
 /* ===================== 数据查询 ===================== */
@@ -120,9 +113,6 @@ function renderChart(records: AssetStateRecordDto[]) {
     const totalValidCount = sortedRecords.reduce((sum, r) => {
         return sum + STATE_CONFIGS.value.reduce((s, cfg) => s + ((r[cfg.countField as keyof AssetStateRecordDto] as number) ?? 0), 0)
     }, 0)
-
-    // 计算所有记录中总数的最大值，用于右侧百分比Y轴的刻度换算参考
-    const maxTotalCount = sortedRecords.reduce((max, r) => Math.max(max, r.count ?? 0), 0)
 
     // 生成多折线系列数据 —— 使用数量字段，对应左侧Y轴（yAxisIndex: 0）
     const seriesData: SeriesOption[] = STATE_CONFIGS.value.map(cfg => ({
@@ -286,8 +276,8 @@ function renderChart(records: AssetStateRecordDto[]) {
             : [],
     }
 
-    // 强制使用notMerge模式全量更新配置，避免增量更新导致折线不渲染
-    chartInstance.setOption(option, true, true)
+    chartInstance.resize()
+    chartInstance.setOption(option, true)
 }
 
 /* ===================== 对外暴露刷新方法（与饼图一致） ===================== */
@@ -313,17 +303,14 @@ defineExpose({ Refresh })
 
 /* ===================== 生命周期钩子 ===================== */
 onMounted(async () => {
+    behavior.Observe()
     await nextTick()
-    // 额外增加10ms延迟确保DOM完全渲染，避免初始化时宽高为0
-    setTimeout(() => {
-        initChart()
-        window.addEventListener('resize', handleResize)
-        Refresh()
-    }, 10)
+    initChart()
+    Refresh()
 })
 
 onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize)
+    behavior.Unobserver()
     disposeChart()
 })
 
