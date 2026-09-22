@@ -1,4 +1,4 @@
-import { ArrayHelper, OnlineStates, FilterDto } from "@/0_tigersan_ui/tigerui"
+import { ArrayHelper, OnlineStates, FilterDto, Methods } from "@/0_tigersan_ui/tigerui"
 import { PositionDto } from "./PositionInfoModel"
 import { AssetStates, ErrorTypes } from "../base/AssetStates"
 import { IdEntityBase, IdHelper, axiosHelper } from "@/helpers"
@@ -189,6 +189,19 @@ export class AssetHelper extends IdHelper<AssetDto> {
     readonly GetStayCounts = async (companies: bigint[]) => {
         return await axiosHelper.Post<AssetCountDto>(`${this._action}/StayCounts`, undefined, companies)
     }
+
+    /** 下载“CSV” */
+    readonly DownloadCsv = async (fileName: string, param: {
+        pageSize?: number,
+        pageNumber?: number,
+        sort?: string,
+        ascending?: boolean,
+    } & AssetFilter) => await axiosHelper.DownloadFile(fileName, `${this._action}/DownloadCsv`, [
+        { key: 'pageSize', value: param.pageSize },
+        { key: 'pageNumber', value: param.pageNumber },
+        { key: 'sort', value: param.sort },
+        { key: 'ascending', value: param.ascending },
+    ], Methods.Post, { data: AssetFilter.GetFilter(param) })
 
     // Other:
     /** 入库 */

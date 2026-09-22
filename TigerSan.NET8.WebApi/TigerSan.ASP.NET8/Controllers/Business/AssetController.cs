@@ -95,6 +95,21 @@ namespace TigerSan.NET8.WebApi.Controllers
         {
             return await _service.GetStayCounts(companies);
         }
+
+        /// <summary>下载“CSV”</summary>
+        [HttpPost("DownloadCsv")]
+        public async Task<IActionResult> DownloadCsv(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            var res = await _service.GetCsv(pageSize, pageNumber, sort, ascending, filter);
+            var file = res.Data;
+            if (file == null) return BadRequest(res.Message);
+            return file;
+        }
         #endregion [查]
 
         #region [Other]

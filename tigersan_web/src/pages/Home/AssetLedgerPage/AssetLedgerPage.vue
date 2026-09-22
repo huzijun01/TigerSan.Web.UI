@@ -32,6 +32,7 @@
                         <button :disabled="!IsAllowInbound" @click="model.Inbound">{{ Texts.Inbound.value }}</button>
                         <button class="bg-info" :disabled="!IsAllowOutbound" @click="model.Outbound">
                             {{ Texts.Outbound.value }}</button>
+                        <button @click="model.Export">{{ Texts.Export.value }}</button>
                     </div>
                     <div class="row-panel">
                         <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>

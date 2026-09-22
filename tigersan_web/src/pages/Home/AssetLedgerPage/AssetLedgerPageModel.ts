@@ -238,6 +238,18 @@ export class AssetLedgerPageModel extends AssetFormModel {
     /** “出库”表单模型 */
     readonly assetOutbundForm = new FormModel(this.configOutbundForm)
 
+    /** 导出 */
+    readonly Export = async () => {
+        try {
+            loading.IsShow.value = true
+
+            const res = await assetHelper.DownloadCsv(Texts.Asset.value, {})
+            MyActionResult.ShowResult(res, Texts.DownloadSuccessfully.value)
+        } finally {
+            loading.IsShow.value = false
+        }
+    }
+
     /** 入库 */
     readonly Inbound = async () => {
         DialogHelper.Show(
