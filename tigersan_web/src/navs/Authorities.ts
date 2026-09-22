@@ -15,6 +15,7 @@ export class Authorities {
     /** 标签管理 */
     static TagMgtFolder = authorityHelper.GetAuthority()
     static TagMgtPage = authorityHelper.GetAuthority()
+    static IndoorPositionPage = authorityHelper.GetAuthority()
     static PersonMgtTagPage = authorityHelper.GetAuthority()
     static AssetMgtTagPage = authorityHelper.GetAuthority()
     static EnvSensorPage = authorityHelper.GetAuthority()

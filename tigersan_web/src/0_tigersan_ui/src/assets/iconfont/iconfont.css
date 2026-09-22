@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3474551 */
-  src: url('iconfont.woff2?t=1786530216161') format('woff2'),
-       url('iconfont.woff?t=1786530216161') format('woff'),
-       url('iconfont.ttf?t=1786530216161') format('truetype');
+  src: url('iconfont.woff2?t=1789971904038') format('woff2'),
+       url('iconfont.woff?t=1789971904038') format('woff'),
+       url('iconfont.ttf?t=1789971904038') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Coordinate_1:before {
+  content: "\e61f";
+}
+
+.icon-Coordinate_2:before {
+  content: "\f0f6";
 }
 
 .icon-Router_Planar_1:before {

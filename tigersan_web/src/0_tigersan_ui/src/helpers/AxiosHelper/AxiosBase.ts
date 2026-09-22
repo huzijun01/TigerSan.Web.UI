@@ -230,10 +230,10 @@ export class AxiosBase {
 
             switch (method) {
                 case Methods.Post:
-                    response = await this._api.post(url, undefined, { responseType: 'blob', ...config })
+                    response = await this._api.post(url, config?.data, { responseType: 'blob', ...config })
                     break
                 case Methods.Put:
-                    response = await this._api.put(url, undefined, { responseType: 'blob', ...config })
+                    response = await this._api.put(url, config?.data, { responseType: 'blob', ...config })
                     break
                 case Methods.Delete:
                     response = await this._api.delete(url, { responseType: 'blob', ...config })

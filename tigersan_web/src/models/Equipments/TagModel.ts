@@ -1,4 +1,4 @@
-import { FilterDto, OnlineStates, StringHelper } from "@/0_tigersan_ui/tigerui"
+import { FilterDto, Methods, OnlineStates, StringHelper } from "@/0_tigersan_ui/tigerui"
 import { EqpTypes } from "../base/EqpTypes"
 import { LocationModes } from "../base/AssetStates"
 import { axiosHelper, IdEntityBase, IdHelper } from "@/helpers"
@@ -78,6 +78,7 @@ export class TagFilter {
     stationId?: string
     eqpType?: EqpTypes
     isEnable?: boolean
+    isBound?: boolean
     state?: OnlineStates
     isFall?: boolean
     tagId?: string
@@ -99,6 +100,7 @@ export class TagFilter {
                 { propName: 'Station', value: param.station },
                 { propName: 'EqpType', value: param.eqpType },
                 { propName: 'IsEnable', value: param.isEnable },
+                { propName: 'AssetId', isNullOrEmpty: param.isBound === undefined ? undefined : !param.isBound },
                 { propName: 'OnlineState', value: param.state },
                 { propName: 'IsFall', value: param.isFall },
             ],
@@ -141,6 +143,19 @@ class TagHelper extends IdHelper<TagDto> {
     /** 批量添加 */
     readonly GetFullListByStationId = async (stationId: string) =>
         await axiosHelper.Get<TagDto[]>(`${this._action}/FullListByStationId/${stationId}`)
+
+    /** 下载“CSV” */
+    readonly DownloadCsv = async (fileName: string, param: {
+        pageSize?: number,
+        pageNumber?: number,
+        sort?: string,
+        ascending?: boolean,
+    } & TagFilter) => await axiosHelper.DownloadFile(fileName, `${this._action}/DownloadCsv`, [
+        { key: 'pageSize', value: param.pageSize },
+        { key: 'pageNumber', value: param.pageNumber },
+        { key: 'sort', value: param.sort },
+        { key: 'ascending', value: param.ascending },
+    ], Methods.Post, { data: TagFilter.GetFilter(param) })
 
     // 增:
     /** 批量添加 */

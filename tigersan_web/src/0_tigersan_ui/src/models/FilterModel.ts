@@ -10,6 +10,10 @@ export class FilterDto {
 export class PropFilter {
     /** 属性名 */
     propName = ''
+    /** 是否“为null” */
+    isNull?: boolean
+    /** 是否“为null或空” */
+    isNullOrEmpty?: boolean
     /** 是否“模糊查询” */
     isFuzzy?: boolean
     /** 值 */

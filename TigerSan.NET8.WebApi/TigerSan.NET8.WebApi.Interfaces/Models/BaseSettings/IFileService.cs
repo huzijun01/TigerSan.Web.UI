@@ -24,9 +24,11 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             bool isTopOnly = true);
         /// <summary>获取“文件”</summary>
         public Task<MyActionResult<FileStreamResult>> GetFile(string name, string? subPath = null);
+        /// <summary>获取“CSV”</summary>
+        public Task<MyActionResult<FileStreamResult>> GetCsv<T>(IList<T> list, string? name = null) where T : class, new();
 
         // 增:
-        /// <summary>创建“文件夹”</summary>
+            /// <summary>创建“文件夹”</summary>
         public Task<MyActionResult<object>> CreatDir(string name, string? subPath = null);
         /// <summary>上传“文件”</summary>
         /// <returns>Query参数</returns>

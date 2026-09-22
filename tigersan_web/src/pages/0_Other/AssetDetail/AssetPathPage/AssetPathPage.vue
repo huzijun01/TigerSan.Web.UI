@@ -28,7 +28,7 @@
                     <Pagination :model="model.pagination" />
                 </div>
             </div>
-            <div class="map-panel">
+            <div class="map-panel flex-stretch">
                 <Map :model="model.map" />
             </div>
         </div>

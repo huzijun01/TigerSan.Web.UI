@@ -53,6 +53,8 @@ export class PositionInfoModel {
     //#endregion 【Fields】
 
     //#region 【Props】
+    /** 是否选中 */
+    readonly IsSelected = ref(false)
     /** 资产位置 */
     readonly Position: Reactive<PositionDto>
     /** 图标 */
@@ -72,7 +74,7 @@ export class PositionInfoModel {
     /** 样式对象 */
     readonly Style = computed((): StyleValue => {
         return {
-            background: this.Background.value
+            background: this.IsSelected.value ? Colors.Brand10 : this.Background.value
         }
     })
     //#endregion [computed]

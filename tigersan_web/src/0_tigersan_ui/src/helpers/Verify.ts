@@ -143,7 +143,7 @@ export class Verify {
     }
 
     /** 是否“为合法MAC地址” */
-    static IsValidMacAddr(str?: string): VerifyResult {
+    static IsValidMacAddr(str?: string | null): VerifyResult {
         if (!str || str.trim() === '') {
             return Verify.Error(Texts.CannotBeEmpty.value)
         }
@@ -169,7 +169,7 @@ export class Verify {
                 const line = lines[i] as string
                 if (line.trim() === '') return Verify.Error(Texts.CannotBeEmpty.value + ` (line:${i + 1})`)
                 const result = this.IsValidMacAddr(line)
-                if (!result.IsOK()) return result
+                if (!result.IsOK) return result
             }
 
             return Verify.OK()

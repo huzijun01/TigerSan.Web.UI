@@ -41,6 +41,8 @@ export class Icons {
     static Close_Circle = ""
     static Chart_Pie = ""
     static Chart_Line = ""
+    static Coordinate_1 = ""
+    static Coordinate_2 = ""
 
     // D:
     static DOC = ""

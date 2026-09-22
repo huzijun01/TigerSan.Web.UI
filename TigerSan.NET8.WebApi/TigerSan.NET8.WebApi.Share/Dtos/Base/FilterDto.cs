@@ -17,6 +17,10 @@
     {
         /// <summary>属性名</summary>
         public string PropName { get; set; } = string.Empty;
+        /// <summary>是否“为null”</summary>
+        public bool? IsNull { get; set; }
+        /// <summary>是否“为null或空”</summary>
+        public bool? IsNullOrEmpty { get; set; }
         /// <summary>是否“模糊查询”</summary>
         public bool? IsFuzzy { get; set; }
         /// <summary>值</summary>

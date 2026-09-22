@@ -11,6 +11,8 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         Tag = 0,
         /// <summary>定位器</summary>
         Locator = 1,
+        /// <summary>工牌</summary>
+        WorkCard = 2,
     }
 
     /// <summary>定位模式</summary>

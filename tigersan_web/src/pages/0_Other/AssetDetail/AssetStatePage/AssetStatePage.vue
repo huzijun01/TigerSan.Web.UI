@@ -1,7 +1,6 @@
 <template>
     <div class="state-page">
-        <!-- 顶部: -->
-        <div class="top-panel flex-between">
+        <div class="left-panel flex-stretch">
             <div class="map-panel">
                 <Map :model="model.map" />
             </div>

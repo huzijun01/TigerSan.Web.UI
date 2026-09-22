@@ -15,13 +15,19 @@ export class PositionListModel {
 
     //#region 【Props】
     /** 总数 */
-    readonly Count = ref<number>(0)
+    readonly Count = ref(0)
     /** “位置”集合 */
     readonly Positions = shallowReactive<PositionDto[]>([])
-    /** “位置信息”集合 */
+    /** “位置信息”集合
+     * （由“PositionListModel”内部维护） */
     readonly PositionInfoes = shallowReactive<PositionInfoModel[]>([])
+
+    //#region [computed]
     /** “位置”集合 */
     readonly rawPositions = computed(() => toRaw(this.Positions))
+    /** 选中的“位置信息” */
+    readonly SelectedInfo = computed(() => this.PositionInfoes.find(i => i.IsSelected.value))
+    //#endregion [computed]
     //#endregion 【Props】
 
     //#region 【Ctor】
@@ -34,16 +40,47 @@ export class PositionListModel {
     //#endregion 【Ctor】
 
     //#region 【Functions】
+    /** 设置“位置”集合 */
     readonly SetPositions = (positions: PositionDto[]) => {
         this.Positions.splice(0)
         this.Positions.push(...positions)
-        const assets = this.rawPositions.value
+        this.InitInfoes()
+    }
+
+    /** 跳转到“所在页” */
+    readonly GoToPage = (position: PositionDto) => {
+        const num = this.pagination.GetNum(position, this.rawPositions.value)
+        if (!num) return
+        if (this.pagination.SelectedNum.value != num) {
+            this.pagination.SelectedNum.value = num
+            this.InitInfoes()
+        }
+        const info = this.PositionInfoes.find(i => toRaw(i.Position) === position)
+        this.SetSelectedInfo(info)
+    }
+
+    /** 设置“选中的位置信息” */
+    readonly SetSelectedInfo = (info?: PositionInfoModel) => {
+        const selected = this.SelectedInfo.value
+        if (selected) {
+            selected.IsSelected.value = false
+        }
+        if (!info) return
+        info.IsSelected.value = true
+    }
+
+    /** 初始化“位置信息”集合 */
+    readonly InitInfoes = () => {
+        const postions = this.rawPositions.value
         this.PositionInfoes.splice(0)
         this.Count.value = this.Positions.length
-        this.pagination.GetPage(assets).forEach(position => {
-            const assetInfo = new PositionInfoModel(position)
-            assetInfo._onClick = this._onClick
-            this.PositionInfoes.push(assetInfo)
+        this.pagination.GetPage(postions).forEach(position => {
+            const info = new PositionInfoModel(position)
+            info._onClick = info => {
+                this.SetSelectedInfo(info)
+                this._onClick?.(info)
+            }
+            this.PositionInfoes.push(info)
         })
     }
     //#endregion 【Functions】

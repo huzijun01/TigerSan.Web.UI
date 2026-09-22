@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SkiaSharp;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
@@ -69,6 +70,21 @@ namespace TigerSan.NET8.WebApi.Controllers
         public async Task<MyActionResult<List<TagDto>>> GetFullListByStationId(string stationId)
         {
             return await _service.GetFullListByStationId(stationId);
+        }
+
+        /// <summary>下载“CSV”</summary>
+        [HttpPost("DownloadCsv")]
+        public async Task<IActionResult> DownloadCsv(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            var res = await _service.GetCsv(pageSize, pageNumber, sort, ascending, filter);
+            var file = res.Data;
+            if (file == null) return BadRequest(res.Message);
+            return file;
         }
         #endregion [查]
 

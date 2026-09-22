@@ -1,5 +1,5 @@
 import { computed, ref, watch } from 'vue'
-import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IdValue, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall, TextModel, ActionResultCode } from '@/0_tigersan_ui/tigerui'
+import { Colors, DialogHelper, Verify, ObjectHelper, DialogMode, DialogState, FormModel, FormConfig, FormItemConfig, SearchModel, BigintHelper, PaginationModel, ArrayHelper, SwitchModel, GetSubmitResult, IdName, IdValue, MyActionResult, OnlineStates, IsEnable, OnlineState, loading, Texts, StringHelper, IsFall, TextModel, ActionResultCode, IsBound } from '@/0_tigersan_ui/tigerui'
 import { GetTagTable } from './TagMgtTable'
 import { AssetFilter } from '@/pages/Home/AssetLedgerPage/AssetFilter'
 import { AssetFormModel } from '@/pages/Home/AssetLedgerPage/AssetFormModel'
@@ -46,6 +46,7 @@ export class TagMgtPageModel {
     readonly selectOnlineState = OnlineState.GetSelectModel()
     readonly selectIsFall = IsFall.GetSelectModel()
     readonly selectIsEnable = IsEnable.GetSelectModel()
+    readonly selectIsBound = IsBound.GetSelectModel()
     readonly selectBatch = batchHelper.GetIdNameSelectModel()
     readonly selectTagType = tagTypeHelper.GetIdNameSelectModel()
     readonly selectStation = baseStationHelper.GetIdNameSelectModel()
@@ -202,6 +203,7 @@ export class TagMgtPageModel {
         this.selectOnlineState._onChange = this.Refresh
         this.selectIsFall._onChange = this.Refresh
         this.selectIsEnable._onChange = this.Refresh
+        this.selectIsBound._onChange = this.Refresh
 
         // 上传器:
         this.upload._isAutoLoad = false
@@ -233,6 +235,7 @@ export class TagMgtPageModel {
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
+            isBound: this.selectIsBound.Value.value,
             state: OnlineStates.Online,
             isFall: this.selectIsFall.Value.value,
             tagId: this.searchTagId.Value.value,
@@ -246,6 +249,7 @@ export class TagMgtPageModel {
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
+            isBound: this.selectIsBound.Value.value,
             state: OnlineStates.Offline,
             isFall: this.selectIsFall.Value.value,
             tagId: this.searchTagId.Value.value,
@@ -259,6 +263,7 @@ export class TagMgtPageModel {
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
+            isBound: this.selectIsBound.Value.value,
             isFall: this.selectIsFall.Value.value,
             state: this.selectOnlineState.Value.value,
             tagId: this.searchTagId.Value.value,
@@ -279,6 +284,7 @@ export class TagMgtPageModel {
             station: this.selectStation.Value.value?.id,
             eqpType: this.eqpType,
             isEnable: this.selectIsEnable.Value.value,
+            isBound: this.selectIsBound.Value.value,
             state: this.selectOnlineState.Value.value,
             type: this.selectTagType.Value.value?.id,
             tagId: this.searchTagId.Value.value,
@@ -305,6 +311,7 @@ export class TagMgtPageModel {
                 station: this.selectStation.Value.value?.id,
                 eqpType: this.eqpType,
                 isEnable: this.selectIsEnable.Value.value,
+                isBound: this.selectIsBound.Value.value,
                 state: this.selectOnlineState.Value.value,
                 isFall: this.selectIsFall.Value.value,
                 type: this.selectTagType.Value.value?.id,
@@ -490,6 +497,18 @@ export class TagMgtPageModel {
     /** 维修 */
     readonly Repair = () => {
         DialogHelper.Information('维修')
+    }
+
+    /** 导出 */
+    readonly Export = async () => {
+        try {
+            loading.IsShow.value = true
+
+            const res = await tagHelper.DownloadCsv(EqpType.GetName(this.eqpType), { eqpType: this.eqpType })
+            MyActionResult.ShowResult(res, Texts.DownloadSuccessfully.value)
+        } finally {
+            loading.IsShow.value = false
+        }
     }
     //#endregion 【Functions】
 }

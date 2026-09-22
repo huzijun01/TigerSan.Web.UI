@@ -9,6 +9,7 @@
                         <Select :model="model.selectOnlineState" />
                         <Select :model="model.selectIsEnable" />
                         <Select :model="model.selectIsFall" />
+                        <Select :model="model.selectIsBound" />
                     </div>
                     <div class="row-panel">
                         <Search :model="model.searchTagId" />
@@ -30,13 +31,14 @@
                         <button v-if="!Authorities.TagMgtPage.IsReadonly.value" class="bg-warning"
                             :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.TagMgtPage.IsReadonly.value" class="bg-danger"
-                            :disabled="!IsOnlySelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
+                            :disabled="!IsSelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
                     </div>
                     <div class="row-panel">
                         <Switch :model="model.switchIsEnable"></Switch>
                         <button :disabled="!model.IsAllowBinding.value" @click="model.Binding">
                             {{ Texts.Binding.value }}</button>
                         <button :disabled="!IsOnlySelected" @click="model.Repair">{{ Texts.Repair.value }}</button>
+                        <button @click="model.Export">{{ Texts.Export.value }}</button>
                     </div>
                 </div>
             </div>
@@ -109,7 +111,7 @@ import { TagMgtPageModel } from '../../Equipments/TagMgt/TagMgtPage/TagMgtPageMo
 
 // 【字段】:
 const model = new TagMgtPageModel(EqpTypes.Locator)
-const { IsOnlySelected } = model.table
+const { IsSelected, IsOnlySelected } = model.table
 
 // 【过程】:
 onMounted(() => {

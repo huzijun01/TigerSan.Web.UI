@@ -37,7 +37,7 @@ export class PaginationModel {
     readonly Count = new Int(0)
     /** 页大小 */
     readonly PageSize = new Int(PaginationModel.Default_Page_Size)
-    /** 所选数字 */
+    /** 所选页号 */
     readonly SelectedNum = new Int(1)
     /** 最大显示个数（非负） */
     readonly MaxShowPageCount = new Int(0)
@@ -352,6 +352,28 @@ export class PaginationModel {
         }
 
         this.UpdatePageText()
+    }
+
+    /** 获取“所在页号” */
+    readonly GetNum = <TSource>(row: TSource, rows: TSource[]): number | undefined => {
+        if (rows.length === 0) {
+            console.warn('The rows is empty!')
+            return undefined
+        }
+
+        // 获取“索引”：
+        const index = rows.indexOf(row)
+        if (index === -1) {
+            console.warn('The row is not found in the rows!')
+            return undefined
+        }
+
+        // 计算页号：
+        const pageNum = Math.floor(index / this.PageSize.value) + 1
+
+        // 边界校验：
+        const totalPage = this.GetPageCount().value
+        return Math.min(Math.max(pageNum, 1), totalPage)
     }
 
     /** 获取“分页数据” */

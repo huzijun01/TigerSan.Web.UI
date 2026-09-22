@@ -1,10 +1,11 @@
-﻿using System.Reflection;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using System.Reflection.Metadata;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share.Dtos;
-using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
+using TigerSan.NET8.WebApi.Share.Helpers;
 
 namespace TigerSan.NET8.WebApi.Share.Extensions
 {
@@ -266,6 +267,85 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
         {
             try
             {
+                #region x.Prop
+                // 属性名为空校验
+                if (string.IsNullOrEmpty(filter.PropName))
+                    return MyResults<IQueryable>.Error(LogHelper.Instance.IsNullOrEmpty(nameof(filter.PropName)));
+
+                // 获取属性信息
+                var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                if (propertyInfo == null)
+                    return MyResults<IQueryable>.Error(LogHelper.Instance.Error($"Property '{filter.PropName}' not found on type '{entityType.Name}'"));
+
+                // 创建参数表达式 x
+                var parameter = Expression.Parameter(entityType, "x");
+                // 创建属性访问表达式 x.Prop
+                var property = Expression.Property(parameter, propertyInfo);
+                var propertyType = propertyInfo.PropertyType;
+                #endregion
+
+                #region 是否“为null”
+                if (filter.IsNull != null)
+                {
+                    Expression nullBody;
+                    if (filter.IsNull == true)
+                    {
+                        // 构建 x.Prop == null 表达式
+                        nullBody = Expression.Equal(property, Expression.Constant(null, property.Type));
+                    }
+                    else
+                    {
+                        // 构建 x.Prop != null 表达式
+                        nullBody = Expression.NotEqual(property, Expression.Constant(null, property.Type));
+                    }
+
+                    // 生成Lambda表达式
+                    var nullLambda = Expression.Lambda(nullBody, parameter);
+                    // 动态调用Where方法
+                    var nullFilteredQueryable = queryable.Where(nullLambda);
+                    if (nullFilteredQueryable == null)
+                        return MyResults<IQueryable>.Error(LogHelper.Instance.IsNull(nameof(nullFilteredQueryable)));
+
+                    return MyResults<IQueryable>.Success(null, nullFilteredQueryable);
+                }
+                #endregion
+
+                #region 是否“为null或空”
+                if (filter.IsNullOrEmpty != null)
+                {
+                    // 非字符串类型直接返回全量数据，避免类型转换异常
+                    if (propertyType != typeof(string))
+                        return MyResults<IQueryable>.Success(null, queryable);
+
+                    // 构建 x.Prop == null || x.Prop == "" 表达式
+                    Expression emptyBody;
+                    var nullCheck = Expression.Equal(property, Expression.Constant(null, typeof(string)));
+                    var emptyCheck = Expression.Equal(property, Expression.Constant(string.Empty, typeof(string)));
+
+                    if (filter.IsNullOrEmpty == true)
+                    {
+                        // 筛选空字符串或null
+                        emptyBody = Expression.OrElse(nullCheck, emptyCheck);
+                    }
+                    else
+                    {
+                        // 筛选非空字符串且不为null
+                        emptyBody = Expression.AndAlso(
+                            Expression.NotEqual(property, Expression.Constant(null, typeof(string))),
+                            Expression.NotEqual(property, Expression.Constant(string.Empty, typeof(string)))
+                        );
+                    }
+
+                    var emptyLambda = Expression.Lambda(emptyBody, parameter);
+                    var emptyFiltered = queryable.Where(emptyLambda);
+                    if (emptyFiltered == null)
+                        return MyResults<IQueryable>.Error(LogHelper.Instance.IsNull(nameof(emptyFiltered)));
+
+                    return MyResults<IQueryable>.Success(null, emptyFiltered);
+                }
+                #endregion
+
+                #region 获取“值”集合
                 // 添加单值:
                 if (filter.Value != null)
                 {
@@ -284,19 +364,6 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 if (string.IsNullOrEmpty(filter.PropName))
                     return MyResults<IQueryable>.Error(LogHelper.Instance.IsNullOrEmpty(nameof(filter.PropName)));
 
-                // 获取“属性信息”:
-                var propertyInfo = entityType.GetProperty(filter.PropName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                if (propertyInfo == null)
-                {
-                    return MyResults<IQueryable>.Error(LogHelper.Instance.Error($"Property '{filter.PropName}' not found on type '{entityType.Name}'"));
-                }
-
-                // 创建“x”表达式:
-                var parameter = Expression.Parameter(entityType, "x");
-                // 创建“x.prop”表达式:
-                var property = Expression.Property(parameter, propertyInfo);
-                var propertyType = propertyInfo.PropertyType;
-
                 // 值去重:
                 var values = filter.Values.Distinct().ToList();
                 if (propertyType == typeof(string))
@@ -307,7 +374,9 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                 // 不选择:
                 if (values.Count < 1)
                     return MyResults<IQueryable>.Success(null, queryable.False());
+                #endregion
 
+                #region Where
                 Expression body;
 
                 // 5. 构建表达式主体
@@ -372,6 +441,7 @@ namespace TigerSan.NET8.WebApi.Share.Extensions
                     return MyResults<IQueryable>.Error(LogHelper.Instance.IsNull(nameof(newQueryable)));
 
                 queryable = newQueryable;
+                #endregion
             }
             catch (Exception e)
             {

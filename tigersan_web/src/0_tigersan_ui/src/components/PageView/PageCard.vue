@@ -1,6 +1,6 @@
 <template>
     <div class="page-card flex-stretch">
-        <div class="scroll-panel" :style="styleObj">
+        <div class="scroll-panel flex-column" :style="styleObj">
             <slot></slot>
         </div>
     </div>
@@ -79,7 +79,6 @@ function UpdateIsOpen() {
 <style lang="less" scoped>
 .page-card {
     .scroll-panel {
-        // 显示:
         overflow: auto;
 
         &>* {

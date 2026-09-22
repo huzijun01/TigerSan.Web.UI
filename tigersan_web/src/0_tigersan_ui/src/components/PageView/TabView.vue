@@ -5,8 +5,8 @@
                 <span>{{ p.ShowTitle.value }}</span>
             </div>
         </div>
-        <div class="content-panel" :style="model.ContentStyle.value">
-            <div v-for="p in model.Pages" :key="p._id" class="flex-stretch" :class="p.HiddenClass.value">
+        <div class="content-list-panel flex-column" :style="model.ContentStyle.value">
+            <div v-for="p in model.Pages" :key="p._id" class="content-panel flex-stretch" :class="p.HiddenClass.value">
                 <PageContent :component="p._component" :rootProps="p._rootProps" />
             </div>
         </div>
@@ -61,8 +61,12 @@ const { model } = defineProps({
         }
     }
 
-    .content-panel {
+    .content-list-panel {
         overflow: auto;
+
+        &>.content-panel {
+            flex-grow: 1;
+        }
     }
 }
 </style>

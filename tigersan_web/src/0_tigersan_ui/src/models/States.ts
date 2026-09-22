@@ -251,6 +251,44 @@ export class IsMobile {
     }
 }
 
+export class IsBound {
+    static ToString(value?: boolean) {
+        if (value === undefined || value === null) return ''
+        return value ? Texts.Bound.value : Texts.Unbound.value
+    }
+
+    static GetString(obj: object, propName: string = 'isBound'): string {
+        return IsBound.ToString(ObjectHelper.DefaultTGetter(obj, propName, undefined))
+    }
+
+    static GetSelectModel() {
+        const select = new SelectModel<boolean>()
+        select.Width.value = 120
+        select.Value.value = undefined
+        select.Placeholder.value = Texts.BindingState
+        select.SetItems([true, false])
+        select._converter = IsBound.ToString
+        return select
+    }
+
+    /** 初始化“项目模型” */
+    static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'isBound') {
+        if (itemModel._headerModel._propName === propName) {
+            const source = itemModel.GetSource()
+            if (source === undefined || source === null) {
+                return
+            }
+            else if (source) {
+                itemModel.Color.value = Colors.Danger
+                itemModel.Background.value = Colors.Danger10
+            } else {
+                itemModel.Color.value = Colors.Success
+                itemModel.Background.value = Colors.Success10
+            }
+        }
+    }
+}
+
 export class Battery {
     /** 初始化“项目模型” */
     static InitItemModel(itemModel: TableItemModel<any>, propName: string = 'battery') {

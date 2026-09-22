@@ -9,6 +9,7 @@
                         <Select :model="model.selectOnlineState" />
                         <Select :model="model.selectIsEnable" />
                         <Select :model="model.selectIsFall" />
+                        <Select :model="model.selectIsBound" />
                     </div>
                     <div class="row-panel">
                         <Search :model="model.searchTagId" />
@@ -37,6 +38,7 @@
                         <button :disabled="!model.IsAllowBinding.value" @click="model.Binding">
                             {{ Texts.Binding.value }}</button>
                         <button :disabled="!IsOnlySelected" @click="model.Repair">{{ Texts.Repair.value }}</button>
+                        <button @click="model.Export">{{ Texts.Export.value }}</button>
                     </div>
                 </div>
             </div>

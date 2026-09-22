@@ -1,6 +1,7 @@
 import PositionInfo from "@/components/PositionInfo.vue"
+import PositionList from './PositionList/PositionList.vue'
 import { ref, toRaw } from "vue"
-import { loading, MapModel, LnglatData, DrawerModel, RowDataModel } from "@/0_tigersan_ui/tigerui"
+import { loading, MapModel, LnglatData, DrawerModel, RowDataModel, TabViewModel, Texts } from "@/0_tigersan_ui/tigerui"
 import { AssetFilter } from '../AssetLedgerPage/AssetFilter'
 import { PositionListModel } from "./PositionList/PositionListModel"
 import { AssetStateModel } from "../../0_Other/AssetDetail/AssetStatePage/AssetStateModel"
@@ -24,6 +25,19 @@ export class AssetMapPageModel {
     readonly assetList = new PositionListModel()
     /** “基站”列表 */
     readonly stationList = new PositionListModel()
+    /** “列表”标签页 */
+    readonly tabList = new TabViewModel([
+        {
+            Title: Texts.Tag,
+            _component: PositionList,
+            _rootProps: { model: this.assetList },
+        },
+        {
+            Title: Texts.BaseStation,
+            _component: PositionList,
+            _rootProps: { model: this.stationList },
+        }
+    ])
     //#endregion 【Fields】
 
     //#region 【Props】
@@ -93,6 +107,8 @@ export class AssetMapPageModel {
             this.drawerState.Title.value = data.data.info
 
             if (data.data.type === PositionTypes.Station) {
+                this.tabList.SetSelectedPage(1)
+                this.stationList.GoToPage(data.data)
                 baseStationHelper.GetFull(undefined, data.data.info).then(res => {
                     if (res) {
                         this.IsStation.value = true
@@ -101,6 +117,8 @@ export class AssetMapPageModel {
                     }
                 })
             } else {
+                this.tabList.SetSelectedPage(0)
+                this.assetList.GoToPage(data.data)
                 this.assetState.Init(data.data.info).then(res => {
                     if (res) {
                         this.IsStation.value = false

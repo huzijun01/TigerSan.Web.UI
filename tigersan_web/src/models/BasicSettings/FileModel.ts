@@ -11,11 +11,11 @@ export class FileInfo {
     size?: string
 }
 
-class FileModelHelper {
+class FileHelper {
     /** 基础URL */
     static readonly _baseUrl = Settings.AppBaseUrl + '/File/DownloadFile'
     /** 基础URL */
-    get BaseUrl() { return FileModelHelper._baseUrl }
+    get BaseUrl() { return FileHelper._baseUrl }
 
     // 查:
     /** 获取“路径信息”集合 */
@@ -85,4 +85,4 @@ class FileModelHelper {
     ], names)
 }
 
-export const fileModelHelper = new FileModelHelper()
+export const fileModelHelper = new FileHelper()

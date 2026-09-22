@@ -6,10 +6,12 @@ export enum EqpTypes {
     Tag = 0,
     /** 定位器 */
     Locator = 1,
+    /** 工牌 */
+    WorkCard = 2,
 }
 
 export class EqpType {
-    static GetName(state?: EqpTypes): string {
+    static GetName(state?: EqpTypes | null): string {
         if (state === undefined || state === null) return ''
 
         switch (state) {
@@ -17,6 +19,8 @@ export class EqpType {
                 return Texts.Tag.value
             case EqpTypes.Locator:
                 return Texts.Locator.value
+            case EqpTypes.WorkCard:
+                return Texts.WorkCard.value
             default:
                 return Texts.Unknown.value
         }
@@ -27,7 +31,7 @@ export class EqpType {
         const select = new SelectModel<EqpTypes>()
         select.Width.value = 120
         select.Placeholder.value = Texts.EqpType
-        select.Items.push(...[0, 1])
+        select.Items.push(...[0, 1, 2])
         select._converter = this.GetName
         return select
     }

@@ -38,24 +38,24 @@ export class VerifyResult {
     VerifyState: FormResult
     VerifyText: string
 
+    get IsOK() {
+        return this.VerifyState === FormResult.OK
+    }
+
+    get IsWarning() {
+        return this.VerifyState === FormResult.Warning
+    }
+
+    get IsError() {
+        return this.VerifyState === FormResult.Error
+    }
+
     constructor(
         verifyText: string = '',
         verifyState: FormResult = FormResult.OK
     ) {
         this.VerifyText = verifyText
         this.VerifyState = verifyState
-    }
-
-    IsOK() {
-        return this.VerifyState === FormResult.OK
-    }
-
-    IsWarning() {
-        return this.VerifyState === FormResult.Warning
-    }
-
-    IsError() {
-        return this.VerifyState === FormResult.Error
     }
 }
 

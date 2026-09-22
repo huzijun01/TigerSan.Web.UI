@@ -1,4 +1,5 @@
-﻿using TigerSan.NET8.WebApi.Share.Dtos;
+﻿using Microsoft.AspNetCore.Mvc;
+using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
@@ -39,6 +40,13 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<List<TagDto>>> GetFullList(List<long> ids);
         /// <summary>获取“完整数据”集合（根据“基站ID”）</summary>
         public Task<MyActionResult<List<TagDto>>> GetFullListByStationId(string stationId);
+        /// <summary>获取“CSV”</summary>
+        public Task<MyActionResult<FileStreamResult>> GetCsv(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null);
 
         // 增：
         /// <summary>批量添加</summary>

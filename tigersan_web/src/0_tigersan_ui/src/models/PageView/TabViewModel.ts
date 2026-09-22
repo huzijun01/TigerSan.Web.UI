@@ -136,5 +136,20 @@ export class TabViewModel {
             this.SelectedPage.value = this.Pages[0]
         }
     }
+
+    /** 设置“选中的标签页” */
+    readonly SetSelectedPage = (index: number) => {
+        if (index < 0 || index >= this.Pages.length) {
+            console.warn('The index is out of range!')
+            return
+        }
+
+        const targetPage = this.Pages[index]
+
+        // 避免重复赋值触发不必要的 watch 或副作用
+        if (this.SelectedPage.value !== targetPage) {
+            this.SelectedPage.value = targetPage
+        }
+    }
     //#endregion 【Functions】
 }

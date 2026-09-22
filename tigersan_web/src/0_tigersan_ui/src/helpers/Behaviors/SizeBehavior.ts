@@ -1,4 +1,4 @@
-import { ref, shallowRef } from "vue"
+import { computed, ref, shallowRef, type StyleValue } from "vue"
 
 /** “尺寸”行为 */
 export class SizeBehavior {
@@ -16,6 +16,13 @@ export class SizeBehavior {
     readonly ActualWidth = ref(0)
     /** 实际高度 */
     readonly ActualHeight = ref(0)
+    /** 尺寸样式 */
+    readonly SizeStyle = computed((): StyleValue => {
+        return {
+            width: this.ActualWidth.value + 'px',
+            height: this.ActualHeight.value + 'px',
+        }
+    })
     //#endregion 【Props】
 
     //#region 【Functions】

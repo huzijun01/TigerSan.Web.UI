@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -13,6 +14,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
     public class TagService : IdServiceBase<TagEntity>, ITagService
     {
         #region 【Fields】
+        private readonly IFileService _fileService;
         private readonly IBatchService _batchService;
         private readonly IAssetRecordService _assetRecordService;
         private readonly IBaseStationService _baseStationService;
@@ -30,12 +32,14 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
         public TagService(
             AppDbContext db,
+            IFileService fileService,
             IBatchService batchService,
             IAssetRecordService assetRecordService,
             IBaseStationService baseStationService,
             IBindingRecordService bindingRecordService,
             IStationBindingService stationBindingService) : base(db, db.Tags)
         {
+            _fileService = fileService;
             _batchService = batchService;
             _assetRecordService = assetRecordService;
             _baseStationService = baseStationService;
@@ -520,6 +524,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
             catch (Exception e)
             {
                 return MyResults<List<TagDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
+
+        #region 获取“CSV”
+        public async Task<MyActionResult<FileStreamResult>> GetCsv(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                // 获取“数据”集合:
+                var resGetFullList = await GetFullList(pageSize, pageNumber, sort, ascending, filter);
+                var dtos = resGetFullList.Data;
+                if (dtos == null)
+                {
+                    return MyResults<FileStreamResult>.Error(resGetFullList.Message);
+                }
+
+                return await _fileService.GetCsv(dtos);
+            }
+            catch (Exception e)
+            {
+                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion

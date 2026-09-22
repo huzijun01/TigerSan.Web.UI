@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="bottom-panel">
-                <TabView :model="tabList" />
+                <TabView :model="model.tabList" />
                 <div class="map-panel">
                     <Map :model="model.map" />
                 </div>
@@ -57,7 +57,6 @@
 </template>
 
 <script lang="ts" setup>
-import PositionList from './PositionList/PositionList.vue'
 import AssetState from '../../0_Other/AssetDetail/AssetStatePage/AssetState.vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import { Drawer, RowData, PageCard, Select, Search, Texts, Map, PopWindow, TabView, TabViewModel } from '@/0_tigersan_ui/tigerui'
@@ -66,19 +65,6 @@ import { assetDetail } from '../AssetLedgerPage/AssetLedgerTable'
 import { stationDetail } from '@/pages/BasicSettings/Equipments/BaseStationMgtPage/BaseStationMgtTable'
 // 【字段】:
 const model = new AssetMapPageModel()
-
-const tabList = new TabViewModel([
-    {
-        Title: Texts.Tag,
-        _component: PositionList,
-        _rootProps: { model: model.assetList },
-    },
-    {
-        Title: Texts.BaseStation,
-        _component: PositionList,
-        _rootProps: { model: model.stationList },
-    }
-])
 
 // 【过程】:
 onMounted(async () => {
@@ -106,25 +92,6 @@ onBeforeUnmount(() => {
         display: grid;
         grid-template-columns: auto 1fr;
         margin-top: 16px;
-
-        .table-panel {
-            min-width: 250px;
-            margin-right: 16px;
-
-            .count-panel {
-                padding: 5px 10px;
-            }
-
-            .list-panel {
-                flex-grow: 1;
-                overflow: auto;
-                max-height: calc(100vh - 360px);
-            }
-
-            .pagination-panel {
-                overflow: auto;
-            }
-        }
     }
 }
 </style>

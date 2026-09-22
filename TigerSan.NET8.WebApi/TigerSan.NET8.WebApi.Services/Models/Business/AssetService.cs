@@ -53,9 +53,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 if (!string.IsNullOrEmpty(dto.TagId))
                 {
                     // 检验“标签ID”是否重复:
-                    if (dto.Tag != null && await _dbSet.AnyAsync(i => i.TagId == dto.TagId))
+                    if (await _dbSet.AnyAsync(i => i.AssetId == dto.AssetId))
                     {
-                        return MyResults<AssetEntity>.TagRepeated;
+                        return MyResults<AssetEntity>.AssetIdRepeated;
+                    }
+
+                    // 检验“标签ID”是否重复:
+                    if (await _dbSet.AnyAsync(i => i.TagId == dto.TagId))
+                    {
+                        return MyResults<AssetEntity>.TagIdRepeated;
                     }
 
                     // “标签”是否存在:
@@ -612,7 +618,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
         {
             try
             {
-                if(companies.Count < 1) return MyResults<AssetCountDto>.Success(null, new AssetCountDto());
+                if (companies.Count < 1) return MyResults<AssetCountDto>.Success(null, new AssetCountDto());
 
                 var queryable = _dbSet.AsNoTracking();
 
@@ -658,12 +664,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
             try
             {
-                // 检验“资产ID”是否重复:
-                if (await _dbSet.AnyAsync(i => i.AssetId == dto.AssetId))
-                {
-                    return MyResults<AssetEntity>.AssetIdRepeated;
-                }
-
                 var res = await Add(dto);
                 if (res.IsError)
                 {

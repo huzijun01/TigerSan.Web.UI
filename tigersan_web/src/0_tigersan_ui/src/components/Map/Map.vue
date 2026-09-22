@@ -1,5 +1,5 @@
 <template>
-    <div class="map-panel">
+    <div class="amap-panel">
         <div class="map-container" ref="refContainer"></div>
         <div class="search-panel" v-if="model.IsShowSelect.value">
             <Select :model="model.SelectAddr" />
@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
 <style lang="less">
 @padding: 10px;
 
-.map-panel {
+.amap-panel {
     position: relative;
     width: 100%;
     height: 100%;

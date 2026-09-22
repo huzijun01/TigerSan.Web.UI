@@ -15,7 +15,7 @@ class ImageModelHelper {
     ])
 
     /** 获取“图片” */
-    readonly Get = async (name: string) => await axiosHelper._api.get(ImageModelHelper._baseUrl + name) as File | undefined
+    readonly Get = async (name: string) => await axiosHelper.GetBlob(ImageModelHelper._baseUrl + name)
 
     // 增:
     /** 上传

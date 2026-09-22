@@ -76,6 +76,7 @@ export class Texts {
     static readonly Error = TextModel.Computed('Error', '错误')
     static readonly Enter = TextModel.Computed('Enter', '进入')
     static readonly Enable = TextModel.Computed('Enable', '启用')
+    static readonly Export = TextModel.Computed('Export', '导出')
     static readonly EndTime = TextModel.Computed('EndTime', '结束时间')
     static readonly EqpName = TextModel.Computed('EqpName', '设备名称')
     static readonly EqpType = TextModel.Computed('EqpType', '设备类型')
@@ -102,6 +103,7 @@ export class Texts {
     // I:
     static readonly Is = TextModel.Computed('Is', '是否')
     static readonly Input = TextModel.Computed('Input', '输入')
+    static readonly Import = TextModel.Computed('Import', '导入')
     static readonly IsEnd = TextModel.Computed('IsEnd', '是否完成')
     static readonly IsFall = TextModel.Computed('IsFall', '是否脱落')
     static readonly Inbound = TextModel.Computed('Inbound', '入库')
@@ -252,6 +254,7 @@ export class Texts {
     static readonly VerificationCodeLogin = TextModel.Computed('Verification code login', '验证码登录')
     // W:
     static readonly Warning = TextModel.Computed('Warning', '警告')
+    static readonly WorkCard = TextModel.Computed('WorkCard', '工牌')
     // Y:
     static readonly Yes = TextModel.Computed('Yes', '是')
 }

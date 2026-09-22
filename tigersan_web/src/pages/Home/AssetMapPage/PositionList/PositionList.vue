@@ -38,7 +38,7 @@ const { model } = defineProps({
     .list-panel {
         flex-grow: 1;
         overflow: auto;
-        max-height: calc(100vh - 360px);
+        height: calc(100vh - 360px);
     }
 
     .pagination-panel {

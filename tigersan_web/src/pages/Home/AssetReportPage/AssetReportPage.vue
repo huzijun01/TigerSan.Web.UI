@@ -29,8 +29,8 @@ import AssetOnlineStateChart from './AssetOnlineStateChart.vue'
 import AssetStateRecordChart from './AssetStateRecordChart.vue'
 import AssetCountPieChart from './AssetCountPieChart.vue'
 import { onMounted, ref } from 'vue'
-import { AssetReportPageModel } from './AssetReportPageModel'
 import { PageCard, Texts } from '@/0_tigersan_ui/tigerui'
+import { AssetReportPageModel } from './AssetReportPageModel'
 
 // 【字段】:
 const model = new AssetReportPageModel()
