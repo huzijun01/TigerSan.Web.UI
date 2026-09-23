@@ -684,6 +684,33 @@ namespace TigerSan.NET8.WebApi.Services.Models
             }
         }
         #endregion
+
+        #region 获取“XLSX”
+        public async Task<MyActionResult<FileStreamResult>> GetXlsx(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null)
+        {
+            try
+            {
+                // 获取“数据”集合:
+                var resGetFullList = await GetFullList(pageSize, pageNumber, sort, ascending, filter);
+                var dtos = resGetFullList.Data;
+                if (dtos == null)
+                {
+                    return MyResults<FileStreamResult>.Error(resGetFullList.Message);
+                }
+
+                return await _fileService.GetXlsx(dtos);
+            }
+            catch (Exception e)
+            {
+                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(e.GetMessage()));
+            }
+        }
+        #endregion
         #endregion [查]
 
         #region [增]

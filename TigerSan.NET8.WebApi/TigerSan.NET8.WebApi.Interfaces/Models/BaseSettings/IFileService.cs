@@ -26,6 +26,8 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<FileStreamResult>> GetFile(string name, string? subPath = null);
         /// <summary>获取“CSV”</summary>
         public Task<MyActionResult<FileStreamResult>> GetCsv<T>(IList<T> list, string? name = null) where T : class, new();
+        /// <summary>获取“XLSX”</summary>
+        public Task<MyActionResult<FileStreamResult>> GetXlsx<T>(IList<T> list, string? name = null) where T : class, new();
 
         // 增:
             /// <summary>创建“文件夹”</summary>

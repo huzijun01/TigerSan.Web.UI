@@ -47,6 +47,13 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
             string? sort = null,
             bool? ascending = null,
             FilterDto? filter = null);
+        /// <summary>获取“XLSX”</summary>
+        public Task<MyActionResult<FileStreamResult>> GetXlsx(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            FilterDto? filter = null);
 
         // 增：
         /// <summary>批量添加</summary>

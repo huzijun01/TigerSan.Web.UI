@@ -1,8 +1,9 @@
+import PositionList from '@/pages/Home/AssetMapPage/PositionList/PositionList.vue'
 import { ref, shallowReactive } from "vue"
-import { Colors, FormConfig, FormItemConfig, FormModel, Icons, SizeBehavior, SubmitResult, Texts, Verify } from "@/0_tigersan_ui/tigerui"
+import { Colors, FormConfig, FormItemConfig, FormModel, Icons, SubmitResult, TabViewModel, Texts, Verify } from "@/0_tigersan_ui/tigerui"
 import { BlobBehavior } from "./BlobBehavior"
-import { CsvEditor, EditorModes } from "@/models/Shapes/CsvEditor"
-import { RectModel, PointModel, CircleModel } from "@/models/Shapes/Shapes"
+import { CsvModel, EditorModes } from "@/models/Shapes/CsvModel"
+import { PointModel } from "@/models/Shapes/Shapes"
 import { PositionListModel } from "@/pages/Home/AssetMapPage/PositionList/PositionListModel"
 import { PositionDto, PositionTypes } from "@/models"
 
@@ -16,17 +17,29 @@ export class IndoorPositionPageModel {
     //#region 【Fields】
     /** 背景文件 */
     readonly _bgBlob = new BlobBehavior()
-    readonly _size = new SizeBehavior()
-    readonly _svgEditor = new CsvEditor()
+    readonly _svg = new CsvModel()
     /** “标签”列表 */
     readonly tagList = new PositionListModel()
     /** “基站”列表 */
     readonly stationList = new PositionListModel()
+    /** “列表”标签页 */
+    readonly tabList = new TabViewModel([
+        {
+            Title: Texts.Tag,
+            _component: PositionList,
+            _rootProps: { model: this.tagList },
+        },
+        {
+            Title: Texts.BaseStation,
+            _component: PositionList,
+            _rootProps: { model: this.stationList },
+        }
+    ])
 
     /** “增”源数据获取方法 */
     readonly AddGetSource = () => {
         const station = new StationEntity()
-        const p = this._svgEditor.Point.value
+        const p = this._svg.TempPoint.value
         if (!p) return station
         station.x = p.X.value
         station.y = p.Y.value
@@ -74,7 +87,7 @@ export class IndoorPositionPageModel {
             return new SubmitResult(Texts.AddedSuccessfully.value)
         },
         _onClose: () => {
-            this._svgEditor.Clear()
+            this._svg.Clear()
         },
         _itemConfigs: [
             this.configMacAddr,
@@ -89,27 +102,27 @@ export class IndoorPositionPageModel {
 
     //#region 【Props】
     readonly BgUrl = this._bgBlob.Url
-    readonly IsEditing = this._svgEditor.IsEditing
-    readonly EditingPoint = this._svgEditor.Point
-    readonly EditingLine = this._svgEditor.Line
-    readonly EditingRect = this._svgEditor.Rect
-    readonly EditingCircle = this._svgEditor.Circle
+    readonly IsEditing = this._svg.IsEditing
     readonly Tags = shallowReactive<PointModel<PositionDto>[]>([])
     readonly Stations = shallowReactive<PointModel<PositionDto>[]>([])
-    readonly Rects = shallowReactive<RectModel[]>([])
-    readonly Circles = shallowReactive<CircleModel[]>([])
     //#endregion 【Props】
 
     //#region 【Ctor】
     constructor() {
         this._bgBlob.Name.value = '餐厅.jpeg'
-        this._svgEditor._isAutoClear = false
+        this._svg._isAutoClear = false
+        this._svg.AddLayer({ points: this.Tags })
+        this._svg.AddLayer({ points: this.Stations })
     }
     //#endregion 【Ctor】
 
     //#region 【Functions】
     readonly Refresh = async () => {
         this._bgBlob.Load()
+        this._svg.Clear()
+        this._svg.Cancel()
+        this.tagList.SetSelectedInfo(undefined)
+        this.stationList.SetSelectedInfo(undefined)
     }
 
     readonly Dispose = () => {
@@ -125,6 +138,11 @@ export class IndoorPositionPageModel {
         p._data = dto
         p.Fill.value = Colors.Brand
         p.Text.value = Icons.Tag_Planar_2
+        p._onClick = model => {
+            this.tabList.SetSelectedPage(0)
+            if (model._data) this.tagList.GoToPage(model._data)
+            this._svg.SetPosition(model.X.value, model.Y.value)
+        }
         this.Tags.push(p)
     }
 
@@ -137,48 +155,53 @@ export class IndoorPositionPageModel {
         p._data = dto
         p.Fill.value = Colors.Warning
         p.Text.value = Icons.Router_Planar_2
+        p._onClick = model => {
+            this.tabList.SetSelectedPage(1)
+            if (model._data) this.stationList.GoToPage(model._data)
+            this._svg.SetPosition(model.X.value, model.Y.value)
+        }
         this.Stations.push(p)
     }
 
     readonly AddStation1 = () => {
-        this._svgEditor.Edit(EditorModes.Point)
-        this._svgEditor._onSave = () => {
-            const p = this._svgEditor.Point.value
+        this._svg.Edit(EditorModes.Point)
+        this._svg._onSave = () => {
+            const p = this._svg.TempPoint.value
             if (!p) return
             this.stationForm.Show()
         }
     }
 
     readonly EditLine = () => {
-        this._svgEditor.Edit(EditorModes.Line)
+        this._svg.Edit(EditorModes.Line)
     }
 
     readonly EditRect = () => {
-        this._svgEditor.Edit(EditorModes.Rect)
+        this._svg.Edit(EditorModes.Rect)
     }
 
     readonly EditCircle = () => {
-        this._svgEditor.Edit(EditorModes.Circle)
+        this._svg.Edit(EditorModes.Circle)
     }
 
     readonly Save = () => {
-        this._svgEditor.Save()
+        this._svg.Save()
     }
 
     readonly Cancel = () => {
-        this._svgEditor.Cancel()
+        this._svg.Cancel()
     }
 
     readonly OnMouseDown = (e: MouseEvent) => {
-        this._svgEditor.OnMouseDown(e)
+        this._svg.OnMouseDown(e)
     }
 
     readonly OnMouseMove = (e: MouseEvent) => {
-        this._svgEditor.OnMouseMove(e)
+        this._svg.OnMouseMove(e)
     }
 
     readonly OnMouseUp = (e: MouseEvent) => {
-        this._svgEditor.OnMouseUp(e)
+        this._svg.OnMouseUp(e)
     }
 
     readonly OnPointClick = (p: PointModel<PositionDto>) => {

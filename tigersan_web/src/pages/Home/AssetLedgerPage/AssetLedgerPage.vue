@@ -28,13 +28,6 @@
                 </div>
                 <div class="button-panel">
                     <div class="row-panel">
-                        <button :disabled="!IsAllowTransfer" @click="model.Transfer">{{ Texts.Transfer.value }}</button>
-                        <button :disabled="!IsAllowInbound" @click="model.Inbound">{{ Texts.Inbound.value }}</button>
-                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="model.Outbound">
-                            {{ Texts.Outbound.value }}</button>
-                        <button @click="model.Export">{{ Texts.Export.value }}</button>
-                    </div>
-                    <div class="row-panel">
                         <button class="bg-success" @click="model.Refresh">{{ Texts.Refresh.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" @click="model.Add">
                             {{ Texts.Add.value }}</button>
@@ -42,6 +35,16 @@
                             :disabled="!IsOnlySelected" @click="model.Edit">{{ Texts.Edit.value }}</button>
                         <button v-if="!Authorities.AssetLedgerPage.IsReadonly.value" class="bg-danger"
                             :disabled="!IsSelected" @click="model.Delete">{{ Texts.Delete.value }}</button>
+                    </div>
+                    <div class="row-panel">
+                        <button :disabled="!IsAllowTransfer" @click="model.Transfer">{{ Texts.Transfer.value }}</button>
+                        <button :disabled="!IsAllowInbound" @click="model.Inbound">{{ Texts.Inbound.value }}</button>
+                        <button class="bg-info" :disabled="!IsAllowOutbound" @click="model.Outbound">
+                            {{ Texts.Outbound.value }}</button>
+                    </div>
+                    <div class="row-panel">
+                        <button @click="model.ExportCsv">CSV</button>
+                        <button @click="model.ExportXlsx">XLSX</button>
                     </div>
                 </div>
             </div>

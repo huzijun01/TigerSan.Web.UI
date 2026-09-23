@@ -110,6 +110,21 @@ namespace TigerSan.NET8.WebApi.Controllers
             if (file == null) return BadRequest(res.Message);
             return file;
         }
+
+        /// <summary>下载“XLSX”</summary>
+        [HttpPost("DownloadXlsx")]
+        public async Task<IActionResult> DownloadXlsx(
+            int? pageSize = null,
+            int? pageNumber = null,
+            string? sort = null,
+            bool? ascending = null,
+            [FromBody] FilterDto? filter = null)
+        {
+            var res = await _service.GetXlsx(pageSize, pageNumber, sort, ascending, filter);
+            var file = res.Data;
+            if (file == null) return BadRequest(res.Message);
+            return file;
+        }
         #endregion [查]
 
         #region [Other]

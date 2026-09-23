@@ -203,6 +203,19 @@ export class AssetHelper extends IdHelper<AssetDto> {
         { key: 'ascending', value: param.ascending },
     ], Methods.Post, { data: AssetFilter.GetFilter(param) })
 
+    /** 下载“XLSX” */
+    readonly DownloadXlsx = async (fileName: string, param: {
+        pageSize?: number,
+        pageNumber?: number,
+        sort?: string,
+        ascending?: boolean,
+    } & AssetFilter) => await axiosHelper.DownloadFile(fileName, `${this._action}/DownloadXlsx`, [
+        { key: 'pageSize', value: param.pageSize },
+        { key: 'pageNumber', value: param.pageNumber },
+        { key: 'sort', value: param.sort },
+        { key: 'ascending', value: param.ascending },
+    ], Methods.Post, { data: AssetFilter.GetFilter(param) })
+
     // Other:
     /** 入库 */
     readonly Inbound = async (ids: number[] | bigint[]) =>

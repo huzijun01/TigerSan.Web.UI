@@ -38,7 +38,10 @@
                         <button :disabled="!model.IsAllowBinding.value" @click="model.Binding">
                             {{ Texts.Binding.value }}</button>
                         <button :disabled="!IsOnlySelected" @click="model.Repair">{{ Texts.Repair.value }}</button>
-                        <button @click="model.Export">{{ Texts.Export.value }}</button>
+                    </div>
+                    <div class="row-panel">
+                        <button @click="model.ExportCsv">CSV</button>
+                        <button @click="model.ExportXlsx">XLSX</button>
                     </div>
                 </div>
             </div>

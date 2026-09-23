@@ -499,12 +499,24 @@ export class TagMgtPageModel {
         DialogHelper.Information('维修')
     }
 
-    /** 导出 */
-    readonly Export = async () => {
+    /** 导出“CSV” */
+    readonly ExportCsv = async () => {
         try {
             loading.IsShow.value = true
 
             const res = await tagHelper.DownloadCsv(EqpType.GetName(this.eqpType), { eqpType: this.eqpType })
+            MyActionResult.ShowResult(res, Texts.DownloadSuccessfully.value)
+        } finally {
+            loading.IsShow.value = false
+        }
+    }
+
+    /** 导出“XLSX” */
+    readonly ExportXlsx = async () => {
+        try {
+            loading.IsShow.value = true
+
+            const res = await tagHelper.DownloadXlsx(EqpType.GetName(this.eqpType), { eqpType: this.eqpType })
             MyActionResult.ShowResult(res, Texts.DownloadSuccessfully.value)
         } finally {
             loading.IsShow.value = false

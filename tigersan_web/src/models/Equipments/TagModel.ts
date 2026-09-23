@@ -157,6 +157,19 @@ class TagHelper extends IdHelper<TagDto> {
         { key: 'ascending', value: param.ascending },
     ], Methods.Post, { data: TagFilter.GetFilter(param) })
 
+    /** 下载“XLSX” */
+    readonly DownloadXlsx = async (fileName: string, param: {
+        pageSize?: number,
+        pageNumber?: number,
+        sort?: string,
+        ascending?: boolean,
+    } & TagFilter) => await axiosHelper.DownloadFile(fileName, `${this._action}/DownloadXlsx`, [
+        { key: 'pageSize', value: param.pageSize },
+        { key: 'pageNumber', value: param.pageNumber },
+        { key: 'sort', value: param.sort },
+        { key: 'ascending', value: param.ascending },
+    ], Methods.Post, { data: TagFilter.GetFilter(param) })
+
     // 增:
     /** 批量添加 */
     readonly AddBatch = async (source: TagEntity) =>
