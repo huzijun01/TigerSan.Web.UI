@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TigerSan.NET8.WebApi.Attributes;
 using TigerSan.NET8.WebApi.Share.Dtos;
+using TigerSan.NET8.WebApi.Share.Helpers;
 using TigerSan.NET8.WebApi.Share.Entities;
 using TigerSan.NET8.WebApi.Interfaces.Models;
 
@@ -80,9 +81,14 @@ namespace TigerSan.NET8.WebApi.Controllers
             bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = await _service.GetCsv(pageSize, pageNumber, sort, ascending, filter);
+            var resGetFullList = await GetFullList(pageSize, pageNumber, sort, ascending, filter);
+            var dtos = resGetFullList.Data;
+            if (dtos == null) return BadRequest(resGetFullList.Message);
+
+            var res = await FileHelper.GetCsv(dtos);
             var file = res.Data;
             if (file == null) return BadRequest(res.Message);
+
             return file;
         }
 
@@ -95,9 +101,14 @@ namespace TigerSan.NET8.WebApi.Controllers
             bool? ascending = null,
             [FromBody] FilterDto? filter = null)
         {
-            var res = await _service.GetXlsx(pageSize, pageNumber, sort, ascending, filter);
+            var resGetFullList = await GetFullList(pageSize, pageNumber, sort, ascending, filter);
+            var dtos = resGetFullList.Data;
+            if (dtos == null) return BadRequest(resGetFullList.Message);
+
+            var res = await FileHelper.GetXlsx(dtos);
             var file = res.Data;
             if (file == null) return BadRequest(res.Message);
+
             return file;
         }
         #endregion [查]

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TigerSan.NET8.WebApi.Share.Dtos;
+﻿using TigerSan.NET8.WebApi.Share.Dtos;
 using TigerSan.NET8.WebApi.Share.Entities;
 
 namespace TigerSan.NET8.WebApi.Interfaces.Models
@@ -36,20 +35,6 @@ namespace TigerSan.NET8.WebApi.Interfaces.Models
         public Task<MyActionResult<AssetCountDto>> GetTravelCounts(List<long> companies);
         /// <summary>获取“停留”时长分布</summary>
         public Task<MyActionResult<AssetCountDto>> GetStayCounts(List<long> companies);
-        /// <summary>获取“CSV”</summary>
-        public Task<MyActionResult<FileStreamResult>> GetCsv(
-            int? pageSize = null,
-            int? pageNumber = null,
-            string? sort = null,
-            bool? ascending = null,
-            FilterDto? filter = null);
-        /// <summary>获取“XLSX”</summary>
-        public Task<MyActionResult<FileStreamResult>> GetXlsx(
-            int? pageSize = null,
-            int? pageNumber = null,
-            string? sort = null,
-            bool? ascending = null,
-            FilterDto? filter = null);
 
         // Other:
         /// <summary>入库</summary>

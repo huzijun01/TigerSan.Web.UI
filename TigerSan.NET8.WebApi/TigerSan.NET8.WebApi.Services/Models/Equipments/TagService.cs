@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TigerSan.CsvLog;
 using TigerSan.NET8.WebApi.Share;
 using TigerSan.NET8.WebApi.Share.Dtos;
@@ -524,60 +523,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
             catch (Exception e)
             {
                 return MyResults<List<TagDto>>.Error(LogHelper.Instance.Error(e.GetMessage()));
-            }
-        }
-        #endregion
-
-        #region 获取“CSV”
-        public async Task<MyActionResult<FileStreamResult>> GetCsv(
-            int? pageSize = null,
-            int? pageNumber = null,
-            string? sort = null,
-            bool? ascending = null,
-            FilterDto? filter = null)
-        {
-            try
-            {
-                // 获取“数据”集合:
-                var resGetFullList = await GetFullList(pageSize, pageNumber, sort, ascending, filter);
-                var dtos = resGetFullList.Data;
-                if (dtos == null)
-                {
-                    return MyResults<FileStreamResult>.Error(resGetFullList.Message);
-                }
-
-                return await _fileService.GetCsv(dtos);
-            }
-            catch (Exception e)
-            {
-                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(e.GetMessage()));
-            }
-        }
-        #endregion
-
-        #region 获取“XLSX”
-        public async Task<MyActionResult<FileStreamResult>> GetXlsx(
-            int? pageSize = null,
-            int? pageNumber = null,
-            string? sort = null,
-            bool? ascending = null,
-            FilterDto? filter = null)
-        {
-            try
-            {
-                // 获取“数据”集合:
-                var resGetFullList = await GetFullList(pageSize, pageNumber, sort, ascending, filter);
-                var dtos = resGetFullList.Data;
-                if (dtos == null)
-                {
-                    return MyResults<FileStreamResult>.Error(resGetFullList.Message);
-                }
-
-                return await _fileService.GetXlsx(dtos);
-            }
-            catch (Exception e)
-            {
-                return MyResults<FileStreamResult>.Error(LogHelper.Instance.Error(e.GetMessage()));
             }
         }
         #endregion
