@@ -84,13 +84,54 @@ namespace TigerSan.NET8.WebApi.Share.Entities
 
         #region 是否“移动”
         /// <summary>是否“移动”</summary>
-        public static bool IsMoved(TagEntity oldRecord, TagEntity newRecord)
+        public static bool IsMoved(TagEntity oldTag, TagEntity newTag)
         {
-            if (oldRecord.Longitude == null || oldRecord.Latitude == null
-                || newRecord.Longitude == null || newRecord.Latitude == null) return false;
-            var p1 = new Point2(oldRecord.Longitude.Value, oldRecord.Latitude.Value);
-            var p2 = new Point2(newRecord.Longitude.Value, newRecord.Latitude.Value);
+            if (oldTag.Longitude == null || oldTag.Latitude == null
+                || newTag.Longitude == null || newTag.Latitude == null) return false;
+            var p1 = new Point2(oldTag.Longitude.Value, oldTag.Latitude.Value);
+            var p2 = new Point2(newTag.Longitude.Value, newTag.Latitude.Value);
             return p1.Haversine(p2) > GlobalSettings.DistanceThresholdMeters;
+        }
+        #endregion
+
+        #region 是否“过期”
+        /// <summary>是否“过期”</summary>
+        public static bool IsExpired(TagEntity oldTag, BaseStationEntity oldStation)
+        {
+            var signalCompareStartTime = DateTimeHelper.GetUtcNow().AddSeconds(-(oldStation?.ReportInterval ?? GlobalSettings.TagReportIntervalSeconds));
+            return oldTag.ReportTime == null || oldTag.ReportTime < signalCompareStartTime;
+        }
+        #endregion
+
+        #region 是否为“信号更强”的“不同基站”
+        /// <summary>是否为“信号更强”的“不同基站”</summary>
+        public static bool IsStrongerDifferent(TagEntity oldTag, TagEntity newTag)
+        {
+            if (oldTag.Station == null || oldTag.Signal == null
+                || newTag.Station == null || newTag.Signal == null
+                || oldTag.Station == newTag.Station) return false;
+            return newTag.Signal < oldTag.Signal;
+        }
+        #endregion
+
+        #region 是否“允许添加”
+        /// <summary>是否“允许添加”</summary>
+        public static bool IsAllowAdd(TagEntity oldTag, TagEntity newTag, BaseStationEntity? oldStation, BaseStationEntity? newStation)
+        {
+            if (oldStation == null || newStation == null) return false;
+
+            if (!oldStation.IsMobile && newStation.IsMobile) // 变为“移动基站”
+            {
+                return IsExpired(oldTag, oldStation); // 是否“过期”
+            }
+            if (!oldStation.IsMobile && !newStation.IsMobile) // 全为“固定基站”
+            {
+                return IsExpired(oldTag, oldStation) && IsStrongerDifferent(oldTag, newTag); // 是否“过期”且为“信号更强”的“不同基站”
+            }
+            else
+            {
+                return IsMoved(oldTag, newTag); // 是否“移动”
+            }
         }
         #endregion
     }

@@ -833,7 +833,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 return res.Convert<object>();
                             }
                         }
-                        else if (TagEntity.IsMoved(oldTag, newTag)) // 移动
+                        else if (TagEntity.IsAllowAdd(oldTag, newTag, newStation, oldStation)) // 允许添加
                         {
                             // 新增记录:
                             var res = await Add(newRecord, false);
