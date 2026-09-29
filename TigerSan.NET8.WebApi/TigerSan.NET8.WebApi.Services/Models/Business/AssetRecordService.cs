@@ -612,11 +612,31 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                 await PushTagDto.PushTagDtoAsync(newTag);
 
+                #region 获取“资产”
+                var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == newTag.Asset);
+                if (asset == null)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(asset)));
+                }
+                #endregion
+
+                #region 获取“最新记录”
+                var resLast = await GetLast(newTag.Asset.Value);
+                if (resLast.IsError)
+                {
+                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                    LogHelper.Instance.Error(resLast.Message);
+                    return MyResults<object>.Error(resLast.Message);
+                }
+                var lastRecord = resLast.Data;
+                #endregion
+
                 #region 获取“基站”
                 BaseStationEntity? oldStation = null;
-                if (oldTag.Station != null)
+                if (lastRecord?.Station != null)
                 {
-                    oldStation = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(b => b.Id == oldTag.Station);
+                    oldStation = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(b => b.Id == lastRecord.Station);
                     if (oldStation == null)
                     {
                         if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
@@ -636,26 +656,6 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         return MyResults<object>.ResourceNotExist;
                     }
                 }
-                #endregion
-
-                #region 获取“资产”
-                var asset = await _db.Assets.FirstOrDefaultAsync(i => i.Id == newTag.Asset);
-                if (asset == null)
-                {
-                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                    return MyResults<object>.Error(LogHelper.Instance.IsNull(nameof(asset)));
-                }
-                #endregion
-
-                #region 获取“最新记录”
-                var resLast = await GetLast(newTag.Asset.Value);
-                if (resLast.IsError)
-                {
-                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                    LogHelper.Instance.Error(resLast.Message);
-                    return MyResults<object>.Error(resLast.Message);
-                }
-                var lastRecord = resLast.Data;
                 #endregion
 
                 AssetRecordEntity newRecord;
@@ -833,7 +833,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 return res.Convert<object>();
                             }
                         }
-                        else if (TagEntity.IsAllowAdd(oldTag, newTag, newStation, oldStation)) // 允许添加
+                        else if (TagEntity.IsAllowAdd(lastRecord, newTag, oldStation, newStation)) // 允许添加
                         {
                             // 新增记录:
                             var res = await Add(newRecord, false);
@@ -842,6 +842,15 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
                                 LogHelper.Instance.Error(res.Message);
                                 return res.Convert<object>();
+                            }
+                        }
+                        else if (lastRecord.Station == newTag.Station) // 同一基站
+                        {
+                            // 更新“信号”：
+                            var find = await _db.AssetRecords.FirstOrDefaultAsync(i => i.Id == lastRecord.Id);
+                            if (find != null)
+                            {
+                                find.Signal = newTag.Signal;
                             }
                         }
                     }

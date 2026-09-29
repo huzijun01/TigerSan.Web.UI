@@ -14,7 +14,7 @@ export class BaseStationEntity extends IdName {
     isMobile = false
     onlineState = OnlineStates.Offline
     heartbeatInterval = 3600
-    reportInterval = 3600
+    reportInterval = 900
     monthOffline: bigint = 0n
     createTime: Date = new Date()
     reportTime?: Date
