@@ -130,6 +130,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     else
                     {
                         dto.StationId = station.MacAddr;
+                        dto.StationName = station.Name;
                     }
                 }
 
@@ -658,10 +659,13 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 #endregion
 
+                bool isChangeStation;
                 AssetRecordEntity newRecord;
 
                 if (lastRecord == null) // 若“无记录”，新增“入库记录”
                 {
+                    isChangeStation = true;
+
                     newRecord = new AssetRecordEntity()
                     {
                         Asset = newTag.Asset.Value,
@@ -701,6 +705,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                     if (newStation?.Site != null && oldStation?.Site != newStation.Site) // 若“场地”改变，新增“入库记录”
                     {
+                        isChangeStation = true;
+
                         // 添加“场地”:
                         newRecord.Site = newStation.Site;
 
@@ -816,6 +822,8 @@ namespace TigerSan.NET8.WebApi.Services.Models
 
                         if (oldTag.OnlineState != newTag.OnlineState) // “在线状态”改变
                         {
+                            isChangeStation = false;
+
                             #region 若“出库”且“离线”，改为“在途记录”
                             if (lastRecord.State == AssetStates.Outbound
                                 && newTag.OnlineState == OnlineStates.Offline)
@@ -833,24 +841,44 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 return res.Convert<object>();
                             }
                         }
-                        else if (TagEntity.IsAllowAdd(lastRecord, newTag, oldStation, newStation)) // 允许添加
+                        else if (oldStation == newStation) // 同一基站
                         {
-                            // 新增记录:
-                            var res = await Add(newRecord, false);
-                            if (res.IsError)
+                            isChangeStation = false;
+
+                            // 更新“信号”：
+                            asset.Signal = newTag.Signal;
+                            asset.ReportTime = newTag.ReportTime;
+
+                            if (newStation != null && newStation.IsMobile && TagEntity.IsMoved(lastRecord, newTag)) // 若为“移动基站”且“移动”
                             {
-                                if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
-                                LogHelper.Instance.Error(res.Message);
-                                return res.Convert<object>();
+                                // 新增记录:
+                                var res = await Add(newRecord, false);
+                                if (res.IsError)
+                                {
+                                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                    LogHelper.Instance.Error(res.Message);
+                                    return res.Convert<object>();
+                                }
                             }
                         }
-                        else if (lastRecord.Station == newTag.Station) // 同一基站
+                        else // 不同基站
                         {
-                            // 更新“信号”：
-                            var find = await _db.AssetRecords.FirstOrDefaultAsync(i => i.Id == lastRecord.Id);
-                            if (find != null)
+                            if (TagEntity.IsExpired(asset, oldStation) || TagEntity.IsStrongerDifferent(asset, newTag)) // 是否“过期”或为“信号更强”的“不同基站”
                             {
-                                find.Signal = newTag.Signal;
+                                isChangeStation = true;
+
+                                // 新增记录:
+                                var res = await Add(newRecord, false);
+                                if (res.IsError)
+                                {
+                                    if (transaction != null) await transaction.RollbackAsync(); // 回滚所有操作
+                                    LogHelper.Instance.Error(res.Message);
+                                    return res.Convert<object>();
+                                }
+                            }
+                            else
+                            {
+                                isChangeStation = false;
                             }
                         }
                     }
@@ -882,9 +910,22 @@ namespace TigerSan.NET8.WebApi.Services.Models
                 }
                 #endregion
 
-                // 更新“资产状态”：
-                asset.Copy(newTag, newStation?.MacAddr);
-                asset.Copy(newRecord);
+                #region 更新“资产状态”
+                asset.OnlineState = newTag.OnlineState;
+                asset.IsFall = newTag.IsFall;
+                asset.TagType = newTag.Type;
+                asset.LastRecord = newRecord.Id;
+                asset.State = newRecord.State;
+                if (isChangeStation)
+                {
+                    // 更新“基站”：
+                    asset.Station = newTag.Station;
+                    asset.StationId = newStation?.MacAddr;
+                    // 更新“信号”：
+                    asset.Signal = newTag.Signal;
+                    asset.ReportTime = newTag.ReportTime;
+                }
+                #endregion
 
                 await Calculate(newTag.Id, false);
                 await _db.SaveChangesAsync();

@@ -27,6 +27,7 @@ export class AssetRecordEntity extends IdEntityBase {
 export class AssetRecordDto extends AssetRecordEntity {
     tagId = ''
     stationId?: string
+    stationName?: string
     siteName?: string
     addr?: string
     addrDetail?: string

@@ -96,42 +96,21 @@ namespace TigerSan.NET8.WebApi.Share.Entities
 
         #region 是否“过期”
         /// <summary>是否“过期”</summary>
-        public static bool IsExpired(AssetRecordEntity lastRecord, BaseStationEntity oldStation)
+        public static bool IsExpired(AssetEntity asset, BaseStationEntity? oldStation)
         {
             var signalCompareStartTime = DateTimeHelper.GetUtcNow().AddSeconds(-(oldStation?.ReportInterval ?? GlobalSettings.TagReportIntervalSeconds));
-            return lastRecord.ReportTime < signalCompareStartTime;
+            return asset.ReportTime == null || asset.ReportTime < signalCompareStartTime;
         }
         #endregion
 
         #region 是否为“信号更强”的“不同基站”
         /// <summary>是否为“信号更强”的“不同基站”</summary>
-        public static bool IsStrongerDifferent(AssetRecordEntity lastRecord, TagEntity newTag)
+        public static bool IsStrongerDifferent(AssetEntity asset, TagEntity newTag)
         {
-            if (lastRecord.Station == null || lastRecord.Signal == null
+            if (asset.Station == null || asset.Signal == null
                 || newTag.Station == null || newTag.Signal == null
-                || lastRecord.Station == newTag.Station) return false;
-            return newTag.Signal < lastRecord.Signal;
-        }
-        #endregion
-
-        #region 是否“允许添加”
-        /// <summary>是否“允许添加”</summary>
-        public static bool IsAllowAdd(AssetRecordEntity lastRecord, TagEntity newTag, BaseStationEntity? oldStation, BaseStationEntity? newStation)
-        {
-            if (oldStation == null || newStation == null) return false;
-
-            if (!oldStation.IsMobile && newStation.IsMobile) // 变为“移动基站”
-            {
-                return IsExpired(lastRecord, oldStation); // 是否“过期”
-            }
-            if (!oldStation.IsMobile && !newStation.IsMobile) // 全为“固定基站”
-            {
-                return IsExpired(lastRecord, oldStation) && IsStrongerDifferent(lastRecord, newTag); // 是否“过期”且为“信号更强”的“不同基站”
-            }
-            else
-            {
-                return IsMoved(lastRecord, newTag); // 是否“移动”
-            }
+                || asset.Station == newTag.Station) return false;
+            return newTag.Signal < asset.Signal;
         }
         #endregion
     }

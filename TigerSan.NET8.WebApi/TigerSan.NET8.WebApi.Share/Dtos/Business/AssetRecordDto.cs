@@ -6,6 +6,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
     {
         public string TagId { get; set; } = string.Empty;
         public string? StationId { get; set; }
+        public string? StationName { get; set; }
         public string? SiteName { get; set; }
         public string? Addr { get; set; }
         public string? AddrDetail { get; set; }

@@ -40,9 +40,13 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         [SnakeColumn]
         public long? TagType { get; set; }
         [SnakeColumn]
-        public long? Station { get; set; }
+        public long? Station { get; set; } // 最新记录基站
         [SnakeColumn]
-        public string? StationId { get; set; }
+        public string? StationId { get; set; } // 最新记录基站ID
+        [SnakeColumn]
+        public int? Signal { get; set; } // 最新记录基站“信号强度”
+        [SnakeColumn]
+        public DateTime? ReportTime { get; set; } // 最新记录基站“上报时间”
         // 记录:
         [SnakeColumn]
         public long? LastRecord { get; set; } // 计算时才更新，建议使用GetLast获取最新记录
@@ -63,43 +67,5 @@ namespace TigerSan.NET8.WebApi.Share.Entities
         public double? TravelDuration { get; set; }
         [SnakeColumn]
         public double? OfflineDuration { get; set; }
-
-        #region 复制（标签）
-        public void Copy(TagEntity? tag, string? stationId)
-        {
-            if (tag == null)
-            {
-                Tag = null;
-                TagId = null;
-                TagType = null;
-                Station = null;
-                StationId = null;
-            }
-            else
-            {
-                OnlineState = tag.OnlineState;
-                IsFall = tag.IsFall;
-                TagType = tag.Type;
-                Station = tag.Station;
-                StationId = stationId;
-            }
-        }
-        #endregion
-
-        #region 复制（记录）
-        public void Copy(AssetRecordEntity? record)
-        {
-            if (record == null)
-            {
-                LastRecord = null;
-                State = AssetStates.NoRecord;
-            }
-            else
-            {
-                LastRecord = record.Id;
-                State = record.State;
-            }
-        }
-        #endregion
     }
 }
