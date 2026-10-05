@@ -863,7 +863,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                         }
                         else // 不同基站
                         {
-                            if (TagEntity.IsExpired(asset, oldStation) || TagEntity.IsStrongerDifferent(asset, newTag)) // 是否“过期”或为“信号更强”的“不同基站”
+                            if (TagEntity.IsExpired(asset, oldStation) && TagEntity.IsStrongerDifferent(asset, newTag)) // 是否“过期”且为“信号更强”的“不同基站”
                             {
                                 isChangeStation = true;
 
