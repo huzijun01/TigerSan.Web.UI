@@ -28,6 +28,7 @@
         <div class="title" v-if="station">{{ Texts.StationDetail.value }}</div>
         <KeyValue :isAutoHidden="true" :propName="Texts.MacAddr.value" :propValue="station?.macAddr" :isLink="true"
             :click="ShowStationDetail" />
+        <KeyValue :isAutoHidden="true" :propName="Texts.Name.value" :propValue="station?.name" />
         <KeyValue :isAutoHidden="true" :propName="Texts.StationType.value" :propValue="station?.typeName" />
         <KeyValue :isAutoHidden="true" :propName="Texts.InstallMode.value"
             :propValue="IsMobile.ToString(station?.isMobile)" />

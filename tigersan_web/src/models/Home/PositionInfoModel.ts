@@ -42,6 +42,8 @@ export class LocationRecord {
     latitude = 0
     address?: string
     site?: bigint
+    station?: bigint
+    stationName?: string
 }
 
 /** “位置信息”模型 */

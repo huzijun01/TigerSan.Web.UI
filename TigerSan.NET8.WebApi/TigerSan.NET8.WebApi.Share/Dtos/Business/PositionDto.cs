@@ -21,5 +21,7 @@ namespace TigerSan.NET8.WebApi.Share.Dtos
         public double? Latitude { get; set; }
         public string? Address { get; set; }
         public long? Site { get; set; }
+        public long? Station { get; set; }
+        public string? StationName { get; set; }
     }
 }

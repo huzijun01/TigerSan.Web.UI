@@ -145,6 +145,7 @@ export class AssetPathPageModel {
     readonly GetPositionInfo = (position: LocationRecord) => {
         const ap = new PositionDto()
         if (position.address) ap.info = position.address
+        if (position.stationName) ap.info += `（${position.stationName}）`
         ap.longitude = position.longitude
         ap.latitude = position.latitude
         ap.reportTime = position.reportTime

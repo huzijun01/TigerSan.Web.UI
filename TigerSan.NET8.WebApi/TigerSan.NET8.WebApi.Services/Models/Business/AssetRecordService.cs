@@ -384,6 +384,7 @@ namespace TigerSan.NET8.WebApi.Services.Models
                     .Select(i => new LocationRecord()
                     {
                         Site = i.Site,
+                        Station = i.Station,
                         Longitude = i.Longitude,
                         Latitude = i.Latitude,
                         Address = i.Address,
@@ -414,6 +415,19 @@ namespace TigerSan.NET8.WebApi.Services.Models
                                 position.Longitude = site.Longitude;
                                 position.Latitude = site.Latitude;
                             }
+                        }
+                    }
+
+                    if (position.Station != null)
+                    {
+                        var station = await _db.BaseStations.AsNoTracking().FirstOrDefaultAsync(s => s.Id == position.Station.Value);
+                        if (station == null)
+                        {
+                            LogHelper.Instance.IsNull(nameof(station));
+                        }
+                        else
+                        {
+                            position.StationName = station.Name;
                         }
                     }
                 }
