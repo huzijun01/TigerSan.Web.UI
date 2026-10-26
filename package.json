@@ -1,6 +1,6 @@
 {
   "name": "tigersan-ui",
-  "version": "0.24.6",
+  "version": "0.24.7",
   "private": false,
   "type": "module",
   "module": "dist/tigersan-ui.js",
