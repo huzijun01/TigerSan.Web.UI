@@ -1,4 +1,4 @@
-import { Icons, NavBarModel, Texts } from "../../packages"
+import { Icons, NavBarModel, TextModel, Texts } from "../../packages"
 // Chart:
 import TablePage from "../../pages/Chart/TablePage/TablePage.vue"
 import PiePage from "../../pages/Chart/PiePage/PiePage.vue"
@@ -7,9 +7,11 @@ import EChartsPage from "../../pages/Chart/EChartsPage/EChartsPage.vue"
 import InputPage from "../../pages/Input/InputPage/InputPage.vue"
 // Feedback:
 import DialogPage from "../../pages/Dialog/DialogPage/DialogPage.vue"
+import ToastPage from "../../pages/Dialog/ToastPage/ToastPage.vue"
 import LoadingPage from "../../pages/Dialog/LoadingPage/LoadingPage.vue"
 // Feedback:
 import MapPage from "../../pages/Other/MapPage/MapPage.vue"
+import SvgPage from "../../pages/Other/SvgPage/SvgPage.vue"
 
 export class HomeModel {
     readonly nav = new NavBarModel({
@@ -57,6 +59,11 @@ export class HomeModel {
                         _component: DialogPage,
                     },
                     {
+                        Title: TextModel.Computed('Toast', '提示框‌'),
+                        Icon: Icons.About,
+                        _component: ToastPage,
+                    },
+                    {
                         Title: Texts.Loading,
                         Icon: Icons.Loading_Dot,
                         _component: LoadingPage,
@@ -71,6 +78,11 @@ export class HomeModel {
                         Title: Texts.Map,
                         Icon: Icons.Global_Linear,
                         _component: MapPage,
+                    },
+                    {
+                        Title: 'SVG',
+                        Icon: Icons.PIC,
+                        _component: SvgPage,
                     },
                 ]
             },
