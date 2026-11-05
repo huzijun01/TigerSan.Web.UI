@@ -54,6 +54,7 @@ import 'tigersan-ui/dist/tigersan-ui.css'
   /* [遮罩] */
   --theme-mask-hover: var(--color-black-10);
   --theme-mask-active: var(--color-black-50);
+  --theme-box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.05);
   /* [链接] */
   --theme-link-color: #34a1ff;
   /* [按钮] */
@@ -77,6 +78,9 @@ import 'tigersan-ui/dist/tigersan-ui.css'
   --theme-tree-node-background-active: var(--color-brand-25);
   /* [弹窗] */
   --theme-dialog-title-color: var(--color-primary-text);
+  /* [CSV] */
+  --theme-grid-color-primary: rgb(242,242,242);
+  --theme-grid-color-secondary: rgb(229,229,229);
 }
 ```
 
@@ -197,6 +201,20 @@ import 'tigersan-ui/dist/tigersan-ui.css'
 ### Pagination
 
 ### PaginationButton
+
+## Svg:
+
+### Circle
+
+### Line
+
+### Point
+
+### Rect
+
+### Svg
+
+### SvgLayer
 
 ## Table:
 

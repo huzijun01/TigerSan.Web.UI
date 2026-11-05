@@ -37,12 +37,14 @@ export class SvgPageModel {
         // this._svg.BgStyle.value = {
         //     width: '500px',
         //     height: '300px',
-        //     background: 'grey',
         // }
+        // this._svg.IsShowGrid.value = true
         this._svg.BgUrl.value = '餐厅.jpeg'
         this._svg._isAutoClear = true
-        this._svg.AddLayer({ points: this.Tags })
-        this._svg.AddLayer({ points: this.Stations })
+        this._svg.SetLayers([
+            { Points: this.Tags },
+            { Points: this.Stations }
+        ])
     }
     //#endregion 【Ctor】
 
@@ -55,9 +57,12 @@ export class SvgPageModel {
     }
 
     readonly AddTag = (x: number, y: number, macAddr: string) => {
-        const p = new PointModel(x, y)
-        p.Text.value = macAddr
-        p.Icon.value = Icons.Tag_Planar_2
+        const p = new PointModel({
+            X: x,
+            Y: y,
+            Text: macAddr,
+            Icon: Icons.Tag_Planar_2,
+        })
         p.IconFill.value = p.TextFill.value = Colors.Brand
         p._onClick = model => {
             this.SelectedPoint.value = model
@@ -67,9 +72,12 @@ export class SvgPageModel {
     }
 
     readonly AddStation = (x: number, y: number, macAddr: string) => {
-        const p = new PointModel(x, y)
-        p.Text.value = macAddr
-        p.Icon.value = Icons.Router_Planar_2
+        const p = new PointModel({
+            X: x,
+            Y: y,
+            Text: macAddr,
+            Icon: Icons.Router_Planar_2,
+        })
         p.IconFill.value = p.TextFill.value = Colors.Warning
         p._onClick = model => {
             this.SelectedPoint.value = model
